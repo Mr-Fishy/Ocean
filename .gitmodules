@@ -1,0 +1,9 @@
+[submodule "Ocean/vendor/spdlog"]
+	path = Ocean/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Ocean/vendor/GLFW"]
+	path = Ocean/vendor/GLFW
+	url = https://github.com/glfw/glfw
+[submodule "Ocean/vendor/imgui"]
+	path = Ocean/vendor/imgui
+	url = https://github.com/ocornut/imgui
