@@ -4,9 +4,7 @@
 
 namespace Ocean {
 
-	LayerStack::LayerStack() {
-		m_LayerInsert = m_Layers.begin();
-	}
+	LayerStack::LayerStack() {}
 
 	LayerStack::~LayerStack() {
 		for (Layer* layer : m_Layers) {
@@ -15,11 +13,17 @@ namespace Ocean {
 	}
 
 	void LayerStack::PushLayer(Layer* layer) {
-		m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
+		m_Layers.emplace(m_Layers.begin() + m_LayersInsertIndex, layer);
+
+		layer->OnAttach();
+
+		m_LayersInsertIndex++;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay) {
 		m_Layers.emplace_back(overlay);
+
+		overlay->OnAttach();
 	}
 
 	void LayerStack::PopLayer(Layer* layer) {
@@ -27,7 +31,10 @@ namespace Ocean {
 
 		if (it != m_Layers.end()) {
 			m_Layers.erase(it);
-			m_LayerInsert--;
+
+			layer->OnDetach();
+
+			m_LayersInsertIndex--;
 		}
 	}
 
@@ -36,6 +43,8 @@ namespace Ocean {
 
 		if (it != m_Layers.end()) {
 			m_Layers.erase(it);
+
+			overlay->OnDetach();
 		}
 	}
 

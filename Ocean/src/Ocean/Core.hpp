@@ -2,10 +2,14 @@
 
 // Ocean DLL Macros
 #ifdef OC_PLATFORM_WINDOWS
-	#ifdef OC_BUILD_DLL
-		#define OCEAN_API __declspec(dllexport)
+	#if OC_DYNAMIC_LINK
+		#ifdef OC_BUILD_DLL
+			#define OCEAN_API __declspec(dllexport)
+		#else
+			#define OCEAN_API __declspec(dllimport)
+		#endif
 	#else
-		#define OCEAN_API __declspec(dllimport)
+		#define OCEAN_API
 	#endif
 #else
 	#error Ocean only supports Windows!

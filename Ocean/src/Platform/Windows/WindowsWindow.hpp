@@ -2,7 +2,9 @@
 
 #include "Ocean/Window.hpp"
 
-struct GLFWwindow;
+#include "Ocean/Renderer/GraphicsContext.hpp"
+
+#include <GLFW/glfw3.h>
 
 namespace Ocean {
 	class WindowsWindow : public Window {
@@ -21,6 +23,8 @@ namespace Ocean {
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
 
+		inline virtual void* GetNativeWindow() const { return m_Window; }
+
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
@@ -28,6 +32,7 @@ namespace Ocean {
 		/* --- */
 	
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 
 		struct WindowData {
 			std::string Title{};

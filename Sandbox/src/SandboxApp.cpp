@@ -1,6 +1,8 @@
 
 #include <Ocean.hpp>
 
+#include "imgui/imgui.h"
+
 // Layers Must Be Declared Before Sandbox Appliction
 class ExampleLayer : public Ocean::Layer {
 public:
@@ -8,8 +10,14 @@ public:
 
 	void OnUpdate() override {}
 
+	virtual void OnImGuiRender() override {
+		ImGui::Begin("Test");
+		ImGui::Text("Hello World");
+		ImGui::End();
+	}
+
 	void OnEvent(Ocean::Event& event) override {
-		OC_TRACE("{0}", event);
+		// OC_TRACE("{0}", event);
 	}
 };
 
@@ -18,7 +26,6 @@ class Sandbox : public Ocean::Application {
 public:
 	Sandbox() {
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Ocean::ImGuiLayer());
 	}
 
 	~Sandbox() {

@@ -6,8 +6,7 @@
 #include "Ocean/Events/MouseEvent.hpp"
 #include "Ocean/Events/KeyEvent.hpp"
 
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
+#include "Platform/OpenGL/OpenGLContext.hpp"
 
 namespace Ocean {
 
@@ -39,7 +38,7 @@ namespace Ocean {
 		if (!s_GLFWInitialized) {
 			// TODO: glfwTerminate on system shutdown
 			int success = glfwInit();
-			OC_CORE_ASSERT(succes, "Could not initialize GLFW!");
+			OC_CORE_ASSERT(success, "Could not initialize GLFW!");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 
@@ -48,10 +47,9 @@ namespace Ocean {
 
 		// GLFW Window Initialization
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-
-		int version = gladLoadGL(glfwGetProcAddress);
-		OC_CORE_ASSERT(version, "Failed to initialize Glad!");
+		
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -149,7 +147,8 @@ namespace Ocean {
 
 	void WindowsWindow::OnUpdate() {
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled) {

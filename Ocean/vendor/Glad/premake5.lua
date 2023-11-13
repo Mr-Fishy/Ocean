@@ -1,29 +1,34 @@
 project "Glad"
-    kind "StaticLib"
-    language "C"
+	kind "StaticLib"
+	language "C"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    files
-    {
-        "include/vk_platform.h",
-        "include/gl/gl.h",
-        "include/gl/vulkan.h",
-        "include/KHR/khrplatform.h",
+	files
+	{
+		"include/vk_platform.h",
+		"include/gl/gl.h",
+		"include/gl/vulkan.h",
+		"include/KHR/khrplatform.h",
 
-        "src/gl.c",
-        "src/vulkan.c",
-    }
+		"src/gl.c",
+		"src/vulkan.c",
+	}
 
 	includedirs
 	{
 		"include"
 	}
 
-    filter "system:windows"
-        systemversion "latest"
-        staticruntime "On"
+	filter "system:windows"
+		systemversion "latest"
+		
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
 
-    filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"

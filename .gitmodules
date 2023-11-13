@@ -7,3 +7,6 @@
 [submodule "Ocean/vendor/imgui"]
 	path = Ocean/vendor/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "Ocean/vendor/glm"]
+	path = Ocean/vendor/glm
+	url = https://github.com/g-truc/glm

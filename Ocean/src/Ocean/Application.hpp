@@ -2,11 +2,12 @@
 
 #include "Core.hpp"
 
+#include "Window.hpp"
 #include "Ocean/LayerStack.hpp"
 #include "Ocean/Events/Event.hpp"
 #include "Ocean/Events/ApplicationEvent.hpp"
 
-#include "Window.hpp"
+#include "Ocean/ImGui/ImGuiLayer.hpp"
 
 namespace Ocean {
 
@@ -31,6 +32,8 @@ namespace Ocean {
 		/* --- */
 
 		std::unique_ptr<Window> m_Window;
+
+		ImGuiLayer* m_ImGuiLayer;
 
 		bool m_Running = true;
 
