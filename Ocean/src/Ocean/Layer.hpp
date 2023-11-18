@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Ocean/Core.hpp"
+
+#include "Ocean/Core/Timestep.hpp"
 #include "Ocean/Events/Event.hpp"
 
 namespace Ocean {
@@ -8,11 +10,11 @@ namespace Ocean {
 	class OCEAN_API Layer {
 	public:
 		Layer(const std::string& name = "Layer");
-		virtual ~Layer();
+		virtual ~Layer() = default;
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

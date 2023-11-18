@@ -9,6 +9,11 @@ workspace "OceanEngine"
 		"Dist",
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include Directories Relative To Root Folder (Solution Directory)
@@ -17,6 +22,7 @@ IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
 IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
 IncludeDir["ImGui"] = "Ocean/vendor/imgui"
 IncludeDir["glm"] = "Ocean/vendor/glm"
+IncludeDir["stb_image"] = "Ocean/vendor/stb_image"
 
 group "Vendor"
 	include "Ocean/vendor/GLFW"
@@ -39,7 +45,9 @@ project "Ocean"
 
 	defines
 	{
+		"GLM_FORCE_CTOR_INIT",
 		"_CRT_SECURE_NO_WARNINGS",
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
 	}
 
 	files
@@ -47,6 +55,8 @@ project "Ocean"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
@@ -59,6 +69,7 @@ project "Ocean"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}",
 	}
 
 	links

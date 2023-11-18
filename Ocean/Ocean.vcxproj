@@ -76,11 +76,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -97,14 +99,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -122,14 +125,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -146,6 +150,7 @@
     <ClInclude Include="src\Ocean.hpp" />
     <ClInclude Include="src\Ocean\Application.hpp" />
     <ClInclude Include="src\Ocean\Core.hpp" />
+    <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\EntryPoint.hpp" />
     <ClInclude Include="src\Ocean\Events\ApplicationEvent.hpp" />
     <ClInclude Include="src\Ocean\Events\Event.hpp" />
@@ -158,9 +163,22 @@
     <ClInclude Include="src\Ocean\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Log.hpp" />
     <ClInclude Include="src\Ocean\MouseButtonCodes.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\RenderCommand.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Renderer.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\RendererAPI.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
     <ClInclude Include="src\Ocean\Window.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.hpp" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.hpp" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp" />
     <ClInclude Include="src\ocpch.hpp" />
@@ -580,6 +598,7 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ocean\Application.cpp" />
@@ -588,12 +607,26 @@
     <ClCompile Include="src\Ocean\Layer.cpp" />
     <ClCompile Include="src\Ocean\LayerStack.cpp" />
     <ClCompile Include="src\Ocean\Log.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\ocpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

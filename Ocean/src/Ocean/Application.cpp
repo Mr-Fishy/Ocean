@@ -2,9 +2,12 @@
 #include "ocpch.hpp"
 #include "Application.hpp"
 
-#include <gl/gl.h>
+#include "Ocean/Renderer/Renderer.hpp"
 
 #include "Input.hpp"
+
+//libs
+#include <GLFW/glfw3.h>
 
 namespace Ocean {
 
@@ -16,14 +19,39 @@ namespace Ocean {
 		OC_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Ref<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application() {}
+
+	void Application::Run() {
+		
+		while (m_Running) {
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+			for (Layer* layer : m_LayerStack) {
+				layer->OnUpdate(timestep);
+			}
+
+			m_ImGuiLayer->Begin();
+
+			for (Layer* layer : m_LayerStack) {
+				layer->OnImGuiRender();
+			}
+
+			m_ImGuiLayer->End();
+
+			m_Window->OnUpdate();
+		}
+	}
 
 	void Application::PushLayer(Layer* layer) {
 		m_LayerStack.PushLayer(layer);
@@ -44,28 +72,6 @@ namespace Ocean {
 			if (e.Handled) {
 				break;
 			}
-		}
-	}
-
-	void Application::Run() {
-
-		while (m_Running) {
-			glClearColor(1, 1, 1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			for (Layer* layer : m_LayerStack) {
-				layer->OnUpdate();
-			}
-
-			m_ImGuiLayer->Begin();
-
-			for (Layer* layer : m_LayerStack) {
-				layer->OnImGuiRender();
-			}
-
-			m_ImGuiLayer->End();
-
-			m_Window->OnUpdate();
 		}
 	}
 

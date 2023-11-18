@@ -7,6 +7,8 @@
 #include "Ocean/Events/Event.hpp"
 #include "Ocean/Events/ApplicationEvent.hpp"
 
+#include "Ocean/Core/Timestep.hpp"
+
 #include "Ocean/ImGui/ImGuiLayer.hpp"
 
 namespace Ocean {
@@ -23,7 +25,7 @@ namespace Ocean {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
-		static inline Application& Get() { return *s_Instance; }
+		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 
 	private:
@@ -31,19 +33,19 @@ namespace Ocean {
 
 		/* --- */
 
-		std::unique_ptr<Window> m_Window;
-
-		ImGuiLayer* m_ImGuiLayer;
+		static Application* s_Instance;
+		Ref<Window> m_Window;
 
 		bool m_Running = true;
 
 		LayerStack m_LayerStack;
 
-		static Application* s_Instance;
+		ImGuiLayer* m_ImGuiLayer;
+
+		float m_LastFrameTime = 0.0f;
 	};
 
 	// To Be Defined In CLIENT
 	Application* CreateApplication();
 
-}
-
+}	// Ocean

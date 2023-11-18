@@ -11,6 +11,8 @@
 #include <sstream>
 #include <string>
 
+#include <array>
+#include <cstdint>
 #include <vector>
 
 #include <unordered_map>

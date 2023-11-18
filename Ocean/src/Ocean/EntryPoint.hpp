@@ -7,14 +7,21 @@ extern Ocean::Application* Ocean::CreateApplication();
 int main(int argc, char** argv) {
 	Ocean::Log::Init();
 	OC_CORE_WARN("Initialized Log!");
-	int a = 5;
-	OC_INFO("Hello! Var={0}", a);
 
 	auto app = Ocean::CreateApplication();
 
-	app->Run();
+	try {
+		app->Run();
+	}
+	catch (const std::exception& e) {
+		// Report Error
+		std::cerr << e.what() << std::endl;
+
+		return EXIT_FAILURE;
+	}
 
 	delete app;
+	return EXIT_SUCCESS;
 }
 
 #endif

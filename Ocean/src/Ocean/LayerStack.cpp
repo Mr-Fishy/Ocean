@@ -1,5 +1,6 @@
 
 #include "ocpch.hpp"
+
 #include "LayerStack.hpp"
 
 namespace Ocean {
@@ -15,9 +16,9 @@ namespace Ocean {
 	void LayerStack::PushLayer(Layer* layer) {
 		m_Layers.emplace(m_Layers.begin() + m_LayersInsertIndex, layer);
 
-		layer->OnAttach();
-
 		m_LayersInsertIndex++;
+
+		layer->OnAttach();
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay) {
@@ -27,24 +28,24 @@ namespace Ocean {
 	}
 
 	void LayerStack::PopLayer(Layer* layer) {
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
+		auto it = std::find(m_Layers.begin(), m_Layers.begin() + m_LayersInsertIndex, layer);
 
 		if (it != m_Layers.end()) {
-			m_Layers.erase(it);
-
 			layer->OnDetach();
+
+			m_Layers.erase(it);
 
 			m_LayersInsertIndex--;
 		}
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay) {
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
+		auto it = std::find(m_Layers.begin() + m_LayersInsertIndex, m_Layers.end(), overlay);
 
 		if (it != m_Layers.end()) {
-			m_Layers.erase(it);
-
 			overlay->OnDetach();
+
+			m_Layers.erase(it);
 		}
 	}
 
