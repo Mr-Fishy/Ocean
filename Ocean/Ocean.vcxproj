@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -99,7 +99,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -125,7 +125,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_PLATFORM_WINDOWS;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -148,21 +148,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Ocean.hpp" />
-    <ClInclude Include="src\Ocean\Application.hpp" />
-    <ClInclude Include="src\Ocean\Core.hpp" />
+    <ClInclude Include="src\Ocean\Controllers\OrthographicCameraController.hpp" />
+    <ClInclude Include="src\Ocean\Core\Application.hpp" />
+    <ClInclude Include="src\Ocean\Core\Core.hpp" />
+    <ClInclude Include="src\Ocean\Core\EntryPoint.hpp" />
+    <ClInclude Include="src\Ocean\Core\Input.hpp" />
+    <ClInclude Include="src\Ocean\Core\KeyCodes.hpp" />
+    <ClInclude Include="src\Ocean\Core\Layer.hpp" />
+    <ClInclude Include="src\Ocean\Core\LayerStack.hpp" />
+    <ClInclude Include="src\Ocean\Core\Log.hpp" />
+    <ClInclude Include="src\Ocean\Core\MouseButtonCodes.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
-    <ClInclude Include="src\Ocean\EntryPoint.hpp" />
+    <ClInclude Include="src\Ocean\Core\Window.hpp" />
     <ClInclude Include="src\Ocean\Events\ApplicationEvent.hpp" />
     <ClInclude Include="src\Ocean\Events\Event.hpp" />
     <ClInclude Include="src\Ocean\Events\KeyEvent.hpp" />
     <ClInclude Include="src\Ocean\Events\MouseEvent.hpp" />
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
-    <ClInclude Include="src\Ocean\Input.hpp" />
-    <ClInclude Include="src\Ocean\KeyCodes.hpp" />
-    <ClInclude Include="src\Ocean\Layer.hpp" />
-    <ClInclude Include="src\Ocean\LayerStack.hpp" />
-    <ClInclude Include="src\Ocean\Log.hpp" />
-    <ClInclude Include="src\Ocean\MouseButtonCodes.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp" />
@@ -172,7 +174,6 @@
     <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
-    <ClInclude Include="src\Ocean\Window.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.hpp" />
@@ -601,12 +602,13 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ocean\Application.cpp" />
+    <ClCompile Include="src\Ocean\Controllers\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Ocean\Core\Application.cpp" />
+    <ClCompile Include="src\Ocean\Core\Layer.cpp" />
+    <ClCompile Include="src\Ocean\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Ocean\Core\Log.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Ocean\Layer.cpp" />
-    <ClCompile Include="src\Ocean\LayerStack.cpp" />
-    <ClCompile Include="src\Ocean\Log.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera.cpp" />
     <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp" />

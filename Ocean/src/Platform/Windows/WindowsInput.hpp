@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Input.hpp"
+#include "Ocean/Core/Input.hpp"
 
 namespace Ocean {
 

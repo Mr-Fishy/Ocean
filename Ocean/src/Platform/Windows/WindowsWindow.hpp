@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Ocean/Window.hpp"
+#include "Ocean/Core/Window.hpp"
 
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
+// libs
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
@@ -32,7 +33,7 @@ namespace Ocean {
 		/* --- */
 	
 		GLFWwindow* m_Window;
-		GraphicsContext* m_Context;
+		Scope<GraphicsContext> m_Context;
 
 		struct WindowData {
 			std::string Title{};

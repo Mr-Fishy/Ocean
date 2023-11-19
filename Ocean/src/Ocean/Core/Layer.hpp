@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core.hpp"
+#include "Ocean/Core/Core.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
 #include "Ocean/Events/Event.hpp"

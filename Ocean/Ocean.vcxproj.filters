@@ -7,6 +7,9 @@
     <Filter Include="src\Ocean">
       <UniqueIdentifier>{62A289B3-CE0C-3E2A-174B-EFCF83F41B7F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Controllers">
+      <UniqueIdentifier>{C8C37CE1-3430-38DC-FD23-D039694F5A44}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Ocean\Core">
       <UniqueIdentifier>{FA93F11C-E661-E522-CFF5-5549BB62C187}</UniqueIdentifier>
     </Filter>
@@ -57,17 +60,41 @@
     <ClInclude Include="src\Ocean.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Application.hpp">
-      <Filter>src\Ocean</Filter>
+    <ClInclude Include="src\Ocean\Controllers\OrthographicCameraController.hpp">
+      <Filter>src\Ocean\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core.hpp">
-      <Filter>src\Ocean</Filter>
+    <ClInclude Include="src\Ocean\Core\Application.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Core.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\EntryPoint.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Input.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\KeyCodes.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Layer.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\LayerStack.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Log.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\MouseButtonCodes.hpp">
+      <Filter>src\Ocean\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Timestep.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\EntryPoint.hpp">
-      <Filter>src\Ocean</Filter>
+    <ClInclude Include="src\Ocean\Core\Window.hpp">
+      <Filter>src\Ocean\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Events\ApplicationEvent.hpp">
       <Filter>src\Ocean\Events</Filter>
@@ -83,24 +110,6 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp">
       <Filter>src\Ocean\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Input.hpp">
-      <Filter>src\Ocean</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\KeyCodes.hpp">
-      <Filter>src\Ocean</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Layer.hpp">
-      <Filter>src\Ocean</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\LayerStack.hpp">
-      <Filter>src\Ocean</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Log.hpp">
-      <Filter>src\Ocean</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\MouseButtonCodes.hpp">
-      <Filter>src\Ocean</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp">
       <Filter>src\Ocean\Renderer</Filter>
@@ -128,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp">
       <Filter>src\Ocean\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Window.hpp">
-      <Filter>src\Ocean</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1412,23 +1418,26 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ocean\Application.cpp">
-      <Filter>src\Ocean</Filter>
+    <ClCompile Include="src\Ocean\Controllers\OrthographicCameraController.cpp">
+      <Filter>src\Ocean\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Application.cpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Layer.cpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\LayerStack.cpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Log.cpp">
+      <Filter>src\Ocean\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp">
       <Filter>src\Ocean\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp">
       <Filter>src\Ocean\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Layer.cpp">
-      <Filter>src\Ocean</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\LayerStack.cpp">
-      <Filter>src\Ocean</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Log.cpp">
-      <Filter>src\Ocean</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp">
       <Filter>src\Ocean\Renderer</Filter>

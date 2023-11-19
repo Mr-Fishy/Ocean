@@ -2,15 +2,16 @@
 
 // For use by Ocean applications //
 
-#include "Ocean/Application.hpp"
-#include "Ocean/Layer.hpp"
-#include "Ocean/Log.hpp"
+#include "Ocean/Core/Application.hpp"
+#include "Ocean/Core/Layer.hpp"
+#include "Ocean/Core/Log.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
 
-#include "Ocean/Input.hpp"
-#include "Ocean/KeyCodes.hpp"
-#include "Ocean/MouseButtonCodes.hpp"
+#include "Ocean/Core/Input.hpp"
+#include "Ocean/Core/KeyCodes.hpp"
+#include "Ocean/Core/MouseButtonCodes.hpp"
+#include "Ocean/Controllers/OrthographicCameraController.hpp"
 
 #include "Ocean/ImGui/ImGuiLayer.hpp"
 
@@ -26,4 +27,4 @@
 #include "Ocean/Renderer/Camera.hpp"
 
 // --- Entry Point --- //
-#include "Ocean/EntryPoint.hpp"
+#include "Ocean/Core/EntryPoint.hpp"

@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Ocean/Log.hpp"
+#include "Ocean/Core/Log.hpp"
 
 #ifdef OC_PLATFORM_WINDOWS
 	#include <Windows.h>

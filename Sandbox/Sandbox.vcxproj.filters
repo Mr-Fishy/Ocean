@@ -20,6 +20,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\Texture.glsl" />
+    <Image Include="assets\textures\Checkerboard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\PufferFishIcon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

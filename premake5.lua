@@ -85,7 +85,6 @@ project "Ocean"
 
 		defines
 		{
-			"OC_PLATFORM_WINDOWS",
 			"OC_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
 		}
@@ -115,6 +114,11 @@ project "Sandbox"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	defines
+	{
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"		-- Silence std::iterator Depracation Warnings (C++20)
+	}
+
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -137,11 +141,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
-		{
-			"OC_PLATFORM_WINDOWS",
-		}
 
 	filter "configurations:Debug"
 		defines"OC_DEBUG"

@@ -2,7 +2,7 @@
 
 #include "ocpch.hpp"
 
-#include "Ocean/Core.hpp"
+#include "Ocean/Core/Core.hpp"
 
 namespace Ocean {
 

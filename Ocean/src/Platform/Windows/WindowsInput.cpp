@@ -1,14 +1,16 @@
 
 #include "ocpch.hpp"
+
 #include "WindowsInput.hpp"
 
-#include "Ocean/Application.hpp"
+#include "Ocean/Core/Application.hpp"
 
+// libs
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
 
-	Input* Input::s_Instance = new WindowsInput();
+	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
 
 	bool WindowsInput::IsKeyPressedImpl(int keycode) {
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());

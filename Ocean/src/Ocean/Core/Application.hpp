@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Core.hpp"
+#include "Ocean/Core/Core.hpp"
 
-#include "Window.hpp"
-#include "Ocean/LayerStack.hpp"
+#include "Ocean/Core/Window.hpp"
+#include "Ocean/Core/LayerStack.hpp"
 #include "Ocean/Events/Event.hpp"
 #include "Ocean/Events/ApplicationEvent.hpp"
 
@@ -30,6 +30,7 @@ namespace Ocean {
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 		/* --- */
 
@@ -37,6 +38,7 @@ namespace Ocean {
 		Ref<Window> m_Window;
 
 		bool m_Running = true;
+		bool m_Minimized = false;
 
 		LayerStack m_LayerStack;
 
