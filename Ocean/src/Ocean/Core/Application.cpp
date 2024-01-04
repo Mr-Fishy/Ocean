@@ -2,6 +2,8 @@
 #include "ocpch.hpp"
 #include "Application.hpp"
 
+#include "Ocean/Core/Memory/Memory.hpp"
+
 #include "Ocean/Renderer/Renderer.hpp"
 
 #include "Ocean/Core/Input.hpp"
@@ -26,6 +28,8 @@ namespace Ocean {
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+		Memory::mAllocate(sizeof(this), Memory::MEMORY_TAG_APPLICATION);
 	}
 
 	Application::~Application() {
@@ -36,6 +40,9 @@ namespace Ocean {
 
 	void Application::Run() {
 		OC_PROFILE_FUNCTION();
+
+		// TODO: Integrate Into Profiling OR UI
+		OC_INFO(Memory::GetMemoryUsageStr());
 
 		while (m_Running) {
 			OC_PROFILE_SCOPE("RunLoop");

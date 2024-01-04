@@ -5,7 +5,7 @@
 #include "Ocean/Core/Base.hpp"
 
 #include "Ocean/Core/Application.hpp"
-#include "Ocean/Core/Layer.hpp"
+#include "Ocean/Core/Layers/Layer.hpp"
 #include "Ocean/Core/Log.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
@@ -16,6 +16,10 @@
 #include "Ocean/Controllers/OrthographicCameraController.hpp"
 
 #include "Ocean/ImGui/ImGuiLayer.hpp"
+
+// --- Scene & Components --- //
+#include "Ocean/Scene/Scene.hpp"
+#include "Ocean/Scene/Components.hpp"
 
 // --- Renderer --- //
 #include "Ocean/Renderer/Renderer.hpp"

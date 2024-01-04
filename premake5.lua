@@ -23,6 +23,7 @@ IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
 IncludeDir["ImGui"] = "Ocean/vendor/imgui"
 IncludeDir["glm"] = "Ocean/vendor/glm"
 IncludeDir["stb_image"] = "Ocean/vendor/stb_image"
+IncludeDir["EnTT"] = "Ocean/vendor/EnTT/include"
 
 group "Vendor"
 	include "Ocean/vendor/GLFW"
@@ -69,6 +70,7 @@ project "Ocean"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.EnTT}",
 	}
 
 	links
@@ -182,6 +184,7 @@ project "Coral"
 		"Ocean/src",
 		"Ocean/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.EnTT}",
 	}
 
 	links

@@ -40,6 +40,15 @@ namespace Ocean {
 		virtual void* GetNativeWindow() const = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
+
+		// Window Memory
+		static void* wAllocate(uint64_t size, char aligned);
+		static void wFree(void* block, char aligned);
+
+		static void* wZeroMemory(void* block, uint64_t size);
+
+		static void* wCopyMemory(void* dest, const void* source, uint64_t size);
+		static void* wSetMemory(void* dest, int32_t value, uint64_t size);
 	};
 
 }	// Ocean

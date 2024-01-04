@@ -13,6 +13,12 @@
     <Filter Include="src\Ocean\Core">
       <UniqueIdentifier>{FA93F11C-E661-E522-CFF5-5549BB62C187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Core\Layers">
+      <UniqueIdentifier>{79ADB063-E519-6C5E-AE0D-04BC1A398EC6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Core\Memory">
+      <UniqueIdentifier>{22CE4766-8E3A-0361-572E-9BBEC35925C9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Ocean\Debug">
       <UniqueIdentifier>{586E30BB-C4F9-9D7F-CD0A-21743915FA7F}</UniqueIdentifier>
     </Filter>
@@ -81,14 +87,17 @@
     <ClInclude Include="src\Ocean\Core\KeyCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Layer.hpp">
-      <Filter>src\Ocean\Core</Filter>
+    <ClInclude Include="src\Ocean\Core\Layers\Layer.hpp">
+      <Filter>src\Ocean\Core\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\LayerStack.hpp">
-      <Filter>src\Ocean\Core</Filter>
+    <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp">
+      <Filter>src\Ocean\Core\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Log.hpp">
       <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Memory\Memory.hpp">
+      <Filter>src\Ocean\Core\Memory</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
@@ -1428,6 +1437,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\Scene.hpp" />
+    <ClInclude Include="src\Ocean\Scene\Components.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ocean\Controllers\OrthographicCameraController.cpp">
@@ -1436,14 +1447,17 @@
     <ClCompile Include="src\Ocean\Core\Application.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Layer.cpp">
-      <Filter>src\Ocean\Core</Filter>
+    <ClCompile Include="src\Ocean\Core\Layers\Layer.cpp">
+      <Filter>src\Ocean\Core\Layers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Core\LayerStack.cpp">
-      <Filter>src\Ocean\Core</Filter>
+    <ClCompile Include="src\Ocean\Core\Layers\LayerStack.cpp">
+      <Filter>src\Ocean\Core\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Log.cpp">
       <Filter>src\Ocean\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Memory\Memory.cpp">
+      <Filter>src\Ocean\Core\Memory</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Window.cpp">
       <Filter>src\Ocean\Core</Filter>
@@ -1520,5 +1534,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ocean\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>

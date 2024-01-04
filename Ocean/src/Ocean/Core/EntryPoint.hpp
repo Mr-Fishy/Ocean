@@ -9,9 +9,12 @@ extern Ocean::Application* Ocean::CreateApplication();
 int main(int argc, char** argv) {
 	Ocean::Log::Init();
 
+	Ocean::Memory::InitMemory();
+
 	OC_PROFILE_BEGIN_SESSION("Startup", "OceanProfile-Startup.json");
 	auto app = Ocean::CreateApplication();
 	OC_PROFILE_END_SESSION();
+
 	try {
 		OC_PROFILE_BEGIN_SESSION("Runtime", "OceanProfile-Runtime.json");
 		app->Run();
@@ -27,6 +30,9 @@ int main(int argc, char** argv) {
 	OC_PROFILE_BEGIN_SESSION("Shutdown", "OceanProfile-Startup.json");
 	delete app;
 	OC_PROFILE_END_SESSION();
+
+	Ocean::Memory::ShutdownMemory();
+
 	return EXIT_SUCCESS;
 }
 
