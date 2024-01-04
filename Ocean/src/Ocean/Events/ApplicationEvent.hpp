@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Event.hpp"
+#include "Ocean/Events/Event.hpp"
 
 namespace Ocean {
 
-	class OCEAN_API WindowResizeEvent : public Event {
+	class WindowResizeEvent : public Event {
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height) : m_Width(width), m_Height(height) {}
 
-		inline unsigned int GetWidth() const { return m_Width; }
-		inline unsigned int GetHeight() const { return m_Height; }
+		unsigned int GetWidth() const { return m_Width; }
+		unsigned int GetHeight() const { return m_Height; }
 
 		// DEBUG //
 		std::string ToString() const override {
@@ -25,33 +25,33 @@ namespace Ocean {
 		unsigned int m_Width, m_Height;
 	};
 
-	class OCEAN_API WindowCloseEvent : public Event {
+	class WindowCloseEvent : public Event {
 	public:
-		WindowCloseEvent() {}
+		WindowCloseEvent() = default;
 
 		EVENT_CLASS_TYPE(WindowClose)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class OCEAN_API AppTickEvent : public Event {
+	class AppTickEvent : public Event {
 	public:
-		AppTickEvent() {}
+		AppTickEvent() = default;
 
 		EVENT_CLASS_TYPE(AppTick)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class OCEAN_API AppUpdateEvent : public Event {
+	class AppUpdateEvent : public Event {
 	public:
-		AppUpdateEvent() {}
+		AppUpdateEvent() = default;
 
 		EVENT_CLASS_TYPE(AppUpdate)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class OCEAN_API AppRenderEvent : public Event {
+	class AppRenderEvent : public Event {
 	public:
-		AppRenderEvent() {}
+		AppRenderEvent() = default;
 
 		EVENT_CLASS_TYPE(AppRender)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)

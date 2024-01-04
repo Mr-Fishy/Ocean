@@ -1,9 +1,8 @@
 
 #include "ocpch.hpp"
-
 #include "Shader.hpp"
 
-#include "Renderer.hpp"
+#include "Ocean/Renderer/Renderer.hpp"
 #include "Platform/OpenGL/OpenGLShader.hpp"
 
 namespace Ocean {
@@ -16,7 +15,7 @@ namespace Ocean {
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return std::make_shared<OpenGLShader>(filepath);
+				return CreateRef<OpenGLShader>(filepath);
 		}
 
 		OC_CORE_ASSERT(false, "Unkown RendererAPI!");
@@ -31,7 +30,7 @@ namespace Ocean {
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+				return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
 		OC_CORE_ASSERT(false, "Unkown RendererAPI!");

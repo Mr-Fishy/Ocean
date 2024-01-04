@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Core.hpp"
+#include "Ocean/Core/Base.hpp"
 
 #include "Ocean/Core/Window.hpp"
 #include "Ocean/Core/LayerStack.hpp"
@@ -11,26 +11,34 @@
 
 #include "Ocean/ImGui/ImGuiLayer.hpp"
 
+int main(int argc, char** argv);
+
 namespace Ocean {
 
-	class OCEAN_API Application {
+	class Application {
 	public:
-		Application();
+		Application(const std::string& name = "Ocean App");
 		virtual ~Application();
 
-		void Run();
+		void Close();
 
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
-		inline static Application& Get() { return *s_Instance; }
-		inline Window& GetWindow() { return *m_Window; }
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		static Application& Get() { return *s_Instance; }
+		Window& GetWindow() { return *m_Window; }
 
 	private:
+		void Run();
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+
+		/* --- */
+
+		friend int ::main(int argc, char** argv);
 
 		/* --- */
 

@@ -2,12 +2,12 @@
 #include "ocpch.hpp"
 #include "VertexArray.hpp"
 
-#include "Renderer.hpp"
+#include "Ocean/Renderer/Renderer.hpp"
 #include "Platform/OpenGL/OpenGLVertexArray.hpp"
 
 namespace Ocean {
 
-	VertexArray* VertexArray::Create() {
+	Ref<VertexArray> VertexArray::Create() {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:
@@ -15,7 +15,7 @@ namespace Ocean {
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return new OpenGLVertexArray();
+				return CreateRef<OpenGLVertexArray>();
 		}
 
 		OC_CORE_ASSERT(false, "Unkown RendererAPI!");

@@ -1,6 +1,6 @@
 workspace "OceanEngine"
-	architecture "x64"
-	startproject "Sandbox"
+	architecture "x86_64"
+	startproject "Coral"
 
 	configurations
 	{
@@ -45,9 +45,8 @@ project "Ocean"
 
 	defines
 	{
-		"GLM_FORCE_CTOR_INIT",
 		"_CRT_SECURE_NO_WARNINGS",
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
+		"GLFW_INCLUDE_NONE",
 	}
 
 	files
@@ -85,8 +84,6 @@ project "Ocean"
 
 		defines
 		{
-			"OC_BUILD_DLL",
-			"GLFW_INCLUDE_NONE",
 		}
 	
 	filter "configurations:Debug"
@@ -106,6 +103,59 @@ project "Ocean"
 
 project "Sandbox"
 	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	defines
+	{
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"		-- Silence std::iterator Depracation Warnings (C++20)
+	}
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/src/**.cpp",
+	}
+
+	includedirs
+	{
+		"Ocean/vendor/spdlog/include",
+		"Ocean/src",
+		"Ocean/vendor",
+		"%{IncludeDir.glm}",
+	}
+
+	links
+	{
+		"Ocean",
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+	filter "configurations:Debug"
+		defines"OC_DEBUG"
+		runtime "Debug"
+		symbols"on"
+
+	filter "configurations:Release"
+		defines "OC_RELEASE"
+		runtime "Release"
+		optimize "on"
+		
+	filter "configurations:Dist"
+		defines "OC_DIST"
+		runtime "Release"
+		optimize "on"
+
+project "Coral"
+	location "Coral"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"

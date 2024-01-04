@@ -2,9 +2,9 @@
 #include "ocpch.hpp"
 #include "OpenGLContext.hpp"
 
+// libs
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
-#include <gl/GL.h>
 
 namespace Ocean {
 
@@ -13,6 +13,8 @@ namespace Ocean {
 	}
 
 	void OpenGLContext::Init() {
+		OC_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_WindowHandle);
 
 		int status = gladLoadGL((GLADloadfunc)glfwGetProcAddress);
@@ -33,6 +35,8 @@ namespace Ocean {
 	}
 
 	void OpenGLContext::SwapBuffers() {
+		OC_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_WindowHandle);
 	}
 

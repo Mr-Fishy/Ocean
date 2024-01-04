@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Ocean/Core/Core.hpp"
+#include "Ocean/Core/Base.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
 #include "Ocean/Events/Event.hpp"
 
 namespace Ocean {
 
-	class OCEAN_API Layer {
+	class Layer {
 	public:
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer() = default;
@@ -20,7 +20,7 @@ namespace Ocean {
 
 		// TODO: Enable / Disable Layers
 
-		inline const std::string& GetName() const { return m_DebugName; }
+		const std::string& GetName() const { return m_DebugName; }
 
 	protected:
 		std::string m_DebugName;

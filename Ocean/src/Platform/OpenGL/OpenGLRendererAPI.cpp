@@ -2,13 +2,53 @@
 #include "ocpch.hpp"
 #include "OpenGLRendererAPI.hpp"
 
+// libs
 #include <glad/gl.h>
 
 namespace Ocean {
 
+	void OpenGLMessageCallback(
+		unsigned source,
+		unsigned type,
+		unsigned id,
+		unsigned severity,
+		int length,
+		const char* message,
+		const void* userParam) {
+		switch (severity)
+		{
+			case GL_DEBUG_SEVERITY_HIGH:
+				OC_CORE_CRITICAL(message);
+				return;
+
+			case GL_DEBUG_SEVERITY_MEDIUM:
+				OC_CORE_ERROR(message);
+				return;
+
+			case GL_DEBUG_SEVERITY_LOW:
+				OC_CORE_WARN(message);
+				return;
+
+			case  GL_DEBUG_SEVERITY_NOTIFICATION:
+				OC_CORE_TRACE(message);
+				return;
+		}
+
+		OC_CORE_ASSERT(false, "Unkown OpenGL severity level!");
+	}
+
 	void OpenGLRendererAPI::Init() {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		OC_PROFILE_FUNCTION();
+
+		#ifdef OC_DEBUG
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+		#endif // OC_DEBUG
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
@@ -23,13 +63,11 @@ namespace Ocean {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray) {
-		glDrawElements(
-			GL_TRIANGLES,
-			vertexArray->GetIndexBuffer()->GetCount(),
-			GL_UNSIGNED_INT,
-			nullptr
-		);
+	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount) {
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 }	// Ocean

@@ -20,6 +20,8 @@
 
 #include "Ocean/Core/Log.hpp"
 
+#include "Ocean/Debug/Instrumentor.hpp"
+
 #ifdef OC_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif // OC_PLATFORM_WINDOWS

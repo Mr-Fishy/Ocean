@@ -2,7 +2,7 @@
 
 #include "ocpch.hpp"
 
-#include "Ocean/Core/Core.hpp"
+#include "Ocean/Core/Base.hpp"
 #include "Ocean/Events/Event.hpp"
 
 namespace Ocean {
@@ -21,7 +21,7 @@ namespace Ocean {
 	};
 
 	// Interface Represents Desktop System Window
-	class OCEAN_API Window {
+	class Window {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
@@ -39,7 +39,7 @@ namespace Ocean {
 
 		virtual void* GetNativeWindow() const = 0;
 
-		static Window* Create(const WindowProps& props = WindowProps());
+		static Scope<Window> Create(const WindowProps& props = WindowProps());
 	};
 
 }	// Ocean

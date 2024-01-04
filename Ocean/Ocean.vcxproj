@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -99,7 +99,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -125,7 +125,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;OC_BUILD_DLL;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -150,16 +150,17 @@
     <ClInclude Include="src\Ocean.hpp" />
     <ClInclude Include="src\Ocean\Controllers\OrthographicCameraController.hpp" />
     <ClInclude Include="src\Ocean\Core\Application.hpp" />
-    <ClInclude Include="src\Ocean\Core\Core.hpp" />
+    <ClInclude Include="src\Ocean\Core\Base.hpp" />
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp" />
     <ClInclude Include="src\Ocean\Core\Input.hpp" />
     <ClInclude Include="src\Ocean\Core\KeyCodes.hpp" />
     <ClInclude Include="src\Ocean\Core\Layer.hpp" />
     <ClInclude Include="src\Ocean\Core\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Core\Log.hpp" />
-    <ClInclude Include="src\Ocean\Core\MouseButtonCodes.hpp" />
+    <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\Core\Window.hpp" />
+    <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp" />
     <ClInclude Include="src\Ocean\Events\ApplicationEvent.hpp" />
     <ClInclude Include="src\Ocean\Events\Event.hpp" />
     <ClInclude Include="src\Ocean\Events\KeyEvent.hpp" />
@@ -167,20 +168,22 @@
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp" />
     <ClInclude Include="src\Ocean\Renderer\RenderCommand.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Renderer.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Renderer2D.hpp" />
     <ClInclude Include="src\Ocean\Renderer\RendererAPI.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.hpp" />
-    <ClInclude Include="src\Platform\Windows\WindowsInput.hpp" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp" />
     <ClInclude Include="src\ocpch.hpp" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -607,18 +610,23 @@
     <ClCompile Include="src\Ocean\Core\Layer.cpp" />
     <ClCompile Include="src\Ocean\Core\LayerStack.cpp" />
     <ClCompile Include="src\Ocean\Core\Log.cpp" />
+    <ClCompile Include="src\Ocean\Core\Window.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Ocean\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Shader.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Texture.cpp" />
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />

@@ -2,7 +2,7 @@
 
 #include "ocpch.hpp"
 
-#include "Ocean/Core/Core.hpp"
+#include "Ocean/Core/Base.hpp"
 
 namespace Ocean {
 
@@ -38,10 +38,12 @@ namespace Ocean {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class OCEAN_API Event {
+	class Event {
 		friend class EventDispatcher;
 
 	public:
+		virtual ~Event() = default;
+
 		bool Handled = false;
 
 		virtual EventType GetEventType() const = 0;
@@ -50,9 +52,7 @@ namespace Ocean {
 		virtual std::string ToString() const { return GetName(); }	// DEBUG Only
 
 		// Utility Filter Check (Returns 0 If False) //
-		inline bool IsInCategory(EventCategory category) {
-			return GetCategoryFlags() & category;
-		}
+		bool IsInCategory(EventCategory category) { return GetCategoryFlags() & category; }
 	};
 
 	class EventDispatcher {

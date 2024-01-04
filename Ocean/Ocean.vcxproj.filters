@@ -13,6 +13,9 @@
     <Filter Include="src\Ocean\Core">
       <UniqueIdentifier>{FA93F11C-E661-E522-CFF5-5549BB62C187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Debug">
+      <UniqueIdentifier>{586E30BB-C4F9-9D7F-CD0A-21743915FA7F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Ocean\Events">
       <UniqueIdentifier>{068CC824-F284-E776-1BB7-CCFB070FC782}</UniqueIdentifier>
     </Filter>
@@ -66,7 +69,7 @@
     <ClInclude Include="src\Ocean\Core\Application.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Core.hpp">
+    <ClInclude Include="src\Ocean\Core\Base.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp">
@@ -87,7 +90,7 @@
     <ClInclude Include="src\Ocean\Core\Log.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\MouseButtonCodes.hpp">
+    <ClInclude Include="src\Ocean\Core\MouseCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Timestep.hpp">
@@ -95,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Window.hpp">
       <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp">
+      <Filter>src\Ocean\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Events\ApplicationEvent.hpp">
       <Filter>src\Ocean\Events</Filter>
@@ -117,6 +123,9 @@
     <ClInclude Include="src\Ocean\Renderer\Camera.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp">
+      <Filter>src\Ocean\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
@@ -124,6 +133,9 @@
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Renderer.hpp">
+      <Filter>src\Ocean\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Renderer\Renderer2D.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\RendererAPI.hpp">
@@ -144,6 +156,9 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.hpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.hpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -155,9 +170,6 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.hpp">
       <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsInput.hpp">
-      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp">
       <Filter>src\Platform\Windows</Filter>
@@ -1433,6 +1445,9 @@
     <ClCompile Include="src\Ocean\Core\Log.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Window.cpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp">
       <Filter>src\Ocean\ImGui</Filter>
     </ClCompile>
@@ -1445,10 +1460,19 @@
     <ClCompile Include="src\Ocean\Renderer\Camera.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp">
+      <Filter>src\Ocean\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Renderer\GraphicsContext.cpp">
+      <Filter>src\Ocean\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Renderer.cpp">
+      <Filter>src\Ocean\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Renderer\Renderer2D.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\RendererAPI.cpp">
@@ -1467,6 +1491,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">

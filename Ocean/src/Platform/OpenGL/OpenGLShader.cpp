@@ -1,6 +1,5 @@
 
 #include "ocpch.hpp"
-
 #include "OpenGLShader.hpp"
 
 // libs
@@ -23,6 +22,8 @@ namespace Ocean {
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& filepath) {
+		OC_PROFILE_FUNCTION();
+
 		std::string source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 		Compile(shaderSources);
@@ -38,6 +39,7 @@ namespace Ocean {
 	OpenGLShader::OpenGLShader(
 		const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name) {
+		OC_PROFILE_FUNCTION();
 
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -45,7 +47,13 @@ namespace Ocean {
 		Compile(sources);
 	}
 
+	OpenGLShader::~OpenGLShader() {
+		glDeleteProgram(m_RendererID);
+	}
+
 	std::unordered_map<GLenum, std::string> Ocean::OpenGLShader::PreProcess(const std::string& source) {
+		OC_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const char* typeToken = "#type";
@@ -72,6 +80,8 @@ namespace Ocean {
 	}
 
 	void Ocean::OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources) {
+		OC_PROFILE_FUNCTION();
+
 		// Adapted from provided code on OpenGL site
 		GLuint program = glCreateProgram();
 		OC_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now :(");
@@ -140,40 +150,89 @@ namespace Ocean {
 		}
 	}
 
-	OpenGLShader::~OpenGLShader() {
-		glDeleteProgram(m_RendererID);
-	}
-
 	std::string OpenGLShader::ReadFile(const std::string& filepath) {
+		OC_PROFILE_FUNCTION();
+
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
 		if (in) {
 			in.seekg(0, std::ios::end);
-			result.resize(in.tellg());
-			in.seekg(0, std::ios::beg);
-			in.read(&result[0], result.size());
-			in.close();
+			size_t size = in.tellg();
+
+			if (size != -1) {
+				result.resize(size);
+				in.seekg(0, std::ios::beg);
+				in.read(&result[0], size);
+				in.close();
+			}
+			else {
+				OC_CORE_ERROR("Could not read from file: '{0}'", filepath);
+			}
 		}
 		else {
-			OC_CORE_ERROR("Unable to open file at: {0}", filepath);
+			OC_CORE_ERROR("Unable to open file at: '{0}'", filepath);
 		}
 
 		return result;
 	}
 
 	void OpenGLShader::Bind() const {
+		OC_PROFILE_FUNCTION();
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const {
+		OC_PROFILE_FUNCTION();
+
 		glUseProgram(0);
+	}
+
+	void OpenGLShader::SetInt(const std::string& name, int value) {
+		OC_PROFILE_FUNCTION();
+
+		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count) {
+		UploadUniformIntArray(name, values, count);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, float value) {
+		OC_PROFILE_FUNCTION();
+
+		UploadUniformFloat(name, value);
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value) {
+		OC_PROFILE_FUNCTION();
+
+		UploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value) {
+		OC_PROFILE_FUNCTION();
+
+		UploadUniformFloat4(name, value);
+	}
+
+	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
+		OC_PROFILE_FUNCTION();
+
+		UploadUniformMat4(name, value);
 	}
 
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value) {
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
 		glUniform1i(location, value);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count) {
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		
+		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, float value) {

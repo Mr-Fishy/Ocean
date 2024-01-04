@@ -1,26 +1,27 @@
 #pragma once
 
-#include "Event.hpp"
+#include "Ocean/Events/Event.hpp"
+#include "Ocean/Core/Input.hpp"
 
 namespace Ocean {
 
-	class OCEAN_API KeyEvent : public Event {
+	class KeyEvent : public Event {
 	public:
-		inline int GetKeyCode() const { return m_KeyCode; }
+		KeyCode GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
 	protected:
-		KeyEvent(int keyCode) : m_KeyCode(keyCode) {}
+		KeyEvent(KeyCode keyCode) : m_KeyCode(keyCode) {}
 
-		int m_KeyCode;
+		KeyCode m_KeyCode;
 	};
 
-	class OCEAN_API KeyPressedEvent : public KeyEvent {
+	class KeyPressedEvent : public KeyEvent {
 	public:
-		KeyPressedEvent(int keyCode, bool repeating) : KeyEvent(keyCode), m_Repeating(repeating) {}
+		KeyPressedEvent(KeyCode keyCode, bool repeating) : KeyEvent(keyCode), m_Repeating(repeating) {}
 
-		inline int GetRepeating() const { return m_Repeating; }
+		int GetRepeating() const { return m_Repeating; }
 
 		// DEBUG //
 		std::string ToString() const override {
@@ -35,9 +36,9 @@ namespace Ocean {
 		bool m_Repeating;
 	};
 
-	class OCEAN_API KeyReleasedEvent : public KeyEvent {
+	class KeyReleasedEvent : public KeyEvent {
 	public:
-		KeyReleasedEvent(int keyCode) : KeyEvent(keyCode) {}
+		KeyReleasedEvent(KeyCode keyCode) : KeyEvent(keyCode) {}
 
 		// DEBUG //
 		std::string ToString() const override {
@@ -49,9 +50,9 @@ namespace Ocean {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class OCEAN_API KeyTypedEvent : public KeyEvent {
+	class KeyTypedEvent : public KeyEvent {
 	public:
-		KeyTypedEvent(int keyCode) : KeyEvent(keyCode) {}
+		KeyTypedEvent(KeyCode keyCode) : KeyEvent(keyCode) {}
 
 		// DEBUG //
 		std::string ToString() const override {
