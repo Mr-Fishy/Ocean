@@ -3,6 +3,17 @@
 /bin/
 bin-int/
 
+#GLFW
+/Ocean/vendor/GLFW/bin-int/
+/Ocean/vendor/GLFW/bin/
+/Ocean/vendor/GLFW/premake5.lua
+
+#ImGui
+/Ocean/vendor/imgui/ImGui.vcxproj
+/Ocean/vendor/imgui/bin-int/
+/Ocean/vendor/imgui/bin/
+/Ocean/vendor/imgui/premake5.lua
+
 # Files
 *.user
 
