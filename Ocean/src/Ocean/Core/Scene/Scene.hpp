@@ -3,7 +3,7 @@
 #include "Ocean/Core/Timestep.hpp"
 
 // libs
-#include "entt.hpp"
+// #include "entt.hpp"
 
 namespace Ocean {
 
@@ -11,20 +11,20 @@ namespace Ocean {
 	//
 	class Scene {
 	public:
-		Scene();
-		~Scene();
+		// Scene();
+		// ~Scene();
 
-		entt::entity CreateEntity();
+		// entt::entity CreateEntity();
 
 		// TEMP
-		entt::registry& Reg() { return m_Registry; }
+		// entt::registry& Reg() { return m_Registry; }
 
-		void OnUpdate(Timestep ts);
+		// void OnUpdate(Timestep ts);
 
 	private:
 		// The object registry.
 		//
-		entt::registry m_Registry;
+		// entt::registry m_Registry;
 	};
 
 }	// Ocean

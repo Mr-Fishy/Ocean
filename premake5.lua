@@ -20,15 +20,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
 IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
-IncludeDir["ImGui"] = "Ocean/vendor/imgui"
+IncludeDir["ImGui"] = "Ocean/vendor/ImGui"
 IncludeDir["glm"] = "Ocean/vendor/glm"
 IncludeDir["stb_image"] = "Ocean/vendor/stb_image"
-IncludeDir["EnTT"] = "Ocean/vendor/EnTT/include"
 
 group "Vendor"
-	include "Ocean/vendor/GLFW"
-	include "Ocean/vendor/Glad"
-	include "Ocean/vendor/imgui"
+	include "Ocean/vendor/premake5-GLFW.lua"
+	include "Ocean/vendor/premake5-Glad.lua"
+	include "Ocean/vendor/premake5-ImGui.lua"
 group ""
 
 project "Ocean"
@@ -55,10 +54,12 @@ project "Ocean"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
+
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
+
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 	}
 
 	includedirs
@@ -70,7 +71,6 @@ project "Ocean"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.EnTT}",
 	}
 
 	links
@@ -184,7 +184,6 @@ project "Coral"
 		"Ocean/src",
 		"Ocean/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.EnTT}",
 	}
 
 	links

@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\EnTT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -100,7 +100,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\EnTT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -126,7 +126,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\EnTT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -148,7 +148,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Ocean.hpp" />
-    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Core\Application.hpp" />
     <ClInclude Include="src\Ocean\Core\Base.hpp" />
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp" />
@@ -158,6 +157,8 @@
     <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Core\Log.hpp" />
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\Core\Window.hpp" />
     <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp" />
     <ClInclude Include="src\Ocean\Renderer\RenderCommand.hpp" />
@@ -177,11 +179,6 @@
     <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.hpp" />
@@ -610,16 +607,17 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCameraController.cpp" />
     <ClCompile Include="src\Ocean\Core\Application.cpp" />
     <ClCompile Include="src\Ocean\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Ocean\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Ocean\Core\Log.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
     <ClCompile Include="src\Ocean\Core\Window.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCameraController.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp" />
@@ -629,7 +627,6 @@
     <ClCompile Include="src\Ocean\Renderer\Shader.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Texture.cpp" />
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -651,7 +648,7 @@
     <ProjectReference Include="vendor\Glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
-    <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
+    <ProjectReference Include="vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
