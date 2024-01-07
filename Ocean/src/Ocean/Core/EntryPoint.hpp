@@ -7,9 +7,9 @@
 extern Ocean::Application* Ocean::CreateApplication();
 
 int main(int argc, char** argv) {
-	Ocean::Log::Init();
+	Ocean::Log::Init();   // Initializes spdlog log system.
 
-	Ocean::Memory::InitMemory();
+	// Ocean::Memory::InitMemory();   // Initializes memory manager.
 
 	OC_PROFILE_BEGIN_SESSION("Startup", "OceanProfile-Startup.json");
 	auto app = Ocean::CreateApplication();
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 	delete app;
 	OC_PROFILE_END_SESSION();
 
-	Ocean::Memory::ShutdownMemory();
+	// Ocean::Memory::ShutdownMemory();   // Closes memory manager.
 
 	return EXIT_SUCCESS;
 }

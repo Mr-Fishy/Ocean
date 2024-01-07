@@ -12,7 +12,7 @@ namespace Ocean {
 
 	class Coral : public Application {
 	public:
-		Coral() : Application("Coral") {
+		Coral() : Application("Coral Editor") {
 			PushLayer(new EditorLayer());
 		}
 

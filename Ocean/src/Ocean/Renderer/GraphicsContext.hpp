@@ -2,6 +2,8 @@
 
 namespace Ocean {
 
+	// The graphics API context for the window.
+	// 
 	class GraphicsContext {
 	public:
 		virtual ~GraphicsContext() = default;

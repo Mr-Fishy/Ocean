@@ -9,6 +9,8 @@
 
 namespace Ocean {
 
+	// Represents a shader for rendering. Enables setting datatypes with names.
+	//
 	class Shader {
 	public:
 		virtual ~Shader() = default;
@@ -29,6 +31,8 @@ namespace Ocean {
 		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 	};
 
+	// Stores the shader library for rendering.
+	//
 	class ShaderLibrary {
 	public:
 		void Add(const std::string& name, const Ref<Shader>& shader);

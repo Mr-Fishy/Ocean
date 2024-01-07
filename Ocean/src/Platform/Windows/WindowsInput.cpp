@@ -17,8 +17,8 @@ namespace Ocean {
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	int Input::GetKeyPressed() {
-		return 0;
+	KeyCode Input::GetKeyPressed() {
+		return KeyCode::Unkown;
 	}
 
 	bool Input::IsMouseButtonPressed(MouseCode button) {

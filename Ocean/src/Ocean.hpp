@@ -13,13 +13,14 @@
 #include "Ocean/Core/Input.hpp"
 #include "Ocean/Core/KeyCodes.hpp"
 #include "Ocean/Core/MouseCodes.hpp"
-#include "Ocean/Controllers/OrthographicCameraController.hpp"
+#include "Ocean//Renderer/Camera/OrthoCameraController.hpp"
+// #include "Ocean//Renderer/Camera/PerspectiveCameraController.hpp"
 
 #include "Ocean/ImGui/ImGuiLayer.hpp"
 
 // --- Scene & Components --- //
-#include "Ocean/Scene/Scene.hpp"
-#include "Ocean/Scene/Components.hpp"
+#include "Ocean/Core/Scene/Scene.hpp"
+#include "Ocean/Core/Scene/Components.hpp"
 
 // --- Renderer --- //
 #include "Ocean/Renderer/Renderer.hpp"
@@ -31,7 +32,8 @@
 #include "Ocean/Renderer/Texture.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 
-#include "Ocean/Renderer/Camera.hpp"
+#include "Ocean/Renderer/Camera/OrthoCamera.hpp"
+// #include "Ocean/Renderer/Camera/PerspectiveCamera.hpp"
 
 // --- Renderer2D --- //
 #include "Ocean/Renderer/Renderer2D.hpp"

@@ -8,6 +8,7 @@
 namespace Ocean {
 
 	// Window Properties
+	//
 	struct WindowProps {
 		std::string Title;
 		unsigned int Width;
@@ -20,7 +21,8 @@ namespace Ocean {
 		) : Title(title), Width(width), Height(height) {}
 	};
 
-	// Interface Represents Desktop System Window
+	// Interface representing the platform window.
+	//
 	class Window {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
@@ -33,6 +35,7 @@ namespace Ocean {
 		virtual unsigned int GetHeight() const = 0;
 
 		// Window Attributes
+
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
@@ -40,15 +43,6 @@ namespace Ocean {
 		virtual void* GetNativeWindow() const = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
-
-		// Window Memory
-		static void* wAllocate(uint64_t size, char aligned);
-		static void wFree(void* block, char aligned);
-
-		static void* wZeroMemory(void* block, uint64_t size);
-
-		static void* wCopyMemory(void* dest, const void* source, uint64_t size);
-		static void* wSetMemory(void* dest, int32_t value, uint64_t size);
 	};
 
 }	// Ocean

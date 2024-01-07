@@ -2,6 +2,8 @@
 
 namespace Ocean {
 
+	// The basic timestep class that represents the time since the last frame.
+	//
 	class Timestep {
 	public:
 		Timestep(float time = 0.0f) : m_Time(time) {

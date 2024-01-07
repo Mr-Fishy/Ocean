@@ -2,8 +2,13 @@
 
 namespace Ocean {
 
+	// A 16 bit integer code that represents a keyboard input.
+	// Keycodes adapted from glfw3.h
+	//
 	typedef enum class KeyCode : uint16_t {
 		// Based Upon Keycodes From glfw3.h
+		Unkown = 0,
+
 		Space = 32,
 		Apostrophe = 39,   /* ' */
 		Comma = 44,        /* , */
@@ -145,6 +150,7 @@ namespace Ocean {
 
 // Based Upon Keycodes From glfw3.h
 /* Printable Keys */
+
 #define OC_KEY_SPACE           ::Ocean::Key::Space
 #define OC_KEY_APOSTROPHE      ::Ocean::Key::Apostrophe    /* ' */
 #define OC_KEY_COMMA           ::Ocean::Key::Comma         /* , */

@@ -1,6 +1,6 @@
 
 #include "ocpch.hpp"
-#include "OrthographicCameraController.hpp"
+#include "OrthoCameraController.hpp"
 
 #include "Ocean/Core/Input.hpp"
 #include "Ocean/Core/KeyCodes.hpp"

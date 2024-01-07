@@ -1,20 +1,4 @@
-[02:09:17] [info] OCEAN: Creating Window Coral (1280, 720)
-[02:09:17] [info] OCEAN: OpenGL Info:
-[02:09:17] [info] OCEAN: - Renderer: AMD Radeon (TM) Graphics
-[02:09:17] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 23.11.1.231017
-[02:09:17] [info] APP: System memory use (tagged):
-  UNKNOWN    : 0.00B
-  ARRAY      : 0.00B
-  VECTOR     : 0.00B
-  STRING     : 0.00B
-  APPLICATION: 8.00B
-  JOB        : 0.00B
-  TEXTURE    : 0.00B
-  MAT_INST   : 0.00B
-  RENDERER   : 0.00B
-  RUNTIME    : 0.00B
-  TRANSFORM  : 0.00B
-  ENTITY     : 0.00B
-  ENTITY_NODE: 0.00B
-  SCENE      : 0.00B
-
+[20:29:48] [info] OCEAN: Creating Window Coral Editor (1280, 720)
+[20:29:48] [info] OCEAN: OpenGL Info:
+[20:29:48] [info] OCEAN: - Renderer: AMD Radeon RX 7900 XT
+[20:29:48] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 23.12.1.231124

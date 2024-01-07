@@ -4,6 +4,7 @@
 
 namespace Ocean {
 
+	// The element data array for rendering. Holds information such as transforms, and color data.
 	class VertexArray {
 	public:
 		virtual ~VertexArray() = default;

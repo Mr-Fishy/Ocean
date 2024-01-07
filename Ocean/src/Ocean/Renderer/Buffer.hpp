@@ -2,6 +2,8 @@
 
 namespace Ocean {
 
+	// An enum of useable data types for shaders.
+	//
 	enum class ShaderDataType {
 		None = 0,
 		Float, Float2, Float3, Float4,
@@ -33,6 +35,7 @@ namespace Ocean {
 		return 0;
 	}
 
+	// An element used within a BufferLayout. This represents a datatype for the shader.
 	struct BufferElement {
 		std::string Name;
 		ShaderDataType Type;
@@ -69,6 +72,8 @@ namespace Ocean {
 		}
 	};
 
+	// The layout that is used when compiling data for the VertexBuffer. The layout must correspond to the shader.
+	//
 	class BufferLayout {
 	public:
 		BufferLayout() {}
@@ -103,6 +108,8 @@ namespace Ocean {
 		uint32_t m_Stride = 0;
 	};
 
+	// The VertexBuffer is the compiled vertex data for rendering. The VertexBuffer organizes the data into a layout for the shader to use.
+	//
 	class VertexBuffer {
 	public:
 		virtual ~VertexBuffer() = default;
@@ -119,7 +126,9 @@ namespace Ocean {
 		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
+	// The IndexBuffer is the compiled index data for rendering. The IndexBuffer data is used for more efficient primitive rendering (triangles).
 	// Currently Ocean only supports 32 bit index buffers
+	//
 	class IndexBuffer {
 	public:
 		virtual ~IndexBuffer() = default;

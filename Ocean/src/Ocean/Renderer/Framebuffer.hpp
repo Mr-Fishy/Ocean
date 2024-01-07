@@ -4,6 +4,8 @@
 
 namespace Ocean {
 
+	// Specifies the Framebuffer properties, i.e. the width and height or the number of samples to save.
+	//
 	struct FramebufferSpecification {
 		uint32_t Width, Height;
 		// FramebufferFormat Format = 
@@ -12,6 +14,8 @@ namespace Ocean {
 		bool SwapChainTarget = false;
 	};
 
+	// The Framebuffer manages saving the rendered images into memory to be viewed as a texture. This is useful when the frame is not going to be rendered directly to the window.
+	//
 	class Framebuffer {
 	public:
 		virtual ~Framebuffer() = default;

@@ -59,6 +59,13 @@ namespace Ocean {
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		RenderCommand::Clear();
 
+		Renderer2D::BeginScene(m_CameraController.GetCamera());
+
+		// Update scene
+		m_ActiveScene->OnUpdate(ts);
+
+		Renderer2D::EndScene();
+
 		m_Framebuffer->Unbind();
 	}
 

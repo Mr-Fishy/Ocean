@@ -148,7 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Ocean.hpp" />
-    <ClInclude Include="src\Ocean\Controllers\OrthographicCameraController.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Core\Application.hpp" />
     <ClInclude Include="src\Ocean\Core\Base.hpp" />
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp" />
@@ -157,7 +157,6 @@
     <ClInclude Include="src\Ocean\Core\Layers\Layer.hpp" />
     <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Core\Log.hpp" />
-    <ClInclude Include="src\Ocean\Core\Memory\Memory.hpp" />
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\Core\Window.hpp" />
@@ -168,7 +167,7 @@
     <ClInclude Include="src\Ocean\Events\MouseEvent.hpp" />
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
-    <ClInclude Include="src\Ocean\Renderer\Camera.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\GraphicsContext.hpp" />
     <ClInclude Include="src\Ocean\Renderer\RenderCommand.hpp" />
@@ -178,8 +177,8 @@
     <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
-    <ClInclude Include="src\Ocean\Scene\Components.hpp" />
-    <ClInclude Include="src\Ocean\Scene\Scene.hpp">
+    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp">
       <SubType>
       </SubType>
     </ClInclude>
@@ -611,17 +610,16 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ocean\Controllers\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCameraController.cpp" />
     <ClCompile Include="src\Ocean\Core\Application.cpp" />
     <ClCompile Include="src\Ocean\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Ocean\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Ocean\Core\Log.cpp" />
-    <ClCompile Include="src\Ocean\Core\Memory\Memory.cpp" />
     <ClCompile Include="src\Ocean\Core\Window.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Ocean\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Ocean\Renderer\RenderCommand.cpp" />
@@ -631,7 +629,7 @@
     <ClCompile Include="src\Ocean\Renderer\Shader.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Texture.cpp" />
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Ocean\Scene\Scene.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />

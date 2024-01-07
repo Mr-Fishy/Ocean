@@ -69,7 +69,7 @@
     <ClInclude Include="src\Ocean.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Controllers\OrthographicCameraController.hpp">
+    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp">
       <Filter>src\Ocean\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Application.hpp">
@@ -95,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Log.hpp">
       <Filter>src\Ocean\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Memory\Memory.hpp">
-      <Filter>src\Ocean\Core\Memory</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
@@ -129,7 +126,7 @@
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Renderer\Camera.hpp">
+    <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp">
@@ -1437,11 +1434,11 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Scene\Scene.hpp" />
-    <ClInclude Include="src\Ocean\Scene\Components.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ocean\Controllers\OrthographicCameraController.cpp">
+    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCameraController.cpp">
       <Filter>src\Ocean\Controllers</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Application.cpp">
@@ -1456,9 +1453,6 @@
     <ClCompile Include="src\Ocean\Core\Log.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Memory\Memory.cpp">
-      <Filter>src\Ocean\Core\Memory</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ocean\Core\Window.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
@@ -1471,7 +1465,7 @@
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Renderer\Camera.cpp">
+    <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp">
@@ -1534,6 +1528,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Scene\Scene.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>

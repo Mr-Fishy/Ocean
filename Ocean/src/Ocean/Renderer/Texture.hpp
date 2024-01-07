@@ -7,6 +7,8 @@
 
 namespace Ocean {
 
+	// The base-class texture.
+	//
 	class Texture {
 	public:
 		virtual ~Texture() = default;
@@ -22,6 +24,8 @@ namespace Ocean {
 		virtual bool operator==(const Texture& other) const = 0;
 	};
 
+	// A 2D texture, most commonly used for shading.
+	//
 	class Texture2D : public Texture {
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);

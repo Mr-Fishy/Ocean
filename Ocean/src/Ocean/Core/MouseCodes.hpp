@@ -2,6 +2,9 @@
 
 namespace Ocean {
 
+	// A 16 bit integer code that represents a mouse-button input.
+	// Keycodes adapted from glfw3.h
+	//
 	typedef enum class MouseCode : uint16_t {
 		// From glfw3.h
 		Button0 = 0,

@@ -15,8 +15,13 @@ int main(int argc, char** argv);
 
 namespace Ocean {
 
+	// The application represents the actual process that is seen on screen.
+	//
 	class Application {
 	public:
+		// Creates an application with a given name.
+		// @param name: A string that is the application name. Defaults to "Ocean App".
+		//
 		Application(const std::string& name = "Ocean App");
 		virtual ~Application();
 
@@ -56,6 +61,7 @@ namespace Ocean {
 	};
 
 	// To Be Defined In CLIENT
+	//
 	Application* CreateApplication();
 
 }	// Ocean

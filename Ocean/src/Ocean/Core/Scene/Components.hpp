@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 namespace Ocean {
+	// This is all temporary and will soon change.
 
 	struct TransformComponent {
 		glm::mat4 Transform{ 1.0f };

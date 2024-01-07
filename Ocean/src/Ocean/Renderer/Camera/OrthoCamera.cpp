@@ -1,6 +1,6 @@
 
 #include "ocpch.hpp"
-#include "Camera.hpp"
+#include "OrthoCamera.hpp"
 
 //libs
 #include <glm/gtc/matrix_transform.hpp>

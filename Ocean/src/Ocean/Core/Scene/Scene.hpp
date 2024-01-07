@@ -7,6 +7,8 @@
 
 namespace Ocean {
 
+	// The scene will hold the object list and communicate with the ECS.
+	//
 	class Scene {
 	public:
 		Scene();
@@ -20,6 +22,8 @@ namespace Ocean {
 		void OnUpdate(Timestep ts);
 
 	private:
+		// The object registry.
+		//
 		entt::registry m_Registry;
 	};
 

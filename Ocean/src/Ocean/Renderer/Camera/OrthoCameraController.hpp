@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Renderer/Camera.hpp"
+#include "Ocean/Renderer/Camera/OrthoCamera.hpp"
 #include "Ocean/Core/Timestep.hpp"
 
 #include "Ocean/Events/ApplicationEvent.hpp"

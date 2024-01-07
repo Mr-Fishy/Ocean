@@ -7,8 +7,11 @@
 
 namespace Ocean {
 
+	// A layer represents content that is rendered and is co-existing. Separate layers are rendered as given.
+	//
 	class Layer {
 	public:
+		// Creates a layer with a name, assigned to m_DebugName.
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer() = default;
 
