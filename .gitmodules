@@ -10,3 +10,6 @@
 [submodule "Ocean/vendor/glm"]
 	path = Ocean/vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "Ocean/vendor/CTTI"]
+	path = Ocean/vendor/CTTI
+	url = https://github.com/Manu343726/ctti

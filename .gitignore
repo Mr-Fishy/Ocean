@@ -1,16 +1,12 @@
 # Directories
-.vs/
-/bin/
-bin-int/
-
-#GLFW
-#Ocean/vendor/GLFW
-
-#ImGui
-#Ocean/vendor/imgui
+*.vs/
+*bin/
+*bin-int/
 
 # Files
 *.user
+*.filters
+*.vcxproj
 
 # Archived
 z_OceanEngine2D_Vulcan_Standalone/

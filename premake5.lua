@@ -18,6 +18,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include Directories Relative To Root Folder (Solution Directory)
 IncludeDir = {}
+IncludeDir["CTTI"] = "Ocean/vendor/CTTI/include"
 IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
 IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
 IncludeDir["ImGui"] = "Ocean/vendor/ImGui"
@@ -55,6 +56,8 @@ project "Ocean"
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 
+		"%{prj.name}/vendor/CTTI/include/**.hpp",
+
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 
@@ -69,6 +72,7 @@ project "Ocean"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.CTTI}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 	}
@@ -130,6 +134,7 @@ project "Sandbox"
 		"Ocean/vendor/spdlog/include",
 		"Ocean/src",
 		"Ocean/vendor",
+		"%{IncludeDir.CTTI}",
 		"%{IncludeDir.glm}",
 	}
 
@@ -183,6 +188,7 @@ project "Coral"
 		"Ocean/vendor/spdlog/include",
 		"Ocean/src",
 		"Ocean/vendor",
+		"%{IncludeDir.CTTI}",
 		"%{IncludeDir.glm}",
 	}
 

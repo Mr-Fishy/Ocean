@@ -3,7 +3,7 @@
 #include "Ocean/Core/Timestep.hpp"
 
 // libs
-// #include "entt.hpp"
+#include "SECS/EntityManager.hpp"
 
 namespace Ocean {
 
@@ -24,7 +24,7 @@ namespace Ocean {
 	private:
 		// The object registry.
 		//
-		// entt::registry m_Registry;
+		// SECS::registry m_Registry;
 	};
 
 }	// Ocean

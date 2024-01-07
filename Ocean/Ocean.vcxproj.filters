@@ -16,6 +16,9 @@
     <Filter Include="src\Ocean\Core\Scene">
       <UniqueIdentifier>{9794AB9E-8323-3568-2C42-496318B0450E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Core\Scene\Components">
+      <UniqueIdentifier>{4C0D802C-B8F0-8E6C-C1F3-BCA82D5655BD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Ocean\Debug">
       <UniqueIdentifier>{586E30BB-C4F9-9D7F-CD0A-21743915FA7F}</UniqueIdentifier>
     </Filter>
@@ -40,8 +43,23 @@
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\SECS">
+      <UniqueIdentifier>{EAE024CF-D6AD-7FDA-FFC6-6D82EBF2B468}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\CTTI">
+      <UniqueIdentifier>{166965C1-821E-DEB6-0B13-D88D77C7D4BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\CTTI\include">
+      <UniqueIdentifier>{8946FD5D-F5A7-DA6B-7E15-211EEA75112B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\CTTI\include\ctti">
+      <UniqueIdentifier>{2C8A5630-18AF-A5B0-41FA-8A402D7EA4CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\CTTI\include\ctti\detail">
+      <UniqueIdentifier>{6ED841DE-DABB-501E-E3BE-7E5A4F21176F}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\glm">
       <UniqueIdentifier>{829FC5A8-6E57-07F6-D75E-E051C335A2E6}</UniqueIdentifier>
@@ -75,6 +93,9 @@
     <ClInclude Include="src\Ocean\Core\Base.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Core\DataTypes.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
@@ -96,8 +117,11 @@
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
+    <ClInclude Include="src\Ocean\Core\Scene\Components\RenderableComponent.hpp">
+      <Filter>src\Ocean\Core\Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Scene\Components\TransformComponent.hpp">
+      <Filter>src\Ocean\Core\Scene\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp">
       <Filter>src\Ocean\Core\Scene</Filter>
@@ -185,6 +209,21 @@
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp">
       <Filter>src\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SECS\ComponentSystem.hpp">
+      <Filter>src\SECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SECS\Entity.hpp">
+      <Filter>src\SECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SECS\EntityComponent.hpp">
+      <Filter>src\SECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SECS\EntityManager.hpp">
+      <Filter>src\SECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SECS\EntitySystemTypes.hpp">
+      <Filter>src\SECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ocpch.hpp">
       <Filter>src</Filter>
@@ -1440,6 +1479,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\SECS\BaseComponentSystem.hpp" />
+    <ClInclude Include="src\Ocean\Core\Memory\MemoryManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ocean\Core\Application.cpp">
@@ -1528,6 +1569,9 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SECS\EntityManager.cpp">
+      <Filter>src\SECS</Filter>
     </ClCompile>
     <ClCompile Include="src\ocpch.cpp">
       <Filter>src</Filter>
