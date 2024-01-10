@@ -13,3 +13,9 @@
 [submodule "Ocean/vendor/CTTI"]
 	path = Ocean/vendor/CTTI
 	url = https://github.com/Manu343726/ctti
+[submodule "Ocean/vendor/MemAllocators"]
+	path = Ocean/vendor/MemAllocators
+	url = https://github.com/mtrebi/memory-allocators
+[submodule "Ocean/vendor/ENTT"]
+	path = Ocean/vendor/ENTT
+	url = https://github.com/skypjack/entt

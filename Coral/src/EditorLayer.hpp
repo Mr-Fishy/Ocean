@@ -24,8 +24,12 @@ namespace Ocean {
 		Ref<Shader> m_FlatColorShader;
 		Ref<Framebuffer> m_Framebuffer;
 
-		// Ref<Scene> m_ActiveScene;
-		// entt::entity m_SquareEntity;
+		Ref<Scene> m_ActiveScene;
+		Entity m_CameraEntity;
+		Entity m_SecondCamera;
+		Entity m_SquareEntity;
+
+		bool m_PrimaryCamera = true;
 
 		Ref<Texture2D> m_CheckerboardTexture;
 

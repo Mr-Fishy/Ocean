@@ -1,6 +1,4 @@
-[07:10:42] [info] OCEAN: Creating Window Coral Editor (1280, 720)
-[07:10:43] [info] OCEAN: OpenGL Info:
-[07:10:43] [info] OCEAN: - Renderer: AMD Radeon RX 7900 XT
-[07:10:43] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 23.12.1.231124
-[07:10:43] [info] OCEAN: Allocated: 3, Success: true
-[07:10:43] [info] OCEAN: Allocated: 8, Success: true
+[16:31:01] [info] OCEAN: Creating Window Coral Editor (1280, 720)
+[16:31:01] [info] OCEAN: OpenGL Info:
+[16:31:01] [info] OCEAN: - Renderer: AMD Radeon (TM) Graphics
+[16:31:01] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 23.11.1.231017

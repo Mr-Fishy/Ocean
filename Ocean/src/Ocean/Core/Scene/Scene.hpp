@@ -3,28 +3,36 @@
 #include "Ocean/Core/Timestep.hpp"
 
 // libs
-#include "SECS/EntityManager.hpp"
+#include <entt/entt.hpp>
 
 namespace Ocean {
+
+	class Entity;
 
 	// The scene will hold the object list and communicate with the ECS.
 	//
 	class Scene {
 	public:
-		// Scene();
-		// ~Scene();
+		Scene();
+		~Scene();
 
-		// entt::entity CreateEntity();
+		// Creates an Entity with a TagComponent and a TransformComponent.
+		// @param name: The name to tag the entity with through TagComponent.
+		// @returns A new entity.
+		//
+		Entity CreateEntity(const std::string& name = std::string());
 
-		// TEMP
-		// entt::registry& Reg() { return m_Registry; }
-
-		// void OnUpdate(Timestep ts);
+		void OnUpdate(Timestep ts);
+		void OnViewportResize(uint32_t width, uint32_t height);
 
 	private:
 		// The object registry.
 		//
-		// SECS::registry m_Registry;
+		entt::registry m_Registry;
+
+		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+
+		friend class Entity;
 	};
 
 }	// Ocean

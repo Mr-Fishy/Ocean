@@ -21,13 +21,18 @@ namespace Ocean {
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
-		// m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene = CreateRef<Scene>();
 
-		// auto square = m_ActiveScene->CreateEntity();
-		// m_ActiveScene->Reg().emplace<TransformComponent>(square);
-		// m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		// Entities
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity.AddComponent<CameraComponent>();
 
-		// m_SquareEntity = square;
+		m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
+		auto& sc = m_SecondCamera.AddComponent<CameraComponent>();
+		sc.Primary = false;
+
+		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
+		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
 	void EditorLayer::OnDetach() {
@@ -38,12 +43,14 @@ namespace Ocean {
 		OC_PROFILE_FUNCTION();
 
 		/* --- Resize --- */
-		if (Ocean::FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y)) {
 
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
 		/* --- Update --- */
@@ -59,10 +66,8 @@ namespace Ocean {
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		RenderCommand::Clear();
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-
 		// Update scene
-		// m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdate(ts);
 
 		Renderer2D::EndScene();
 
@@ -140,8 +145,31 @@ namespace Ocean {
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-		// auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
-		// ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+		if (ImGui::Checkbox("Camera A", &m_PrimaryCamera)) {
+			m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+			m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+		}
+
+		{
+			auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
+			float orthoSize = camera.GetOrthographicSize();
+
+			if (ImGui::DragFloat("Second Camera Orth Size", &orthoSize)) {
+				camera.SetOrthographicSize(orthoSize);
+			}
+		}
+
+		if (m_SquareEntity)
+		{
+			ImGui::Separator();
+			auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+			ImGui::Text("%s", tag.c_str());
+
+			auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+			ImGui::Separator();
+		}
 
 		ImGui::End(); // Settings
 

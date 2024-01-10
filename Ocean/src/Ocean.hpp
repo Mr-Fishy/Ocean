@@ -20,7 +20,8 @@
 
 // --- Scene & Components --- //
 #include "Ocean/Core/Scene/Scene.hpp"
-// #include "Ocean/Core/Scene/Components.hpp"
+#include "Ocean/Core/Scene/Entity.hpp"
+#include "Ocean/Core/Scene/Components.hpp"
 
 // --- Renderer --- //
 #include "Ocean/Renderer/Renderer.hpp"

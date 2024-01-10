@@ -4,6 +4,8 @@
 
 #include "Ocean/Renderer/Texture.hpp"
 
+#include "Ocean/Renderer/Camera/Camera.hpp"
+
 namespace Ocean {
 
 	// This is the 2D renderer for anything 2D.
@@ -14,10 +16,10 @@ namespace Ocean {
 		static void Shutdown();
 
 		// Begins the rendering scene for the layer.
-		// @param
-		//  camera: The orthographic camera to use when projecting objects in the scene view.
+		// @param camera: The camera to use when projecting objects in the scene view.
 		//
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const OrthographicCamera& camera); // TODO: Deprecate
 		static void EndScene();
 		static void Flush();
 

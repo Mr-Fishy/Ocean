@@ -19,10 +19,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include Directories Relative To Root Folder (Solution Directory)
 IncludeDir = {}
 IncludeDir["CTTI"] = "Ocean/vendor/CTTI/include"
-IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
+IncludeDir["ENTT"] = "Ocean/vendor/ENTT/single_include"
 IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
-IncludeDir["ImGui"] = "Ocean/vendor/ImGui"
+IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
 IncludeDir["glm"] = "Ocean/vendor/glm"
+IncludeDir["ImGui"] = "Ocean/vendor/ImGui"
+IncludeDir["MemAllocators"] = "Ocean/vendor/MemAllocators/includes"
 IncludeDir["stb_image"] = "Ocean/vendor/stb_image"
 
 group "Vendor"
@@ -56,8 +58,6 @@ project "Ocean"
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 
-		"%{prj.name}/vendor/CTTI/include/**.hpp",
-
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 
@@ -69,11 +69,13 @@ project "Ocean"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}",
+		-- "%{IncludeDir.CTTI}",
+		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.CTTI}",
+		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		-- "%{IncludeDir.MemAllocators}",
 		"%{IncludeDir.stb_image}",
 	}
 
@@ -134,8 +136,10 @@ project "Sandbox"
 		"Ocean/vendor/spdlog/include",
 		"Ocean/src",
 		"Ocean/vendor",
-		"%{IncludeDir.CTTI}",
+		-- "%{IncludeDir.CTTI}",
+		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.glm}",
+		-- "%{IncludeDir.MemAllocators}",
 	}
 
 	links
@@ -188,8 +192,10 @@ project "Coral"
 		"Ocean/vendor/spdlog/include",
 		"Ocean/src",
 		"Ocean/vendor",
-		"%{IncludeDir.CTTI}",
+		-- "%{IncludeDir.CTTI}",
+		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.glm}",
+		-- "%{IncludeDir.MemAllocators}",
 	}
 
 	links

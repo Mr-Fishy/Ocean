@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\CTTI\include;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -100,7 +100,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\CTTI\include;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -126,7 +126,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\ImGui;vendor\CTTI\include;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -157,14 +157,14 @@
     <ClInclude Include="src\Ocean\Core\Layers\Layer.hpp" />
     <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Core\Log.hpp" />
-    <ClInclude Include="src\Ocean\Core\Memory\MemoryManager.hpp">
+    <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Entity.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Components\RenderableComponent.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Components\TransformComponent.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\Core\Window.hpp" />
     <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp" />
@@ -174,6 +174,10 @@
     <ClInclude Include="src\Ocean\Events\MouseEvent.hpp" />
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
@@ -193,15 +197,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.hpp" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp" />
-    <ClInclude Include="src\SECS\BaseComponentSystem.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\SECS\ComponentSystem.hpp" />
-    <ClInclude Include="src\SECS\Entity.hpp" />
-    <ClInclude Include="src\SECS\EntityComponent.hpp" />
-    <ClInclude Include="src\SECS\EntityManager.hpp" />
-    <ClInclude Include="src\SECS\EntitySystemTypes.hpp" />
     <ClInclude Include="src\ocpch.hpp" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -626,7 +621,9 @@
     <ClCompile Include="src\Ocean\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Ocean\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Ocean\Core\Log.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\Entity.cpp" />
     <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Ocean\Core\Window.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
@@ -651,7 +648,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\SECS\EntityManager.cpp" />
     <ClCompile Include="src\ocpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
