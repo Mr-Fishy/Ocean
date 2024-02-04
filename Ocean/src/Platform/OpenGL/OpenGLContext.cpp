@@ -21,17 +21,12 @@ namespace Ocean {
 		OC_CORE_ASSERT(status, "Failed to initialize Glad!");
 
 		OC_CORE_INFO("OpenGL Info:");
+		OC_CORE_INFO("- Vendor: {0}", (const char*)glGetString(GL_VENDOR));
 		OC_CORE_INFO("- Renderer: {0}", (const char*)glGetString(GL_RENDERER));
 		OC_CORE_INFO("- Version: {0}", (const char*)glGetString(GL_VERSION));
 
-		#ifdef OC_ENABLE_ASSERTS
-			int versionMajor, versionMinor;
-		
-			glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
-			glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
-
-			OC_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 5), "Ocean Engine requires at least OpenGL version 4.5!");
-		#endif
+		// TODO: Fix
+		// OC_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Ocean Engine requires at least OpenGL version 4.5!");
 	}
 
 	void OpenGLContext::SwapBuffers() {

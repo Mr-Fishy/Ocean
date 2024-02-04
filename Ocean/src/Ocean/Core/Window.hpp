@@ -1,9 +1,10 @@
 #pragma once
 
-#include "ocpch.hpp"
-
 #include "Ocean/Core/Base.hpp"
 #include "Ocean/Events/Event.hpp"
+
+// std
+#include <sstream>
 
 namespace Ocean {
 
@@ -16,8 +17,8 @@ namespace Ocean {
 
 		WindowProps(
 			const std::string& title = "Ocean Engine",
-			unsigned int width = 1280,
-			unsigned int height = 720
+			unsigned int width = 1600,
+			unsigned int height = 900
 		) : Title(title), Width(width), Height(height) {}
 	};
 

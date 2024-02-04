@@ -15,30 +15,30 @@ namespace Ocean {
 		OC_PROFILE_FUNCTION();
 
 		// Switch Statement Control Would Be Ideal But Needs A "GetKeyPressed" Type Function Which Is An Event Nightmare And Wouldn't Be Based On "OnUpdate" Timing
-		if (Input::IsKeyPressed(OC_KEY_A)) {
+		if (Input::IsKeyPressed(Key::A)) {
 			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 			m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 		}
-		else if (Input::IsKeyPressed(OC_KEY_D)) {
+		else if (Input::IsKeyPressed(Key::D)) {
 			m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 			m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 		}
 
-		if (Input::IsKeyPressed(OC_KEY_S)) {
+		if (Input::IsKeyPressed(Key::S)) {
 			m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 			m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 		}
-		else if (Input::IsKeyPressed(OC_KEY_W)) {
+		else if (Input::IsKeyPressed(Key::W)) {
 			m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 			m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 		}
 
 		if (m_RotationEnabled) {
-			if (Input::IsKeyPressed(OC_KEY_Q)) {
+			if (Input::IsKeyPressed(Key::Q)) {
 				m_CameraRotation += m_CameraRotationSpeed * ts;
 			}
 
-			if (Input::IsKeyPressed(OC_KEY_E)) {
+			if (Input::IsKeyPressed(Key::E)) {
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
 			}
 

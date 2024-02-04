@@ -19,7 +19,8 @@ namespace Ocean {
 		T& AddComponent(Args&&... args) {
 			OC_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
 
-			return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			return component;
 		}
 
 		// Gets a component of type T in the entity.
@@ -48,7 +49,24 @@ namespace Ocean {
 		}
 
 		// Allows using (entityObject) as a booling statement. True if defined. False if undefined.
+		//
 		operator bool() const { return m_EntityHandle != entt::null; }
+		// Allows implicit conversion to ENTT entity.
+		//
+		operator entt::entity() const { return m_EntityHandle; }
+		// Allows implicit uint32_t conversion of the entity.
+		//
+		operator uint32_t() const { return (uint32_t)m_EntityHandle; };
+		// 
+		//
+		bool operator == (const Entity& other) const {
+			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
+		};
+		//
+		//
+		bool operator != (const Entity& other) const {
+			return !(*this == other);
+		};
 
 	private:
 		entt::entity m_EntityHandle{ entt::null };

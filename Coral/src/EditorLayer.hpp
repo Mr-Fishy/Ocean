@@ -2,6 +2,8 @@
 
 #include "Ocean.hpp"
 
+#include "Panels/SceneHierarchyPanel.hpp"
+
 namespace Ocean {
 
 	class EditorLayer : public Layer {
@@ -37,7 +39,9 @@ namespace Ocean {
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-	};
 
+		// Panels
+		SceneHierarchyPanel m_SceneHierarchyPanel;
+	};
 
 }	// Ocean

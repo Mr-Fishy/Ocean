@@ -7,6 +7,7 @@
 #include "Ocean/Core/Application.hpp"
 #include "Ocean/Core/Layers/Layer.hpp"
 #include "Ocean/Core/Log.hpp"
+#include "Ocean/Core/Assert.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
 
@@ -21,6 +22,7 @@
 // --- Scene & Components --- //
 #include "Ocean/Core/Scene/Scene.hpp"
 #include "Ocean/Core/Scene/Entity.hpp"
+#include "Ocean/Core/Scene/Scriptables.hpp"
 #include "Ocean/Core/Scene/Components.hpp"
 
 // --- Renderer --- //

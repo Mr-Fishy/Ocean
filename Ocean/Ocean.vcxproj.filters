@@ -1448,6 +1448,9 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp" />
     <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp" />
+    <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp" />
+    <ClInclude Include="src\Ocean\Core\Assert.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ocean\Core\Application.cpp">

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Ocean/Core/Base.hpp"
-
 #include "Ocean/Core/KeyCodes.hpp"
 #include "Ocean/Core/MouseCodes.hpp"
+
+// libs
+#include <glm/glm.hpp>
 
 namespace Ocean {
 
@@ -30,7 +31,7 @@ namespace Ocean {
 		// Gets the x and y mouse position as a paired float.
 		// @returns pair<float, float> (a struct of two floats as x and y)
 		//
-		static std::pair<float, float> GetMousePosition();
+		static glm::vec2 GetMousePosition();
 		static float GetMouseX();
 		static float GetMouseY();
 

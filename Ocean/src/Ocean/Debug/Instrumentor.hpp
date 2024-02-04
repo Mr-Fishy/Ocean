@@ -7,6 +7,11 @@
 #include <iomanip>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
+
+#include "Ocean/Core/Log.hpp"
+#include "Ocean/Core/Assert.hpp"
 
 namespace Ocean {
 

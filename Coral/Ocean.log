@@ -1,4 +1,6 @@
-[16:31:01] [info] OCEAN: Creating Window Coral Editor (1280, 720)
-[16:31:01] [info] OCEAN: OpenGL Info:
-[16:31:01] [info] OCEAN: - Renderer: AMD Radeon (TM) Graphics
-[16:31:01] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 23.11.1.231017
+[04:19:48] [info] OCEAN: Creating Window Coral Editor (1600, 900)
+[04:19:48] [info] OCEAN: OpenGL Info:
+[04:19:48] [info] OCEAN: - Vendor: ATI Technologies Inc.
+[04:19:48] [info] OCEAN: - Renderer: AMD Radeon RX 7900 XT
+[04:19:48] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 24.1.1.240110
+[04:20:07] [error] OCEAN: Assertion failed: Entity already has component!

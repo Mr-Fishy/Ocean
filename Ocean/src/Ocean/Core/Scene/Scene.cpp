@@ -5,43 +5,17 @@
 #include "Components.hpp"
 #include "Ocean/Renderer/Renderer2D.hpp"
 
+#include "Entity.hpp"
+
 // libs
 #include <glm/glm.hpp>
 
-#include "Entity.hpp"
-
 namespace Ocean {
+
+	Scene::Scene() { }
+
+	Scene::~Scene() { }
 	
-	static void DoMath(const glm::mat4& transform) {
-
-	}
-
-	static void OnTransformConstruct(entt::registry& registry, entt::entity entity) {
-
-	}
-
-	Scene::Scene() {
-	#if ENTT_EXAMPLE_CODE
-		entt::entity entity = m_Registry.create();
-		m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
-		m_Registry.on_construct<TransformComponent>().connect<&OnTransformConstruct>();
-		if (m_Registry.has<TransformComponent>(entity))
-			TransformComponent& transform = m_Registry.get<TransformComponent>(entity);
-		auto view = m_Registry.view<TransformComponent>();
-		for (auto entity : view)
-		{
-			TransformComponent& transform = view.get<TransformComponent>(entity);
-		}
-		auto group = m_Registry.group<TransformComponent>(entt::get<MeshComponent>);
-		for (auto entity : group)
-		{
-			auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-		}
-	#endif
-	}
-
-	Scene::~Scene() {}
-
 	Entity Scene::CreateEntity(const std::string& name) {
 		Entity entity = { m_Registry.create(), this };
 		
@@ -53,31 +27,50 @@ namespace Ocean {
 		return entity;
 	}
 
+	void Scene::DestoryEntity(Entity entity) {
+		m_Registry.destroy(entity);
+	}
+
 	void Scene::OnUpdate(Timestep ts) {
+		// Update Scripts
+		{
+			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
+				// TODO: Move to Scene::OnScenePlay (Begin Scene)
+				if (!nsc.Instance) {
+					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance->m_Entity = Entity{ entity, this };
+
+					nsc.Instance->OnCreate();
+				}
+
+				nsc.Instance->OnUpdate(ts);
+			});
+		}
+
 		// Render Sprites
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		{
 			const auto view = m_Registry.view<CameraComponent, TransformComponent>();
 			for (auto entity : view) {
-				const auto& [camera, transform] = view.get<CameraComponent, TransformComponent>(entity);
+				const auto [camera, transform] = view.get<CameraComponent, TransformComponent>(entity);
 
 				if (camera.Primary) {	// If the main camera is found, assign and exit the loop.
 					mainCamera = &camera.Camera;
-					cameraTransform = &transform.Transform;
+					cameraTransform = transform.GetTransform();
 					break;
 				}
 			}
 		}
 
 		if (mainCamera) {
-			Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
 			const auto group = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
 			for (auto entity : group) {
-				const auto& [sprite, transform] = group.get<SpriteRendererComponent, TransformComponent>(entity);
+				const auto [sprite, transform] = group.get<SpriteRendererComponent, TransformComponent>(entity);
 
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
 		}
 	}
@@ -96,5 +89,25 @@ namespace Ocean {
 			}
 		}
 	}
+
+	template<typename T>
+	inline void Ocean::Scene::OnComponentAdded(Entity entity, T& component) {
+		assert(false);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component) { }
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) { }
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) { }
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component) { }
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) { }
 
 }	// Ocean

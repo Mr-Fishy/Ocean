@@ -2,6 +2,9 @@
 
 #include "Ocean/Core/Base.hpp"
 
+// std
+#include <iostream>
+
 #ifdef OC_PLATFORM_WINDOWS
 
 extern Ocean::Application* Ocean::CreateApplication();
