@@ -1,11 +1,8 @@
-/*********************************************************************
- * \file   EditorLayer.cpp
- * \brief  The primary layer of Coral Editor, contains / manages data within the editor runtime.
- * 
- * \author mrfis
- * \date   January 2024
- *********************************************************************/
+
 #include "EditorLayer.hpp"
+
+#include "Ocean/Core/Scene/SceneSerializer.hpp"
+#include "Ocean/Utils/PlatformUtils.hpp"
 
 // libs
 #include <imgui/imgui.h>
@@ -32,47 +29,49 @@ namespace Ocean {
 		// Create the scene reference
 		m_ActiveScene = CreateRef<Scene>();
 
-		// Entities
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-		m_CameraEntity.AddComponent<CameraComponent>();
+		#if 0
+			// Entities
+			m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+			m_CameraEntity.AddComponent<CameraComponent>();
 
-		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-		auto& sc = m_SecondCamera.AddComponent<CameraComponent>();
-		sc.Primary = false;
+			m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
+			auto& sc = m_SecondCamera.AddComponent<CameraComponent>();
+			sc.Primary = false;
 
-		auto square = m_ActiveScene->CreateEntity("Green Square");
-		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+			auto square = m_ActiveScene->CreateEntity("Green Square");
+			square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-		auto redSquare = m_ActiveScene->CreateEntity("Red Square");
-		redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+			auto redSquare = m_ActiveScene->CreateEntity("Red Square");
+			redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-		m_SquareEntity = square;
+			m_SquareEntity = square;
 
-		class CameraController : public ScriptableEntity {
-		public:
-			virtual void OnCreate() override {
-				auto& translation = GetComponent<TransformComponent>().Translation;
-				translation.x = rand() % 10 - 5.0f;
-			}
+			class CameraController : public ScriptableEntity {
+			public:
+				virtual void OnCreate() override {
+					auto& translation = GetComponent<TransformComponent>().Translation;
+					translation.x = rand() % 10 - 5.0f;
+				}
 
-			virtual void OnDestroy() override { }
+				virtual void OnDestroy() override { }
 
-			virtual void OnUpdate(Timestep ts) override {
-				auto& translation = GetComponent<TransformComponent>().Translation;
-				float speed = 5.0f;
+				virtual void OnUpdate(Timestep ts) override {
+					auto& translation = GetComponent<TransformComponent>().Translation;
+					float speed = 5.0f;
 
-				if (Input::IsKeyPressed(Key::A))
-					translation.x -= speed * ts;
-				if (Input::IsKeyPressed(Key::D))
-					translation.x += speed * ts;
-				if (Input::IsKeyPressed(Key::W))
-					translation.y += speed * ts;
-				if (Input::IsKeyPressed(Key::S))
-					translation.y -= speed * ts;
-			}
-		};
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+					if (Input::IsKeyPressed(Key::A))
+						translation.x -= speed * ts;
+					if (Input::IsKeyPressed(Key::D))
+						translation.x += speed * ts;
+					if (Input::IsKeyPressed(Key::W))
+						translation.y += speed * ts;
+					if (Input::IsKeyPressed(Key::S))
+						translation.y -= speed * ts;
+				}
+			};
+			m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+			m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		#endif
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
@@ -172,7 +171,18 @@ namespace Ocean {
 				// which we can't undo at the moment without finer window depth/z control.
 				// ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 
-				if (ImGui::MenuItem("Exit")) Application::Get().Close();
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					OpenScene();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
+
+				if (ImGui::MenuItem("Exit"))
+					Application::Get().Close();
+
 				ImGui::EndMenu();
 			}
 
@@ -216,6 +226,61 @@ namespace Ocean {
 
 	void EditorLayer::OnEvent(Event& e) {
 		m_CameraController.OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(OC_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
+		// Shortcuts
+		if (e.GetRepeating())
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+
+		switch (e.GetKeyCode()) {
+			case Key::N:
+				if (control)
+					NewScene();
+				break;
+
+			case Key::O:
+				if (control)
+					OpenScene();
+				break;
+
+			case Key::S:
+				if (control && shift)
+					SaveSceneAs();
+				break;
+		}
+	}
+
+	void EditorLayer::NewScene() {
+		m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OpenScene() {
+		std::optional<std::string> filepath = FileDialogs::OpenFile("Ocean Scene (*.ocean)\0*.ocean\0");
+
+		if (filepath) {
+			NewScene();
+
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Deserialize(*filepath);
+		}
+	}
+
+	void EditorLayer::SaveSceneAs() {
+		std::optional<std::string> filepath = FileDialogs::SaveFile("Ocean Scene (*.ocean)\0*.ocean\0");
+		
+		if (filepath) {
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(*filepath);
+		}
 	}
 
 }	// Ocean

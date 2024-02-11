@@ -2,13 +2,13 @@
 #include "SceneHierarchyPanel.hpp"
 
 #include "Ocean/Core/Scene/Components.hpp"
+#include "Ocean/Utils/InternalUtils.hpp"
 
 // libs
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
 #include <glm/gtc/type_ptr.hpp>
-
 
 namespace Ocean {
 
@@ -18,17 +18,18 @@ namespace Ocean {
 
 	void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) {
 		m_Context = context;
+		m_SelectionContext = { };
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender() {
 		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 500.0f, 500.0f });
 		ImGui::Begin("Scene Hierarchy");
 
-		m_Context->m_Registry.each([&](auto entityID) {
-			Entity entity{ entityID, m_Context.get() };
+		for (const auto [ent, ref] : m_Context->m_Registry.storage<TagComponent>().each()) {
+			Entity entity{ ent, m_Context.get() };
 
 			DrawEntityNode(entity);
-		});
+		}
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered()) {
 			m_SelectionContext = { };
@@ -207,7 +208,7 @@ namespace Ocean {
 			// Create a local buffer for ImGui input text
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), entityTag.c_str());
+			strncpy_s(buffer, entityTag.c_str(), sizeof(buffer));
 
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll)) {
 				entityTag = std::string(buffer);
@@ -217,17 +218,25 @@ namespace Ocean {
 		ImGui::SameLine();
 		ImGui::PushItemWidth(-1);
 
-		if (ImGui::Button("Add Component"))
+		if (ImGui::Button("Add"))
 			ImGui::OpenPopup("AddComponentPopup");
 
 		if (ImGui::BeginPopup("AddComponentPopup")) {
 			if (ImGui::MenuItem("Camera Component")) {
-				m_SelectionContext.AddComponent<CameraComponent>();
+				if (!m_SelectionContext.HasComponent<CameraComponent>())
+					m_SelectionContext.AddComponent<CameraComponent>();
+				else
+					OC_CORE_WARN("This entity already has the Camera Component!");
+
 				ImGui::CloseCurrentPopup();
 			}
 
 			if (ImGui::MenuItem("Sprite Component")) {
-				m_SelectionContext.AddComponent<SpriteRendererComponent>();
+				if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
+					m_SelectionContext.AddComponent<SpriteRendererComponent>();
+				else
+					OC_CORE_WARN("This entity already has the Sprite Component!");
+
 				ImGui::CloseCurrentPopup();
 			}
 

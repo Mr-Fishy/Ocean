@@ -19,6 +19,14 @@ namespace Ocean {
 		void OnEvent(Event& e) override;
 
 	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+
+		void NewScene();
+		void OpenScene();
+		void SaveSceneAs();
+
+		/* --- */
+
 		OrthographicCameraController m_CameraController;
 
 		// TEMP

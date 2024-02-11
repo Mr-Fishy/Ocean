@@ -138,13 +138,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Panels\SceneHierarchyPanel.hpp" />
     <ClInclude Include="src\EditorLayer.hpp" />
+    <ClInclude Include="src\Panels\SceneHierarchyPanel.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\CoralApp.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ocean\Ocean.vcxproj">

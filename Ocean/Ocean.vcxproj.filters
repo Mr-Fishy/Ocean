@@ -31,6 +31,9 @@
     <Filter Include="src\Ocean\Renderer\Camera">
       <UniqueIdentifier>{C0A7DB3C-2C6A-0FC7-751A-9E53E11BE8A4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Utils">
+      <UniqueIdentifier>{42656CBC-AEF0-D980-B701-5D75230C3681}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -72,6 +75,9 @@
     <ClInclude Include="src\Ocean\Core\Application.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Assert.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Core\Base.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
@@ -99,6 +105,9 @@
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp">
+      <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Core\Scene\Components.hpp">
       <Filter>src\Ocean\Core\Scene</Filter>
     </ClInclude>
@@ -106,6 +115,15 @@
       <Filter>src\Ocean\Core\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp">
+      <Filter>src\Ocean\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp">
+      <Filter>src\Ocean\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Scene\SceneSerializer.hpp">
+      <Filter>src\Ocean\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp">
       <Filter>src\Ocean\Core\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Timestep.hpp">
@@ -134,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp">
       <Filter>src\Ocean\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp">
+      <Filter>src\Ocean\Renderer\Camera</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp">
       <Filter>src\Ocean\Renderer\Camera</Filter>
@@ -167,6 +188,12 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp">
       <Filter>src\Ocean\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Utils\InternalUtils.hpp">
+      <Filter>src\Ocean\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Utils\PlatformUtils.hpp">
+      <Filter>src\Ocean\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1446,11 +1473,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp" />
-    <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp" />
-    <ClInclude Include="src\Ocean\Core\Assert.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ocean\Core\Application.cpp">
@@ -1469,6 +1491,12 @@
       <Filter>src\Ocean\Core\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp">
+      <Filter>src\Ocean\Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Scene\SceneCamera.cpp">
+      <Filter>src\Ocean\Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Core\Scene\SceneSerializer.cpp">
       <Filter>src\Ocean\Core\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Window.cpp">
@@ -1540,6 +1568,9 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
@@ -1549,6 +1580,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Scene\SceneCamera.cpp" />
   </ItemGroup>
 </Project>

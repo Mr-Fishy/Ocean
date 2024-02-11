@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.hpp"
+#include "Ocean/Utils/InternalUtils.hpp"
 
 // libs
 #include <entt/entt.hpp>
@@ -17,7 +18,7 @@ namespace Ocean {
 		//
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args) {
-			OC_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+			OC_CORE_ASSERT(!HasComponent<T>(), "Entity already has component: " + GetTypeName<T>());
 
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			return component;
@@ -27,9 +28,19 @@ namespace Ocean {
 		//
 		template<typename T>
 		T& GetComponent() {
-			OC_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			OC_CORE_ASSERT(HasComponent<T>(), "Entity does not have component: " + GetTypeName<T>());
 
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		}
+
+		// Gets a component, if component doesn't exist as expected, adds the component
+		template<typename T>
+		T& GetOrAddComponent() {
+			if (!HasComponent<T>()) {
+				AddComponent<T>();
+			}
+
+			return GetComponent<T>();
 		}
 
 		// Checks if the entity has a component of type T.
@@ -43,7 +54,7 @@ namespace Ocean {
 		//
 		template<typename T>
 		void RemoveComponent() {
-			OC_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			OC_CORE_ASSERT(HasComponent<T>(), "Entity does not have component: " + GetTypeName<T>());
 
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}

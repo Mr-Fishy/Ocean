@@ -26,8 +26,8 @@ Coral Editor will be the GUI editor available with Ocean.
 |       | 0.7 | Build a rendering pipeline with OpenGL → Will have Vulkan support later   | Complete    |
 |       | 0.8 | Implement a proper Entity Component System (ECS)                          | Complete    |
 |       |0.8.1| Expand Coral UI to be more useable / fleshed out                          | In Progress |
-|       | 0.9 | Implement a memory allocator to better compress and handle runtime memory.| Not Started |
-|       | 0.10| Build serialization system for scenes and files                           | Not Started |
+|       | 0.9 | Build serialization system for scenes and files                           | In Progress |
+|       | 0.10| Implement a memory allocator to better compress and handle runtime memory.| Not Started |
 |       |     |                                                                           |             |
 | 1     |     | Create UI support for application development (replace ImGui with own UI) | Not Started |
 |       | 1.1 |                                                                           |             |
@@ -63,6 +63,9 @@ https://github.com/ocornut/imgui
 
 ### MEMORY-ALLOCATORS
 https://github.com/mtrebi/memory-allocators
+
+### YAML-CPP
+https://github.com/jbeder/yaml-cpp/
 
 ### Devlopement Resources / Learning Resources
 The Cherno Game Engine Playlist: \

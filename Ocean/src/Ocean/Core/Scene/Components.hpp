@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Ocean {
-	
+
 	struct TagComponent {
 		std::string Tag;
 

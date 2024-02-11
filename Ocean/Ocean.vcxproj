@@ -76,8 +76,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -99,8 +99,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -125,8 +125,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -149,10 +149,7 @@
   <ItemGroup>
     <ClInclude Include="src\Ocean.hpp" />
     <ClInclude Include="src\Ocean\Core\Application.hpp" />
-    <ClInclude Include="src\Ocean\Core\Assert.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Assert.hpp" />
     <ClInclude Include="src\Ocean\Core\Base.hpp" />
     <ClInclude Include="src\Ocean\Core\DataTypes.hpp" />
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp" />
@@ -162,21 +159,13 @@
     <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp" />
     <ClInclude Include="src\Ocean\Core\Log.hpp" />
     <ClInclude Include="src\Ocean\Core\MouseCodes.hpp" />
-    <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp" />
     <ClInclude Include="src\Ocean\Core\Scene\Components.hpp" />
     <ClInclude Include="src\Ocean\Core\Scene\Entity.hpp" />
     <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp" />
-    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\SceneSerializer.hpp" />
+    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp" />
     <ClInclude Include="src\Ocean\Core\Timestep.hpp" />
     <ClInclude Include="src\Ocean\Core\Window.hpp" />
     <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp" />
@@ -186,10 +175,7 @@
     <ClInclude Include="src\Ocean\Events\MouseEvent.hpp" />
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
-    <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
@@ -201,6 +187,8 @@
     <ClInclude Include="src\Ocean\Renderer\Shader.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
+    <ClInclude Include="src\Ocean\Utils\InternalUtils.hpp" />
+    <ClInclude Include="src\Ocean\Utils\PlatformUtils.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.hpp" />
@@ -636,6 +624,7 @@
     <ClCompile Include="src\Ocean\Core\Scene\Entity.cpp" />
     <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp" />
     <ClCompile Include="src\Ocean\Core\Scene\SceneCamera.cpp" />
+    <ClCompile Include="src\Ocean\Core\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Ocean\Core\Window.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
@@ -659,6 +648,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\ocpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -674,6 +664,9 @@
     </ProjectReference>
     <ProjectReference Include="vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

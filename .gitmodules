@@ -19,3 +19,6 @@
 [submodule "Ocean/vendor/ENTT"]
 	path = Ocean/vendor/ENTT
 	url = https://github.com/skypjack/entt
+[submodule "Ocean/vendor/yaml-cpp"]
+	path = Ocean/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp/

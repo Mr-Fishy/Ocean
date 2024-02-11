@@ -17,20 +17,23 @@ workspace "OceanEngine"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include Directories Relative To Root Folder (Solution Directory)
+-- Does not like '-' in names, use '_'
 IncludeDir = {}
-IncludeDir["CTTI"] = "Ocean/vendor/CTTI/include"
-IncludeDir["ENTT"] = "Ocean/vendor/ENTT/single_include"
-IncludeDir["Glad"] = "Ocean/vendor/Glad/include"
-IncludeDir["GLFW"] = "Ocean/vendor/GLFW/include"
-IncludeDir["glm"] = "Ocean/vendor/glm"
-IncludeDir["ImGui"] = "Ocean/vendor/ImGui"
-IncludeDir["MemAllocators"] = "Ocean/vendor/MemAllocators/includes"
-IncludeDir["stb_image"] = "Ocean/vendor/stb_image"
+IncludeDir["CTTI"]			= "%{wks.location}/Ocean/vendor/CTTI/include"
+IncludeDir["ENTT"]			= "%{wks.location}/Ocean/vendor/ENTT/single_include"
+IncludeDir["Glad"]			= "%{wks.location}/Ocean/vendor/Glad/include"
+IncludeDir["GLFW"]			= "%{wks.location}/Ocean/vendor/GLFW/include"
+IncludeDir["glm"]			= "%{wks.location}/Ocean/vendor/glm"
+IncludeDir["ImGui"]			= "%{wks.location}/Ocean/vendor/ImGui"
+IncludeDir["MemAllocators"] = "%{wks.location}/Ocean/vendor/MemAllocators/includes"
+IncludeDir["stb_image"]		= "%{wks.location}/Ocean/vendor/stb_image"
+IncludeDir["yaml_cpp"]		= "%{wks.location}/Ocean/vendor/yaml-cpp/include"
 
-group "Vendor"
+group "Dependencies"
 	include "Ocean/vendor/premake5-GLFW.lua"
 	include "Ocean/vendor/premake5-Glad.lua"
 	include "Ocean/vendor/premake5-ImGui.lua"
+	include "Ocean/vendor/premake5-yaml-cpp.lua"
 group ""
 
 project "Ocean"
@@ -50,6 +53,7 @@ project "Ocean"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
+		"YAML_CPP_STATIC_DEFINE",
 	}
 
 	files
@@ -77,6 +81,7 @@ project "Ocean"
 		"%{IncludeDir.ImGui}",
 		-- "%{IncludeDir.MemAllocators}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.yaml_cpp}",
 	}
 
 	links
@@ -85,6 +90,7 @@ project "Ocean"
 		"Glad",
 		"ImGui",
 		"opengl32.lib",
+		"yaml-cpp",
 	}
 
 	filter "system:windows"
