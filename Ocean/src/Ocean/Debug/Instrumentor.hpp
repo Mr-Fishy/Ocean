@@ -98,9 +98,7 @@ namespace Ocean {
 
 	private:
 		Instrumentor() : m_CurrentSession(nullptr) {}
-		~Instrumentor() {
-			EndSession();
-		}
+		~Instrumentor() { EndSession(); }
 
 		void WriteHeader() {
 			m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";

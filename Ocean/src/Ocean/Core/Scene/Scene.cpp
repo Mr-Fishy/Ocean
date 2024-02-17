@@ -58,6 +58,7 @@ namespace Ocean {
 				if (camera.Primary) {	// If the main camera is found, assign and exit the loop.
 					mainCamera = &camera.Camera;
 					cameraTransform = transform.GetTransform();
+
 					break;
 				}
 			}
@@ -72,6 +73,8 @@ namespace Ocean {
 
 				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
+
+			Renderer2D::EndScene();
 		}
 	}
 
@@ -102,7 +105,9 @@ namespace Ocean {
 	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) { }
 
 	template<>
-	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) { }
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {
+		component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+	}
 
 	template<>
 	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component) { }

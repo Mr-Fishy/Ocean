@@ -64,7 +64,7 @@ namespace YAML {
 		}
 	};
 
-}
+}	// YAML
 
 namespace Ocean {
 
@@ -89,12 +89,12 @@ namespace Ocean {
 		using namespace YAML;
 
 		if (entity.HasComponent<T>()) {
-			OC_CORE_INFO("Serialized " + GetTypeName<T>() + " Component");
-
 			out << Key << GetTypeName<T>(); // T Component
 			out << BeginMap; // Component
 				function(entity.GetComponent<T>()); // Component Specific Serialization
 			out << EndMap; // Component
+
+			OC_CORE_INFO("Serialized " + GetTypeName<T>() + " Component");
 		}
 	}
 
@@ -171,13 +171,14 @@ namespace Ocean {
 
 	void SceneSerializer::SerializeRuntime(const std::string& filepath) { }
 
+	// Deserialization template for a single component.
+	// 
 	template<typename T, typename Function>
-	static void DeserializeComponent(auto entity, Entity deserializedEntity, Function function) {
+	static void DeserializeComponent(auto& entity, Entity& deserializedEntity, Function function) {
 		auto entityComponent = entity[GetTypeName<T>()];
 
 		if (entityComponent) {
-			OC_CORE_INFO("Deserialized " + GetTypeName<T>() + " Component");
-			
+			OC_CORE_INFO("Deserializing " + GetTypeName<T>());
 			std::cout << entityComponent << std::endl;
 
 			auto& component = deserializedEntity.GetOrAddComponent<T>();
@@ -195,19 +196,20 @@ namespace Ocean {
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
+
 		OC_CORE_TRACE("Deserializing Scene '{0}'", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities) {
 			for (auto entity : entities) {
-				uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
+				uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO: UIDs (or GUIDs)
 
 				std::string name;
 				auto tagComponent = entity["TagComponent"];
 				if (tagComponent)
 					name = tagComponent["Tag"].as<std::string>();
 
-				OC_CORE_TRACE("Deserialized Entity With ID = {0}, name = {1}", uuid, name);
+				OC_CORE_INFO("Deserialized Entity With ID = {0}, name = {1}", uuid, name);
 
 				Entity deserializedEntity = m_Scene->CreateEntity(name);
 
@@ -236,6 +238,8 @@ namespace Ocean {
 				DeserializeComponent<SpriteRendererComponent>(entity, deserializedEntity, [&](auto& component, auto& data) {
 					component.Color = data["Color"].as<glm::vec4>();
 				});
+
+				std::cout << std::endl;
 			}
 		}
 

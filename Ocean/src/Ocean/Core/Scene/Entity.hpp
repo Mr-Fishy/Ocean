@@ -21,6 +21,7 @@ namespace Ocean {
 			OC_CORE_ASSERT(!HasComponent<T>(), "Entity already has component: " + GetTypeName<T>());
 
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			m_Scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}
 
@@ -33,7 +34,8 @@ namespace Ocean {
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 
-		// Gets a component, if component doesn't exist as expected, adds the component
+		// Gets a component, if component doesn't exist, adds the component.
+		//
 		template<typename T>
 		T& GetOrAddComponent() {
 			if (!HasComponent<T>()) {
@@ -59,7 +61,7 @@ namespace Ocean {
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
-		// Allows using (entityObject) as a booling statement. True if defined. False if undefined.
+		// Allows using (entityObject) as a boolean statement. True if defined. False if undefined.
 		//
 		operator bool() const { return m_EntityHandle != entt::null; }
 		// Allows implicit conversion to ENTT entity.
@@ -68,12 +70,12 @@ namespace Ocean {
 		// Allows implicit uint32_t conversion of the entity.
 		//
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; };
-		// 
+		// Allows boolean comparison for is-equal entity checks.
 		//
 		bool operator == (const Entity& other) const {
 			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
 		};
-		//
+		// Allows boolean comparison for is-not-equal entity checks.
 		//
 		bool operator != (const Entity& other) const {
 			return !(*this == other);

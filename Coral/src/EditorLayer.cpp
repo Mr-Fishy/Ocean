@@ -29,6 +29,8 @@ namespace Ocean {
 		// Create the scene reference
 		m_ActiveScene = CreateRef<Scene>();
 
+		// TODO: Create an editor camera here (as entity)
+
 		#if 0
 			// Entities
 			m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
@@ -95,9 +97,8 @@ namespace Ocean {
 		}
 
 		/* --- Update --- */
-		if (m_ViewportFocused) {
+		if (m_ViewportFocused)
 			m_CameraController.OnUpdate(ts);
-		}
 
 		/* --- Render --- */
 		Renderer2D::ResetStats();
@@ -110,14 +111,12 @@ namespace Ocean {
 		// Update scene
 		m_ActiveScene->OnUpdate(ts);
 
-		Renderer2D::EndScene();
-
 		m_Framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender() {
 		OC_PROFILE_FUNCTION();
-		/// @note Sourced from ImGui exmaple code
+		/// @note Modified from ImGui exmaple code
 
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen_persistant = true;
@@ -205,7 +204,7 @@ namespace Ocean {
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		
-		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 500.0f, 500.0f });
+		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 1920.0f, 1080.0f });
 		ImGui::Begin("Viewport");
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
@@ -243,18 +242,23 @@ namespace Ocean {
 			case Key::N:
 				if (control)
 					NewScene();
+
 				break;
 
 			case Key::O:
 				if (control)
 					OpenScene();
+
 				break;
 
 			case Key::S:
 				if (control && shift)
 					SaveSceneAs();
+
 				break;
 		}
+
+		return true;
 	}
 
 	void EditorLayer::NewScene() {

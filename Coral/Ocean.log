@@ -1,31 +1,18 @@
-[16:16:44] [info] OCEAN: Creating Window Coral Editor (1600, 900)
-[16:16:44] [info] OCEAN: OpenGL Info:
-[16:16:44] [info] OCEAN: - Vendor: ATI Technologies Inc.
-[16:16:44] [info] OCEAN: - Renderer: AMD Radeon (TM) Graphics
-[16:16:44] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 24.1.1.231127
-[16:17:00] [trace] OCEAN: Serializing Scene To: 'C:\Users\mrfis\OneDrive\dev\OceanEngine\Coral\assets\scenes\Example2DScene.ocean'
-[16:17:00] [info] OCEAN: Serialized TagComponent Component
-[16:17:00] [info] OCEAN: Serialized TransformComponent Component
-[16:17:00] [info] OCEAN: Serialized SpriteRendererComponent Component
-[16:17:00] [info] OCEAN: Serialized TagComponent Component
-[16:17:00] [info] OCEAN: Serialized TransformComponent Component
-[16:17:00] [info] OCEAN: Serialized SpriteRendererComponent Component
-[16:17:00] [info] OCEAN: Serialized TagComponent Component
-[16:17:00] [info] OCEAN: Serialized TransformComponent Component
-[16:17:00] [info] OCEAN: Serialized CameraComponent Component
-[16:17:00] [info] OCEAN: Serialized TagComponent Component
-[16:17:00] [info] OCEAN: Serialized TransformComponent Component
-[16:17:00] [info] OCEAN: Serialized CameraComponent Component
-[16:17:05] [trace] OCEAN: Deserializing Scene 'Untitled'
-[16:17:05] [trace] OCEAN: Deserialized Entity With ID = 12837192831273, name = Red Square
-[16:17:05] [info] OCEAN: Deserialized TransformComponent Component
-[16:17:05] [info] OCEAN: Deserialized SpriteRendererComponent Component
-[16:17:05] [trace] OCEAN: Deserialized Entity With ID = 12837192831273, name = Green Square
-[16:17:05] [info] OCEAN: Deserialized TransformComponent Component
-[16:17:05] [info] OCEAN: Deserialized SpriteRendererComponent Component
-[16:17:05] [trace] OCEAN: Deserialized Entity With ID = 12837192831273, name = Camera B
-[16:17:05] [info] OCEAN: Deserialized TransformComponent Component
-[16:17:05] [info] OCEAN: Deserialized CameraComponent Component
-[16:17:05] [trace] OCEAN: Deserialized Entity With ID = 12837192831273, name = Camera A
-[16:17:05] [info] OCEAN: Deserialized TransformComponent Component
-[16:17:05] [info] OCEAN: Deserialized CameraComponent Component
+[12:34:16] [info] OCEAN: Creating Window Coral Editor (1600, 900)
+[12:34:17] [info] OCEAN: OpenGL Info:
+[12:34:17] [info] OCEAN: - Vendor: ATI Technologies Inc.
+[12:34:17] [info] OCEAN: - Renderer: AMD Radeon RX 7900 XT
+[12:34:17] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 24.1.1.240110
+[12:34:20] [trace] OCEAN: Deserializing Scene 'Untitled'
+[12:34:20] [info] OCEAN: Deserialized Entity With ID = 12837192831273, name = Camera A
+[12:34:20] [info] OCEAN: Deserializing TransformComponent
+[12:34:20] [info] OCEAN: Deserializing CameraComponent
+[12:34:20] [info] OCEAN: Deserialized Entity With ID = 12837192831273, name = Camera B
+[12:34:20] [info] OCEAN: Deserializing TransformComponent
+[12:34:20] [info] OCEAN: Deserializing CameraComponent
+[12:34:20] [info] OCEAN: Deserialized Entity With ID = 12837192831273, name = Green Square
+[12:34:20] [info] OCEAN: Deserializing TransformComponent
+[12:34:20] [info] OCEAN: Deserializing SpriteRendererComponent
+[12:34:20] [info] OCEAN: Deserialized Entity With ID = 12837192831273, name = Red Square
+[12:34:20] [info] OCEAN: Deserializing TransformComponent
+[12:34:20] [info] OCEAN: Deserializing SpriteRendererComponent
