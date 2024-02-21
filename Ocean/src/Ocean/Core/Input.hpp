@@ -8,9 +8,6 @@
 
 namespace Ocean {
 
-	// TODO: In order to efficiently keep track of currently pressed keys, managing a vector of the currently pressed keys will be best.
-	// This way when a key is pressed, it will be added to the vector, but when it is released it will be removed.
-	//
 	class Input {
 	public:
 		// Checks if key is currently pressed through GLFW.
@@ -18,13 +15,8 @@ namespace Ocean {
 		// @returns True or False
 		//
 		static bool IsKeyPressed(KeyCode key);
-		// WIP --- Gets the current key that is being pressed.
-		// @returns The keycode of the currently pressed key. Returns UNKOWN key if no known platform key is being pressed.
-		//
-		static KeyCode GetKeyPressed();
-
 		// Checks if the mouse-button is currently being pressed through GLFW.
-		// @param mouse-key: The mousecode for the button that is being checked (uses Ocean mousecodes).
+		// @param button: The mousecode for the button that is being checked (uses Ocean mousecodes).
 		// @returns True or False
 		//
 		static bool IsMouseButtonPressed(MouseCode button);
@@ -32,7 +24,13 @@ namespace Ocean {
 		// @returns pair<float, float> (a struct of two floats as x and y)
 		//
 		static glm::vec2 GetMousePosition();
+		// Gets the x position of the mouse.
+		// @returns float
+		//
 		static float GetMouseX();
+		// Gets the y position of the mouse.
+		// @returns float
+		//
 		static float GetMouseY();
 
 	private:

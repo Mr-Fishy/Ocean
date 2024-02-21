@@ -31,7 +31,7 @@ namespace Ocean {
 		m_Registry.destroy(entity);
 	}
 
-	void Scene::OnUpdate(Timestep ts) {
+	void Scene::OnUpdateRuntime(Timestep ts) {
 		// Update Scripts
 		{
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
@@ -67,15 +67,28 @@ namespace Ocean {
 		if (mainCamera) {
 			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-			const auto group = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
-			for (auto entity : group) {
+			const auto& group = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
+			for (const auto& entity : group) {
 				const auto [sprite, transform] = group.get<SpriteRendererComponent, TransformComponent>(entity);
 
-				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
 			}
 
 			Renderer2D::EndScene();
 		}
+	}
+
+	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera) {
+		Renderer2D::BeginScene(camera);
+
+		const auto& group = m_Registry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
+		for (const auto& entity : group) {
+			const auto [sprite, transform] = group.get<SpriteRendererComponent, TransformComponent>(entity);
+
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+		}
+
+		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height) {
@@ -91,6 +104,17 @@ namespace Ocean {
 				cameraComponent.Camera.SetViewportSize(width, height);
 			}
 		}
+	}
+
+	Entity Scene::GetPrimaryCameraEntity() {
+		const auto view = m_Registry.view<CameraComponent>();
+		for (auto entity : view) {
+			const auto& camera = view.get<CameraComponent>(entity);
+
+			if (camera.Primary)
+				return Entity{ entity, this };
+		}
+		return { };
 	}
 
 	template<typename T>

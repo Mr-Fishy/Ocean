@@ -134,6 +134,7 @@ namespace Ocean {
 			KPEnter = 335,
 			KPEqual = 336,
 
+			/* Control Keys */
 			LeftShift = 340,
 			LeftControl = 341,
 			LeftAlt = 342,

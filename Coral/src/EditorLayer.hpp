@@ -4,6 +4,8 @@
 
 #include "Panels/SceneHierarchyPanel.hpp"
 
+#include "Ocean/Renderer/Camera/EditorCamera.h"
+
 namespace Ocean {
 
 	class EditorLayer : public Layer {
@@ -20,6 +22,7 @@ namespace Ocean {
 
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
@@ -35,18 +38,25 @@ namespace Ocean {
 		Ref<Framebuffer> m_Framebuffer;
 
 		Ref<Scene> m_ActiveScene;
+		Entity m_HoveredEntity;
+
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
 		Entity m_SquareEntity;
 
 		bool m_PrimaryCamera = true;
 
+		EditorCamera m_EditorCamera;
+
 		Ref<Texture2D> m_CheckerboardTexture;
 
 		glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
+		int m_GizmoType = -1;
+
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		glm::vec2 m_ViewportBounds[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
 
 		// Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;

@@ -2,15 +2,18 @@
 #include "ocpch.hpp"
 #include "ImGuiLayer.hpp"
 
+#include "Ocean/Core/Application.hpp"
+
+// libs
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-#include "Ocean/Core/Application.hpp"
-
 // TEMPORARY
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
+
+#include <ImGuizmo.h>
 
 namespace Ocean {
 
@@ -217,6 +220,7 @@ namespace Ocean {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End() {

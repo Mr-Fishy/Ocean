@@ -34,6 +34,9 @@
     <Filter Include="src\Ocean\Utils">
       <UniqueIdentifier>{42656CBC-AEF0-D980-B701-5D75230C3681}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Utils\Math">
+      <UniqueIdentifier>{5B636696-47F2-EF5F-F010-045BDC7E0006}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -45,6 +48,9 @@
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\ImGuizmo">
+      <UniqueIdentifier>{73BF7F4C-DF4A-ED10-E85B-700554664911}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\glm">
       <UniqueIdentifier>{829FC5A8-6E57-07F6-D75E-E051C335A2E6}</UniqueIdentifier>
@@ -156,6 +162,9 @@
     <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp">
       <Filter>src\Ocean\Renderer\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Renderer\Camera\EditorCamera.h">
+      <Filter>src\Ocean\Renderer\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp">
       <Filter>src\Ocean\Renderer\Camera</Filter>
     </ClInclude>
@@ -192,6 +201,9 @@
     <ClInclude Include="src\Ocean\Utils\InternalUtils.hpp">
       <Filter>src\Ocean\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Utils\Math\Math.hpp">
+      <Filter>src\Ocean\Utils\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Utils\PlatformUtils.hpp">
       <Filter>src\Ocean\Utils</Filter>
     </ClInclude>
@@ -221,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="src\ocpch.hpp">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
+      <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
       <Filter>vendor\glm\glm</Filter>
@@ -1511,6 +1526,9 @@
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ocean\Renderer\Camera\EditorCamera.cpp">
+      <Filter>src\Ocean\Renderer\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp">
       <Filter>src\Ocean\Renderer\Camera</Filter>
     </ClCompile>
@@ -1544,6 +1562,9 @@
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ocean\Utils\Math\Math.cpp">
+      <Filter>src\Ocean\Utils\Math</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1576,6 +1597,9 @@
     </ClCompile>
     <ClCompile Include="src\ocpch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <Filter>vendor\ImGuizmo</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>

@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
 		// Report Error
 		std::cerr << e.what() << std::endl;
 
+		delete app;
 		return EXIT_FAILURE;
 	}
 

@@ -14,7 +14,6 @@ namespace Ocean {
 	void OrthographicCameraController::OnUpdate(Timestep ts) {
 		OC_PROFILE_FUNCTION();
 
-		// Switch Statement Control Would Be Ideal But Needs A "GetKeyPressed" Type Function Which Is An Event Nightmare And Wouldn't Be Based On "OnUpdate" Timing
 		if (Input::IsKeyPressed(Key::A)) {
 			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
 			m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;

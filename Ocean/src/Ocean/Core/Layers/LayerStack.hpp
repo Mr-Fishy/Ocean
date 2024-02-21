@@ -7,6 +7,7 @@
 #include <vector>
 #include <iterator>
 
+
 namespace Ocean {
 
 	// The LayerStack represents and manages the layers that are rendered in the window.

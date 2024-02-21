@@ -48,7 +48,7 @@ namespace Ocean {
 		/* --- */
 
 		static Application* s_Instance;
-		Ref<Window> m_Window;
+		Scope<Window> m_Window;
 
 		bool m_Running = true;
 		bool m_Minimized = false;

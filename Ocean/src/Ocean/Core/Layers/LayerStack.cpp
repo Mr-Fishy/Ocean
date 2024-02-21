@@ -14,7 +14,7 @@ namespace Ocean {
 
 	void LayerStack::PushLayer(Layer* layer) {
 		m_Layers.emplace(m_Layers.begin() + m_LayersInsertIndex, layer);
-
+		
 		m_LayersInsertIndex++;
 	}
 

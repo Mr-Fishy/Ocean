@@ -76,8 +76,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -99,8 +99,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -125,8 +125,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;OC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\ENTT\single_include;vendor\Glad\include;vendor\GLFW\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\stb_image;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -176,6 +176,7 @@
     <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp" />
+    <ClInclude Include="src\Ocean\Renderer\Camera\EditorCamera.h" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCamera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\OrthoCameraController.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Framebuffer.hpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
     <ClInclude Include="src\Ocean\Utils\InternalUtils.hpp" />
+    <ClInclude Include="src\Ocean\Utils\Math\Math.hpp" />
     <ClInclude Include="src\Ocean\Utils\PlatformUtils.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.hpp" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.hpp" />
@@ -198,6 +200,7 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.hpp" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.hpp" />
     <ClInclude Include="src\ocpch.hpp" />
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -629,6 +632,7 @@
     <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Ocean\Renderer\Camera\EditorCamera.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCameraController.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Framebuffer.cpp" />
@@ -640,6 +644,7 @@
     <ClCompile Include="src\Ocean\Renderer\Shader.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Texture.cpp" />
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Ocean\Utils\Math\Math.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -652,6 +657,9 @@
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\ocpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>

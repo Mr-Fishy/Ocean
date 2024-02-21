@@ -25,6 +25,7 @@ IncludeDir["Glad"]			= "%{wks.location}/Ocean/vendor/Glad/include"
 IncludeDir["GLFW"]			= "%{wks.location}/Ocean/vendor/GLFW/include"
 IncludeDir["glm"]			= "%{wks.location}/Ocean/vendor/glm"
 IncludeDir["ImGui"]			= "%{wks.location}/Ocean/vendor/ImGui"
+IncludeDir["ImGuizmo"]		= "%{wks.location}/Ocean/vendor/ImGuizmo"
 IncludeDir["MemAllocators"] = "%{wks.location}/Ocean/vendor/MemAllocators/includes"
 IncludeDir["stb_image"]		= "%{wks.location}/Ocean/vendor/stb_image"
 IncludeDir["yaml_cpp"]		= "%{wks.location}/Ocean/vendor/yaml-cpp/include"
@@ -51,6 +52,7 @@ project "Ocean"
 
 	defines
 	{
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",	-- Silence std::iterator Depracation Warnings (C++20)
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
 		"YAML_CPP_STATIC_DEFINE",
@@ -61,6 +63,9 @@ project "Ocean"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
+
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
 
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
@@ -79,6 +84,7 @@ project "Ocean"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImGuizmo}",
 		-- "%{IncludeDir.MemAllocators}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.yaml_cpp}",
@@ -92,6 +98,9 @@ project "Ocean"
 		"opengl32.lib",
 		"yaml-cpp",
 	}
+
+	filter "files:Ocean/vendor/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
@@ -127,7 +136,6 @@ project "Sandbox"
 
 	defines
 	{
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"		-- Silence std::iterator Depracation Warnings (C++20)
 	}
 
 	files
@@ -183,7 +191,7 @@ project "Coral"
 
 	defines
 	{
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",		-- Silence std::iterator Depracation Warnings (C++20)
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",	-- Silence std::iterator Depracation Warnings (C++20)
 	}
 
 	files

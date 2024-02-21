@@ -93,8 +93,6 @@ namespace Ocean {
 			out << BeginMap; // Component
 				function(entity.GetComponent<T>()); // Component Specific Serialization
 			out << EndMap; // Component
-
-			OC_CORE_INFO("Serialized " + GetTypeName<T>() + " Component");
 		}
 	}
 
@@ -178,9 +176,6 @@ namespace Ocean {
 		auto entityComponent = entity[GetTypeName<T>()];
 
 		if (entityComponent) {
-			OC_CORE_INFO("Deserializing " + GetTypeName<T>());
-			std::cout << entityComponent << std::endl;
-
 			auto& component = deserializedEntity.GetOrAddComponent<T>();
 			function(component, entityComponent);
 		}
@@ -209,8 +204,6 @@ namespace Ocean {
 				if (tagComponent)
 					name = tagComponent["Tag"].as<std::string>();
 
-				OC_CORE_INFO("Deserialized Entity With ID = {0}, name = {1}", uuid, name);
-
 				Entity deserializedEntity = m_Scene->CreateEntity(name);
 
 				DeserializeComponent<TransformComponent>(entity, deserializedEntity, [&](auto& component, auto& data) {
@@ -238,8 +231,6 @@ namespace Ocean {
 				DeserializeComponent<SpriteRendererComponent>(entity, deserializedEntity, [&](auto& component, auto& data) {
 					component.Color = data["Color"].as<glm::vec4>();
 				});
-
-				std::cout << std::endl;
 			}
 		}
 

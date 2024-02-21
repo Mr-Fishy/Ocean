@@ -3,9 +3,11 @@
 
 #include "Ocean/Core/Scene/SceneSerializer.hpp"
 #include "Ocean/Utils/PlatformUtils.hpp"
+#include "Ocean/Utils/Math/Math.hpp"
 
 // libs
 #include <imgui/imgui.h>
+#include <ImGuizmo/ImGuizmo.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,6 +24,7 @@ namespace Ocean {
 
 		// Create the framebuffer
 		FramebufferSpecification fbSpec;
+		fbSpec.Attachments = { FramebufferFormat::RGBA8, FramebufferFormat::RED_INTEGER, FramebufferFormat::Depth };
 		fbSpec.Width = 1280;
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
@@ -29,7 +32,7 @@ namespace Ocean {
 		// Create the scene reference
 		m_ActiveScene = CreateRef<Scene>();
 
-		// TODO: Create an editor camera here (as entity)
+		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		#if 0
 			// Entities
@@ -93,12 +96,15 @@ namespace Ocean {
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
 		/* --- Update --- */
-		if (m_ViewportFocused)
-			m_CameraController.OnUpdate(ts);
+		// if (m_ViewportFocused)
+		//     m_CameraController.OnUpdate(ts);
+
+		m_EditorCamera.OnUpdate(ts);
 
 		/* --- Render --- */
 		Renderer2D::ResetStats();
@@ -108,15 +114,33 @@ namespace Ocean {
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		RenderCommand::Clear();
 
+		// Clear The Entity ID Attachment To -1
+		m_Framebuffer->ClearAttachment(1, -1);
+
 		// Update scene
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+
+		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+		my = viewportSize.y - my;
+
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
+			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
+		}
 
 		m_Framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender() {
 		OC_PROFILE_FUNCTION();
-		/// @note Modified from ImGui exmaple code
+		// Modified from ImGui exmaple code
 
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen_persistant = true;
@@ -193,6 +217,12 @@ namespace Ocean {
 		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 500.0f, 500.0f });
 		ImGui::Begin("Stats");
 
+		std::string name = "None";
+		if (m_HoveredEntity)
+			name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+
 		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -206,18 +236,75 @@ namespace Ocean {
 		
 		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 1920.0f, 1080.0f });
 		ImGui::Begin("Viewport");
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
-		ImGui::End(); // Viewport
+		// Gizmos
+		Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity && m_GizmoType != -1) {
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
 
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(
+				m_ViewportBounds[0].x,
+				m_ViewportBounds[0].y,
+				m_ViewportBounds[1].x - m_ViewportBounds[0].x,
+				m_ViewportBounds[1].y - m_ViewportBounds[0].y
+			);
+
+			// Runtime Camera From Entity
+			// auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+			// const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+			// const glm::mat4& cameraProjection = camera.GetProjection();
+			// glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+			// Editor Camera
+			const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+			glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+
+			// Entity Transform
+			auto& transformComp = selectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = transformComp.GetTransform();
+
+			// Snapping
+			bool snap = Input::IsKeyPressed(Key::LeftControl);
+
+			float snapValue = 0.5f; // Snap to 0.5m for translation / scale
+			if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f; // Snap to 45 degrees for rotation
+
+			float snapValues[3] = { snapValue, snapValue, snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, snap ? snapValues : nullptr);
+
+			if (ImGuizmo::IsUsing()) {
+				glm::vec3 translation, rotation, scale;
+				Math::DecomposeTransform(transform, translation, rotation, scale);
+
+				glm::vec3 deltaRotation = rotation - transformComp.Rotation;
+				transformComp.Translation = translation;
+				transformComp.Rotation += deltaRotation;
+				transformComp.Scale = scale;
+			}
+		}
+
+		ImGui::End(); // Viewport
 		ImGui::PopStyleVar();
 
 		ImGui::End(); // Window
@@ -225,9 +312,11 @@ namespace Ocean {
 
 	void EditorLayer::OnEvent(Event& e) {
 		m_CameraController.OnEvent(e);
+		m_EditorCamera.OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(OC_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(OC_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
@@ -254,11 +343,43 @@ namespace Ocean {
 			case Key::S:
 				if (control && shift)
 					SaveSceneAs();
+				else if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::SCALE;
 
+				break;
+
+			// Gizmos
+			case Key::Space:
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = -1;
+
+				break;
+
+			case Key::T:
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				
+				break;
+
+			case Key::R:
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+	
 				break;
 		}
 
 		return true;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
+		if (e.GetMouseButton() == Mouse::ButtonLeft) {
+			if (m_ViewportHovered && !ImGuizmo::IsOver())
+				m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	void EditorLayer::NewScene() {
