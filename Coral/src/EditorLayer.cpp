@@ -1,12 +1,14 @@
 
 #include "EditorLayer.hpp"
 
-#include "Ocean/Core/Scene/SceneSerializer.hpp"
-#include "Ocean/Utils/PlatformUtils.hpp"
-#include "Ocean/Utils/Math/Math.hpp"
+// Ocean
+#include <Ocean/Core/Scene/SceneSerializer.hpp>
+#include <Ocean/Utils/PlatformUtils.hpp>
+#include <Ocean/Utils/Math/Math.hpp>
 
 // libs
 #include <imgui/imgui.h>
+
 #include <ImGuizmo/ImGuizmo.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,7 +22,7 @@ namespace Ocean {
 		OC_PROFILE_FUNCTION();
 
 		// Create a texture
-		m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
+		// m_CheckerboardTexture = Texture2D::Create("assets/Textures/Checkerboard.png");
 
 		// Create the framebuffer
 		FramebufferSpecification fbSpec;
@@ -213,6 +215,7 @@ namespace Ocean {
 		}
 
 		m_SceneHierarchyPanel.OnImGuiRender();
+		m_ContentBrowserPanel.OnImGuiRender();
 
 		ImGui::SetNextWindowSizeConstraints(ImVec2{ 200.0f, 200.0f }, ImVec2{ 500.0f, 500.0f });
 		ImGui::Begin("Stats");
@@ -355,7 +358,7 @@ namespace Ocean {
 
 				break;
 
-			case Key::T:
+			case Key::G:
 				if (!ImGuizmo::IsUsing())
 					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 				

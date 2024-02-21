@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Ocean.hpp"
-
 #include "Panels/SceneHierarchyPanel.hpp"
+#include "Panels/ContentBrowserPanel.hpp"
 
-#include "Ocean/Renderer/Camera/EditorCamera.h"
+// Ocean
+#include <Ocean.hpp>
+#include <Ocean/Renderer/Camera/EditorCamera.h>
 
 namespace Ocean {
 
@@ -59,7 +60,10 @@ namespace Ocean {
 		glm::vec2 m_ViewportBounds[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
 
 		// Panels
+		// TODO: Make Dynamic "Panels" To Enable / Disable Panels To Render
+
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+		ContentBrowserPanel m_ContentBrowserPanel;
 	};
 
 }	// Ocean

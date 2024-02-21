@@ -1,8 +1,9 @@
 
 #include "SceneHierarchyPanel.hpp"
 
-#include "Ocean/Core/Scene/Components.hpp"
-#include "Ocean/Utils/InternalUtils.hpp"
+// Ocean
+#include <Ocean/Core/Scene/Components.hpp>
+#include <Ocean/Utils/InternalUtils.hpp>
 
 // libs
 #include <imgui/imgui.h>

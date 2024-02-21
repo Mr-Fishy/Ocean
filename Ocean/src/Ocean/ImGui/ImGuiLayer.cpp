@@ -35,8 +35,8 @@ namespace Ocean {
 		// io.ConfigFlags |= ImGuiConfigFlags_IsSRGB;					// Enable S-RGB Color
 
 		float windowDPI = 1.0f; // TODO: Get DPI Here
-		io.Fonts->AddFontFromFileTTF("assets/fonts/NotoSans/static/NotoSans-Bold.ttf", 18.0f * windowDPI);
-		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans-SemiBold.ttf", 18.0f * windowDPI);
+		io.Fonts->AddFontFromFileTTF("app/Fonts/NotoSans/static/NotoSans-Bold.ttf", 18.0f * windowDPI);
+		io.Fonts->AddFontFromFileTTF("app/Fonts/OpenSans/static/OpenSans-SemiBold.ttf", 18.0f * windowDPI);
 
 		// Setup Dear ImGui Style
 		ImGui::StyleColorsDark();
