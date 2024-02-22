@@ -2,8 +2,8 @@
 #include "ocpch.hpp"
 #include "SceneSerializer.hpp"
 
-#include "Ocean/Core/Scene/Entity.hpp"
-#include "Ocean/Core/Scene/Components.hpp"
+#include "Ocean/Scene/Entity.hpp"
+#include "Ocean/Scene/Components.hpp"
 #include "Ocean/Utils/InternalUtils.hpp"
 
 // libs

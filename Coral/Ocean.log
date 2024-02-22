@@ -1,5 +1,6 @@
-[02:33:45] [info] OCEAN: Creating Window Coral Editor (1600, 900)
-[02:33:45] [info] OCEAN: OpenGL Info:
-[02:33:45] [info] OCEAN: - Vendor: ATI Technologies Inc.
-[02:33:45] [info] OCEAN: - Renderer: AMD Radeon RX 7900 XT
-[02:33:45] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 24.1.1.240110
+[14:46:41] [info] OCEAN: Creating Window Coral Editor (1600, 900)
+[14:46:41] [info] OCEAN: OpenGL Info:
+[14:46:41] [info] OCEAN: - Vendor: ATI Technologies Inc.
+[14:46:41] [info] OCEAN: - Renderer: AMD Radeon (TM) Graphics
+[14:46:41] [info] OCEAN: - Version: 4.6.0 Compatibility Profile Context 24.1.1.231127
+[14:46:45] [trace] OCEAN: Deserializing Scene 'Untitled'

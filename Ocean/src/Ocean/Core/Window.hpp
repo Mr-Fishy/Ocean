@@ -19,7 +19,7 @@ namespace Ocean {
 			const std::string& title = "Ocean Engine",
 			unsigned int width = 1600,
 			unsigned int height = 900
-		) : Title(title), Width(width), Height(height) {}
+		) : Title(title), Width(width), Height(height) { }
 	};
 
 	// Interface representing the platform window.
@@ -36,8 +36,8 @@ namespace Ocean {
 		virtual unsigned int GetHeight() const = 0;
 
 		// Window Attributes
-
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 

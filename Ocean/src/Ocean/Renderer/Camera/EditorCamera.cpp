@@ -28,9 +28,40 @@ namespace Ocean {
 				MousePan(delta);
 			else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
 				MouseZoom(delta.y);
+
+			// Keyboard Movement //
+			if (Input::IsKeyPressed(Key::LeftControl)) {
+				if (Input::IsKeyPressed(Key::Up))
+					ArrowZoom(ArrowDirection::UP);
+				else if (Input::IsKeyPressed(Key::Down))
+					ArrowZoom(ArrowDirection::DOWN);
+			}
+			else {
+				if (Input::IsKeyPressed(Key::Left))
+					ArrowPan(ArrowDirection::LEFT);
+				else if (Input::IsKeyPressed(Key::Right))
+					ArrowPan(ArrowDirection::RIGHT);
+
+				if (Input::IsKeyPressed(Key::Up))
+					ArrowPan(ArrowDirection::UP);
+				else if (Input::IsKeyPressed(Key::Down))
+					ArrowPan(ArrowDirection::DOWN);
+			}
 		}
 		else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle)) {
 			MouseRotate(delta);
+		}
+		else {
+			// Keyboard Movement//
+			if (Input::IsKeyPressed(Key::Left))
+				ArrowRotate(ArrowDirection::LEFT);
+			else if (Input::IsKeyPressed(Key::Right))
+				ArrowRotate(ArrowDirection::RIGHT);
+
+			if (Input::IsKeyPressed(Key::Up))
+				ArrowRotate(ArrowDirection::UP);
+			else if (Input::IsKeyPressed(Key::Down))
+				ArrowRotate(ArrowDirection::DOWN);
 		}
 
 		UpdateView();
@@ -96,6 +127,72 @@ namespace Ocean {
 
 	void EditorCamera::MouseZoom(float delta) {
 		m_Distance -= delta * ZoomSpeed();
+
+		if (m_Distance < 1.0f) {
+			m_FocalPoint += GetForwardVector();
+			m_Distance = 1.0f;
+		}
+	}
+
+	void EditorCamera::ArrowPan(ArrowDirection direction) {
+		auto [xSpeed, ySpeed] = PanSpeed();
+
+		switch (direction) {
+			case Ocean::EditorCamera::LEFT:
+				m_FocalPoint += -GetRightVector() * 0.06f * xSpeed * m_Distance;
+				break;
+
+			case Ocean::EditorCamera::RIGHT:
+				m_FocalPoint += GetRightVector() * 0.06f * xSpeed * m_Distance;
+				break;
+		}
+
+		switch (direction) {
+			case Ocean::EditorCamera::UP:
+				m_FocalPoint += GetUpVector() * 0.06f * ySpeed * m_Distance;
+				break;
+
+			case Ocean::EditorCamera::DOWN:
+				m_FocalPoint += -GetUpVector() * 0.06f * ySpeed * m_Distance;
+				break;
+		}
+	}
+
+	void EditorCamera::ArrowRotate(ArrowDirection direction) {
+		float yawSign = GetUpVector().y < 0 ? -1.0f : 1.0f;
+
+		switch (direction) {
+			case Ocean::EditorCamera::LEFT:
+				m_Yaw += yawSign * 0.06f * RotationSpeed();
+				break;
+
+			case Ocean::EditorCamera::RIGHT:
+				m_Yaw += yawSign * -0.06f * RotationSpeed();
+				break;
+		}
+
+		switch (direction) {
+			case Ocean::EditorCamera::UP:
+				m_Pitch += 0.06f * RotationSpeed();
+				break;
+
+			case Ocean::EditorCamera::DOWN:
+				m_Pitch += -0.06f * RotationSpeed();
+				break;
+		}
+	}
+
+	void EditorCamera::ArrowZoom(ArrowDirection direction) {
+		switch (direction) {
+			case Ocean::EditorCamera::UP:
+				m_Distance -= 0.06f * ZoomSpeed();
+				break;
+
+			case Ocean::EditorCamera::DOWN:
+				m_Distance -= -0.06f * ZoomSpeed();
+				break;
+
+		}
 
 		if (m_Distance < 1.0f) {
 			m_FocalPoint += GetForwardVector();

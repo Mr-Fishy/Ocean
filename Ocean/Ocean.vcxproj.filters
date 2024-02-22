@@ -10,11 +10,8 @@
     <Filter Include="src\Ocean\Core">
       <UniqueIdentifier>{FA93F11C-E661-E522-CFF5-5549BB62C187}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Ocean\Core\Layers">
-      <UniqueIdentifier>{79ADB063-E519-6C5E-AE0D-04BC1A398EC6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Ocean\Core\Scene">
-      <UniqueIdentifier>{9794AB9E-8323-3568-2C42-496318B0450E}</UniqueIdentifier>
+    <Filter Include="src\Ocean\DataTypes">
+      <UniqueIdentifier>{0012C628-6C73-A336-F5E0-E9E86141DAF5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Ocean\Debug">
       <UniqueIdentifier>{586E30BB-C4F9-9D7F-CD0A-21743915FA7F}</UniqueIdentifier>
@@ -22,14 +19,20 @@
     <Filter Include="src\Ocean\Events">
       <UniqueIdentifier>{068CC824-F284-E776-1BB7-CCFB070FC782}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Ocean\ImGui">
-      <UniqueIdentifier>{0CD98EBB-7864-FC7F-8175-7F74ED7F5880}</UniqueIdentifier>
+    <Filter Include="src\Ocean\Layers">
+      <UniqueIdentifier>{E176AB33-CD6F-CA85-F6A1-AF0AE2F9A991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Layers\ImGui">
+      <UniqueIdentifier>{CBD0E37A-B7CA-0CCD-A037-A3DD8CD07239}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Ocean\Renderer">
       <UniqueIdentifier>{48B41670-3498-D7C5-9DF8-D11889FBC147}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Ocean\Renderer\Camera">
       <UniqueIdentifier>{C0A7DB3C-2C6A-0FC7-751A-9E53E11BE8A4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Scene">
+      <UniqueIdentifier>{FFD03EBC-6B5C-AC80-746D-2F75E0770881}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Ocean\Utils">
       <UniqueIdentifier>{42656CBC-AEF0-D980-B701-5D75230C3681}</UniqueIdentifier>
@@ -87,9 +90,6 @@
     <ClInclude Include="src\Ocean\Core\Base.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\DataTypes.hpp">
-      <Filter>src\Ocean\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ocean\Core\EntryPoint.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
@@ -98,12 +98,6 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\KeyCodes.hpp">
       <Filter>src\Ocean\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Layers\Layer.hpp">
-      <Filter>src\Ocean\Core\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Layers\LayerStack.hpp">
-      <Filter>src\Ocean\Core\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Log.hpp">
       <Filter>src\Ocean\Core</Filter>
@@ -114,29 +108,14 @@
     <ClInclude Include="src\Ocean\Core\PlatformDetection.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Components.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Entity.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Scene.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\SceneCamera.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\SceneSerializer.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ocean\Core\Scene\Scriptables.hpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ocean\Core\Timestep.hpp">
       <Filter>src\Ocean\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Core\Window.hpp">
       <Filter>src\Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\DataTypes\Data.hpp">
+      <Filter>src\Ocean\DataTypes</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Debug\Instrumentor.hpp">
       <Filter>src\Ocean\Debug</Filter>
@@ -153,8 +132,14 @@
     <ClInclude Include="src\Ocean\Events\MouseEvent.hpp">
       <Filter>src\Ocean\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean\ImGui\ImGuiLayer.hpp">
-      <Filter>src\Ocean\ImGui</Filter>
+    <ClInclude Include="src\Ocean\Layers\ImGui\ImGuiLayer.hpp">
+      <Filter>src\Ocean\Layers\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Layers\Layer.hpp">
+      <Filter>src\Ocean\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Layers\LayerStack.hpp">
+      <Filter>src\Ocean\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp">
       <Filter>src\Ocean\Renderer</Filter>
@@ -197,6 +182,24 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp">
       <Filter>src\Ocean\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\Components.hpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\Entity.hpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\Scene.hpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\SceneCamera.hpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\SceneSerializer.hpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\Scriptables.hpp">
+      <Filter>src\Ocean\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Utils\InternalUtils.hpp">
       <Filter>src\Ocean\Utils</Filter>
@@ -1493,35 +1496,23 @@
     <ClCompile Include="src\Ocean\Core\Application.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Layers\Layer.cpp">
-      <Filter>src\Ocean\Core\Layers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Layers\LayerStack.cpp">
-      <Filter>src\Ocean\Core\Layers</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ocean\Core\Log.cpp">
       <Filter>src\Ocean\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Scene\Entity.cpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Scene\Scene.cpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Scene\SceneCamera.cpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ocean\Core\Scene\SceneSerializer.cpp">
-      <Filter>src\Ocean\Core\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Core\Window.cpp">
       <Filter>src\Ocean\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\ImGui\ImGuiBuild.cpp">
-      <Filter>src\Ocean\ImGui</Filter>
+    <ClCompile Include="src\Ocean\Layers\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Ocean\Layers\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ocean\ImGui\ImGuiLayer.cpp">
-      <Filter>src\Ocean\ImGui</Filter>
+    <ClCompile Include="src\Ocean\Layers\ImGui\ImGuiLayer.cpp">
+      <Filter>src\Ocean\Layers\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Layers\Layer.cpp">
+      <Filter>src\Ocean\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Layers\LayerStack.cpp">
+      <Filter>src\Ocean\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp">
       <Filter>src\Ocean\Renderer</Filter>
@@ -1561,6 +1552,18 @@
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\VertexArray.cpp">
       <Filter>src\Ocean\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Scene\Entity.cpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Scene\Scene.cpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Scene\SceneCamera.cpp">
+      <Filter>src\Ocean\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Scene\SceneSerializer.cpp">
+      <Filter>src\Ocean\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Utils\Math\Math.cpp">
       <Filter>src\Ocean\Utils\Math</Filter>

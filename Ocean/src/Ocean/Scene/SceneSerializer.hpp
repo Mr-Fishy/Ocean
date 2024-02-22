@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Scene/Scene.hpp"
+#include "Ocean/Scene/Scene.hpp"
 
 namespace Ocean {
 

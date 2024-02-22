@@ -2,6 +2,7 @@ project "yaml-cpp"
 	location "yaml-cpp"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("yaml-cpp/bin/" .. outputdir .. "/%{prj.name}")

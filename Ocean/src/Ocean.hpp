@@ -5,7 +5,7 @@
 #include "Ocean/Core/Base.hpp"
 
 #include "Ocean/Core/Application.hpp"
-#include "Ocean/Core/Layers/Layer.hpp"
+#include "Ocean/Layers/Layer.hpp"
 #include "Ocean/Core/Log.hpp"
 #include "Ocean/Core/Assert.hpp"
 
@@ -17,13 +17,13 @@
 #include "Ocean//Renderer/Camera/OrthoCameraController.hpp"
 // #include "Ocean//Renderer/Camera/PerspectiveCameraController.hpp"
 
-#include "Ocean/ImGui/ImGuiLayer.hpp"
+#include "Ocean/Layers/ImGui/ImGuiLayer.hpp"
 
 // --- Scene & Components --- //
-#include "Ocean/Core/Scene/Scene.hpp"
-#include "Ocean/Core/Scene/Entity.hpp"
-#include "Ocean/Core/Scene/Scriptables.hpp"
-#include "Ocean/Core/Scene/Components.hpp"
+#include "Ocean/Scene/Scene.hpp"
+#include "Ocean/Scene/Entity.hpp"
+#include "Ocean/Scene/Scriptables.hpp"
+#include "Ocean/Scene/Components.hpp"
 
 // --- Renderer --- //
 #include "Ocean/Renderer/Renderer.hpp"

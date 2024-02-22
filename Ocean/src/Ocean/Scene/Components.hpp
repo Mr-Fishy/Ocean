@@ -2,7 +2,9 @@
 
 #include "Scriptables.hpp"
 
-#include "Ocean/Core/Scene/SceneCamera.hpp"
+#include "Ocean/Scene/SceneCamera.hpp"
+
+#include "Ocean/Renderer/Texture.hpp"
 
 // libs
 #include <glm/glm.hpp>
@@ -41,6 +43,8 @@ namespace Ocean {
 	struct SpriteRendererComponent {
 		// Replace color with a material, making backend filtering / optimizations based on data
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		Ref<Texture2D> Texture;
+		float TilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;

@@ -21,12 +21,19 @@ namespace Ocean {
 		virtual void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
 
+		void OnScenePlay();
+		void OnSceneStop();
+
+		// UI Panels
+		void ToolbarUI();
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveSceneAs();
 
 		/* --- */
@@ -55,6 +62,12 @@ namespace Ocean {
 
 		int m_GizmoType = -1;
 
+		enum class SceneState {
+			Edit = 0,
+			Play = 1
+		};
+		SceneState m_SceneState = SceneState::Edit;
+
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
@@ -64,6 +77,10 @@ namespace Ocean {
 
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 		ContentBrowserPanel m_ContentBrowserPanel;
+
+		// Editor Resources (Likely Should Be In A Ordered List)
+
+		Ref<Texture2D> m_IconPlay, m_IconStop;
 	};
 
 }	// Ocean

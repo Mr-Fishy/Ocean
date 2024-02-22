@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
-#include "Ocean/Core/Layers/Layer.hpp"
+#include "Ocean/Layers/Layer.hpp"
 
 // std
 #include <vector>

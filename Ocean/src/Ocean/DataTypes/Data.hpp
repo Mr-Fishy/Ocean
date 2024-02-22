@@ -8,17 +8,10 @@
 
 namespace Ocean {
 
-	/* --- Vector (Math) Types --- */
-	// Bool
+	// Int Types //
 
-	// Vec2 bool
-	// A 2 component vector with boolean types.
-	//
+	// Float Types //
 
-	// Int
-
-	// Float
-
-	// Etc.
+	// Double Types //
 
 }	// Ocean

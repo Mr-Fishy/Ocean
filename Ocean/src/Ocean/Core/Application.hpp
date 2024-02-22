@@ -3,13 +3,13 @@
 #include "Ocean/Core/Base.hpp"
 
 #include "Ocean/Core/Window.hpp"
-#include "Ocean/Core/Layers/LayerStack.hpp"
+#include "Ocean/Layers/LayerStack.hpp"
 #include "Ocean/Events/Event.hpp"
 #include "Ocean/Events/ApplicationEvent.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
 
-#include "Ocean/ImGui/ImGuiLayer.hpp"
+#include "Ocean/Layers/ImGui/ImGuiLayer.hpp"
 
 int main(int argc, char** argv);
 
@@ -34,7 +34,9 @@ namespace Ocean {
 
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		static Application& Get() { return *s_Instance; }
+		
 		Window& GetWindow() { return *m_Window; }
+		static float GetDPI(int monitorIndex = 1);
 
 	private:
 		void Run();

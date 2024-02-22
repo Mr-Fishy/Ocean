@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
-#include "Ocean/Core/Scene/Scene.hpp"
-#include "Ocean/Core/Scene/Entity.hpp"
+#include "Ocean/Scene/Scene.hpp"
+#include "Ocean/Scene/Entity.hpp"
 
 namespace Ocean {
 

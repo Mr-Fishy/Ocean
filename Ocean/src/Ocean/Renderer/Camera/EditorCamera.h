@@ -60,6 +60,15 @@ namespace Ocean {
 		float GetYaw() const { return m_Yaw; }
 
 	private:
+		enum ArrowDirection {
+			LEFT = 1,
+			UP = 2,
+			RIGHT = 3,
+			DOWN = 4
+		};
+
+		/* --- */
+
 		void UpdateProjection();
 		void UpdateView();
 
@@ -68,6 +77,10 @@ namespace Ocean {
 		void MousePan(glm::vec2 delta);
 		void MouseRotate(glm::vec2 delta);
 		void MouseZoom(float delta);
+
+		void ArrowPan(ArrowDirection direction);
+		void ArrowRotate(ArrowDirection direction);
+		void ArrowZoom(ArrowDirection direction);
 
 		const glm::vec2 GetDelta();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Layers/Layer.hpp"
+#include "Ocean/Layers/Layer.hpp"
 
 #include "Ocean/Events/ApplicationEvent.hpp"
 #include "Ocean/Events/KeyEvent.hpp"

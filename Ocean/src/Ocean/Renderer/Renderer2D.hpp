@@ -7,7 +7,7 @@
 #include "Ocean/Renderer/Camera/Camera.hpp"
 #include "Ocean/Renderer/Camera/EditorCamera.h"
 
-#include "Ocean/Core/Scene/Components.hpp"
+#include "Ocean/Scene/Components.hpp"
 
 namespace Ocean {
 

@@ -30,11 +30,13 @@ namespace Ocean {
 		// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;			// Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;				// Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;				// Enable Multi-Viewport / Platform Windows
-		// io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;		// Scale Fonts Based On DPI
-		// io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports;	// Scale Fonts Based On DPI
+		// io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;			// Scale Fonts Based On DPI
+		io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports;		// Scale Fonts Based On DPI
 		// io.ConfigFlags |= ImGuiConfigFlags_IsSRGB;					// Enable S-RGB Color
 
-		float windowDPI = 1.0f; // TODO: Get DPI Here
+		io.ConfigViewportsNoDecoration = false; // TODO: Need to do Window Decoration Control So that Window Bar Is Not So Bad
+
+		float windowDPI = Application::GetDPI();
 		io.Fonts->AddFontFromFileTTF("app/Fonts/NotoSans/static/NotoSans-Bold.ttf", 18.0f * windowDPI);
 		io.Fonts->AddFontFromFileTTF("app/Fonts/OpenSans/static/OpenSans-SemiBold.ttf", 18.0f * windowDPI);
 
@@ -45,7 +47,7 @@ namespace Ocean {
 		// When Viewports Are Enabled We Tweak WindowRounding / WindowBg So Platform Windows Can Look Identical To Regular Ones.
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-			style.WindowRounding = 6.0f;  // 6.0f Matches Windows 11 Rounding But ImGui Viewports Do Not Have Rounding Outside Of Application Window
+			style.WindowRounding = 6.0f;  // 6.0f Matches Windows 11 Rounding But ImGui Viewports Do Not Have Rounding Outside Of Application Window Due To Default Viewport Decoration Setting
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
@@ -112,17 +114,17 @@ namespace Ocean {
 		// Window Modal Tint
 		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 
-		colors[ImGuiCol_Text]				= text;
+		colors[ImGuiCol_Text]					= text;
 		// colors[ImGuiCol_TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
 
 		// Docking
-		colors[ImGuiCol_DockingEmptyBg]		= background;
-		colors[ImGuiCol_DockingPreview]		= accent;
+		colors[ImGuiCol_DockingEmptyBg		]	= background;
+		colors[ImGuiCol_DockingPreview		]	= accent;
 
 		// Title
-		colors[ImGuiCol_TitleBg] = primary;
-		colors[ImGuiCol_TitleBgActive] = primary;
-		colors[ImGuiCol_TitleBgCollapsed] = primary;
+		colors[ImGuiCol_TitleBg				]	= primary;
+		colors[ImGuiCol_TitleBgActive		]	= primary;
+		colors[ImGuiCol_TitleBgCollapsed	]	= primary;
 
 		// Navigation
 		// colors[ImGuiCol_NavHighlight] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
@@ -130,16 +132,16 @@ namespace Ocean {
 		// colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 
 		// Tabs
-		colors[ImGuiCol_Tab] = primary;
-		colors[ImGuiCol_TabHovered] = secondary;
-		colors[ImGuiCol_TabActive] = accent;
-		colors[ImGuiCol_TabUnfocused] = primary;
-		colors[ImGuiCol_TabUnfocusedActive] = secondary;
+		colors[ImGuiCol_Tab					]	= primary;
+		colors[ImGuiCol_TabHovered			]	= secondary;
+		colors[ImGuiCol_TabActive			]	= accent;
+		colors[ImGuiCol_TabUnfocused		]	= primary;
+		colors[ImGuiCol_TabUnfocusedActive	]	= primary;
 
 		// Headers
-		colors[ImGuiCol_Header] = primary;
-		colors[ImGuiCol_HeaderHovered] = secondary;
-		colors[ImGuiCol_HeaderActive] = accent;
+		colors[ImGuiCol_Header				]	= primary;
+		colors[ImGuiCol_HeaderHovered		]	= secondary;
+		colors[ImGuiCol_HeaderActive		]	= accent;
 
 		// Seperator
 		// colors[ImGuiCol_Separator] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);

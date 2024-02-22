@@ -34,6 +34,26 @@ namespace Ocean {
 		Renderer::Shutdown();
 	}
 
+	float Application::GetDPI(int monitorIndex) {
+		int monitorCount;
+		GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+
+		float x, y;
+
+		if (monitorCount > 1) {
+			OC_CORE_INFO("Multiple Monitors Connected, Using Primary Monitor.");
+			glfwGetMonitorContentScale(monitors[0], &x, &y);
+		}
+		else if (monitorCount == 1) {
+			glfwGetMonitorContentScale(monitors[0], &x, &y);
+		}
+		else {
+			OC_CORE_ASSERT("No Monitors Are Connected According To GLFW!");
+		}
+
+		return (x + y) / 2;
+	}
+
 	void Application::Run() {
 		OC_PROFILE_FUNCTION();
 

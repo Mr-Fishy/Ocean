@@ -191,7 +191,6 @@ project "Coral"
 
 	defines
 	{
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",	-- Silence std::iterator Depracation Warnings (C++20)
 	}
 
 	files
