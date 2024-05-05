@@ -38,6 +38,8 @@ namespace Ocean {
 		Window& GetWindow() { return *m_Window; }
 		static float GetDPI(int monitorIndex = 1);
 
+		const float GetLastFrameTime() const { return m_LastFrameTime; }
+
 	private:
 		void Run();
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -52,14 +54,14 @@ namespace Ocean {
 		static Application* s_Instance;
 		Scope<Window> m_Window;
 
-		bool m_Running = true;
-		bool m_Minimized = false;
-
 		LayerStack m_LayerStack;
 
 		ImGuiLayer* m_ImGuiLayer;
 
 		float m_LastFrameTime = 0.0f;
+
+		bool m_Running = true;
+		bool m_Minimized = false;
 	};
 
 	// To Be Defined In CLIENT

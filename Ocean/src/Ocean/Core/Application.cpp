@@ -80,7 +80,7 @@ namespace Ocean {
 				OC_PROFILE_SCOPE("Layerstack OnImGuiRender");
 
 				for (Layer* layer : m_LayerStack) {
-					layer->OnImGuiRender();
+					layer->OnImGuiRender(timestep);
 				}
 			}
 

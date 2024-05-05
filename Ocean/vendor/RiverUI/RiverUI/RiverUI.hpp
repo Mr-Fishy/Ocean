@@ -1,7 +1,0 @@
-/*
- * -----[Contents]-----
- * 
- */
-
-#pragma once
-

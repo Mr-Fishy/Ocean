@@ -4,6 +4,7 @@
 
 #include "Ocean/Core/Base.hpp"
 
+// --- Application --- //
 #include "Ocean/Core/Application.hpp"
 #include "Ocean/Layers/Layer.hpp"
 #include "Ocean/Core/Log.hpp"
@@ -16,6 +17,9 @@
 #include "Ocean/Core/MouseCodes.hpp"
 #include "Ocean//Renderer/Camera/OrthoCameraController.hpp"
 // #include "Ocean//Renderer/Camera/PerspectiveCameraController.hpp"
+
+#include "Ocean/Memory/LinearAllocator.hpp"
+#include "Ocean/Memory/FreeListAllocator.hpp"
 
 #include "Ocean/Layers/ImGui/ImGuiLayer.hpp"
 

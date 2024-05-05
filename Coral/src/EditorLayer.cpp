@@ -2,6 +2,7 @@
 #include "EditorLayer.hpp"
 
 // Ocean
+#include <Ocean/Core/Base.hpp>
 #include <Ocean/Scene/SceneSerializer.hpp>
 #include <Ocean/Utils/PlatformUtils.hpp>
 #include <Ocean/Utils/Math/Math.hpp>
@@ -18,7 +19,7 @@ namespace Ocean {
 
 	extern const std::filesystem::path g_AssetPath;
 
-	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true), m_SquareColor({ 0.2f, 0.3f, 0.8f, 1.0f }) {}
+	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true), m_SquareColor({ 0.2f, 0.3f, 0.8f, 1.0f }) { }
 
 	void EditorLayer::OnAttach() {
 		OC_PROFILE_FUNCTION();
@@ -41,22 +42,23 @@ namespace Ocean {
 
 		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		#if 0
+		#if 1
 			// Entities
 			m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
 			m_CameraEntity.AddComponent<CameraComponent>();
 
-			m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-			auto& sc = m_SecondCamera.AddComponent<CameraComponent>();
-			sc.Primary = false;
+			int index = 0;
+			for (int i = 0; i < 20; i++) {
+				for (int j = 0; j < 20; j++) {
+					auto square = m_ActiveScene->CreateEntity("Square " + std::to_string(index));
+					square.AddComponent<SpriteRendererComponent>(glm::vec4{ i / 10, 1.0f, j / 10, 1.0f });
+					auto& translation = square.GetComponent<TransformComponent>().Translation;
+					translation.x += i * 2;
+					translation.y += j * 2;
 
-			auto square = m_ActiveScene->CreateEntity("Green Square");
-			square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-
-			auto redSquare = m_ActiveScene->CreateEntity("Red Square");
-			redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-
-			m_SquareEntity = square;
+					index++;
+				}
+			}
 
 			class CameraController : public ScriptableEntity {
 			public:
@@ -64,7 +66,7 @@ namespace Ocean {
 					auto& translation = GetComponent<TransformComponent>().Translation;
 					translation.x = rand() % 10 - 5.0f;
 				}
-
+				 
 				virtual void OnDestroy() override { }
 
 				virtual void OnUpdate(Timestep ts) override {
@@ -82,7 +84,6 @@ namespace Ocean {
 				}
 			};
 			m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-			m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		#endif
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
@@ -152,7 +153,7 @@ namespace Ocean {
 		m_Framebuffer->Unbind();
 	}
 
-	void EditorLayer::OnImGuiRender() {
+	void EditorLayer::OnImGuiRender(Timestep ts) {
 		OC_PROFILE_FUNCTION();
 		// Modified from ImGui exmaple code
 
@@ -237,6 +238,10 @@ namespace Ocean {
 			name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
 
 		ImGui::Text("Hovered Entity: %s", name.c_str());
+
+		float fps = 1000.0f / ts.GetMilliseconds();
+		ImGui::Text("Frametime (ms): %f", ts.GetMilliseconds());
+		ImGui::Text("FPS: %f", fps);
 
 		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
@@ -374,7 +379,7 @@ namespace Ocean {
 		Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 
-		if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0)) {
+		if (ImGui::ImageButton((ImTextureID)(uint64_t)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0)) {
 			if (m_SceneState == SceneState::Edit)
 				OnScenePlay();
 			else if (m_SceneState == SceneState::Play)

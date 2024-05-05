@@ -3,8 +3,13 @@
 #include "Ocean/Core/Base.hpp"
 
 // libs
+// Disabled warnings due to primarly C++ version deprication warnings.
+// This will not be needed once a Ocean developed log system is made and spdlog is no longer needed.
+#pragma warning(push)
+#pragma warning(disable : 6285 26437 26450 26495 26498 26800)
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+#pragma warning(pop)
 
 namespace Ocean {
 

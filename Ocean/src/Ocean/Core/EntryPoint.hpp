@@ -2,6 +2,8 @@
 
 #include "Ocean/Core/Base.hpp"
 
+#include "Ocean/Memory/FreeListAllocator.hpp"
+
 // std
 #include <iostream>
 
@@ -15,7 +17,7 @@ int main(int argc, char** argv) {
 	Log::Init();   // Initializes spdlog log system.
 
 	OC_PROFILE_BEGIN_SESSION("Startup", "OceanProfile-Startup.json");
-	auto app = CreateApplication();
+	Application* app = CreateApplication();
 	OC_PROFILE_END_SESSION();
 
 	try {
@@ -33,7 +35,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	OC_PROFILE_BEGIN_SESSION("Shutdown", "OceanProfile-Startup.json");
+	OC_PROFILE_BEGIN_SESSION("Shutdown", "OceanProfile-Shutdown.json");
 	delete app;
 	OC_PROFILE_END_SESSION();
 

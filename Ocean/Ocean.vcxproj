@@ -168,6 +168,12 @@
     <ClInclude Include="src\Ocean\Layers\ImGui\ImGuiLayer.hpp" />
     <ClInclude Include="src\Ocean\Layers\Layer.hpp" />
     <ClInclude Include="src\Ocean\Layers\LayerStack.hpp" />
+    <ClInclude Include="src\Ocean\Logger\OLog.hpp" />
+    <ClInclude Include="src\Ocean\Memory\Allocator.hpp" />
+    <ClInclude Include="src\Ocean\Memory\FreeListAllocator.hpp" />
+    <ClInclude Include="src\Ocean\Memory\LinearAllocator.hpp" />
+    <ClInclude Include="src\Ocean\Memory\List\SingleLinkedList.hpp" />
+    <ClInclude Include="src\Ocean\Memory\List\StackLinkedList.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\Camera.hpp" />
     <ClInclude Include="src\Ocean\Renderer\Camera\EditorCamera.h" />
@@ -183,6 +189,7 @@
     <ClInclude Include="src\Ocean\Renderer\Texture.hpp" />
     <ClInclude Include="src\Ocean\Renderer\VertexArray.hpp" />
     <ClInclude Include="src\Ocean\Scene\Components.hpp" />
+    <ClInclude Include="src\Ocean\Scene\ECS\ShrimpManager.hpp" />
     <ClInclude Include="src\Ocean\Scene\Entity.hpp" />
     <ClInclude Include="src\Ocean\Scene\Scene.hpp" />
     <ClInclude Include="src\Ocean\Scene\SceneCamera.hpp" />
@@ -627,6 +634,9 @@
     <ClCompile Include="src\Ocean\Layers\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Ocean\Layers\Layer.cpp" />
     <ClCompile Include="src\Ocean\Layers\LayerStack.cpp" />
+    <ClCompile Include="src\Ocean\Memory\Allocator.cpp" />
+    <ClCompile Include="src\Ocean\Memory\FreeListAllocator.cpp" />
+    <ClCompile Include="src\Ocean\Memory\LinearAllocator.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera\EditorCamera.cpp" />
     <ClCompile Include="src\Ocean\Renderer\Camera\OrthoCamera.cpp" />

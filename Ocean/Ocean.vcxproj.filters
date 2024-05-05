@@ -25,6 +25,15 @@
     <Filter Include="src\Ocean\Layers\ImGui">
       <UniqueIdentifier>{CBD0E37A-B7CA-0CCD-A037-A3DD8CD07239}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Ocean\Logger">
+      <UniqueIdentifier>{F1F59E34-DDEE-BD86-0621-A30BF2789D92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Memory">
+      <UniqueIdentifier>{8A974236-7690-6188-9FC2-460D8B1A4194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Memory\List">
+      <UniqueIdentifier>{35D8DEEF-A144-9AEA-6A38-3248D663BC52}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Ocean\Renderer">
       <UniqueIdentifier>{48B41670-3498-D7C5-9DF8-D11889FBC147}</UniqueIdentifier>
     </Filter>
@@ -33,6 +42,9 @@
     </Filter>
     <Filter Include="src\Ocean\Scene">
       <UniqueIdentifier>{FFD03EBC-6B5C-AC80-746D-2F75E0770881}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ocean\Scene\ECS">
+      <UniqueIdentifier>{C92C4871-358E-257F-BEFB-6B312A5C5C3E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Ocean\Utils">
       <UniqueIdentifier>{42656CBC-AEF0-D980-B701-5D75230C3681}</UniqueIdentifier>
@@ -141,6 +153,24 @@
     <ClInclude Include="src\Ocean\Layers\LayerStack.hpp">
       <Filter>src\Ocean\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ocean\Logger\OLog.hpp">
+      <Filter>src\Ocean\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Memory\Allocator.hpp">
+      <Filter>src\Ocean\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Memory\FreeListAllocator.hpp">
+      <Filter>src\Ocean\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Memory\LinearAllocator.hpp">
+      <Filter>src\Ocean\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Memory\List\SingleLinkedList.hpp">
+      <Filter>src\Ocean\Memory\List</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Memory\List\StackLinkedList.hpp">
+      <Filter>src\Ocean\Memory\List</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ocean\Renderer\Buffer.hpp">
       <Filter>src\Ocean\Renderer</Filter>
     </ClInclude>
@@ -185,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="src\Ocean\Scene\Components.hpp">
       <Filter>src\Ocean\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Scene\ECS\ShrimpManager.hpp">
+      <Filter>src\Ocean\Scene\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Ocean\Scene\Entity.hpp">
       <Filter>src\Ocean\Scene</Filter>
@@ -1513,6 +1546,15 @@
     </ClCompile>
     <ClCompile Include="src\Ocean\Layers\LayerStack.cpp">
       <Filter>src\Ocean\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Memory\Allocator.cpp">
+      <Filter>src\Ocean\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Memory\FreeListAllocator.cpp">
+      <Filter>src\Ocean\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ocean\Memory\LinearAllocator.cpp">
+      <Filter>src\Ocean\Memory</Filter>
     </ClCompile>
     <ClCompile Include="src\Ocean\Renderer\Buffer.cpp">
       <Filter>src\Ocean\Renderer</Filter>

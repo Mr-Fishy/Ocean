@@ -7,7 +7,6 @@
 // Layers Must Be Declared Before Sandbox Appliction
 #include "EditorLayer.hpp"
 
-
 namespace Ocean {
 
 	class Coral : public Application {

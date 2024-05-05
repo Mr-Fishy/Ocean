@@ -15,11 +15,11 @@ namespace Ocean {
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer() = default;
 
-		virtual void OnAttach() {}
-		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep ts) {}
-		virtual void OnImGuiRender() {}
-		virtual void OnEvent(Event& event) {}
+		virtual void OnAttach() { }
+		virtual void OnDetach() { }
+		virtual void OnUpdate(Timestep ts) { }
+		virtual void OnImGuiRender(Timestep ts) { }
+		virtual void OnEvent(Event& event) { }
 
 		// TODO: Enable / Disable Layers
 

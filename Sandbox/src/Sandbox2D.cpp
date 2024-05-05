@@ -60,7 +60,7 @@ void Sandbox2D::OnUpdate(Ocean::Timestep ts) {
 	}
 }
 
-void Sandbox2D::OnImGuiRender() {
+void Sandbox2D::OnImGuiRender(Ocean::Timestep ts) {
 	OC_PROFILE_FUNCTION();
 
 	ImGui::Begin("Settings");

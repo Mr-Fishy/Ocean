@@ -16,6 +16,12 @@ namespace Ocean {
 
 	private:
 		Ref<Scene> m_Scene;
+
+		/* --- */
+
+		#ifdef DEBUG
+			friend class Validator;
+		#endif // DEBUG
 	};
 
 }	// Ocean

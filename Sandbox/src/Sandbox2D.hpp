@@ -10,7 +10,7 @@ public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 
-	virtual void OnImGuiRender() override;
+	virtual void OnImGuiRender(Ocean::Timestep ts) override;
 	void OnUpdate(Ocean::Timestep ts) override;
 	void OnEvent(Ocean::Event& e) override;
 

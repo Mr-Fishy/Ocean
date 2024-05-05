@@ -27,8 +27,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Ocean/Core/Base.hpp"
-
 #include "Ocean/Debug/Instrumentor.hpp"
 
 #ifdef OC_PLATFORM_WINDOWS

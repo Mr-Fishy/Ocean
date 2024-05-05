@@ -18,7 +18,7 @@ namespace Ocean {
 		virtual void OnDetach() override;
 
 		void OnUpdate(Timestep ts) override;
-		virtual void OnImGuiRender() override;
+		virtual void OnImGuiRender(Timestep ts) override;
 		void OnEvent(Event& e) override;
 
 		void OnScenePlay();

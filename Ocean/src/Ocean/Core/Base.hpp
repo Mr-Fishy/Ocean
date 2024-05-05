@@ -2,9 +2,9 @@
 
 #include "Ocean/Core/PlatformDetection.hpp"
 
-// std
 #include <memory>
 #include <intrin.h>
+#include <iostream>
 
 #ifdef OC_DEBUG
 	#if defined(OC_PLATFORM_WINDOWS)
@@ -35,6 +35,8 @@ namespace Ocean {
 
 	template<typename T, typename ... Args>
 	constexpr Scope<T> CreateScope(Args&& ... args) {
+		std::cout << "Make Unique Ptr Call" << std::endl;
+
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
@@ -43,10 +45,12 @@ namespace Ocean {
 
 	template<typename T, typename ... Args>
 	constexpr Ref<T> CreateRef(Args&& ... args) {
+		std::cout << "Make Shared Ptr Call" << std::endl;
+
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
-}
+}	// Ocean
 
 #include "Ocean/Core/Log.hpp"
 #include "Ocean/Core/Assert.hpp"
