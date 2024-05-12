@@ -2,52 +2,45 @@ project "Coral"
 	location "Coral"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	defines
-	{
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",	-- Silence std::iterator Depracation Warnings (C++20)
+	defines {
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
-	files
-	{
+	files {
 		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.c",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 	}
 
-	includedirs
-	{
-		"Ocean/vendor/spdlog/include",
+	includedirs {
 		"Ocean/src",
-		"Ocean/vendor",
-		"%{IncludeDir.ENTT}",
-		"%{IncludeDir.glm}",
 	}
 
-	links
-	{
-		"Ocean",
+	links {
+		"Ocean"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
 	filter "configurations:Debug"
-		defines"OC_DEBUG"
+		defines "TB_DEBUG"
 		runtime "Debug"
-		symbols"on"
+		symbols "on"
 
 	filter "configurations:Release"
-		defines "OC_RELEASE"
+		defines "TB_RELEASE"
 		runtime "Release"
 		optimize "on"
-		
+	
 	filter "configurations:Dist"
-		defines "OC_DIST"
+		defines "TB_DIST"
 		runtime "Release"
 		optimize "on"

@@ -7,7 +7,3 @@
 *.user
 *.filters
 *.vcxproj
-
-# Archived
-z_OceanEngine2D_Vulcan_Standalone/
-z_OceanEngine3D_Vulcan_Standalone/

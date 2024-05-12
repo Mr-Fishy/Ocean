@@ -1,6 +1,6 @@
-project "Ocean"
-	location "Ocean"
-	kind "StaticLib"
+project "Testbox"
+	location "Testbox"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -20,23 +20,27 @@ project "Ocean"
 	}
 
 	includedirs {
-		"%{prj.name}/src",
+		"Ocean/src",
+	}
+
+	links {
+		"Ocean"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
 	filter "configurations:Debug"
-		defines "OC_DEBUG"
+		defines "TB_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "OC_RELEASE"
+		defines "TB_RELEASE"
 		runtime "Release"
 		optimize "on"
 	
 	filter "configurations:Dist"
-		defines "OC_DIST"
+		defines "TB_DIST"
 		runtime "Release"
 		optimize "on"
