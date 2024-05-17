@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Core">
-      <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    <Filter Include="Ocean">
+      <UniqueIdentifier>{0B94CC0D-77A8-F4BE-402A-981EACFDF0EF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ocean\Core">
+      <UniqueIdentifier>{43F7EAE5-2FAF-2C33-98B6-058F848DC723}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\Application.hpp">
-      <Filter>Core</Filter>
+    <ClInclude Include="src\Ocean\Core\Application.hpp">
+      <Filter>Ocean\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ocean.hpp" />
+    <ClInclude Include="src\Ocean\Core\Defines.hpp">
+      <Filter>Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\EntryPoint.hpp">
+      <Filter>Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Core\PlatformBase.hpp">
+      <Filter>Ocean\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ocean\Ocean.hpp">
+      <Filter>Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ocpch.hpp" />
+    <ClInclude Include="src\Ocean\Core\Window.hpp" />
+    <ClInclude Include="src\Platform\WindowsWindow.hpp" />
+    <ClInclude Include="src\Ocean\Input\Event.hpp" />
+    <ClInclude Include="src\Ocean\Input\ApplicationEvent.hpp" />
+    <ClInclude Include="src\Vk\VulkanContext.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Application.cpp">
-      <Filter>Core</Filter>
+    <ClCompile Include="src\Ocean\Core\Application.cpp">
+      <Filter>Ocean\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\ocpch.cpp" />
+    <ClCompile Include="src\Ocean\Core\Window.cpp" />
+    <ClCompile Include="src\Platform\WindowsWindow.cpp" />
+    <ClCompile Include="src\Vk\VulkanContext.cpp" />
   </ItemGroup>
 </Project>
