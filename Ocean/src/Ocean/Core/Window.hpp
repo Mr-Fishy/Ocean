@@ -37,6 +37,7 @@ namespace Ocean {
 		virtual b8 IsVSync() const = 0;
 
 		virtual void* GetNativeWindow() const = 0;
+		virtual void EndCommands() const = 0;
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 

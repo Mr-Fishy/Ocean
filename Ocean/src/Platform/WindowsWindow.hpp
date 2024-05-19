@@ -21,6 +21,8 @@ namespace Ocean {
 
 			b8 VSync{};
 
+			VulkanContext* Context = nullptr;
+
 			EventCallbackFn EventCallback;
 		};
 
@@ -37,12 +39,16 @@ namespace Ocean {
 		virtual b8 IsVSync() const override;
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
+		virtual void EndCommands() const override { vkDeviceWaitIdle(*m_Data.Context->GetDevice()); }
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
 	private:
+		static void FramebufferResizeCallback(GLFWwindow* window, i32 width, i32 height);
+
+		/* --- */
+
 		GLFWwindow* m_Window;
-		VulkanContext* m_Context;
 
 		WindowData m_Data;
 	};

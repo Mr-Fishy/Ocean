@@ -14,6 +14,7 @@ workspace "OceanEngine"
 	-- Include Directories Relative To Workspace Folder
 	IncludeDir = {}
 	IncludeDir["GLFW"] = "%{wks.location}/Ocean/vendor/glfw/include"
+	IncludeDir["GLM"]  = "%{wks.location}/Ocean/vendor/glm"
 
 	group "Dependencies"
 		include "Ocean/vendor/premake5-GLFW.lua"

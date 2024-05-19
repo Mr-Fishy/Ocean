@@ -18,6 +18,9 @@ project "Ocean"
 	files {
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
+
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
 
 	includedirs {
@@ -26,6 +29,7 @@ project "Ocean"
 		
 		"$(VULKAN_SDK)/Include",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLM}",
 	}
 
 	links {

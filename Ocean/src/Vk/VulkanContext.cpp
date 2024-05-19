@@ -2,10 +2,14 @@
 
 #include "VulkanContext.hpp"
 
+#include "Ocean/Logger/Log.hpp"
+
 // std
 #include <map>
 #include <set>
 #include <fstream>
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Ocean {
 
@@ -38,7 +42,27 @@ namespace Ocean {
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData) {
 
-		std::cerr << "Vulkan {\'Name\': " << pCallbackData->pMessageIdName << ", \'Desc\': " << pCallbackData->pMessage << "}" << std::endl;
+		std::stringstream ss;
+
+		ss << "Vulkan |: " << pCallbackData->pMessage;
+
+		switch (messageSeverity) {
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+				OC_CORE_TRACE(ss.str());
+				break;
+			
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+				OC_CORE_INFO(ss.str());
+				break;
+			
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+				OC_CORE_WARN(ss.str());
+				break;
+			
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+				OC_CORE_ERROR(ss.str());
+				break;
+		}
 
 		return VK_FALSE;
 	}
@@ -62,7 +86,9 @@ namespace Ocean {
 
 
 
-	VulkanContext::VulkanContext(GLFWwindow* window) : m_Window(window), m_PhysicalDevice(VK_NULL_HANDLE) {
+	VulkanContext::VulkanContext(GLFWwindow* window) : m_Window(window), m_Data(nullptr) {
+		m_Data = new VulkanData();
+
 		CreateInstance();
 
 		InitDebugMessenger();
@@ -79,67 +105,96 @@ namespace Ocean {
 
 		CreateRenderPass();
 
+		CreateDescriptorSetLayout();
+
 		CreateGraphicsPipeline();
 
 		CreateFrameBuffers();
 
 		CreateCommandPool();
 
-		CreateCommandBuffer();
+		CreateVertexBuffer();
+
+		CreateIndexBuffer();
+
+		CreateUniformBuffers();
+
+		CreateDescriptorPool();
+
+		CreateDescriptorSets();
+
+		CreateCommandBuffers();
 
 		CreateSyncObjects();
 	}
 
 	VulkanContext::~VulkanContext() {
-		vkDeviceWaitIdle(m_Device);
+		vkDestroyPipeline(m_Data->Device, m_GraphicsPipeline, nullptr);
+		vkDestroyPipelineLayout(m_Data->Device, m_PipelineLayout, nullptr);
+		vkDestroyRenderPass(m_Data->Device, m_RenderPass, nullptr);
 
-		vkDestroyFence(m_Device, m_InFlightFence, nullptr);
-		vkDestroySemaphore(m_Device, m_RenderFinsishedSemaphore, nullptr);
-		vkDestroySemaphore(m_Device, m_ImageAvailableSemaphore, nullptr);
+		CleanSwapChain();
 
-		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
+		for (ui8 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroyBuffer(m_Data->Device, m_Data->UniformBuffers[i], nullptr);
+			vkFreeMemory(m_Data->Device, m_Data->UniformBuffersMemory[i], nullptr);
+		}
 
-		for (auto framebuffer : v_FrameBuffers)
-			vkDestroyFramebuffer(m_Device, framebuffer, nullptr);
+		vkDestroyDescriptorPool(m_Data->Device, m_Data->DescriptorPool, nullptr);
+		vkDestroyDescriptorSetLayout(m_Data->Device, m_DescriptorSetLayout, nullptr);
 
-		vkDestroyPipeline(m_Device, m_GraphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(m_Device, m_PipelineLayout, nullptr);
-		
-		vkDestroyRenderPass(m_Device, m_RenderPass, nullptr);
+		vkDestroyBuffer(m_Data->Device, m_Data->IndexBuffer, nullptr);
+		vkFreeMemory(m_Data->Device, m_Data->IndexBufferMemory, nullptr);
 
-		for (auto imageView : v_SwapChainImageViews)
-			vkDestroyImageView(m_Device, imageView, nullptr);
+		vkDestroyBuffer(m_Data->Device, m_Data->VertexBuffer, nullptr);
+		vkFreeMemory(m_Data->Device, m_Data->VertexBufferMemory, nullptr);
 
-		vkDestroySwapchainKHR(m_Device, m_SwapChain, nullptr);
+		for (ui8 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroySemaphore(m_Data->Device, v_RenderFinsishedSemaphores[i], nullptr);
+			vkDestroySemaphore(m_Data->Device, v_ImageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(m_Data->Device, v_InFlightFences[i], nullptr);
+		}
 
-		vkDestroyDevice(m_Device, nullptr);
+		vkDestroyCommandPool(m_Data->Device, m_CommandPool, nullptr);
+
+		vkDestroyDevice(m_Data->Device, nullptr);
 
 		#ifdef OC_DEBUG
-		DestroyDebugUtilsMessengerEXT(m_Instance, m_Messenger, nullptr);
+		DestroyDebugUtilsMessengerEXT(m_Data->Instance, m_Messenger, nullptr);
 		#endif // OC_DEBUG
 
-		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+		vkDestroySurfaceKHR(m_Data->Instance, m_Data->Surface, nullptr);
+		vkDestroyInstance(m_Data->Instance, nullptr);
 
-		vkDestroyInstance(m_Instance, nullptr);
+		delete m_Data;
 	}
 
 	void VulkanContext::DrawFrame() {
-		vkWaitForFences(m_Device, 1, &m_InFlightFence, VK_TRUE, UINT64_MAX);
-
-		vkResetFences(m_Device, 1, &m_InFlightFence);
+		vkWaitForFences(m_Data->Device, 1, &v_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
 		ui32 imageIndex;
-		vkAcquireNextImageKHR(m_Device, m_SwapChain, UINT64_MAX, m_ImageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+		VkResult result;
+		result = vkAcquireNextImageKHR(m_Data->Device, m_SwapChain, UINT64_MAX, v_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
 
-		vkResetCommandBuffer(m_CommandBuffer, 0);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+			RecreateSwapChain();
+			return;
+		}
+		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+			throw std::runtime_error("Failed to acquire Vulkan swap chain image!");
 
-		RecordCommandBuffer(m_CommandBuffer, imageIndex);
+		vkResetFences(m_Data->Device, 1, &v_InFlightFences[m_CurrentFrame]);
+
+		vkResetCommandBuffer(v_CommandBuffers[m_CurrentFrame], /* VkCommandBufferResetFlags */ 0);
+		RecordCommandBuffer(v_CommandBuffers[m_CurrentFrame], imageIndex);
+
+		UpdateUniformBuffer(m_CurrentFrame);
 
 		VkSubmitInfo info{};
 
 		info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = { m_ImageAvailableSemaphore };
+		VkSemaphore waitSemaphores[] = { v_ImageAvailableSemaphores[m_CurrentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 		info.waitSemaphoreCount = 1;
@@ -147,14 +202,14 @@ namespace Ocean {
 		info.pWaitDstStageMask = waitStages;
 
 		info.commandBufferCount = 1;
-		info.pCommandBuffers = &m_CommandBuffer;
+		info.pCommandBuffers = &v_CommandBuffers[m_CurrentFrame];
 
-		VkSemaphore signalSemaphores[] = { m_RenderFinsishedSemaphore };
+		VkSemaphore signalSemaphores[] = { v_RenderFinsishedSemaphores[m_CurrentFrame] };
 
 		info.signalSemaphoreCount = 1;
 		info.pSignalSemaphores = signalSemaphores;
 
-		if (vkQueueSubmit(m_GraphicsQueue, 1, &info, m_InFlightFence) != VK_SUCCESS)
+		if (vkQueueSubmit(m_Data->GraphicsQueue, 1, &info, v_InFlightFences[m_CurrentFrame]) != VK_SUCCESS)
 			throw std::runtime_error("Failed to submit Vulkan draw command buffer!");
 
 		VkPresentInfoKHR presentInfo{};
@@ -168,11 +223,21 @@ namespace Ocean {
 
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
+
 		presentInfo.pImageIndices = &imageIndex;
 
 		presentInfo.pResults = nullptr; // Optional
 
-		vkQueuePresentKHR(m_PresentQueue, &presentInfo);
+		result = vkQueuePresentKHR(m_Data->PresentQueue, &presentInfo);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_FramebufferResized) {
+			m_FramebufferResized = false;
+			RecreateSwapChain();
+		}
+		else if (result != VK_SUCCESS)
+			throw std::runtime_error("Failed to present Vulkan swap chain image!");
+
+		m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
 	void VulkanContext::CreateInstance() {
@@ -211,7 +276,7 @@ namespace Ocean {
 		createInfo.pNext = nullptr;
 		#endif // OC_DEBUG
 
-		if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
+		if (vkCreateInstance(&createInfo, nullptr, &m_Data->Instance) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan instance!");
 	}
 
@@ -248,7 +313,7 @@ namespace Ocean {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		SetDebugMessengerCreateInfo(createInfo);
 
-		if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_Messenger) != VK_SUCCESS)
+		if (CreateDebugUtilsMessengerEXT(m_Data->Instance, &createInfo, nullptr, &m_Messenger) != VK_SUCCESS)
 			throw std::runtime_error("Failed to set up Vulkan debug messenger!");
 	}
 
@@ -266,19 +331,19 @@ namespace Ocean {
 	}
 
 	void VulkanContext::CreateSurface() {
-		if (glfwCreateWindowSurface(m_Instance, m_Window, nullptr, &m_Surface) != VK_SUCCESS)
+		if (glfwCreateWindowSurface(m_Data->Instance, m_Window, nullptr, &m_Data->Surface) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan window surface!");
 	}
 
 	void VulkanContext::PickPhysicalDevice() {
 		ui32 deviceCount = 0;
-		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(m_Data->Instance, &deviceCount, nullptr);
 
 		if (deviceCount == 0)
 			throw std::runtime_error("Failed to find GPUs with Vulkan support!");
 
 		std::vector<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+		vkEnumeratePhysicalDevices(m_Data->Instance, &deviceCount, devices.data());
 
 		std::multimap<ui8, VkPhysicalDevice> candidates;
 
@@ -287,7 +352,7 @@ namespace Ocean {
 		}
 
 		if (candidates.rbegin()->first > 0)
-			m_PhysicalDevice = candidates.rbegin()->second;
+			m_Data->PhysicalDevice = candidates.rbegin()->second;
 		else
 			throw std::runtime_error("Failed to find a suitable GPU!");
 	}
@@ -338,7 +403,13 @@ namespace Ocean {
 		if (!deviceFeatures.geometryShader)
 			return 0;
 
-		std::cout << "Device Candidate {\'Name\': " << deviceProperties.deviceName << ", \'Type\': " << deviceProperties.deviceType << ", \'Driver\': " << deviceProperties.driverVersion << "}" << std::endl;
+		#ifdef OC_DEBUG
+		std::stringstream ss;
+
+		ss << "Vulkan |: Phsyical Device : " << deviceProperties.deviceName;
+		
+		OC_CORE_INFO(ss.str());
+		#endif // OC_DEBUG
 		return score;
 	}
 
@@ -357,7 +428,7 @@ namespace Ocean {
 				indices.GraphicsFamily = i;
 
 			VkBool32 presentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, m_Surface, &presentSupport);
+			vkGetPhysicalDeviceSurfaceSupportKHR(m_Data->PhysicalDevice, i, m_Data->Surface, &presentSupport);
 			if (presentSupport)
 				indices.PresentFamily = i;
 
@@ -371,7 +442,7 @@ namespace Ocean {
 	}
 
 	void VulkanContext::CreateLogicalDevice() {
-		QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
+		QueueFamilyIndices indices = FindQueueFamilies(m_Data->PhysicalDevice);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<ui32> uniqueQueueFamilies = { indices.GraphicsFamily.value(), indices.PresentFamily.value() };
@@ -393,8 +464,10 @@ namespace Ocean {
 		VkDeviceCreateInfo createInfo{};
 
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
 		createInfo.queueCreateInfoCount = static_cast<ui32>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
+
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
 		createInfo.enabledExtensionCount = static_cast<ui32>(c_DeviceExtensions.size());
@@ -406,15 +479,15 @@ namespace Ocean {
 		createInfo.enabledLayerCount = 0;
 		#endif // OC_DEBUG
 
-		if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device))
+		if (vkCreateDevice(m_Data->PhysicalDevice, &createInfo, nullptr, &m_Data->Device))
 			throw std::runtime_error("Failed to create logical device!");
 
-		vkGetDeviceQueue(m_Device, indices.GraphicsFamily.value(), 0, &m_GraphicsQueue);
-		vkGetDeviceQueue(m_Device, indices.PresentFamily.value(), 0, &m_PresentQueue);
+		vkGetDeviceQueue(m_Data->Device, indices.GraphicsFamily.value(), 0, &m_Data->GraphicsQueue);
+		vkGetDeviceQueue(m_Data->Device, indices.PresentFamily.value(), 0, &m_Data->PresentQueue);
 	}
 
 	void VulkanContext::CreateSwapChain() {
-		SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_PhysicalDevice);
+		SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_Data->PhysicalDevice);
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.Formats);
 		VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.PresentModes);
@@ -427,7 +500,7 @@ namespace Ocean {
 		VkSwapchainCreateInfoKHR swapInfo{};
 
 		swapInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		swapInfo.surface = m_Surface;
+		swapInfo.surface = m_Data->Surface;
 
 		swapInfo.minImageCount = imageCount;
 		swapInfo.imageFormat = surfaceFormat.format;
@@ -436,7 +509,7 @@ namespace Ocean {
 		swapInfo.imageArrayLayers = 1; // Always 1 unless rendering for stereoscopic video
 		swapInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
+		QueueFamilyIndices indices = FindQueueFamilies(m_Data->PhysicalDevice);
 		ui32 queueFamilyIndices[] = { indices.GraphicsFamily.value(), indices.PresentFamily.value() };
 
 		if (indices.GraphicsFamily != indices.PresentFamily) {
@@ -458,12 +531,12 @@ namespace Ocean {
 
 		swapInfo.oldSwapchain = VK_NULL_HANDLE;
 
-		if (vkCreateSwapchainKHR(m_Device, &swapInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(m_Data->Device, &swapInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan swap chain!");
 
-		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, nullptr);
+		vkGetSwapchainImagesKHR(m_Data->Device, m_SwapChain, &imageCount, nullptr);
 		v_SwapChainImages.resize(imageCount);
-		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, v_SwapChainImages.data());
+		vkGetSwapchainImagesKHR(m_Data->Device, m_SwapChain, &imageCount, v_SwapChainImages.data());
 
 		m_SwapChainImageFormat = surfaceFormat.format;
 		m_SwapChainExtent = extent;
@@ -472,20 +545,20 @@ namespace Ocean {
 	VulkanContext::SwapChainSupportDetails VulkanContext::QuerySwapChainSupport(VkPhysicalDevice device) {
 		SwapChainSupportDetails details;
 
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_PhysicalDevice, m_Surface, &details.Capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_Data->PhysicalDevice, m_Data->Surface, &details.Capabilities);
 
 		ui32 formatCount = 0;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(m_PhysicalDevice, m_Surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(m_Data->PhysicalDevice, m_Data->Surface, &formatCount, nullptr);
 		if (formatCount != 0) {
 			details.Formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(m_PhysicalDevice, m_Surface, &formatCount, details.Formats.data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(m_Data->PhysicalDevice, m_Data->Surface, &formatCount, details.Formats.data());
 		}
 
 		ui32 presentModeCount = 0;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(m_PhysicalDevice, m_Surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(m_Data->PhysicalDevice, m_Data->Surface, &presentModeCount, nullptr);
 		if (presentModeCount != 0) {
 			details.PresentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(m_PhysicalDevice, m_Surface, &presentModeCount, details.PresentModes.data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(m_Data->PhysicalDevice, m_Data->Surface, &presentModeCount, details.PresentModes.data());
 		}
 
 		return details;
@@ -551,7 +624,7 @@ namespace Ocean {
 			viewInfo.subresourceRange.baseArrayLayer = 0;
 			viewInfo.subresourceRange.layerCount = 1;
 		
-			if (vkCreateImageView(m_Device, &viewInfo, nullptr, &v_SwapChainImageViews[i]) != VK_SUCCESS)
+			if (vkCreateImageView(m_Data->Device, &viewInfo, nullptr, &v_SwapChainImageViews[i]) != VK_SUCCESS)
 				throw std::runtime_error("Failed to create Vulkan image views!");
 		}
 	}
@@ -583,14 +656,6 @@ namespace Ocean {
 		subpass.colorAttachmentCount = 1;
 		subpass.pColorAttachments = &colorRef;
 
-		VkRenderPassCreateInfo renderInfo{};
-
-		renderInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderInfo.attachmentCount = 1;
-		renderInfo.pAttachments = &colorAttachment;
-		renderInfo.subpassCount = 1;
-		renderInfo.pSubpasses = &subpass;
-
 		VkSubpassDependency dependency{};
 		
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -602,11 +667,43 @@ namespace Ocean {
 		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
+		VkRenderPassCreateInfo renderInfo{};
+
+		renderInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+
+		renderInfo.attachmentCount = 1;
+		renderInfo.pAttachments = &colorAttachment;
+
+		renderInfo.subpassCount = 1;
+		renderInfo.pSubpasses = &subpass;
+
 		renderInfo.dependencyCount = 1;
 		renderInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(m_Device, &renderInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
+		if (vkCreateRenderPass(m_Data->Device, &renderInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan render pass!");
+	}
+
+	void VulkanContext::CreateDescriptorSetLayout() {
+		VkDescriptorSetLayoutBinding uboLayout{};
+
+		uboLayout.binding = 0;
+		uboLayout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayout.descriptorCount = 1;
+
+		uboLayout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		uboLayout.pImmutableSamplers = nullptr; // Optional
+
+		VkDescriptorSetLayoutCreateInfo info{};
+
+		info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+
+		info.bindingCount = 1;
+		info.pBindings = &uboLayout;
+
+		if (vkCreateDescriptorSetLayout(m_Data->Device, &info, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create Vulkan descriptor set layout!");
 	}
 
 	void VulkanContext::CreateGraphicsPipeline() {
@@ -636,13 +733,18 @@ namespace Ocean {
 
 		VkPipelineShaderStageCreateInfo shaderStages[] = { vertInfo, fragInfo };
 
+		auto bindingDesc = Vertex::GetBindingDescription();
+		auto attriDesc = Vertex::GetAttributeDescriptions();
+
 		VkPipelineVertexInputStateCreateInfo vertInputInfo{};
 
 		vertInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertInputInfo.vertexBindingDescriptionCount = 0;
-		vertInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-		vertInputInfo.vertexAttributeDescriptionCount = 0;
-		vertInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		vertInputInfo.vertexBindingDescriptionCount = 1;
+		vertInputInfo.pVertexBindingDescriptions = &bindingDesc;
+
+		vertInputInfo.vertexAttributeDescriptionCount = static_cast<ui32>(attriDesc.size());
+		vertInputInfo.pVertexAttributeDescriptions = attriDesc.data();
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 
@@ -678,7 +780,7 @@ namespace Ocean {
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizer.lineWidth = 1.0f;
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
 
 		VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -717,10 +819,11 @@ namespace Ocean {
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-		if (vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(m_Data->Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
 			throw std::runtime_error("failed to create pipeline layout!");
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -746,11 +849,11 @@ namespace Ocean {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional
 
-		if (vkCreateGraphicsPipelines(m_Device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(m_Data->Device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan graphics pipeline!");
 
-		vkDestroyShaderModule(m_Device, vertShaderModule, nullptr);
-		vkDestroyShaderModule(m_Device, fragShaderModule, nullptr);
+		vkDestroyShaderModule(m_Data->Device, vertShaderModule, nullptr);
+		vkDestroyShaderModule(m_Data->Device, fragShaderModule, nullptr);
 	}
 
 	VkShaderModule VulkanContext::CreateShaderModule(const std::vector<char>& code) {
@@ -761,7 +864,7 @@ namespace Ocean {
 		info.pCode = reinterpret_cast<const ui32*>(code.data());
 
 		VkShaderModule shaderModule;
-		if (vkCreateShaderModule(m_Device, &info, nullptr, &shaderModule) != VK_SUCCESS)
+		if (vkCreateShaderModule(m_Data->Device, &info, nullptr, &shaderModule) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan shader module!");
 
 		return shaderModule;
@@ -783,13 +886,13 @@ namespace Ocean {
 			info.height = m_SwapChainExtent.height;
 			info.layers = 1;
 
-			if (vkCreateFramebuffer(m_Device, &info, nullptr, &v_FrameBuffers[i]) != VK_SUCCESS)
+			if (vkCreateFramebuffer(m_Data->Device, &info, nullptr, &v_FrameBuffers[i]) != VK_SUCCESS)
 				throw std::runtime_error("Failed to create Vulkan framebuffer!");
 		}
 	}
 
 	void VulkanContext::CreateCommandPool() {
-		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
+		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_Data->PhysicalDevice);
 
 		VkCommandPoolCreateInfo info{};
 
@@ -797,23 +900,235 @@ namespace Ocean {
 		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		info.queueFamilyIndex = queueFamilyIndices.GraphicsFamily.value();
 
-		if (vkCreateCommandPool(m_Device, &info, nullptr, &m_CommandPool) != VK_SUCCESS)
+		if (vkCreateCommandPool(m_Data->Device, &info, nullptr, &m_CommandPool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create Vulkan command pool!");
 	}
 
-	void VulkanContext::CreateCommandBuffer() { 
+	void VulkanContext::CreateVertexBuffer() {
+		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+		
+		VkBuffer stagingBuffer;
+		VkDeviceMemory  stagingMemory;
+		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingMemory);
+
+		void* data;
+		vkMapMemory(m_Data->Device, stagingMemory, 0, bufferSize, 0, &data);
+			memcpy(data, vertices.data(), static_cast<ui64>(bufferSize));
+		vkUnmapMemory(m_Data->Device, stagingMemory);
+
+		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Data->VertexBuffer, m_Data->VertexBufferMemory);
+
+		CopyBuffer(stagingBuffer, m_Data->VertexBuffer, bufferSize);
+
+		vkDestroyBuffer(m_Data->Device, stagingBuffer, nullptr);
+		vkFreeMemory(m_Data->Device, stagingMemory, nullptr);
+	}
+
+	void VulkanContext::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags props, VkBuffer& buffer, VkDeviceMemory& mem) {
+		VkBufferCreateInfo info{};
+
+		info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+
+		info.size = size;
+		info.usage = usage;
+
+		info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (vkCreateBuffer(m_Data->Device, &info, nullptr, &buffer) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create Vulkan vertex buffer!");
+
+		VkMemoryRequirements memReq;
+		vkGetBufferMemoryRequirements(m_Data->Device, buffer, &memReq);
+
+		VkMemoryAllocateInfo alloc{};
+
+		alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		alloc.allocationSize = memReq.size;
+		alloc.memoryTypeIndex = FindMemoryType(memReq.memoryTypeBits, props);
+
+		if (vkAllocateMemory(m_Data->Device, &alloc, nullptr, &mem) != VK_SUCCESS)
+			throw std::runtime_error("Failed to allocate Vulkan vertex buffer memory!");
+
+		vkBindBufferMemory(m_Data->Device, buffer, mem, 0);
+	}
+
+	ui32 VulkanContext::FindMemoryType(ui32 typeFilter, VkMemoryPropertyFlags properties) {
+		VkPhysicalDeviceMemoryProperties mem;
+		vkGetPhysicalDeviceMemoryProperties(m_Data->PhysicalDevice, &mem);
+
+		for (ui32 i = 0; i < mem.memoryTypeCount; i++) {
+			if (typeFilter & (1 << i) && (mem.memoryTypes[i].propertyFlags & properties) == properties)
+				return i;
+		}
+
+		throw std::runtime_error("Failed to find suitable Vulkan memory type!");
+	}
+
+	void VulkanContext::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+		VkCommandBufferAllocateInfo info{};
+
+		info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		info.commandPool = m_CommandPool;
+		info.commandBufferCount = 1;
+
+		VkCommandBuffer commandBuffer;
+		vkAllocateCommandBuffers(m_Data->Device, &info, &commandBuffer);
+
+		{
+			VkCommandBufferBeginInfo beginInfo{};
+
+			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+			beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+			vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+			VkBufferCopy copy{};
+
+			copy.srcOffset = 0; // Optional
+			copy.dstOffset = 0; // Optional
+			copy.size = size;
+
+			vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copy);
+
+			vkEndCommandBuffer(commandBuffer);
+		}
+
+		VkSubmitInfo submit{};
+
+		submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submit.commandBufferCount = 1;
+		submit.pCommandBuffers = &commandBuffer;
+
+		vkQueueSubmit(m_Data->GraphicsQueue, 1, &submit, VK_NULL_HANDLE);
+		vkQueueWaitIdle(m_Data->GraphicsQueue);
+
+		vkFreeCommandBuffers(m_Data->Device, m_CommandPool, 1, &commandBuffer);
+	}
+
+	void VulkanContext::CreateIndexBuffer() {
+		VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingMemory;
+		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingMemory);
+
+		void* data;
+		vkMapMemory(m_Data->Device, stagingMemory, 0, bufferSize, 0, &data);
+			memcpy(data, indices.data(), static_cast<ui64>(bufferSize));
+		vkUnmapMemory(m_Data->Device, stagingMemory);
+
+		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Data->IndexBuffer, m_Data->IndexBufferMemory);
+
+		CopyBuffer(stagingBuffer, m_Data->IndexBuffer, bufferSize);
+
+		vkDestroyBuffer(m_Data->Device, stagingBuffer, nullptr);
+		vkFreeMemory(m_Data->Device, stagingMemory, nullptr);
+	}
+
+	void VulkanContext::CreateUniformBuffers() {
+		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+		m_Data->UniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+		m_Data->UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+		m_Data->UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+		for (ui8 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_Data->UniformBuffers[i], m_Data->UniformBuffersMemory[i]);
+		
+			vkMapMemory(m_Data->Device, m_Data->UniformBuffersMemory[i], 0, bufferSize, 0, &m_Data->UniformBuffersMapped[i]);
+		}
+	}
+
+	void VulkanContext::UpdateUniformBuffer(ui32 currentImage) {
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		f32 time = std::chrono::duration<f32, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		UniformBufferObject ubo{};
+
+		ubo.model = glm::rotate(mat4(1.0f), time * glm::radians(90.0f), vec3(0.0f, 0.0f, 1.0f));
+		ubo.view = glm::lookAt(vec3(2.0f, 2.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+		ubo.proj = glm::perspective(glm::radians(45.0f), (f32)m_SwapChainExtent.width / (f32)m_SwapChainExtent.height, 0.1f, 10.0f);
+
+		ubo.proj[1][1] *= -1;
+
+		memcpy(m_Data->UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+	}
+
+	void VulkanContext::CreateDescriptorPool() {
+		VkDescriptorPoolSize poolSize{};
+
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSize.descriptorCount = static_cast<ui32>(MAX_FRAMES_IN_FLIGHT);
+
+		VkDescriptorPoolCreateInfo info{};
+
+		info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+
+		info.poolSizeCount = 1;
+		info.pPoolSizes = &poolSize;
+
+		info.maxSets = static_cast<ui32>(MAX_FRAMES_IN_FLIGHT);
+
+		if (vkCreateDescriptorPool(m_Data->Device, &info, nullptr, &m_Data->DescriptorPool) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create Vulkan descriptor pool!");
+	}
+
+	void VulkanContext::CreateDescriptorSets() {
+		std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_DescriptorSetLayout);
+
+		VkDescriptorSetAllocateInfo allocInfo{};
+
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+
+		allocInfo.descriptorPool = m_Data->DescriptorPool;
+		allocInfo.descriptorSetCount = static_cast<ui32>(MAX_FRAMES_IN_FLIGHT);
+		allocInfo.pSetLayouts = layouts.data();
+
+		m_Data->DescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+		if (vkAllocateDescriptorSets(m_Data->Device, &allocInfo, m_Data->DescriptorSets.data()) != VK_SUCCESS)
+			throw std::runtime_error("Failed to allocate Vulkan descriptor sets!");
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			VkDescriptorBufferInfo bufferInfo{};
+			bufferInfo.buffer = m_Data->UniformBuffers[i];
+			bufferInfo.offset = 0;
+			bufferInfo.range = sizeof(UniformBufferObject);
+
+			VkWriteDescriptorSet descriptorWrite{};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_Data->DescriptorSets[i];
+			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pBufferInfo = &bufferInfo;
+
+			vkUpdateDescriptorSets(m_Data->Device, 1, &descriptorWrite, 0, nullptr);
+		}
+	}
+
+	void VulkanContext::CreateCommandBuffers() {
+		v_CommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
 		VkCommandBufferAllocateInfo info{};
 
 		info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		info.commandPool = m_CommandPool;
 		info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		info.commandBufferCount = 1;
+		info.commandBufferCount = static_cast<ui32>(v_CommandBuffers.size());
 
-		if (vkAllocateCommandBuffers(m_Device, &info, &m_CommandBuffer) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(m_Data->Device, &info, v_CommandBuffers.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate Vulkan command buffers!");
 	}
 
 	void VulkanContext::CreateSyncObjects() {
+		v_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		v_RenderFinsishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		v_InFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
 		VkSemaphoreCreateInfo semaInfo{};
 
 		semaInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -823,10 +1138,12 @@ namespace Ocean {
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		if (vkCreateSemaphore(m_Device, &semaInfo, nullptr, &m_ImageAvailableSemaphore) != VK_SUCCESS
-			|| vkCreateSemaphore(m_Device, &semaInfo, nullptr, &m_RenderFinsishedSemaphore) != VK_SUCCESS
-			|| vkCreateFence(m_Device, &fenceInfo, nullptr, &m_InFlightFence) != VK_SUCCESS)
-			throw std::runtime_error("Failed to create Vulkan semaphores!");
+		for (ui8 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			if (vkCreateSemaphore(m_Data->Device, &semaInfo, nullptr, &v_ImageAvailableSemaphores[i]) != VK_SUCCESS
+				|| vkCreateSemaphore(m_Data->Device, &semaInfo, nullptr, &v_RenderFinsishedSemaphores[i]) != VK_SUCCESS
+				|| vkCreateFence(m_Data->Device, &fenceInfo, nullptr, &v_InFlightFences[i]) != VK_SUCCESS)
+				throw std::runtime_error("Failed to create Vulkan semaphores!");
+		}
 	}
 
 	void VulkanContext::RecordCommandBuffer(VkCommandBuffer commandBuffer, ui32 imageIndex) {
@@ -854,7 +1171,7 @@ namespace Ocean {
 		renderInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass(commandBuffer, &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
-
+		
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
@@ -876,13 +1193,49 @@ namespace Ocean {
 			
 			vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-			vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-		}
+			VkBuffer vertexBuffers[] = { m_Data->VertexBuffer };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+			
+			vkCmdBindIndexBuffer(commandBuffer, m_Data->IndexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_Data->DescriptorSets[m_CurrentFrame], 0, nullptr);
+
+			vkCmdDrawIndexed(commandBuffer, static_cast<ui32>(indices.size()), 1, 0, 0, 0);
+		}
+		
 		vkCmdEndRenderPass(commandBuffer);
 
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
 			throw std::runtime_error("Failed to record Vulkan command buffer!");
+	}
+
+	void VulkanContext::CleanSwapChain() {
+		for (auto framebuffer : v_FrameBuffers)
+			vkDestroyFramebuffer(m_Data->Device, framebuffer, nullptr);
+
+		for (auto imageView : v_SwapChainImageViews)
+			vkDestroyImageView(m_Data->Device, imageView, nullptr);
+
+		vkDestroySwapchainKHR(m_Data->Device, m_SwapChain, nullptr);
+	}
+
+	void VulkanContext::RecreateSwapChain() {
+		i32 width = 0, height = 0;
+		glfwGetFramebufferSize(m_Window, &width, &height);
+
+		while (width == 0 || height == 0) {
+			glfwGetFramebufferSize(m_Window, &width, &height);
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(m_Data->Device);
+
+		CleanSwapChain();
+
+		CreateSwapChain();
+		CreateImageViews();
+		CreateFrameBuffers();
 	}
 
 }

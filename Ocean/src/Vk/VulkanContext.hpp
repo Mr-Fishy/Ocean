@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Types.hpp"
+
 // libs
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -8,6 +10,33 @@
 #include <optional>
 
 namespace Ocean {
+
+	// TODO: Seperate to different classes for easier management
+
+	struct VulkanData {
+		VkInstance Instance;
+
+		VkPhysicalDevice PhysicalDevice;
+		VkDevice Device;
+
+		VkSurfaceKHR Surface;
+
+		VkQueue GraphicsQueue;
+		VkQueue PresentQueue;
+
+		VkBuffer VertexBuffer;
+		VkDeviceMemory VertexBufferMemory;
+
+		VkBuffer IndexBuffer;
+		VkDeviceMemory IndexBufferMemory;
+
+		std::vector<VkBuffer> UniformBuffers;
+		std::vector<VkDeviceMemory> UniformBuffersMemory;
+		std::vector<void*> UniformBuffersMapped;
+
+		VkDescriptorPool DescriptorPool;
+		std::vector<VkDescriptorSet> DescriptorSets;
+	};
 
 	class VulkanContext {
 	private:
@@ -27,11 +56,54 @@ namespace Ocean {
 			std::vector<VkPresentModeKHR> PresentModes;
 		};
 
+		struct Vertex {
+			vec2 pos;
+
+			vec3 color;
+
+			static VkVertexInputBindingDescription GetBindingDescription() {
+				VkVertexInputBindingDescription desc{};
+
+				desc.binding = 0;
+				desc.stride = sizeof(Vertex);
+				desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+				return desc;
+			}
+
+			static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions() {
+				std::array<VkVertexInputAttributeDescription, 2> desc{};
+
+				desc[0].binding = 0;
+				desc[0].location = 0;
+				desc[0].format = VK_FORMAT_R32G32_SFLOAT;
+				desc[0].offset = offsetof(Vertex, pos);
+
+				desc[1].binding = 0;
+				desc[1].location = 1;
+				desc[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+				desc[1].offset = offsetof(Vertex, color);
+
+				return desc;
+			}
+		};
+
+		struct UniformBufferObject {
+			mat4 model;
+			mat4 view;
+			mat4 proj;
+		};
+
 	public:
 		VulkanContext(GLFWwindow* window);
 		~VulkanContext();
 
 		void DrawFrame();
+
+		void FramebufferResized() { m_FramebufferResized = true; }
+
+		VulkanData* GetContext() { return m_Data; }
+		VkDevice* GetDevice() { return &m_Data->Device; }
 
 	private:
 		void CreateInstance();
@@ -71,6 +143,8 @@ namespace Ocean {
 
 		void CreateRenderPass();
 
+		void CreateDescriptorSetLayout();
+
 		void CreateGraphicsPipeline();
 		//
 		VkShaderModule CreateShaderModule(const std::vector<char>& code);
@@ -80,25 +154,40 @@ namespace Ocean {
 
 		void CreateCommandPool();
 
-		void CreateCommandBuffer();
+		void CreateVertexBuffer();
+		//
+		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags props, VkBuffer& buffer, VkDeviceMemory& mem);
+			//
+			ui32 FindMemoryType(ui32 typeFilter, VkMemoryPropertyFlags properties);
+			//
+		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+		//
+
+		void CreateIndexBuffer();
+
+		void CreateUniformBuffers();
+		//
+		void UpdateUniformBuffer(ui32 currentImage);
+		//
+
+		void CreateDescriptorPool();
+
+		void CreateDescriptorSets();
+
+		void CreateCommandBuffers();
 
 		void CreateSyncObjects();
 
 		void RecordCommandBuffer(VkCommandBuffer commandBuffer, ui32 imageIndex);
 
+		void CleanSwapChain();
+		void RecreateSwapChain();
+
 		/* --- */
 
 		GLFWwindow* m_Window;
 
-		VkInstance m_Instance;
-
-		VkQueue m_GraphicsQueue;
-		VkQueue m_PresentQueue;
-
-		VkPhysicalDevice m_PhysicalDevice;
-		VkDevice m_Device;
-
-		VkSurfaceKHR m_Surface;
+		VulkanData* m_Data;
 
 		VkSwapchainKHR m_SwapChain;
 		std::vector<VkImage> v_SwapChainImages;
@@ -109,6 +198,8 @@ namespace Ocean {
 		std::vector<VkImageView> v_SwapChainImageViews;
 
 		VkRenderPass m_RenderPass;
+
+		VkDescriptorSetLayout m_DescriptorSetLayout;
 		VkPipelineLayout m_PipelineLayout;
 
 		VkPipeline m_GraphicsPipeline;
@@ -117,11 +208,15 @@ namespace Ocean {
 
 		VkCommandPool m_CommandPool;
 
-		VkCommandBuffer m_CommandBuffer;
+		std::vector<VkCommandBuffer> v_CommandBuffers;
 
-		VkSemaphore m_ImageAvailableSemaphore;
-		VkSemaphore m_RenderFinsishedSemaphore;
-		VkFence m_InFlightFence;
+		std::vector<VkSemaphore> v_ImageAvailableSemaphores;
+		std::vector<VkSemaphore> v_RenderFinsishedSemaphores;
+		std::vector<VkFence> v_InFlightFences;
+		
+		b8 m_FramebufferResized = false;
+
+		ui8 m_CurrentFrame = 0;
 
 
 
@@ -133,6 +228,21 @@ namespace Ocean {
 
 		const std::vector<const char*> c_DeviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
+
+		const ui8 MAX_FRAMES_IN_FLIGHT = 2;
+
+
+		// Temp
+		const std::vector<Vertex> vertices = {
+			{ {-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f} },
+			{ { 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f} },
+			{ { 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f} },
+			{ {-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f} }
+		};
+
+		const std::vector<ui16> indices = {
+			0, 1, 2, 2, 3, 0
 		};
 	};
 

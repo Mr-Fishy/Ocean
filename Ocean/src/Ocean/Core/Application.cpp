@@ -40,6 +40,8 @@ namespace Ocean {
 
 			m_Window->Update();
 		}
+
+		m_Window->EndCommands();
 	}
 
 	b8 Application::OnWindowClose(WindowCloseEvent& e) {

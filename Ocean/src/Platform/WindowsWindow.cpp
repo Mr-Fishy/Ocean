@@ -12,7 +12,7 @@ namespace Ocean {
 		std::cerr << "GLFW : {\'Error\': " << error << ", \'Desc\': " << description << "}" << std::endl;
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props) : m_Window(nullptr), m_Context(nullptr) {
+	WindowsWindow::WindowsWindow(const WindowProps& props) : m_Window(nullptr) {
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -24,17 +24,18 @@ namespace Ocean {
 		}
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		m_Window = glfwCreateWindow(m_Data.Width, m_Data.Height, m_Data.Title, nullptr, nullptr);
 		s_GLFWWindowCount++;
 
-		m_Context = new VulkanContext(m_Window);
+		m_Data.Context = new VulkanContext(m_Window);
 		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		// SetVSync(true);
 
 		// Set GLFW Callbacks
+		glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
+
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -54,7 +55,7 @@ namespace Ocean {
 	}
 
 	WindowsWindow::~WindowsWindow() {
-		delete m_Context;
+		delete m_Data.Context;
 
 		glfwDestroyWindow(m_Window);
 		s_GLFWWindowCount--;
@@ -67,7 +68,7 @@ namespace Ocean {
 	void WindowsWindow::Update() {
 		glfwPollEvents();
 
-		m_Context->DrawFrame();
+		m_Data.Context->DrawFrame();
 	}
 
 	void WindowsWindow::SetVSync(b8 enabled) {
@@ -83,6 +84,12 @@ namespace Ocean {
 
 	b8 WindowsWindow::IsVSync() const {
 		return m_Data.VSync;
+	}
+
+	void WindowsWindow::FramebufferResizeCallback(GLFWwindow* window, i32 width, i32 height) {
+		auto app = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+		app->Context->FramebufferResized();
 	}
 
 }	// Ocean
