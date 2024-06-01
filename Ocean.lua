@@ -30,6 +30,7 @@ project "Ocean"
 		"$(VULKAN_SDK)/Include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}",
 	}
 
 	links {

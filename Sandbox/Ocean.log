@@ -1,15 +1,10 @@
 [ INTERNAL] : Starting Ocean Logger
-[ TRACE   ] : Vulkan |: windows_get_device_registry_files: GUID for 5 is not SoftwareComponent skipping
+[ TRACE   ] : Vulkan |: windows_get_device_registry_files: GUID for 4 is not SoftwareComponent skipping
 [ TRACE   ] : Vulkan |: Searching for ICD drivers named .\amdvlk64.dll
 [ TRACE   ] : Vulkan |: Loading layer library C:\VulkanSDK\1.3.275.0\Bin\.\VkLayer_khronos_validation.dll
-[ TRACE   ] : Vulkan |: Loading layer library C:\ProgramData\obs-studio-hook\.\graphics-hook64.dll
 [ TRACE   ] : Vulkan |: Loading layer library C:\Program Files (x86)\Overwolf\0.250.1.1\.\ow-graphics-vulkan.dll
 [ TRACE   ] : Vulkan |: Loading layer library C:\Program Files (x86)\Overwolf\0.250.1.1\.\owclient.dll
-[ TRACE   ] : Vulkan |: Loading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0402593.inf_amd64_66758692e35a2906\B402774\.\amdvlk64.dll
-[ INFO    ] : Vulkan |: Phsyical Device : AMD Radeon RX 7900 XT
-[ TRACE   ] : Vulkan |: Unloading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0402593.inf_amd64_66758692e35a2906\B402774\.\amdvlk64.dll
-[ TRACE   ] : Vulkan |: Unloading layer library C:\Program Files (x86)\Overwolf\0.250.1.1\.\owclient.dll
-[ TRACE   ] : Vulkan |: Unloading layer library C:\Program Files (x86)\Overwolf\0.250.1.1\.\ow-graphics-vulkan.dll
-[ TRACE   ] : Vulkan |: Unloading layer library C:\ProgramData\obs-studio-hook\.\graphics-hook64.dll
-[ TRACE   ] : Vulkan |: Unloading layer library C:\VulkanSDK\1.3.275.0\Bin\.\VkLayer_khronos_validation.dll
-[ INTERNAL] : Closing Ocean Logger
+[ TRACE   ] : Vulkan |: Loading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0399660.inf_amd64_d7fa3539ce499e50\B399655\.\amdvlk64.dll
+[ TRACE   ] : Vulkan |: loader_phys_dev_ext_gpa: Adding unknown physical function vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR to internal store at index 0
+[ TRACE   ] : Vulkan |: loader_phys_dev_ext_gpa: Driver C:\WINDOWS\System32\DriverStore\FileRepository\u0399660.inf_amd64_d7fa3539ce499e50\B399655\.\amdvlk64.dll returned ptr 00007FFB1C68F832 for vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR
+[ INFO    ] : Vulkan |: Phsyical Device : AMD Radeon (TM) Graphics

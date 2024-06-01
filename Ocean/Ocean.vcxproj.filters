@@ -84,7 +84,46 @@
     <ClInclude Include="src\Platform\WindowsWindow.hpp">
       <Filter>src\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vk\VulkanBuffer.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vk\VulkanContext.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanData.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanDescriptorSet.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanDevice.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanFramebuffer.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanInstance.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanRenderer.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanSampler.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanSwapchain.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanSync.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanTexture.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanUniformBuffer.hpp">
+      <Filter>src\Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vk\VulkanVIBuffer.hpp">
       <Filter>src\Vk</Filter>
     </ClInclude>
     <ClInclude Include="src\ocpch.hpp">
@@ -1355,7 +1394,46 @@
     <ClCompile Include="src\Platform\WindowsWindow.cpp">
       <Filter>src\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vk\VulkanBuffer.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vk\VulkanContext.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanData.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanDescriptorSet.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanDevice.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanFramebuffer.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanInstance.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanRenderer.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanSampler.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanSwapchain.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanSync.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanTexture.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanUniformBuffer.cpp">
+      <Filter>src\Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vk\VulkanVIBuffer.cpp">
       <Filter>src\Vk</Filter>
     </ClCompile>
     <ClCompile Include="src\ocpch.cpp">

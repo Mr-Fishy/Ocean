@@ -51,6 +51,7 @@ namespace Ocean {
 
 		// template <typename ...Args> TODO: Argument support
 		void Log(LogSeverity sev, const std::string& message);
+		void Log(LogSeverity sev, const char* message);
 
 		void Close();
 

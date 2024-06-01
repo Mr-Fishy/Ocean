@@ -9,12 +9,15 @@ workspace "OceanEngine"
 
 	flags { "MultiProcessorCompile" }
 
+	ignoredefaultlibraries { "MSVCRT" }
+
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 	-- Include Directories Relative To Workspace Folder
 	IncludeDir = {}
-	IncludeDir["GLFW"] = "%{wks.location}/Ocean/vendor/glfw/include"
-	IncludeDir["GLM"]  = "%{wks.location}/Ocean/vendor/glm"
+	IncludeDir["GLFW"] 		= "%{wks.location}/Ocean/vendor/glfw/include"
+	IncludeDir["GLM"]  		= "%{wks.location}/Ocean/vendor/glm"
+	IncludeDir["STB_IMAGE"] = "%{wks.location}/Ocean/vendor/stb_image"
 
 	group "Dependencies"
 		include "Ocean/vendor/premake5-GLFW.lua"

@@ -1,9 +1,14 @@
 # Directories
-*.vs/
-*bin/
-*bin-int/
+**/bin/
+bin-int/
 
 # Files
-*.user
-*.filters
-*.vcxproj
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.user
+**.vcxproj.filters
+**.csproj
+
+# Ocean Generated Files
+**.log

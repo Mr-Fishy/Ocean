@@ -39,7 +39,7 @@ namespace Ocean {
 		virtual b8 IsVSync() const override;
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
-		virtual void EndCommands() const override { vkDeviceWaitIdle(*m_Data.Context->GetDevice()); }
+		virtual void EndCommands() const override { vkDeviceWaitIdle(m_Data.Context->GetDevice()); }
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 

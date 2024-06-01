@@ -58,7 +58,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Ocean;$(VULKAN_SDK)\Include;vendor\glfw\include;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Ocean;$(VULKAN_SDK)\Include;vendor\glfw\include;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -81,7 +81,7 @@
       <PrecompiledHeaderFile>ocpch.hpp</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Ocean;$(VULKAN_SDK)\Include;vendor\glfw\include;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Ocean;$(VULKAN_SDK)\Include;vendor\glfw\include;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,7 +115,20 @@
     <ClInclude Include="src\Ocean\Logger\Timer.hpp" />
     <ClInclude Include="src\Ocean\Ocean.hpp" />
     <ClInclude Include="src\Platform\WindowsWindow.hpp" />
+    <ClInclude Include="src\Vk\VulkanBuffer.hpp" />
     <ClInclude Include="src\Vk\VulkanContext.hpp" />
+    <ClInclude Include="src\Vk\VulkanData.hpp" />
+    <ClInclude Include="src\Vk\VulkanDescriptorSet.hpp" />
+    <ClInclude Include="src\Vk\VulkanDevice.hpp" />
+    <ClInclude Include="src\Vk\VulkanFramebuffer.hpp" />
+    <ClInclude Include="src\Vk\VulkanInstance.hpp" />
+    <ClInclude Include="src\Vk\VulkanRenderer.hpp" />
+    <ClInclude Include="src\Vk\VulkanSampler.hpp" />
+    <ClInclude Include="src\Vk\VulkanSwapchain.hpp" />
+    <ClInclude Include="src\Vk\VulkanSync.hpp" />
+    <ClInclude Include="src\Vk\VulkanTexture.hpp" />
+    <ClInclude Include="src\Vk\VulkanUniformBuffer.hpp" />
+    <ClInclude Include="src\Vk\VulkanVIBuffer.hpp" />
     <ClInclude Include="src\ocpch.hpp" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -540,7 +553,20 @@
     <ClCompile Include="src\Ocean\Logger\Log.cpp" />
     <ClCompile Include="src\Ocean\Logger\Logger.cpp" />
     <ClCompile Include="src\Platform\WindowsWindow.cpp" />
+    <ClCompile Include="src\Vk\VulkanBuffer.cpp" />
     <ClCompile Include="src\Vk\VulkanContext.cpp" />
+    <ClCompile Include="src\Vk\VulkanData.cpp" />
+    <ClCompile Include="src\Vk\VulkanDescriptorSet.cpp" />
+    <ClCompile Include="src\Vk\VulkanDevice.cpp" />
+    <ClCompile Include="src\Vk\VulkanFramebuffer.cpp" />
+    <ClCompile Include="src\Vk\VulkanInstance.cpp" />
+    <ClCompile Include="src\Vk\VulkanRenderer.cpp" />
+    <ClCompile Include="src\Vk\VulkanSampler.cpp" />
+    <ClCompile Include="src\Vk\VulkanSwapchain.cpp" />
+    <ClCompile Include="src\Vk\VulkanSync.cpp" />
+    <ClCompile Include="src\Vk\VulkanTexture.cpp" />
+    <ClCompile Include="src\Vk\VulkanUniformBuffer.cpp" />
+    <ClCompile Include="src\Vk\VulkanVIBuffer.cpp" />
     <ClCompile Include="src\ocpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

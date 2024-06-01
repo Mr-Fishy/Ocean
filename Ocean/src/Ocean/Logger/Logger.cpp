@@ -17,6 +17,10 @@ namespace Ocean {
 	}
 
 	void Logger::Log(LogSeverity sev, const std::string& message) {
+		Log(sev, message.c_str());
+	}
+
+	void Logger::Log(LogSeverity sev, const char* message) {
 		std::unique_lock lock(m_Mu);
 
 		m_MessageQueue.push(new Message(sev, message));
