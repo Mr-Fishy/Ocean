@@ -1,24 +1,25 @@
-
 #include "ocpch.hpp"
-#include "VertexArray.hpp"
+
+#include "Ocean/Renderer/VertexArray.hpp"
 
 #include "Ocean/Renderer/Renderer.hpp"
 #include "Platform/OpenGL/OpenGLVertexArray.hpp"
+#include "Platform/Vk/VulkanVertexArray.hpp"
 
 namespace Ocean {
 
 	Ref<VertexArray> VertexArray::Create() {
-		switch (Renderer::GetAPI())
-		{
+		switch (Renderer::GetAPI()) {
 			case RendererAPI::API::None:
-				OC_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return CreateRef<OpenGLVertexArray>();
+				return CreateRef<GL::OpenGLVertexArray>();
+
+			case RendererAPI::API::Vulkan:
+				return CreateRef<Vk::VulkanVertexArray>();
 		}
 
-		OC_CORE_ASSERT(false, "Unkown RendererAPI!");
 		return nullptr;
 	}
 

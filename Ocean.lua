@@ -1,81 +1,70 @@
-group "Ocean Engine"
 project "Ocean"
 	location "Ocean"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
-	staticruntime "on"
+	cppdialect "C++17"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "ocpch.hpp"
-	pchsource "Ocean/src/ocpch.cpp"
+	pchsource "%{prj.name}/src/ocpch.cpp"
 
-	defines
-	{
-		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",	-- Silence std::iterator Depracation Warnings (C++20)
+	defines {
 		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE",
-		"YAML_CPP_STATIC_DEFINE",
+		-- "GLFW_INCLUDE_NONE"
 	}
 
-	files
-	{
-		"%{prj.name}/src/**.h",
+	files {
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 
-		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
-		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
-
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
-
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
 	}
 
-	includedirs
-	{
+	includedirs {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.ENTT}",
-		"%{IncludeDir.Glad}",
+		"%{prj.name}/src/Ocean",
+		
+		"$(VULKAN_SDK)/Include",
+
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.VMA}",
 	}
 
-	links
-	{
+	links {
+		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
+		
 		"GLFW",
 		"Glad",
-		"ImGui",
-		"opengl32.lib",
-		"yaml-cpp",
 	}
-
-	filter "files:Ocean/vendor/ImGuizmo/**.cpp"
-		flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
-	
+
 	filter "configurations:Debug"
 		defines "OC_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
+		links {
+			-- "$(VULKAN_SDK)/Lib/shaderc_sharedd.lib",
+			"$(VULKAN_SDK)/Lib/spirv-cross-cored.lib",
+			"$(VULKAN_SDK)/Lib/spirv-cross-glsld.lib",
+		}
+
 	filter "configurations:Release"
 		defines "OC_RELEASE"
 		runtime "Release"
 		optimize "on"
-		
-	filter "configurations:Dist"
-		defines "OC_DIST"
-		runtime "Release"
-		optimize "on"
+
+		links {
+			-- "$(VULKAN_SDK)/Lib/shaderc_shared.lib",
+			"$(VULKAN_SDK)/Lib/spirv-cross-core.lib",
+			"$(VULKAN_SDK)/Lib/spirv-cross-glsl.lib",
+		}

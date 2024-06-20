@@ -2,49 +2,48 @@
 
 #include "Ocean/Core/Base.hpp"
 
+// std
+#include <initializer_list>
+#include <vector>
+
 namespace Ocean {
 
 	enum class FramebufferFormat {
 		None = 0,
+		
 		// Color
 		RGBA8,
 		RED_INTEGER,
 
 		// Depth / Stencil
 		DEPTH24STENCIL8,
-		
+
 		// Defaults
 		Depth = DEPTH24STENCIL8
 	};
 
-	struct FramebufferTextureSpecification {
-		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(FramebufferFormat format) : TextureFormat(format) { }
+	struct FramebufferTextureSpec {
+		FramebufferTextureSpec() = default;
+		FramebufferTextureSpec(FramebufferFormat format) : TextureFormat(format) { }
 
 		FramebufferFormat TextureFormat = FramebufferFormat::None;
-
-		// TODO: Filtering / Wrapping
 	};
 
-	struct FramebufferAttachmentSpecification {
-		FramebufferAttachmentSpecification() = default;
-		FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments) : Attachments(attachments) { }
+	struct FramebufferAttachmentSpec {
+		FramebufferAttachmentSpec() = default;
+		FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : Attachments(attachments) { }
 
-		std::vector<FramebufferTextureSpecification> Attachments;
+		std::vector<FramebufferTextureSpec> Attachments;
 	};
 
-	// Specifies the Framebuffer properties, i.e. the width and height or the number of samples to save.
-	//
-	struct FramebufferSpecification {
-		uint32_t Width = 0, Height = 0;
+	struct FramebufferSpec {
+		ui32 Width = 0, Height = 0;
 
-		uint32_t Samples = 1;
-		FramebufferAttachmentSpecification Attachments;
+		ui32 Samples = 1;
+		FramebufferAttachmentSpec AttachmentSpecs;
 		bool SwapChainTarget = false;
 	};
 
-	// The Framebuffer manages saving the rendered images into memory to be viewed as a texture. This is useful when the frame is not going to be rendered directly to the window.
-	//
 	class Framebuffer {
 	public:
 		virtual ~Framebuffer() = default;
@@ -52,15 +51,15 @@ namespace Ocean {
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual void Resize(uint32_t width, uint32_t height) = 0;
-		virtual int ReadPixel(uint32_t attachentIndex, int x, int y) = 0;
+		virtual void Resize(ui32 width, ui32 height) = 0;
+		virtual int ReadPixel(ui32 attachmentIndex, i32 x, i32 y) = 0;
 
-		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
-		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
+		virtual ui32 GetColorAttachmentID(ui32 index = 0) const = 0;
+		virtual void ClearAttachment(ui32 attachmentIndex, i32 value) = 0;
 
-		virtual const FramebufferSpecification& GetSpecification() const = 0;
+		virtual const FramebufferSpec& GetSpec() const = 0;
 
-		static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
+		static Ref<Framebuffer> Create(const FramebufferSpec& spec);
 	};
 
 }	// Ocean

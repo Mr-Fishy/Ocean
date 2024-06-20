@@ -1,21 +1,21 @@
-
 #include "ocpch.hpp"
-#include "Window.hpp"
 
-// TODO: Platform specific memory management included here.
+#include "Ocean/Core/Window.hpp"
+
 #ifdef OC_PLATFORM_WINDOWS
-	#include "Platform/Windows/WindowsWindow.hpp"
-#endif
+	#include "Platform/WindowsWindow.hpp"
+#endif // OC_PLATFORM_WINDOWS
+
 
 namespace Ocean {
 
 	Scope<Window> Window::Create(const WindowProps& props) {
-		#ifdef OC_PLATFORM_WINDOWS
-			return CreateScope<WindowsWindow>(props);
-		#else
-			OC_CORE_ASSERT(false, "Unkown platform!");
-			return nullptr;
-		#endif
+	#ifdef OC_PLATFORM_WINDOWS
+		return CreateScope<WindowsWindow>(props);
+	#elif
+		// TODO: ASSERT
+		return nullptr;
+	#endif // OC_PLATFORM_WINDOWS
 	}
 
 }	// Ocean

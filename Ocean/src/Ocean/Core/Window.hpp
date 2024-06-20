@@ -1,47 +1,44 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
-#include "Ocean/Events/Event.hpp"
+#include "Ocean/Core/Defines.hpp"
+
+#include "Ocean/Input/Event.hpp"
 
 // std
-#include <sstream>
+#include <cstring>
 
 namespace Ocean {
 
-	// Window Properties
-	//
 	struct WindowProps {
-		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
+		char* Title;
+		ui32 Width, Height;
 
-		WindowProps(
-			const std::string& title = "Ocean Engine",
-			unsigned int width = 1600,
-			unsigned int height = 900
-		) : Title(title), Width(width), Height(height) { }
+		WindowProps(const char* title = "Ocean Window", ui32 width = 1080, ui32 height = 1080)
+			: Title(nullptr), Width(width), Height(height) {
+			Title = new char[sizeof(title)];
+			std::strcpy(Title, title);
+		}
 	};
 
-	// Interface representing the platform window.
-	//
 	class Window {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
+		Window() = default;
 		virtual ~Window() = default;
 
-		virtual void OnUpdate() = 0;
+		virtual void Update() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual ui32 GetWidth() const = 0;
+		virtual ui32 GetHeight() const = 0;
 
-		// Window Attributes
-		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-
-		virtual void SetVSync(bool enabled) = 0;
-		virtual bool IsVSync() const = 0;
+		virtual void SetVSync(b8 enabled) = 0;
+		virtual b8 IsVSync() const = 0;
 
 		virtual void* GetNativeWindow() const = 0;
+
+		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 	};

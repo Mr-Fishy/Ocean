@@ -1,27 +1,29 @@
-
 #include "ocpch.hpp"
-#include "OpenGLFramebuffer.hpp"
 
+#include "Platform/OpenGL/OpenGLFramebuffer.hpp"
+
+// libs
 #include <glad/gl.h>
 
-namespace Ocean {
+namespace Ocean::GL {
 
-	namespace Internal::GL {
-		
-		static GLenum TextureTarget(bool multisampled) {
+	namespace Internal {
+
+		static GLenum TextureTarget(b8 multisampled) {
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
 
-		static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) {
+		static void CreateTextures(b8 multisampled, ui32* outID, ui32 count) {
 			glCreateTextures(TextureTarget(multisampled), count, outID);
 		}
 
-		static void BindTexture(bool multisampled, uint32_t id) {
+		static void BindTexture(b8 multisampled, ui32 id) {
 			glBindTexture(TextureTarget(multisampled), id);
 		}
 
-		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index) {
-			bool multisampled = samples > 1;
+		static void AttachColorTexture(ui32 id, i32 samples, GLenum internalFormat, GLenum format, ui32 width, ui32 height, i32 index) {
+			b8 multisampled = samples > 1;
+
 			if (multisampled) {
 				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
 			}
@@ -38,8 +40,9 @@ namespace Ocean {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
 		}
 
-		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height) {
-			bool multisampled = samples > 1;
+		static void AttachDepthTexture(ui32 id, i32 samples, GLenum format, GLenum attachmentType, ui32 width, ui32 height) {
+			b8 multisampled = samples > 1;
+
 			if (multisampled) {
 				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
 			}
@@ -56,9 +59,9 @@ namespace Ocean {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
 		}
 
-		static bool IsDepthFormat(FramebufferFormat format) {
+		static b8 IsDepthFormat(FramebufferFormat format) {
 			switch (format) {
-				case FramebufferFormat::DEPTH24STENCIL8:
+				case Ocean::FramebufferFormat::DEPTH24STENCIL8:
 					return true;
 			}
 
@@ -74,22 +77,21 @@ namespace Ocean {
 					return GL_RED_INTEGER;
 			}
 
-			OC_CORE_ASSERT(false, "Reached \"Unreachable\" Return Due To Unknown Framebuffer Texture Format!");
 			return 0;
 		}
 
-	}	// InternalGL
+	}	// Internal
 
-	static const uint32_t s_MaxFramebufferSize = 8192;
+	static const ui32 s_MaxFramebufferSize = 8192;
 
-	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) : m_Specification(spec) {
-		for (auto& spec : m_Specification.Attachments.Attachments) {
-			if (!Internal::GL::IsDepthFormat(spec.TextureFormat))
-				m_ColorAttachmentSpecifications.emplace_back(spec);
+	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpec& spec) : m_Specification(spec) {
+		for (auto& spec : m_Specification.AttachmentSpecs.Attachments) {
+			if (!Internal::IsDepthFormat(spec.TextureFormat))
+				m_ColorAttachmentSpecs.emplace_back(spec);
 			else
-				m_DepthAttachmentSpecification = spec;
+				m_DepthAttachmentSpec = spec;
 		}
-		
+
 		Invalidate();
 	}
 
@@ -97,6 +99,52 @@ namespace Ocean {
 		glDeleteFramebuffers(1, &m_RendererID);
 		glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
 		glDeleteTextures(1, &m_DepthAttachment);
+	}
+
+	void OpenGLFramebuffer::Bind() {
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+	}
+
+	void OpenGLFramebuffer::Unbind() {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLFramebuffer::Resize(ui32 width, ui32 height) {
+		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
+			return;
+		}
+
+		m_Specification.Width = width;
+		m_Specification.Height = height;
+
+		Invalidate();
+	}
+
+	int OpenGLFramebuffer::ReadPixel(ui32 attachmentIndex, i32 x, i32 y) {
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+
+		i32 pixelData = -1;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+
+		return pixelData;
+	}
+
+	ui32 OpenGLFramebuffer::GetColorAttachmentID(ui32 index) const {
+		if (index >= m_ColorAttachments.size())
+			throw std::runtime_error("Attempt to access invalid color attachment ID!");
+
+		return m_ColorAttachments[index];
+	}
+
+	void OpenGLFramebuffer::ClearAttachment(ui32 attachmentIndex, i32 value) {
+		auto& spec = m_ColorAttachmentSpecs[attachmentIndex];
+
+		glClearTexImage(
+			m_ColorAttachments[attachmentIndex], 0,
+			Internal::OceanFBTextureFormatToGL(spec.TextureFormat),
+			GL_INT, &value
+		);
 	}
 
 	void OpenGLFramebuffer::Invalidate() {
@@ -112,42 +160,39 @@ namespace Ocean {
 		glCreateFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
-		bool multisample = m_Specification.Samples > 1;
+		b8 multisample = m_Specification.Samples > 1;
 
-		// Attachments
-		if (m_ColorAttachmentSpecifications.size()) {
-			m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
-			Internal::GL::CreateTextures(multisample, m_ColorAttachments.data(), (uint32_t)m_ColorAttachments.size());
+		if (m_ColorAttachmentSpecs.size()) {
+			m_ColorAttachments.resize(m_ColorAttachmentSpecs.size());
+			Internal::CreateTextures(multisample, m_ColorAttachments.data(), static_cast<ui32>(m_ColorAttachments.size()));
 
 			for (int i = 0; i < m_ColorAttachments.size(); i++) {
-				Internal::GL::BindTexture(multisample, m_ColorAttachments[i]);
+				Internal::BindTexture(multisample, m_ColorAttachments[i]);
 
-				switch (m_ColorAttachmentSpecifications[i].TextureFormat) {
+				switch (m_ColorAttachmentSpecs[i].TextureFormat) {
 					case FramebufferFormat::RGBA8:
-						Internal::GL::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+						Internal::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
 						break;
 
 					case FramebufferFormat::RED_INTEGER:
-						Internal::GL::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+						Internal::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
 						break;
 				}
 			}
 		}
 
-		if (m_DepthAttachmentSpecification.TextureFormat != FramebufferFormat::None) {
-			Internal::GL::CreateTextures(multisample, &m_DepthAttachment, 1);
-			Internal::GL::BindTexture(multisample, m_DepthAttachment);
+		if (m_DepthAttachmentSpec.TextureFormat != FramebufferFormat::None) {
+			Internal::CreateTextures(multisample, &m_DepthAttachment, 1);
+			Internal::BindTexture(multisample, m_DepthAttachment);
 
-			switch (m_DepthAttachmentSpecification.TextureFormat) {
+			switch (m_DepthAttachmentSpec.TextureFormat) {
 				case FramebufferFormat::DEPTH24STENCIL8:
-					Internal::GL::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
+					Internal::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
 					break;
 			}
 		}
 
 		if (m_ColorAttachments.size() > 1) {
-			OC_CORE_ASSERT(m_ColorAttachments.size() <= 4);
-
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers((GLsizei)m_ColorAttachments.size(), buffers);
 		}
@@ -155,52 +200,11 @@ namespace Ocean {
 			glDrawBuffer(GL_NONE); // Only Depth-Pass
 		}
 
-		OC_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-		
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER))
+			OC_CORE_ERROR("OpenGL framebuffer is incomplete!");
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFramebuffer::Bind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
-	}
+}	// Ocean::GL
 
-	void OpenGLFramebuffer::Unbind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height) {
-		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
-			OC_CORE_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
-
-			return;
-		}
-
-		m_Specification.Width = width;
-		m_Specification.Height = height;
-
-		Invalidate();
-	}
-
-	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
-		OC_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
-
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		
-		int pixelData = -1;
-		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
-
-		return pixelData;
-	}
-
-	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value) {
-		OC_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
-
-		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-		glClearTexImage(
-			m_ColorAttachments[attachmentIndex], 0,
-			Internal::GL::OceanFBTextureFormatToGL(spec.TextureFormat),
-			GL_INT, &value);
-	}
-
-}	// Ocean

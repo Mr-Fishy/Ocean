@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Ocean/Core/PlatformDetection.hpp"
+#include "Core/PlatformBase.hpp"
 
-#ifdef OC_PLATFORM_WINDOWS
-	#ifndef NOMINMAX
-// See www.github.com/skypjack/entt/wiki/Frequently-Asked-Questions#warning-c4003-the-min-the-max-and-the-macro
-		#define NOMINMAX
-	#endif // !NOMINMAX
-#endif // OC_PLATFORM_WINDOWS
+#include "Core/Defines.hpp"
 
 #include <iostream>
 
@@ -26,8 +21,6 @@
 
 #include <unordered_map>
 #include <unordered_set>
-
-#include "Ocean/Debug/Instrumentor.hpp"
 
 #ifdef OC_PLATFORM_WINDOWS
 	#include <Windows.h>

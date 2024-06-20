@@ -1,25 +1,25 @@
-
 #include "ocpch.hpp"
-#include "Framebuffer.hpp"
+
+#include "Ocean/Renderer/Framebuffer.hpp"
 
 #include "Ocean/Renderer/Renderer.hpp"
-
 #include "Platform/OpenGL/OpenGLFramebuffer.hpp"
+#include "Platform/Vk/VulkanFramebuffer.hpp"
 
 namespace Ocean {
 
-	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec) {
-		switch (Renderer::GetAPI())
-		{
+	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpec& spec) {
+		switch (Renderer::GetAPI()) {
 			case RendererAPI::API::None:
-				OC_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return CreateRef<OpenGLFramebuffer>(spec);
+				return CreateRef<GL::OpenGLFramebuffer>(spec);
+
+			case RendererAPI::API::Vulkan:
+				return CreateRef<Vk::VulkanFramebuffer>(spec);
 		}
 
-		OC_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Buffer.hpp"
+#include "Ocean/Renderer/VertexIndexBuffer.hpp"
 
 namespace Ocean {
 
-	// The element data array for rendering. Holds information such as transforms, and color data.
 	class VertexArray {
 	public:
 		virtual ~VertexArray() = default;
@@ -21,4 +20,4 @@ namespace Ocean {
 		static Ref<VertexArray> Create();
 	};
 
-}	// Ocean
+}

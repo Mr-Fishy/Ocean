@@ -1,20 +1,20 @@
 #pragma once
 
+#include "Ocean/Core/Types.hpp"
+
 namespace Ocean {
 
-	// The basic timestep class that represents the time since the last frame.
-	//
 	class Timestep {
 	public:
-		Timestep(float time = 0.0f) : m_Time(time) { }
+		Timestep(f32 time = 0.0f) : m_Time(time) { }
 
 		operator float() const { return m_Time; }
 
-		float GetSeconds() const { return m_Time; }
-		float GetMilliseconds() const { return m_Time * 1000.0f; }
+		f32 GetSeconds() const { return m_Time; }
+		f32 GetMilliseconds() const { return m_Time * 1000.0f; }
 
 	private:
-		float m_Time;
+		f32 m_Time;
 	};
 
 }	// Ocean

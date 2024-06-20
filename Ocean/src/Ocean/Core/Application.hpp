@@ -1,28 +1,24 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
+#include "Ocean/Core/Defines.hpp"
 
 #include "Ocean/Core/Window.hpp"
-#include "Ocean/Layers/LayerStack.hpp"
-#include "Ocean/Events/Event.hpp"
-#include "Ocean/Events/ApplicationEvent.hpp"
+
+#include "Ocean/Input/Event.hpp"
+#include "Ocean/Input/ApplicationEvent.hpp"
+
+#include "Ocean/Layer/LayerStack.hpp"
 
 #include "Ocean/Core/Timestep.hpp"
-
-#include "Ocean/Layers/ImGui/ImGuiLayer.hpp"
 
 int main(int argc, char** argv);
 
 namespace Ocean {
 
-	// The application represents the actual process that is seen on screen.
-	//
 	class Application {
 	public:
-		// Creates an application with a given name.
-		// @param name: A string that is the application name. Defaults to "Ocean App".
-		//
-		Application(const std::string& name = "Ocean App");
+		Application();
 		virtual ~Application();
 
 		void Close();
@@ -30,42 +26,39 @@ namespace Ocean {
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
+		void PushOverlay(Layer* overlay);
 
-		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		const f32 GetLastFrameTime() const { return m_LastFrameTime; }
+
 		static Application& Get() { return *s_Instance; }
-		
 		Window& GetWindow() { return *m_Window; }
-		static float GetDPI(int monitorIndex = 1);
-
-		const float GetLastFrameTime() const { return m_LastFrameTime; }
 
 	private:
-		void Run();
-		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnWindowResize(WindowResizeEvent& e);
-
-		/* --- */
-
 		friend int ::main(int argc, char** argv);
 
 		/* --- */
 
+		void Run();
+
+		void Update();
+
+		b8 OnWindowClose(WindowCloseEvent& e);
+		b8 OnWindowResize(WindowResizeEvent& e);
+
+		/* --- */
+
 		static Application* s_Instance;
+
 		Scope<Window> m_Window;
 
 		LayerStack m_LayerStack;
 
-		ImGuiLayer* m_ImGuiLayer;
+		b8 m_Running;
+		b8 m_Minimized;
 
-		float m_LastFrameTime = 0.0f;
-
-		bool m_Running = true;
-		bool m_Minimized = false;
+		f32 m_LastFrameTime = 0.0f;
 	};
 
-	// To Be Defined In CLIENT
-	//
 	Application* CreateApplication();
 
 }	// Ocean

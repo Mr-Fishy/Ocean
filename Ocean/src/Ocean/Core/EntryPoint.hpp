@@ -1,45 +1,37 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
-
-#include "Ocean/Memory/FreeListAllocator.hpp"
+#include "Ocean/Core/Application.hpp"
+#include "Ocean/Core/Log.hpp"
 
 // std
 #include <iostream>
 
 #ifdef OC_PLATFORM_WINDOWS
 
-extern Ocean::Application* Ocean::CreateApplication();
+	extern Ocean::Application* Ocean::CreateApplication();
 
-int main(int argc, char** argv) {
-	using namespace Ocean;
+	int main(int argc, char** argv) {
+		Ocean::Log::Init();
+		
+		Ocean::Application* app = Ocean::CreateApplication();
 
-	Log::Init();   // Initializes spdlog log system.
+		try {
+			app->Run();
+		}
+		catch (const std::exception& e) {
+			std::cerr << e.what() << std::endl;
 
-	OC_PROFILE_BEGIN_SESSION("Startup", "OceanProfile-Startup.json");
-	Application* app = CreateApplication();
-	OC_PROFILE_END_SESSION();
+			delete app;
+			Ocean::Log::Shutdown();
 
-	try {
-		OC_PROFILE_BEGIN_SESSION("Runtime", "OceanProfile-Runtime.json");
-
-		app->Run();
-
-		OC_PROFILE_END_SESSION();
-	}
-	catch (const std::exception& e) {
-		// Report Error
-		std::cerr << e.what() << std::endl;
+			return EXIT_FAILURE;
+		}
 
 		delete app;
-		return EXIT_FAILURE;
+		Ocean::Log::Shutdown();
+
+		return EXIT_SUCCESS;
 	}
 
-	OC_PROFILE_BEGIN_SESSION("Shutdown", "OceanProfile-Shutdown.json");
-	delete app;
-	OC_PROFILE_END_SESSION();
-
-	return EXIT_SUCCESS;
-}
-
-#endif
+#endif // OC_PLATFORM_WINDOWS

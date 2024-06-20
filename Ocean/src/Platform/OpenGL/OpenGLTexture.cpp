@@ -1,18 +1,16 @@
-
 #include "ocpch.hpp"
-#include "OpenGLTexture.hpp"
+
+#include "Platform/OpenGL/OpenGLTexture.hpp"
 
 // libs
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-namespace Ocean {
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {
-		OC_PROFILE_FUNCTION();
+namespace Ocean::GL {
 
+	OpenGLTexture2D::OpenGLTexture2D(ui32 width, ui32 height) : m_Width(width), m_Height(height) {
 		m_InternalFormat = GL_RGBA8;
 		m_DataFormat = GL_RGBA;
-
-		OC_CORE_ASSERT(m_InternalFormat & m_DataFormat, "Image format not supported!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
@@ -21,25 +19,21 @@ namespace Ocean {
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path) {
-		OC_PROFILE_FUNCTION();
-
-		int width, height, channels;
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) {
+		i32 width, height, channels;
 
 		stbi_set_flip_vertically_on_load(1);
 		stbi_uc* data = nullptr;
 		{
-			OC_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string& path)");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		}
-		OC_CORE_ASSERT(data, "Failed to load image!");
+		// OC_CORE_ASSERT(data, "Failed to load image!");
 
 		m_Width = width;
 		m_Height = height;
 
 		GLenum internalFormat = 0, dataFormat = 0;
-		switch (channels)
-		{
+		switch (channels) {
 			case 4:	// Alpha Channel Included
 				internalFormat = GL_RGBA8;
 				dataFormat = GL_RGBA;
@@ -53,7 +47,7 @@ namespace Ocean {
 		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
 
-		OC_CORE_ASSERT(internalFormat & dataFormat, "Image format not supported!");
+		// OC_CORE_ASSERT(internalFormat & dataFormat, "Image format not supported!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
@@ -67,23 +61,21 @@ namespace Ocean {
 	}
 
 	OpenGLTexture2D::~OpenGLTexture2D() {
-		OC_PROFILE_FUNCTION();
-
 		glDeleteTextures(1, &m_RendererID);
 	}
 
-	void OpenGLTexture2D::SetData(void* data, uint32_t size) {
-		OC_PROFILE_FUNCTION();
+	void OpenGLTexture2D::SetData(void* data, ui32 size) {
+		ui32 bpp = m_DataFormat == GL_RGBA ? 4 : 3;
 
-		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-		OC_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
-	void OpenGLTexture2D::Bind(uint32_t slot) const {
-		OC_PROFILE_FUNCTION();
-
+	void OpenGLTexture2D::Bind(ui32 slot) const {
 		glBindTextureUnit(slot, m_RendererID);
 	}
 
-}	// Ocean
+	bool OpenGLTexture2D::operator==(const Texture& other) const {
+		return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
+	}
+
+}	// Ocean::GL

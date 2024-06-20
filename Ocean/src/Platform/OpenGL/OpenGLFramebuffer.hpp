@@ -2,40 +2,36 @@
 
 #include "Ocean/Renderer/Framebuffer.hpp"
 
-namespace Ocean {
+namespace Ocean::GL {
 
 	class OpenGLFramebuffer : public Framebuffer {
 	public:
-		OpenGLFramebuffer(const FramebufferSpecification& spec);
-
+		OpenGLFramebuffer(const FramebufferSpec& spec);
 		virtual ~OpenGLFramebuffer();
+
+		virtual void Bind() override final;
+		virtual void Unbind() override final;
+
+		virtual void Resize(ui32 width, ui32 height) override final;
+		virtual int ReadPixel(ui32 attachmentIndex, i32 x, i32 y) override final;
+
+		virtual ui32 GetColorAttachmentID(ui32 index = 0) const override final;
+		virtual void ClearAttachment(ui32 attachmentIndex, i32 value) override final;
 
 		void Invalidate();
 
-		virtual void Bind() override;
-		virtual void Unbind() override;
-
-		virtual void Resize(uint32_t width, uint32_t height) override;
-		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
-
-		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { 
-			OC_CORE_ASSERT(index < m_ColorAttachments.size());
-			return m_ColorAttachments[index];
-		}
-		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
-
-		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
+		virtual const FramebufferSpec& GetSpec() const override final { return m_Specification; }
 
 	private:
-		uint32_t m_RendererID = 0;
+		ui32 m_RendererID = 0;
 
-		FramebufferSpecification m_Specification;
+		FramebufferSpec m_Specification;
 
-		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-		FramebufferTextureSpecification m_DepthAttachmentSpecification = FramebufferFormat::None;
+		std::vector<FramebufferTextureSpec> m_ColorAttachmentSpecs;
+		FramebufferTextureSpec m_DepthAttachmentSpec = FramebufferFormat::None;
 
-		std::vector<uint32_t> m_ColorAttachments;
-		uint32_t m_DepthAttachment = 0;
+		std::vector<ui32> m_ColorAttachments;
+		ui32 m_DepthAttachment = 0;
 	};
 
-}	// Ocean
+}	// Ocean::GL

@@ -1,8 +1,9 @@
-
 #include "ocpch.hpp"
-#include "RendererAPI.hpp"
+
+#include "Ocean/Renderer/RendererAPI.hpp"
 
 #include "Platform/OpenGL/OpenGLRendererAPI.hpp"
+#include "Platform/Vk/VulkanRendererAPI.hpp"
 
 namespace Ocean {
 
@@ -11,14 +12,17 @@ namespace Ocean {
 	Scope<RendererAPI> RendererAPI::Create() {
 		switch (s_API) {
 			case RendererAPI::API::None:
-				OC_CORE_ASSERT(false, "RendererAPI::None is currently not supportedd!")
+				OC_CORE_ERROR("RendererAPI::None is not a valid API!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return CreateScope<OpenGLRendererAPI>();
+				return CreateScope<GL::OpenGLRendererAPI>();
+
+			case RendererAPI::API::Vulkan:
+				return CreateScope<Vk::VulkanRendererAPI>();
 		}
 
-		OC_CORE_ASSERT(false, "Unkown RendererAPI!");
+		OC_CORE_ERROR("Unknown RendererAPI!");
 		return nullptr;
 	}
 

@@ -5,32 +5,32 @@
 // libs
 #include <glad/gl.h>
 
-namespace Ocean {
+namespace Ocean::GL {
 
 	class OpenGLTexture2D : public Texture2D {
 	public:
-		OpenGLTexture2D(uint32_t width, uint32_t height);
+		OpenGLTexture2D(ui32 width, ui32 height);
 		OpenGLTexture2D(const std::string& path);
 		virtual ~OpenGLTexture2D();
 
-		virtual uint32_t GetWidth() const { return m_Width; }
-		virtual uint32_t GetHeight() const { return m_Height; }
-		virtual uint32_t GetRendererID() const { return m_RendererID; }
+		virtual ui32 GetWidth() const override final { return m_Width; }
+		virtual ui32 GetHeight() const override final { return m_Height; }
+		virtual ui32 GetID() const override final { return m_RendererID; }
 
-		virtual void SetData(void* data, uint32_t size) override;
+		virtual void SetData(void* data, ui32 size) override final;
 
-		virtual void Bind(uint32_t slot) const override;
+		virtual void Bind(ui32 slot = 0) const override final;
 
-		virtual bool operator==(const Texture& other) const override { return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID; }
+		virtual bool operator == (const Texture& other) const override final;
 
 	private:
 		std::string m_Path;
 
-		uint32_t m_Width;
-		uint32_t m_Height;
+		ui32 m_Width;
+		ui32 m_Height;
 
-		uint32_t m_RendererID;
-		GLenum m_InternalFormat, m_DataFormat;
+		ui32 m_RendererID;
+		i32 m_InternalFormat, m_DataFormat;
 	};
 
-}	// Ocean
+}	// Ocean::GL

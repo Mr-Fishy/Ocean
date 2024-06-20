@@ -1,13 +1,14 @@
 # Directories
-*.vs/
-*bin/
-*bin-int/
+**/bin/
+bin-int/
 
 # Files
-*.user
-*.filters
-*.vcxproj
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.user
+**.vcxproj.filters
+**.csproj
 
-# Archived
-z_OceanEngine2D_Vulcan_Standalone/
-z_OceanEngine3D_Vulcan_Standalone/
+# Ocean Generated Files
+**.log
