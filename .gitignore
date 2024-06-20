@@ -1,7 +1,6 @@
 # Directories
 **/bin/
 bin-int/
-Ocean/vendor/glfw
 
 # Files
 .vs/

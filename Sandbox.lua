@@ -19,6 +19,9 @@ project "Sandbox"
 
 	includedirs {
 		"%{wks.location}/Ocean/src",
+		"%{wks.location}/Ocean/vendor",
+		
+		"%{IncludeDir.GLM}",
 	}
 
 	links {

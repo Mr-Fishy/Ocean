@@ -61,5 +61,3 @@
 #else
 	#define OC_DEBUGBREAK()
 #endif
-
-namespace Ocean { }

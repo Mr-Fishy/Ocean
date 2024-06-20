@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Ocean/Core/PlatformBase.hpp"
+#include "Ocean/Core/Base.hpp"
 #include "Ocean/Core/Application.hpp"
-#include "Ocean/Logger/Log.hpp"
+#include "Ocean/Core/Log.hpp"
 
 // std
 #include <iostream>

@@ -12,7 +12,8 @@ project "Ocean"
 	pchsource "%{prj.name}/src/ocpch.cpp"
 
 	defines {
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		-- "GLFW_INCLUDE_NONE"
 	}
 
 	files {
@@ -28,14 +29,19 @@ project "Ocean"
 		"%{prj.name}/src/Ocean",
 		
 		"$(VULKAN_SDK)/Include",
+
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.VMA}",
 	}
 
 	links {
 		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
-		"GLFW"
+		
+		"GLFW",
+		"Glad",
 	}
 
 	filter "system:windows"
@@ -58,7 +64,7 @@ project "Ocean"
 		optimize "on"
 
 		links {
-			"$(VULKAN_SDK)/Lib/shaderc_shared.lib",
+			-- "$(VULKAN_SDK)/Lib/shaderc_shared.lib",
 			"$(VULKAN_SDK)/Lib/spirv-cross-core.lib",
 			"$(VULKAN_SDK)/Lib/spirv-cross-glsl.lib",
 		}

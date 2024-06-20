@@ -1,7 +1,7 @@
 require "premake-cmake/cmake"
 
 workspace "OceanEngine"
-	architecture "x64"
+	architecture "x86_64"
 	platforms "x64"
 	startproject "Sandbox"
 
@@ -9,18 +9,19 @@ workspace "OceanEngine"
 
 	flags { "MultiProcessorCompile" }
 
-	ignoredefaultlibraries { "MSVCRT" }
-
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 	-- Include Directories Relative To Workspace Folder
 	IncludeDir = {}
 	IncludeDir["GLFW"] 		= "%{wks.location}/Ocean/vendor/glfw/include"
+	IncludeDir["GLAD"]  	= "%{wks.location}/Ocean/vendor/glad/include"
 	IncludeDir["GLM"]  		= "%{wks.location}/Ocean/vendor/glm"
 	IncludeDir["STB_IMAGE"] = "%{wks.location}/Ocean/vendor/stb_image"
+	IncludeDir["VMA"] 		= "%{wks.location}/Ocean/vendor/vma"
 
 	group "Dependencies"
 		include "Ocean/vendor/premake5-GLFW.lua"
+		include "Ocean/vendor/premake5-GLAD.lua"
 	group ""
 
 	include "Ocean.lua"

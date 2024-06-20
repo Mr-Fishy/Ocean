@@ -9,9 +9,9 @@
 
 namespace Ocean {
 
-	Window* Window::Create(const WindowProps& props) {
+	Scope<Window> Window::Create(const WindowProps& props) {
 	#ifdef OC_PLATFORM_WINDOWS
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	#elif
 		// TODO: ASSERT
 		return nullptr;

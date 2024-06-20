@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Core/Base.hpp"
 #include "Ocean/Core/Defines.hpp"
 
 #include "Ocean/Core/Window.hpp"
@@ -7,12 +8,13 @@
 #include "Ocean/Input/Event.hpp"
 #include "Ocean/Input/ApplicationEvent.hpp"
 
+#include "Ocean/Layer/LayerStack.hpp"
+
+#include "Ocean/Core/Timestep.hpp"
+
 int main(int argc, char** argv);
 
 namespace Ocean {
-
-	const ui32 WIDTH = 1600;
-	const ui32 HEIGHT = 900;
 
 	class Application {
 	public:
@@ -23,6 +25,14 @@ namespace Ocean {
 
 		void OnEvent(Event& e);
 
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
+
+		const f32 GetLastFrameTime() const { return m_LastFrameTime; }
+
+		static Application& Get() { return *s_Instance; }
+		Window& GetWindow() { return *m_Window; }
+
 	private:
 		friend int ::main(int argc, char** argv);
 
@@ -30,15 +40,23 @@ namespace Ocean {
 
 		void Run();
 
+		void Update();
+
 		b8 OnWindowClose(WindowCloseEvent& e);
 		b8 OnWindowResize(WindowResizeEvent& e);
 
 		/* --- */
 
-		Window* m_Window;
+		static Application* s_Instance;
+
+		Scope<Window> m_Window;
+
+		LayerStack m_LayerStack;
 
 		b8 m_Running;
 		b8 m_Minimized;
+
+		f32 m_LastFrameTime = 0.0f;
 	};
 
 	Application* CreateApplication();

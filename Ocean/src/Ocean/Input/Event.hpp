@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Ocean/Core/PlatformBase.hpp"
+#include "Ocean/Core/Base.hpp"
 #include "Ocean/Core/Defines.hpp"
 
 // std
-#include <sstream>
 #include <functional>
+#include <sstream>
 
 namespace Ocean {
 
@@ -69,6 +69,8 @@ namespace Ocean {
 	inline std::ostream& operator << (std::ostream& os, const Event& e) {
 		return os << e.ToString();
 	}
+
+
 
 	class EventDispatcher {
 	public:

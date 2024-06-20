@@ -4,6 +4,7 @@
 #include <Ocean/Core/EntryPoint.hpp>
 
 // Layer Declarations
+#include "GameLayer.hpp"
 
  /*
   * TODO Required Functionality:
@@ -33,8 +34,13 @@
 
 class Sandbox : public Ocean::Application {
 public:
-	Sandbox() = default;
-	virtual ~Sandbox() = default;
+	Sandbox() {
+		PushLayer(new Battleship());
+	}
+
+	virtual ~Sandbox() {
+		
+	}
 };
 
 Ocean::Application* Ocean::CreateApplication() {

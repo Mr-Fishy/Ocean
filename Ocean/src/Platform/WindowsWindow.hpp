@@ -2,26 +2,21 @@
 
 #include "Ocean/Core/Window.hpp"
 
-#include "Vk/VulkanContext.hpp"
+#include "Ocean/Renderer/GraphicsContext.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
-
-// std
-#include <cstring>
 
 namespace Ocean {
 
 	class WindowsWindow : public Window {
 	private:
 		struct WindowData {
-			char* Title{};
+			std::string Title{};
 
 			ui32 Width{}, Height{};
 
 			b8 VSync{};
-
-			VulkanContext* Context = nullptr;
 
 			EventCallbackFn EventCallback;
 		};
@@ -39,16 +34,18 @@ namespace Ocean {
 		virtual b8 IsVSync() const override;
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
-		virtual void EndCommands() const override { vkDeviceWaitIdle(m_Data.Context->GetDevice()); }
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
 	private:
-		static void FramebufferResizeCallback(GLFWwindow* window, i32 width, i32 height);
+		void Init(const WindowProps& props);
+		void Shutdown();
 
 		/* --- */
 
 		GLFWwindow* m_Window;
+
+		Scope<GraphicsContext> m_Context;
 
 		WindowData m_Data;
 	};

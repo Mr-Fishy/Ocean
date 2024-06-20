@@ -1,21 +1,32 @@
 #include "ocpch.hpp"
 
 #include "Ocean/Core/Application.hpp"
-#include <Input/ApplicationEvent.hpp>
+
+#include "Ocean/Input/ApplicationEvent.hpp"
+
+#include "Ocean/Renderer/Renderer.hpp"
 
 // libs
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
 
+	Application* Application::s_Instance = nullptr;
+
 	Application::Application() : m_Window(nullptr), m_Running(true), m_Minimized(false) {
-		m_Window = Window::Create();
+		if (s_Instance)
+			throw std::runtime_error("Application already exists!");
+
+		s_Instance = this;
+
+		m_Window = Window::Create(WindowProps("Ocean App"));
 		m_Window->SetEventCallback(OC_BIND_EVENT_FN(Application::OnEvent));
+
+		Renderer::Init();
 	}
 
 	Application::~Application() {
-		delete m_Window;
+		Renderer::Shutdown();
 	}
 
 	void Application::Close() {
@@ -27,21 +38,43 @@ namespace Ocean {
 		dispatcher.Dispatch<WindowCloseEvent>(OC_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(OC_BIND_EVENT_FN(Application::OnWindowResize));
 
-		// Propagate event to layers until handled
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+			if (e.Handled) {
+				break;
+			}
+
+			(*it)->OnEvent(e);
+		}
+	}
+
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* overlay) {
+		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	void Application::Run() {
 		while (m_Running) {
-			// TODO: Timestep Stuff
+			Update();
+		}
+	}
 
-			if (!m_Minimized) {
-				// Update Layers
-			}
+	void Application::Update() {
+		f32 time = static_cast<f32>(glfwGetTime());
+		Timestep timestep = time - m_LastFrameTime;
+		m_LastFrameTime = time;
 
-			m_Window->Update();
+		if (!m_Minimized) {
+			for (Layer* layer : m_LayerStack)
+				if (layer->IsEnabled())
+					layer->OnUpdate(timestep);
 		}
 
-		m_Window->EndCommands();
+		m_Window->Update();
 	}
 
 	b8 Application::OnWindowClose(WindowCloseEvent& e) {
@@ -58,9 +91,11 @@ namespace Ocean {
 		}
 
 		m_Minimized = false;
-		// Resize For Renderer
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
-		return true;
+		this->Update();
+
+		return false;
 	}
 
 }	// Ocean
