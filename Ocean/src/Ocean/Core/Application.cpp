@@ -1,101 +1,63 @@
-#include "ocpch.hpp"
+#include "Application.hpp"
 
-#include "Ocean/Core/Application.hpp"
+#include "Ocean/Core/Primitives/Log.hpp"
 
-#include "Ocean/Input/ApplicationEvent.hpp"
+#include "Ocean/Core/Testing/MemoryTest.hpp"
 
-#include "Ocean/Renderer/Renderer.hpp"
-
-// libs
-#include <GLFW/glfw3.h>
+// std
+#include <vector>
 
 namespace Ocean {
 
-	Application* Application::s_Instance = nullptr;
-
-	Application::Application() : m_Window(nullptr), m_Running(true), m_Minimized(false) {
-		if (s_Instance)
-			throw std::runtime_error("Application already exists!");
-
-		s_Instance = this;
-
-		m_Window = Window::Create(WindowProps("Ocean App"));
-		m_Window->SetEventCallback(OC_BIND_EVENT_FN(Application::OnEvent));
-
-		Renderer::Init();
+	Application::Application(const ApplicationConfig& config) {
+		oprint("Constructing Ocean Application!\n");
 	}
 
 	Application::~Application() {
-		Renderer::Shutdown();
+		oprint("Deconstructing Ocean Application!\n");
 	}
 
 	void Application::Close() {
-		m_Running = false;
-	}
-
-	void Application::OnEvent(Event& e) {
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(OC_BIND_EVENT_FN(Application::OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(OC_BIND_EVENT_FN(Application::OnWindowResize));
-
-		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
-			if (e.Handled) {
-				break;
-			}
-
-			(*it)->OnEvent(e);
-		}
-	}
-
-	void Application::PushLayer(Layer* layer) {
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
-	}
-
-	void Application::PushOverlay(Layer* overlay) {
-		m_LayerStack.PushOverlay(overlay);
-		overlay->OnAttach();
+		oprint("Closing Ocean Application!\n");
 	}
 
 	void Application::Run() {
-		while (m_Running) {
-			Update();
-		}
+	#ifdef OC_DEBUG
+
+		TestApp();
+
+	#endif
+
+		MainLoop();
 	}
 
-	void Application::Update() {
-		f32 time = static_cast<f32>(glfwGetTime());
-		Timestep timestep = time - m_LastFrameTime;
-		m_LastFrameTime = time;
+	void Application::TestApp() {
+		oprint("Testing Application Functionality!\n\n");
 
-		if (!m_Minimized) {
-			for (Layer* layer : m_LayerStack)
-				if (layer->IsEnabled())
-					layer->OnUpdate(timestep);
-		}
+		std::vector<UnitTest*> tests = {
+			new UnitTest,
+			new MemoryTest,
+		};
 
-		m_Window->Update();
+		for (u32 i = 0; i < tests.size(); i++)
+			tests[i]->RunTest();
+
+		oprint("\nEnding Application Tests!\n");
+
+		for (u32 i = 0; i < tests.size(); i++)
+			delete tests[i];
 	}
 
-	b8 Application::OnWindowClose(WindowCloseEvent& e) {
-		m_Running = false;
+	b8 Application::MainLoop() { return false; }
 
-		return true;
-	}
+	void Application::FixedUpdate(f32 delta) { }
 
-	b8 Application::OnWindowResize(WindowResizeEvent& e) {
-		if (e.GetWidth() == 0 || e.GetHeight() == 0) {
-			m_Minimized = true;
+	void Application::VariableUpdate(f32 delta) { }
 
-			return false;
-		}
+	void Application::Render(f32 interpolation) { }
 
-		m_Minimized = false;
-		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+	void Application::FrameBegin() { }
 
-		this->Update();
-
-		return false;
-	}
+	void Application::FrameEnd() { }
 
 }	// Ocean

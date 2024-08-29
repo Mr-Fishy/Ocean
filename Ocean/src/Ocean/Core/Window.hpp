@@ -1,46 +1,49 @@
 #pragma once
 
-#include "Ocean/Core/Base.hpp"
-#include "Ocean/Core/Defines.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+#include "Ocean/Core/Types/FloatingPoints.hpp"
 
-#include "Ocean/Input/Event.hpp"
-
-// std
-#include <cstring>
+#include "Ocean/Core/Primitives/Service.hpp"
+#include "Ocean/Core/Primitives/Array.hpp"
 
 namespace Ocean {
 
-	struct WindowProps {
-		char* Title;
-		ui32 Width, Height;
+	struct WindowConfig {
 
-		WindowProps(const char* title = "Ocean Window", ui32 width = 1080, ui32 height = 1080)
-			: Title(nullptr), Width(width), Height(height) {
-			Title = new char[sizeof(title)];
-			std::strcpy(Title, title);
-		}
-	};
+		u32 Width;
+		u32 Height;
 
-	class Window {
+		cstring Name;
+
+		Allocator* Allocator;
+
+	};	// WindowConfig
+
+	typedef void (*OSMessageCallback)(void* osEvent, void* userData);
+
+	class Window : public Service {
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
+		void Init(void* config) override;
+		void Shutdown() override;
 
-		Window() = default;
-		virtual ~Window() = default;
+		void SetFullscreen(b8 value);
 
-		virtual void Update() = 0;
+		void CenterMouse(b8 dragging) const;
 
-		virtual ui32 GetWidth() const = 0;
-		virtual ui32 GetHeight() const = 0;
+	private:
+		void* p_PlatformHandle = nullptr;
 
-		virtual void SetVSync(b8 enabled) = 0;
-		virtual b8 IsVSync() const = 0;
+		b8 m_RequestedExit = false;
+		b8 m_Resized = false;
+		b8 m_Minimized = false;
 
-		virtual void* GetNativeWindow() const = 0;
+		u32 m_Width = 0;
+		u32 m_Height = 0;
 
-		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+		f32 m_DisplayRefresh = 1.0f / 60.0f;
 
-		static Scope<Window> Create(const WindowProps& props = WindowProps());
-	};
+		static constexpr cstring k_Name = "OCEAN_Window_Service";
+
+	};	// Window
 
 }	// Ocean

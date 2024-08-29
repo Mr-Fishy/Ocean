@@ -13,6 +13,7 @@ project "Sandbox"
 	}
 
 	files {
+		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 	}
@@ -21,7 +22,7 @@ project "Sandbox"
 		"%{wks.location}/Ocean/src",
 		"%{wks.location}/Ocean/vendor",
 		
-		"%{IncludeDir.GLM}",
+		-- "%{IncludeDir.GLM}",
 	}
 
 	links {

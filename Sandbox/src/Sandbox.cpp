@@ -1,48 +1,75 @@
+#include "Sandbox.hpp"
 
 // Ocean
-#include <Ocean/Ocean.hpp>
 #include <Ocean/Core/EntryPoint.hpp>
+#include "Sandbox.hpp"
 
-// Layer Declarations
-#include "GameLayer.hpp"
+Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
+	oprint("Constructing Sandbox Application!\n");
 
- /*
-  * TODO Required Functionality:
-  * 
-  * 1) Alpha blending
-  * 2) Multi texture support
-  * 3) Render command API (ie draw(x, y, texture/color) from Sandbox)
-  * 4) Hit-testing for UI interaction
-  * 5) Layer setup with disabling
-  * 
-  * TODO Battleship:
-  * 
-  * 1) Main Menu
-  *     a) Start Game
-  *     b) Exit Game
-  *     c) 2 Player vs Bot?
-  * 2) Gameplay Loop
-  *     a) Place Ships
-  *     b) Primary Gameplay
-  *         i) Select Valid Position to Fire
-  *        ii) Hit or Not, if Ship has No Health, Destroy it
-  *       iii) Oponent's Turn (Bot or Player)
-  *     c) Once All Ships on Either Side are Destroyed, Declare Winner
-  *     d) Return to Main Menu
-  * 3) Bot Oponent?
- */
+	// ---> Init Primitive Services
 
-class Sandbox : public Ocean::Application {
-public:
-	Sandbox() {
-		PushLayer(new Battleship());
-	}
+	Ocean::MemoryService::Instance()->Init(nullptr);
 
-	virtual ~Sandbox() {
-		
-	}
-};
+	// p_ServiceManager = Ocean::ServiceManager::Instance;
+	// Init Service Manager
 
-Ocean::Application* Ocean::CreateApplication() {
-	return new Sandbox();
+	// ---> Init Foundation
+
+	// Window
+	Ocean::WindowConfig winConfig{ config.Width, config.Height, config.Name /* &Ocean::MemoryService::Instance()->SystemAllocator */ };
+	p_Window = new Ocean::Window();
+	p_Window->Init(&winConfig);
+
+	// Input
+
+	// Graphics
+
+	// App Specific 
+
+	oprint("Successfully Constructed Sandbox Application!\n");
+}
+
+Sandbox::~Sandbox() {
+	oprint("Deconstructing Sandbox Application!\n");
+}
+
+
+
+b8 Sandbox::MainLoop() {
+	oprint("Sandbox MainLoop Reached!\n");
+
+	return false;
+}
+
+
+
+void Sandbox::FixedUpdate(f32 delta) {
+	oprint("Sandbox FixedUpdate!\n");
+}
+
+void Sandbox::VariableUpdate(f32 delta) {
+	oprint("Sandbox VariableUpdate!\n");
+}
+
+
+
+void Sandbox::Render(f32 interpolation) {
+	oprint("Sandbox Render!\n");
+}
+
+
+
+void Sandbox::FrameBegin() {
+	oprint("Sandbox FrameBegin!\n");
+}
+
+void Sandbox::FrameEnd() {
+	oprint("Sandbox FrameEnd!\n");
+}
+
+
+
+void Sandbox::OnResize(u32 width, u32 height) {
+	oprint("Sandbox OnResize!\n");
 }

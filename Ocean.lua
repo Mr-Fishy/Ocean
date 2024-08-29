@@ -8,20 +8,26 @@ project "Ocean"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "ocpch.hpp"
-	pchsource "%{prj.name}/src/ocpch.cpp"
+	-- pchheader "ocpch.hpp"
+	-- pchsource "%{prj.name}/src/ocpch.cpp"
 
 	defines {
 		"_CRT_SECURE_NO_WARNINGS",
-		-- "GLFW_INCLUDE_NONE"
+		"GLFW_INCLUDE_NONE"
 	}
 
 	files {
+		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{IncludeDir.StackWalker}/StackWalker/StackWalker.h",
+		"%{IncludeDir.StackWalker}/StackWalker/StackWalker.cpp",
+
+		"%{IncludeDir.TLSF}/tlsf.h",
+		"%{IncludeDir.TLSF}/tlsf.c",
+
+		"%{IncludeDir.vkMemAlloc}/vk_mem_alloc.h"
 	}
 
 	includedirs {
@@ -30,18 +36,17 @@ project "Ocean"
 		
 		"$(VULKAN_SDK)/Include",
 
+		"%{IncludeDir.StackWalker}",
+		"%{IncludeDir.TLSF}",
+		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.VMA}",
+		"%{IncludeDir.vkMemAlloc}",
 	}
 
 	links {
 		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
-		
+
 		"GLFW",
-		"Glad",
 	}
 
 	filter "system:windows"

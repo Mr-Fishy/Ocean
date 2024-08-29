@@ -1,21 +1,65 @@
-#include "ocpch.hpp"
+#include "Window.hpp"
 
-#include "Ocean/Core/Window.hpp"
+#include "Ocean/Core/Primitives/Log.hpp"
+#include "Ocean/Core/Primitives/Numerics.hpp"
 
-#ifdef OC_PLATFORM_WINDOWS
-	#include "Platform/WindowsWindow.hpp"
-#endif // OC_PLATFORM_WINDOWS
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 
+static GLFWwindow* s_Window = nullptr;
 
 namespace Ocean {
 
-	Scope<Window> Window::Create(const WindowProps& props) {
-	#ifdef OC_PLATFORM_WINDOWS
-		return CreateScope<WindowsWindow>(props);
-	#elif
-		// TODO: ASSERT
-		return nullptr;
-	#endif // OC_PLATFORM_WINDOWS
+	static void GLFW_ErrorCallback(i32 error, cstring description) {
+		oprint("GLWF Error: %s\n", description);
+	}
+
+	void Window::Init(void* config) {
+		oprint("Window Service Init\n");
+
+		glfwSetErrorCallback(GLFW_ErrorCallback);
+
+		if (!glfwInit()) {
+			oprint("GLFW Init Error!\n");
+
+			return;
+		}
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+		WindowConfig& windowConfig = *(WindowConfig*)(config);
+		s_Window = glfwCreateWindow(windowConfig.Width, windowConfig.Height, windowConfig.Name, glfwGetPrimaryMonitor(), NULL);
+
+		if (!s_Window) {
+			oprint("GLFW Window Error!\n");
+
+			return;
+		}
+
+		// glfwSetKeyCallback(s_Window, glfw_KeyCallback);
+
+		glfwMakeContextCurrent(s_Window);
+
+		oprint("Window Created Successfully!\n");
+
+		// u32 windowWidth, windowHeight;
+
+		p_PlatformHandle = s_Window;
+	}
+
+	void Window::Shutdown() {
+		glfwDestroyWindow(s_Window);
+		glfwTerminate();
+
+		oprint("Window Service Shutdown\n");
+	}
+
+	void Window::SetFullscreen(b8 value) {
+		
+	}
+
+	void Window::CenterMouse(b8 dragging) const {
+		
 	}
 
 }	// Ocean

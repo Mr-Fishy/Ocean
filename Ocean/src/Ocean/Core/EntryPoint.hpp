@@ -1,8 +1,8 @@
 #pragma once
 
+// Ocean
 #include "Ocean/Core/Base.hpp"
 #include "Ocean/Core/Application.hpp"
-#include "Ocean/Core/Log.hpp"
 
 // std
 #include <iostream>
@@ -12,8 +12,6 @@
 	extern Ocean::Application* Ocean::CreateApplication();
 
 	int main(int argc, char** argv) {
-		Ocean::Log::Init();
-		
 		Ocean::Application* app = Ocean::CreateApplication();
 
 		try {
@@ -23,14 +21,10 @@
 			std::cerr << e.what() << std::endl;
 
 			delete app;
-			Ocean::Log::Shutdown();
-
 			return EXIT_FAILURE;
 		}
 
 		delete app;
-		Ocean::Log::Shutdown();
-
 		return EXIT_SUCCESS;
 	}
 
