@@ -16,10 +16,10 @@ namespace Ocean {
 
 		void SetCallback(PrintCallback callback);
 
+		static cstring Name() { return "OCEAN_Log_Service"; }
+
 	private:
 		PrintCallback m_PrintCallback = nullptr;
-
-		static constexpr cstring k_Name = "OCEAN_Log_Service";
 
 	};	// LogService
 

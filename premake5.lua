@@ -12,19 +12,23 @@ workspace "OceanEngine"
 	-- Include Directories Relative To Workspace Folder
 	IncludeDir = {}
 	IncludeDir["StackWalker"] = "%{wks.location}/Ocean/vendor/StackWalker/Main"
-	IncludeDir["TLSF"       ] = "%{wks.location}/Ocean/vendor/TLSF"
-	IncludeDir["SDL3"       ] = "%{wks.location}/Ocean/vendor/SDL/include"
-	IncludeDir["GLFW"       ] = "%{wks.location}/Ocean/vendor/GLFW/include"
+	IncludeDir["TLSF"       ] = "%{wks.location}/Ocean/vendor/tlsf"
+	IncludeDir["GLFW"       ] = "%{wks.location}/Ocean/vendor/glfw/include"
+	IncludeDir["IMGUI"      ] = "%{wks.location}/Ocean/vendor/imgui"
 	IncludeDir["vkMemAlloc" ] = "%{wks.location}/Ocean/vendor/VulkanMemoryAllocator/include"
 
 	group "Dependencies"
 	 	include "Ocean/vendor/premake5-GLFW.lua"
-	--	include "Ocean/vendor/premake5-GLAD.lua"
+	 	include "Ocean/vendor/premake5-ImGui.lua"
 	group ""
 
-	include "Ocean.lua"
-	include "Sandbox.lua"
-	-- include "Coral.lua"
+	group "Core"
+		include "Ocean.lua"
+	group ""
+
+	group "Apps"
+		include "Sandbox.lua"
+	group ""
 
 newaction {
 	trigger = "clean",

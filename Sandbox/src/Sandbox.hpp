@@ -30,6 +30,8 @@ private:
 
 	// Renderer Service
 
+	Ocean::ImguiService* p_Imgui = nullptr;
+
 };	// Sandbox
 
 

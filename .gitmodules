@@ -1,12 +1,15 @@
-[submodule "Ocean/vendor/StackWalker"]
+[submodule "StackWalker"]
 	path = Ocean/vendor/StackWalker
 	url = https://github.com/JochenKalmbach/StackWalker
 [submodule "TLSF"]
-	path = Ocean/vendor/TLSF
+	path = Ocean/vendor/tlsf
 	url = https://github.com/mattconte/tlsf
-[submodule "Ocean/vendor/GLFW"]
-	path = Ocean/vendor/GLFW
+[submodule "GLFW"]
+	path = Ocean/vendor/glfw
 	url = https://github.com/glfw/glfw
-[submodule "Ocean/vendor/VulkanMemoryAllocator"]
+[submodule "VulkanMemoryAllocator"]
 	path = Ocean/vendor/VulkanMemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+[submodule "ImGui"]
+	path = Ocean/vendor/imgui
+	url = https://github.com/ocornut/imgui

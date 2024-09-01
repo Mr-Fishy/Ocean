@@ -345,13 +345,18 @@ namespace Ocean {
 		OASSERT(size > 0);
 
 		const sizet newStart = mem_align(m_AllocatedSize, alignment);
+
 		OASSERT(newStart < m_TotalSize);
+
 		const sizet newSize = newStart + size;
 
 		if (newSize > m_TotalSize) {
 			OASSERTM(false, "MEMORY OVERFLOW |: Linear Allocator");
 			return nullptr;
 		}
+
+		m_AllocatedSize = newSize;
+		return p_Memory + newStart;
 	}
 
 	void* LinearAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {

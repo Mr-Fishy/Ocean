@@ -38,8 +38,8 @@ project "Ocean"
 
 		"%{IncludeDir.StackWalker}",
 		"%{IncludeDir.TLSF}",
-		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.vkMemAlloc}",
 	}
 
@@ -47,6 +47,7 @@ project "Ocean"
 		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
 
 		"GLFW",
+		"ImGui",
 	}
 
 	filter "system:windows"

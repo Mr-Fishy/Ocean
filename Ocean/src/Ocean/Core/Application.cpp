@@ -2,8 +2,6 @@
 
 #include "Ocean/Core/Primitives/Log.hpp"
 
-#include "Ocean/Core/Testing/MemoryTest.hpp"
-
 // std
 #include <vector>
 
@@ -33,19 +31,6 @@ namespace Ocean {
 
 	void Application::TestApp() {
 		oprint("Testing Application Functionality!\n\n");
-
-		std::vector<UnitTest*> tests = {
-			new UnitTest,
-			new MemoryTest,
-		};
-
-		for (u32 i = 0; i < tests.size(); i++)
-			tests[i]->RunTest();
-
-		oprint("\nEnding Application Tests!\n");
-
-		for (u32 i = 0; i < tests.size(); i++)
-			delete tests[i];
 	}
 
 	b8 Application::MainLoop() { return false; }

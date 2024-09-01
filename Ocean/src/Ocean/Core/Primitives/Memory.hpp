@@ -164,7 +164,7 @@ namespace Ocean {
 		void Clear();
 
 	private:
-		void* p_Memory = nullptr;
+		u8* p_Memory = nullptr;
 
 		sizet m_TotalSize = 0;
 		sizet m_AllocatedSize = 0;
@@ -196,6 +196,11 @@ namespace Ocean {
 		void Init(void* config);
 		void Shutdown();
 
+		static cstring Name() { return "OCEAN_Memory_Service"; }
+
+		LinearAllocator* ScratchAllocator() const { return &Instance()->m_ScratchAllocator; }
+		HeapAllocator*   SystemAllocator() const { return &Instance()->m_SystemAllocator; }
+
 	private:
 		void Test();
 
@@ -203,8 +208,6 @@ namespace Ocean {
 
 		LinearAllocator m_ScratchAllocator;
 		HeapAllocator   m_SystemAllocator;
-
-		static constexpr cstring m_Name = "OCEAN_Memory_Service";
 
 	};	// MemoryService
 

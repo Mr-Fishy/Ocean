@@ -11,13 +11,15 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	Ocean::MemoryService::Instance()->Init(nullptr);
 
-	// p_ServiceManager = Ocean::ServiceManager::Instance;
-	// Init Service Manager
+	Ocean::oTimeServiceInit();
+
+	p_ServiceManager = Ocean::ServiceManager::Instance();
+	p_ServiceManager->Init(Ocean::MemoryService::Instance()->SystemAllocator());
 
 	// ---> Init Foundation
 
 	// Window
-	Ocean::WindowConfig winConfig{ config.Width, config.Height, config.Name /* &Ocean::MemoryService::Instance()->SystemAllocator */ };
+	Ocean::WindowConfig winConfig{ config.Width, config.Height, config.Name, Ocean::MemoryService::Instance()->SystemAllocator() };
 	p_Window = new Ocean::Window();
 	p_Window->Init(&winConfig);
 
@@ -27,11 +29,26 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// App Specific 
 
+	// IMGUI
+	p_Imgui = p_ServiceManager->Get<Ocean::ImguiService>();
+	p_Imgui->Init(nullptr);
+
 	oprint("Successfully Constructed Sandbox Application!\n");
 }
 
 Sandbox::~Sandbox() {
 	oprint("Deconstructing Sandbox Application!\n");
+
+	p_Imgui->Shutdown();
+	// Input
+	// Renderer
+	p_Window->Shutdown();
+
+	Ocean::oTimeServiceShutdown();
+
+	p_ServiceManager->Shutdown();
+
+	Ocean::MemoryService::Instance()->Shutdown();
 }
 
 
@@ -39,7 +56,35 @@ Sandbox::~Sandbox() {
 b8 Sandbox::MainLoop() {
 	oprint("Sandbox MainLoop Reached!\n");
 
-	return false;
+	while (!p_Window->RequestedExit()) {
+		FrameBegin();
+
+
+
+
+		p_Imgui->NewFrame();
+
+		// Fixed Update
+
+		// Variable Update
+
+		if (!p_Window->Minimized()) {
+
+
+
+			p_Imgui->Render();
+
+
+		}
+		else {
+			// ImGui::Render();
+		}
+
+		// Prepare for the next frame if needed.
+		FrameEnd();
+	}
+
+	return true;
 }
 
 

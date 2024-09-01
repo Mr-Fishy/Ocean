@@ -62,4 +62,8 @@ namespace Ocean {
 		
 	}
 
+	void Window::PollEvents() const {
+		glfwPollEvents();
+	}
+
 }	// Ocean

@@ -30,6 +30,11 @@ namespace Ocean {
 
 		void CenterMouse(b8 dragging) const;
 
+		void PollEvents() const;
+
+		b8 RequestedExit() const { return m_RequestedExit; }
+		b8 Minimized() const { return m_Minimized; }
+
 	private:
 		void* p_PlatformHandle = nullptr;
 
