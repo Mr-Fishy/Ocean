@@ -1,7 +1,11 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/Array.hpp"
 #include "Ocean/Core/Primitives/Service.hpp"
+#include "Ocean/Core/Primitives/Memory.hpp"
+#include "Ocean/Core/Primitives/HashMap.hpp"
+
+// std
+#include <unordered_map>
 
 namespace Ocean {
 
@@ -26,14 +30,14 @@ namespace Ocean {
 	private:
 		Allocator* p_Allocator = nullptr;
 
-		DynamicArray<Service*> m_Services;
+		HashMap<cstring, Service*> m_Services;
 
 	};
 
 	template<typename T>
 	inline T* ServiceManager::Get() {
 		T* service = (T*)GetService(T::Name());
-		if (!service) {
+		if (service == nullptr) {
 			AddService(T::Instance(), T::Name());
 		}
 

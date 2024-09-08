@@ -3,19 +3,29 @@ workspace "OceanEngine"
 	platforms "x64"
 	startproject "Sandbox"
 
-	configurations { "Debug", "Release" }
+	configurations { "DebugLib", "DebugDLL", "ReleaseLib", "ReleaseDLL" }
 
 	flags { "MultiProcessorCompile" }
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
+	VULKAN_SDK = os.getenv("VULKAN_SDK")
+
 	-- Include Directories Relative To Workspace Folder
-	IncludeDir = {}
+	IncludeDir = { }
 	IncludeDir["StackWalker"] = "%{wks.location}/Ocean/vendor/StackWalker/Main"
 	IncludeDir["TLSF"       ] = "%{wks.location}/Ocean/vendor/tlsf"
 	IncludeDir["GLFW"       ] = "%{wks.location}/Ocean/vendor/glfw/include"
 	IncludeDir["IMGUI"      ] = "%{wks.location}/Ocean/vendor/imgui"
+	IncludeDir["VulkanSDK"  ] = "%{VULKAN_SDK}/Include"
 	IncludeDir["vkMemAlloc" ] = "%{wks.location}/Ocean/vendor/VulkanMemoryAllocator/include"
+
+	LibraryDir = { }
+	LibraryDir["VulkanSDK"  ] = "%{VULKAN_SDK}/Lib"
+
+	Library = { }
+	Library["Vulkan"        ] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+	Library["VulkanUtils"   ] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"
 
 	group "Dependencies"
 	 	include "Ocean/vendor/premake5-GLFW.lua"

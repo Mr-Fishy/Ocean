@@ -1,4 +1,4 @@
-#include "Ocean/Core/Primitives/Memory.hpp"
+#include "Memory.hpp"
 
 #include "Ocean/Core/Primitives/MemoryUtils.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
@@ -22,8 +22,6 @@
 
 namespace Ocean {
 
-// #define OCEAN_MEMORY_DEBUG
-
 	// Walker Methods
 
 	static void ExitWalker(void* ptr, sizet size, i32 used, void* user) {
@@ -39,23 +37,19 @@ namespace Ocean {
 
 	static MemoryService s_MemoryService;
 
-	static sizet s_Size = omega(32) + 8;
+	static sizet s_Size = omega(32) + tlsf_size() + 8;
 
 	MemoryService* MemoryService::Instance() {
 		return &s_MemoryService;
 	}
 
 	void MemoryService::Init(void* config) {
-		oprint("Memory Service Init\n");
-
 		MemoryServiceConfig* memoryConfig = static_cast<MemoryServiceConfig*>(config);
 		m_SystemAllocator.Init(memoryConfig ? memoryConfig->MaxDynamicSize : s_Size);
 	}
 
 	void MemoryService::Shutdown() {
 		m_SystemAllocator.Shutdown();
-
-		oprint("Memory Service Shutdown\n");
 	}
 
 	void MemoryService::Test() {
@@ -78,25 +72,19 @@ namespace Ocean {
 
 	HeapAllocator::~HeapAllocator() { }
 
+	// TODO: Finish implementing Memory Stats so that it is accurate.
 	void HeapAllocator::Init(sizet size) {
 		p_Memory = malloc(size);
 		m_TotalSize = size;
 		m_AllocatedSize = 0;
 
 		p_Handle = tlsf_create_with_pool(p_Memory, size);
-
-		oprint("HeapAllocator Initialized. \n\t=> Heap size %llu created.\n", size);
 	}
 
 	void HeapAllocator::Shutdown() {
-		MemoryStats stats{ 0, m_TotalSize };
+		MemoryStats stats{ m_AllocatedSize, m_TotalSize };
 		void* pool = tlsf_get_pool(p_Handle);
 		tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
-
-		if (stats.AllocatedBytes)
-			oprint("HeapAllocator Shutdown. \n\t=> FAILURE! Allocated memory detected. \n=> Allocated: %llu, Total: %llu\n", stats.AllocatedBytes, stats.TotalBytes);
-		else
-			oprint("HeapAllocator Shutdown. \n\t=> All memory free!\n");
 
 		OASSERTM(stats.AllocatedBytes == 0, "Allocations still present. Check your code!");
 
@@ -146,7 +134,7 @@ namespace Ocean {
 
 	#else
 
-		return oMalloc(p_Handle, size);
+		return tlsf_malloc(p_Handle, size);
 
 	#endif
 	}
@@ -166,7 +154,7 @@ namespace Ocean {
 
 	#else
 
-		oFree(p_Handle, ptr);
+		tlsf_free(p_Handle, ptr);
 
 	#endif
 	}

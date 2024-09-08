@@ -17,7 +17,7 @@ namespace Ocean {
 		class Array {
 		public:
 			Array() = default;
-			virtual ~Array() = default;
+			~Array() = default;
 
 			virtual void InsertAt(const T& element, u32 position) = 0;
 			virtual b8 InsertAfter(const T& element, const T& data) = 0;
@@ -54,7 +54,7 @@ namespace Ocean {
 	class DynamicArray : public ADT::Array<T> {
 	public:
 		DynamicArray() = default;
-		virtual ~DynamicArray() = default;
+		~DynamicArray() = default;
 
 		void Init(Allocator* allocator, u32 initialCapacity = 4);
 		void Shutdown();
@@ -93,9 +93,6 @@ namespace Ocean {
 	template <typename T>
 	class FixedArray : public ADT::Array<T> {
 	public:
-		FixedArray() = default;
-		virtual ~FixedArray() = default;
-
 		void Init(Allocator* allocator, u32 capacity);
 		void Shutdown();
 

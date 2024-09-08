@@ -83,12 +83,6 @@ namespace Ocean {
 		sizet m_TotalSize = 0;
 		sizet m_AllocatedSize = 0;
 
-	#ifdef OC_DEBUG
-
-		friend class HeapTest;
-
-	#endif
-
 	};	// HeapAllocator
 
 	class StackAllocator : public Allocator {
@@ -185,7 +179,7 @@ namespace Ocean {
 
 	struct MemoryServiceConfig {
 
-		sizet MaxDynamicSize = 32 * 1024 * 1024; // Default size of 32MB of dynamic memory.
+		sizet MaxDynamicSize = 16 * 1024 * 1024; // Default size of 16MB of dynamic memory.
 
 	};	// MemoryServiceConfig
 
@@ -193,13 +187,13 @@ namespace Ocean {
 	public:
 		OCEAN_DECLARE_SERVICE(MemoryService);
 
-		void Init(void* config);
-		void Shutdown();
+		virtual void Init(void* config) override;
+		virtual void Shutdown() override;
 
 		static cstring Name() { return "OCEAN_Memory_Service"; }
 
-		LinearAllocator* ScratchAllocator() const { return &Instance()->m_ScratchAllocator; }
-		HeapAllocator*   SystemAllocator() const { return &Instance()->m_SystemAllocator; }
+		LinearAllocator* ScratchAllocator() { return &m_ScratchAllocator; }
+		HeapAllocator*   SystemAllocator() { return &m_SystemAllocator; }
 
 	private:
 		void Test();

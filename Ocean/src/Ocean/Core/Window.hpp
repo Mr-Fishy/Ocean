@@ -19,35 +19,50 @@ namespace Ocean {
 
 	};	// WindowConfig
 
-	typedef void (*OSMessageCallback)(void* osEvent, void* userData);
+	class Window;
+
+	struct WindowData {
+		Window* Window;
+
+		u32 Width, Height;
+		u32 WindowedWidth, WindowedHeight;
+
+		b8 VSync = true;
+		b8 Refreshed = false;
+		b8 CenteredCursor = false;
+		b8 Resized = false;
+		b8 Fullscreen = false;
+	};
 
 	class Window : public Service {
 	public:
-		void Init(void* config) override;
-		void Shutdown() override;
+		virtual void Init(void* config) override;
+		virtual void Shutdown() override;
 
-		void SetFullscreen(b8 value);
+		void SetFullscreen(b8 enabled);
 
-		void CenterMouse(b8 dragging) const;
+		void CenterMouse(b8 enabled) const;
 
-		void PollEvents() const;
+		void PollEvents();
+
+		u32 Width() const { return m_Data.Width; }
+		u32 Height() const { return m_Data.Height; }
+		void* Handle() const { return p_PlatformHandle; }
 
 		b8 RequestedExit() const { return m_RequestedExit; }
 		b8 Minimized() const { return m_Minimized; }
+		b8 Resized() const { return m_Data.Resized; }
+		void ResizeHandled() { m_Data.Resized = false; }
 
 	private:
 		void* p_PlatformHandle = nullptr;
 
 		b8 m_RequestedExit = false;
-		b8 m_Resized = false;
 		b8 m_Minimized = false;
-
-		u32 m_Width = 0;
-		u32 m_Height = 0;
 
 		f32 m_DisplayRefresh = 1.0f / 60.0f;
 
-		static constexpr cstring k_Name = "OCEAN_Window_Service";
+		WindowData m_Data;
 
 	};	// Window
 

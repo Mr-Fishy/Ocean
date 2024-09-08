@@ -28,9 +28,9 @@ private:
 	Ocean::Window* p_Window = nullptr;
 	// Input Service
 
-	// Renderer Service
+	Ocean::Vulkan::Renderer* p_Renderer = nullptr;
 
-	Ocean::ImguiService* p_Imgui = nullptr;
+	// Ocean::ImguiService* p_Imgui = nullptr;
 
 };	// Sandbox
 
@@ -38,8 +38,8 @@ private:
 
 Ocean::Application* Ocean::CreateApplication() {
 	Ocean::ApplicationConfig config;
-	config.w(1080);
-	config.h(720);
+	config.w(1200);
+	config.h(800);
 	config.name("Ocean Sandbox");
 
 	return new Sandbox(config);

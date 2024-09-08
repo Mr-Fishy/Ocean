@@ -22,7 +22,8 @@ project "Sandbox"
 		"%{wks.location}/Ocean/src",
 		"%{wks.location}/Ocean/vendor",
 		
-		-- "%{IncludeDir.GLM}",
+		"%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.vkMemAlloc}",
 	}
 
 	links {
@@ -32,12 +33,22 @@ project "Sandbox"
 	filter "system:windows"
 		systemversion "latest"
 
-	filter "configurations:Debug"
+	filter "configurations:DebugLib"
 		defines "OC_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:Release"
+	filter "configurations:DebugDLL"
+		defines "OC_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:ReleaseLib"
+		defines "OC_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:ReleaseDLL"
 		defines "OC_RELEASE"
 		runtime "Release"
 		optimize "on"

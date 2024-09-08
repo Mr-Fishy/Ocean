@@ -1,9 +1,16 @@
 project "Ocean"
 	location "Ocean"
-	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
+
+	filter "*Lib"
+		kind "StaticLib"
+
+	filter "*DLL"
+		kind "SharedLib"
+
+	filter { }
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -27,50 +34,54 @@ project "Ocean"
 		"%{IncludeDir.TLSF}/tlsf.h",
 		"%{IncludeDir.TLSF}/tlsf.c",
 
-		"%{IncludeDir.vkMemAlloc}/vk_mem_alloc.h"
+		"%{IncludeDir.vkMemAlloc}/vk_mem_alloc.h",
+
+		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.h",
+		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.cpp",
+
+		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.h",
+		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.cpp",
 	}
 
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/src/Ocean",
 		
-		"$(VULKAN_SDK)/Include",
-
 		"%{IncludeDir.StackWalker}",
 		"%{IncludeDir.TLSF}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.vkMemAlloc}",
 	}
 
 	links {
-		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
+		"%{Library.Vulkan}",
+		-- "%{Library.VulkanUtils}",
 
-		"GLFW",
-		"ImGui",
+		"glfw",
+		"imgui",
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
-	filter "configurations:Debug"
+	filter "configurations:DebugLib"
 		defines "OC_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
-		links {
-			-- "$(VULKAN_SDK)/Lib/shaderc_sharedd.lib",
-			"$(VULKAN_SDK)/Lib/spirv-cross-cored.lib",
-			"$(VULKAN_SDK)/Lib/spirv-cross-glsld.lib",
-		}
-
-	filter "configurations:Release"
+	filter "configurations:DebugDLL"
 		defines "OC_RELEASE"
 		runtime "Release"
 		optimize "on"
 
-		links {
-			-- "$(VULKAN_SDK)/Lib/shaderc_shared.lib",
-			"$(VULKAN_SDK)/Lib/spirv-cross-core.lib",
-			"$(VULKAN_SDK)/Lib/spirv-cross-glsl.lib",
-		}
+	filter "configurations:ReleaseLib"
+		defines "OC_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:ReleaseDLL"
+		defines "OC_RELEASE"
+		runtime "Release"
+		optimize "on"
