@@ -1,48 +1,149 @@
+#include "Sandbox.hpp"
 
 // Ocean
-#include <Ocean/Ocean.hpp>
 #include <Ocean/Core/EntryPoint.hpp>
 
-// Layer Declarations
-#include "GameLayer.hpp"
+static Ocean::Window s_Window;
 
- /*
-  * TODO Required Functionality:
-  * 
-  * 1) Alpha blending
-  * 2) Multi texture support
-  * 3) Render command API (ie draw(x, y, texture/color) from Sandbox)
-  * 4) Hit-testing for UI interaction
-  * 5) Layer setup with disabling
-  * 
-  * TODO Battleship:
-  * 
-  * 1) Main Menu
-  *     a) Start Game
-  *     b) Exit Game
-  *     c) 2 Player vs Bot?
-  * 2) Gameplay Loop
-  *     a) Place Ships
-  *     b) Primary Gameplay
-  *         i) Select Valid Position to Fire
-  *        ii) Hit or Not, if Ship has No Health, Destroy it
-  *       iii) Oponent's Turn (Bot or Player)
-  *     c) Once All Ships on Either Side are Destroyed, Declare Winner
-  *     d) Return to Main Menu
-  * 3) Bot Oponent?
- */
+Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
+	oprint("Constructing Sandbox Application!\n");
 
-class Sandbox : public Ocean::Application {
-public:
-	Sandbox() {
-		PushLayer(new Battleship());
+	// ---> Init Primitive Services
+
+	Ocean::MemoryService::Instance()->Init(nullptr);
+
+	Ocean::oTimeServiceInit();
+
+	p_ServiceManager = Ocean::ServiceManager::Instance();
+	p_ServiceManager->Init(Ocean::MemoryService::Instance()->SystemAllocator());
+
+	// ---> Init Foundation
+
+	// Window
+	Ocean::WindowConfig winConfig{
+		config.Width,
+		config.Height,
+		config.Name,
+		Ocean::MemoryService::Instance()->SystemAllocator()
+	};
+	p_Window = &s_Window;
+	p_Window->Init(&winConfig);
+
+	// Input
+
+	// Graphics
+	Ocean::Vulkan::RendererConfig renConfig{
+		Ocean::MemoryService::Instance()->SystemAllocator(),
+		p_Window,
+		config.Name,
+		1, 0, 0
+	};
+	p_Renderer = p_ServiceManager->Get<Ocean::Vulkan::Renderer>();
+	p_Renderer->Init(&renConfig);
+
+	// IMGUI
+	// p_Imgui = p_ServiceManager->Get<Ocean::ImguiService>();
+	// p_Imgui->Init(nullptr);
+
+	oprint("Successfully Constructed Sandbox Application!\n");
+}
+
+Sandbox::~Sandbox() {
+	oprint("Deconstructing Sandbox Application!\n");
+
+	// p_Imgui->Shutdown();
+
+	// Graphics
+	p_Renderer->Shutdown();
+
+	// Input
+
+	p_Window->Shutdown();
+
+	Ocean::oTimeServiceShutdown();
+
+	p_ServiceManager->Shutdown();
+
+	Ocean::MemoryService::Instance()->Shutdown();
+}
+
+
+
+b8 Sandbox::MainLoop() {
+	oprint("Sandbox MainLoop Reached!\n");
+
+	while (!p_Window->RequestedExit()) {
+		if (!p_Window->Minimized())
+			p_Renderer->BeginFrame();
+
+		FrameBegin();
+
+		p_Window->PollEvents();
+
+		if (p_Window->Resized()) {
+			p_Renderer->ResizeSwapchain(p_Window->Width(), p_Window->Height());
+
+			OnResize(p_Window->Width(), p_Window->Height());
+
+			p_Window->ResizeHandled();
+		}
+
+		// p_Imgui->NewFrame();
+
+		// Fixed Update
+
+		// Variable Update
+
+		if (!p_Window->Minimized()) {
+			// Command Buffer
+
+			// Interpolation
+
+			Render(f32());
+
+			// ImGui->Render()
+
+			p_Renderer->EndFrame();
+		}
+		else {
+			// ImGui::Render();
+		}
+
+		// Prepare for the next frame if needed.
+		FrameEnd();
 	}
 
-	virtual ~Sandbox() {
-		
-	}
-};
+	return true;
+}
 
-Ocean::Application* Ocean::CreateApplication() {
-	return new Sandbox();
+
+
+void Sandbox::FixedUpdate(f32 delta) {
+	// oprint("Sandbox FixedUpdate!\n");
+}
+
+void Sandbox::VariableUpdate(f32 delta) {
+	// oprint("Sandbox VariableUpdate!\n");
+}
+
+
+
+void Sandbox::Render(f32 interpolation) {
+	// oprint("Sandbox Render!\n");
+}
+
+
+
+void Sandbox::FrameBegin() {
+	// oprint("Sandbox FrameBegin!\n");
+}
+
+void Sandbox::FrameEnd() {
+	// oprint("Sandbox FrameEnd!\n");
+}
+
+
+
+void Sandbox::OnResize(u32 width, u32 height) {
+	oprint("Sandbox OnResize! (%i, %i)\n", width, height);
 }

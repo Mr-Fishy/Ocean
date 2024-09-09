@@ -1,46 +1,69 @@
 #pragma once
 
-#include "Ocean/Core/Base.hpp"
-#include "Ocean/Core/Defines.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+#include "Ocean/Core/Types/FloatingPoints.hpp"
 
-#include "Ocean/Input/Event.hpp"
-
-// std
-#include <cstring>
+#include "Ocean/Core/Primitives/Service.hpp"
+#include "Ocean/Core/Primitives/Array.hpp"
 
 namespace Ocean {
 
-	struct WindowProps {
-		char* Title;
-		ui32 Width, Height;
+	struct WindowConfig {
 
-		WindowProps(const char* title = "Ocean Window", ui32 width = 1080, ui32 height = 1080)
-			: Title(nullptr), Width(width), Height(height) {
-			Title = new char[sizeof(title)];
-			std::strcpy(Title, title);
-		}
+		u32 Width;
+		u32 Height;
+
+		cstring Name;
+
+		Allocator* Allocator;
+
+	};	// WindowConfig
+
+	class Window;
+
+	struct WindowData {
+		Window* Window;
+
+		u32 Width, Height;
+		u32 WindowedWidth, WindowedHeight;
+
+		b8 VSync = true;
+		b8 Refreshed = false;
+		b8 CenteredCursor = false;
+		b8 Resized = false;
+		b8 Fullscreen = false;
 	};
 
-	class Window {
+	class Window : public Service {
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
+		virtual void Init(void* config) override;
+		virtual void Shutdown() override;
 
-		Window() = default;
-		virtual ~Window() = default;
+		void SetFullscreen(b8 enabled);
 
-		virtual void Update() = 0;
+		void CenterMouse(b8 enabled) const;
 
-		virtual ui32 GetWidth() const = 0;
-		virtual ui32 GetHeight() const = 0;
+		void PollEvents();
 
-		virtual void SetVSync(b8 enabled) = 0;
-		virtual b8 IsVSync() const = 0;
+		u32 Width() const { return m_Data.Width; }
+		u32 Height() const { return m_Data.Height; }
+		void* Handle() const { return p_PlatformHandle; }
 
-		virtual void* GetNativeWindow() const = 0;
+		b8 RequestedExit() const { return m_RequestedExit; }
+		b8 Minimized() const { return m_Minimized; }
+		b8 Resized() const { return m_Data.Resized; }
+		void ResizeHandled() { m_Data.Resized = false; }
 
-		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+	private:
+		void* p_PlatformHandle = nullptr;
 
-		static Scope<Window> Create(const WindowProps& props = WindowProps());
-	};
+		b8 m_RequestedExit = false;
+		b8 m_Minimized = false;
+
+		f32 m_DisplayRefresh = 1.0f / 60.0f;
+
+		WindowData m_Data;
+
+	};	// Window
 
 }	// Ocean

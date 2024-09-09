@@ -1,62 +1,62 @@
 #pragma once
 
 #include "Ocean/Core/Base.hpp"
-#include "Ocean/Core/Defines.hpp"
 
-#include "Ocean/Core/Window.hpp"
-
-#include "Ocean/Input/Event.hpp"
-#include "Ocean/Input/ApplicationEvent.hpp"
-
-#include "Ocean/Layer/LayerStack.hpp"
-
-#include "Ocean/Core/Timestep.hpp"
+#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Strings.hpp"
 
 int main(int argc, char** argv);
 
 namespace Ocean {
 
+	class ServiceManager;
+
+	struct ApplicationConfig {
+
+		u32 Width  = 900;
+		u32 Height = 600;
+
+		cstring Name = nullptr;
+
+		b8 InitBaseServices = false;
+
+		ApplicationConfig& w(u32 value) { Width = value; return *this; }
+		ApplicationConfig& h(u32 value) { Height = value; return *this; }
+		ApplicationConfig& name(cstring value) { Name = value; return *this; }
+
+	};	// ApplicationConfig
+
 	class Application {
 	public:
-		Application();
+		Application(const ApplicationConfig& config);
 		virtual ~Application();
 
 		void Close();
 
-		void OnEvent(Event& e);
-
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* overlay);
-
-		const f32 GetLastFrameTime() const { return m_LastFrameTime; }
-
-		static Application& Get() { return *s_Instance; }
-		Window& GetWindow() { return *m_Window; }
-
-	private:
+	protected:
 		friend int ::main(int argc, char** argv);
 
 		/* --- */
 
 		void Run();
 
-		void Update();
+		void TestApp();
 
-		b8 OnWindowClose(WindowCloseEvent& e);
-		b8 OnWindowResize(WindowResizeEvent& e);
+		virtual b8 MainLoop();
+
+		virtual void FixedUpdate(f32 delta);
+		virtual void VariableUpdate(f32 delta);
+		
+		virtual void Render(f32 interpolation);
+
+		virtual void FrameBegin();
+		virtual void FrameEnd();
 
 		/* --- */
 
 		static Application* s_Instance;
 
-		Scope<Window> m_Window;
-
-		LayerStack m_LayerStack;
-
-		b8 m_Running;
-		b8 m_Minimized;
-
-		f32 m_LastFrameTime = 0.0f;
+		ServiceManager* p_ServiceManager = nullptr;
 	};
 
 	Application* CreateApplication();
