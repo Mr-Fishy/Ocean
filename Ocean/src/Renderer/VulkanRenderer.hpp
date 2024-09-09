@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Primitives/Service.hpp"
+#include "Ocean/Core/Primitives/HashMap.hpp"
 
 #include "Renderer/VulkanDevice.hpp"
 

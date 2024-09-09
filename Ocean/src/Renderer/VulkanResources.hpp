@@ -4,7 +4,7 @@
 #include "Ocean/Core/Primitives/Assert.hpp"
 
 #include <vulkan/vulkan.hpp>
-#include "vk_mem_alloc.h"
+// #include "vk_mem_alloc.h"
 
 namespace Ocean {
 
@@ -78,11 +78,14 @@ namespace Ocean {
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-			if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-				oprint("Vulkan: %s", pCallbackData->pMessage);
+			if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+				OASSERTM(false, CONSOLE_TEXT_RED("\nVulkan: %s\n"), pCallbackData->pMessage);
+			}
+			else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+				oprint(CONSOLE_TEXT_YELLOW("\nVulkan: %s\n\n"), pCallbackData->pMessage);
 			}
 			else {
-				// oprint("Vulkan: %s", pCallbackData->pMessage);
+				oprint(CONSOLE_TEXT_GREEN("\nVulkan: %s\n\n"), pCallbackData->pMessage);
 			}
 
 			return VK_FALSE;
@@ -107,7 +110,7 @@ namespace Ocean {
 
 		static void CheckResultSuccess(VkResult result, cstring message) {
 			if (result != VK_SUCCESS)
-				OASSERTM(false, "%s | Result: %i\n", message, result);
+				OASSERTM(false, CONSOLE_TEXT_RED("\n%s | Result: %i\n"), message, result);
 		}
 
 	}	// Vulkan

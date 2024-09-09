@@ -34,7 +34,11 @@ namespace Ocean {
 			virtual void Remove(const T& element) = 0;
 			virtual void Remove(u32 position) = 0;
 
+			T* Data() const { return p_Data; }
+
 			virtual void Clear() = 0;
+
+			u32 Size() const { return m_Size; }
 
 			virtual cstring ToString() const { return "Array ADT"; }
 

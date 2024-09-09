@@ -4,7 +4,9 @@
 
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Memory.hpp"
+#include "Ocean/Core/Primitives/Array.hpp"
 
+#include "Renderer/VulkanShader.hpp"
 #include "Renderer/VulkanResources.hpp"
 
 namespace Ocean {
@@ -31,6 +33,9 @@ namespace Ocean {
 			void Init(DeviceConfig* config);
 			void Shutdown();
 
+			VkPhysicalDevice GetPhysical() const { return m_Physical; }
+			VkDevice GetLogical() const { return m_Device; }
+
 		private:
 			b8 IsDeviceSuitable(VkPhysicalDevice device);
 			b8 CheckDeviceExtensionSupport(VkPhysicalDevice device);
@@ -47,6 +52,12 @@ namespace Ocean {
 
 			void CreateSwapChain();
 
+			void CreateImageViews();
+
+			void CreateRenderPass();
+
+			void CreateGraphicsPipeline();
+
 			/* --- */
 
 			Allocator* p_Allocator = nullptr;
@@ -61,6 +72,19 @@ namespace Ocean {
 			VkQueue m_PresentQueue = VK_NULL_HANDLE;
 
 			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
+
+			FixedArray<VkImage> m_SwapChainImages;
+			VkFormat m_SwapChainFormat;
+			VkExtent2D m_SwapChainExtent;
+			FixedArray<VkImageView> m_SwapChainViews;
+
+			Shader m_VertShader;
+			Shader m_FragShader;
+			// TODO: HashMap<cstring, Shader*> m_Shaders;
+
+			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
+			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
+			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
 
 			/* --- */
 
