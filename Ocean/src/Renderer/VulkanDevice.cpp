@@ -83,6 +83,9 @@ namespace Ocean {
 
 			vkDestroyDevice(m_Device, nullptr);
 
+			m_VertShader.Shutdown();
+			m_FragShader.Shutdown();
+
 			m_SwapChainViews.Shutdown();
 			m_SwapChainImages.Shutdown();
 		}
@@ -140,6 +143,7 @@ namespace Ocean {
 			std::vector<VkQueueFamilyProperties> families(familyCount);
 			vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, families.data());
 
+			b8 canBeShared = false;
 			for (u32 i = 0; i < familyCount; i++) {
 				if (families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 					indices.GraphicsFamily = i;
@@ -147,12 +151,19 @@ namespace Ocean {
 				VkBool32 presentSupport = false;
 				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, p_Renderer->GetVulkanSurface(), &presentSupport);
 
-				if (presentSupport)
-					indices.PresentFamily = i;
+				if (presentSupport) {
+					if (indices.GraphicsFamily.value() == i)
+						canBeShared = true;
+					else
+						indices.PresentFamily = i;
+				}
 
 				if (indices.IsComplete())
 					break;
 			}
+
+			if (!indices.PresentFamily.has_value() && canBeShared)
+				indices.PresentFamily.value() = indices.GraphicsFamily.value();
 
 			return indices;
 		}
@@ -164,7 +175,6 @@ namespace Ocean {
 				indices.PresentFamily.value()
 			};
 
-			queueInfos.reserve(uniqueQueueFamilies.size());
 			f32 queuePriority = 1.0f;
 			for (u32 queueFamily : uniqueQueueFamilies) {
 				VkDeviceQueueCreateInfo queueInfo{ };
@@ -175,10 +185,10 @@ namespace Ocean {
 				queueInfo.queueCount = 1;
 				queueInfo.pQueuePriorities = &queuePriority;
 
-				queueInfos.push_back(queueInfo);
+				queueInfos.emplace_back(queueInfo);
 			}
 
-			VkPhysicalDeviceFeatures deviceFeatures;
+			VkPhysicalDeviceFeatures deviceFeatures{ };
 			vkGetPhysicalDeviceFeatures(m_Physical, &deviceFeatures);
 
 			VkDeviceCreateInfo createInfo{ };
@@ -378,7 +388,7 @@ namespace Ocean {
 
 			VkAttachmentReference colorRef{ };
 			colorRef.attachment = 0;
-			colorRef.layout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+			colorRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			VkSubpassDescription subpass{ };
 			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -400,8 +410,8 @@ namespace Ocean {
 		}
 
 		void Device::CreateGraphicsPipeline() {
-			m_VertShader.Init(p_Allocator, "Shaders/vert.spv");
-			m_FragShader.Init(p_Allocator, "Shaders/frag.spv");
+			m_VertShader.Init(p_Allocator, "src/Shaders/vert.spv");
+			m_FragShader.Init(p_Allocator, "src/Shaders/frag.spv");
 
 			VkPipelineShaderStageCreateInfo vertShaderInfo{ };
 			vertShaderInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -559,6 +569,9 @@ namespace Ocean {
 
 			pipelineInfo.layout = m_PipelineLayout;
 
+			pipelineInfo.renderPass = m_RenderPass;
+			pipelineInfo.subpass = 0;
+
 			pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 			pipelineInfo.basePipelineIndex = -1;
 
@@ -566,7 +579,7 @@ namespace Ocean {
 							   "Failed to create graphics pipeline!");
 
 			m_VertShader.DestroyShader(m_Device);
-			m_VertShader.DestroyShader(m_Device);
+			m_FragShader.DestroyShader(m_Device);
 		}
 
 	}	// Vulkan

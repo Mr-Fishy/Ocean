@@ -39,6 +39,7 @@ namespace Ocean {
 			virtual void Clear() = 0;
 
 			u32 Size() const { return m_Size; }
+			void SetSize(u32 size) { m_Size = size; } // This is a temporary fix to handle Data() useage where it doesn't know it has new data yet.
 
 			virtual cstring ToString() const { return "Array ADT"; }
 

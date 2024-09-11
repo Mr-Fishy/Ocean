@@ -16,63 +16,29 @@ namespace Ocean {
 
 
 
-		struct BufferHandle { ResourceHandle Index; };
+		VkBool32 GetSupportedDepthFormat(VkPhysicalDevice physical, VkFormat* depthFormat);
 
-		struct TextureHandle { ResourceHandle Index; };
-
-		struct ShaderStateHandle { ResourceHandle Index; };
-
-		struct SamplerHandle { ResourceHandle Index; };
-
-		struct DescriptorSetLayoutHandle { ResourceHandle Index; };
-
-		struct DescriptorSetHandle { ResourceHandle Index; };
-
-		struct PipelineHandle { ResourceHandle Index; };
-
-		struct RenderPassHandle { ResourceHandle Index; };
+		VkBool32 GetSupportedDepthStencilFormat(VkPhysicalDevice physical, VkFormat* depthStencilFormat);
 
 
 
-		inline const u8 k_MaxImageOutputs         = 8;
-		inline const u8 k_MaxDescriptorSetLayouts = 8;
-		inline const u8 k_MaxShaderStages         = 5;
-		inline const u8 k_MaxDescriptorsPerSet    = 16;
-		inline const u8 k_MaxVertexStreams        = 16;
-		inline const u8 k_MaxVertexAttributes     = 16;
+		VkBool32 FormatIsFilterable(VkPhysicalDevice physical, VkFormat format, VkImageTiling tiling);
 
-		inline const u32 k_SubmitHeaderSentinel   = 0xfefeb7ba;
-		inline const u32 k_MaxResourceDeletions   = 64;
+		VkBool32 FormatHasStencil(VkFormat format);
 
 
 
-		struct Rect2d {
-			f32 x = 0.0f;
-			f32 y = 0.0f;
+		void SetImageLayout();
 
-			f32 width = 0.0f;
-			f32 height = 0.0f;
+		void SetImageLayout();
 
-		};	// Rect2d
-
-		struct Rect2dInt {
-			i16 x = 0;
-			i16 y = 0;
-
-			u16 width = 0;
-			u16 height = 0;
-
-		};	// Rect2dInt
-
-		struct Viewport {
-			Rect2dInt view;
-
-			f32 minDepth = 0.0f;
-			f32 maxDepth = 0.0f;
-
-		};	// Viewport
+		void InsertImageMemoryBarrier();
 
 
+
+		cstring ErrorCodeToString(VkResult code);
+
+		cstring DeviceTypeToString(VkPhysicalDeviceType type);
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL oDebugCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -109,8 +75,7 @@ namespace Ocean {
 		}
 
 		static void CheckResultSuccess(VkResult result, cstring message) {
-			if (result != VK_SUCCESS)
-				OASSERTM(false, CONSOLE_TEXT_RED("\n%s | Result: %i\n"), message, result);
+			OASSERTM(result == VK_SUCCESS, CONSOLE_TEXT_RED("\n%s | Result: %i\n"), message, result);
 		}
 
 	}	// Vulkan

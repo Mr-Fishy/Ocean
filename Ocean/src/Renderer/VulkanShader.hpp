@@ -29,6 +29,7 @@ namespace Ocean {
 			DynamicArray<char> m_ShaderFile;
 
 			VkShaderModule m_Module = VK_NULL_HANDLE;
+			b8 m_ActiveModule = false;
 		};
 
 	}	// Vulkan

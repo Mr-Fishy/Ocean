@@ -12,6 +12,7 @@ namespace Ocean {
 
 		void Shader::Init(Allocator* allocator, cstring filename) {
 			p_Allocator = allocator;
+			m_ActiveModule = false;
 
 			ReadShaderFile(filename);
 		}
@@ -21,7 +22,7 @@ namespace Ocean {
 		}
 
 		VkShaderModule Shader::GetShaderModule(VkDevice device) {
-			if (m_Module != VK_NULL_HANDLE)
+			if (m_ActiveModule)
 				return m_Module;
 
 			VkShaderModuleCreateInfo info{ };
@@ -33,6 +34,7 @@ namespace Ocean {
 			CheckResultSuccess(vkCreateShaderModule(device, &info, nullptr, &m_Module),
 							   "Failed to create shader module!");
 
+			m_ActiveModule = true;
 			return m_Module;
 		}
 
@@ -43,13 +45,15 @@ namespace Ocean {
 		void Shader::ReadShaderFile(cstring filename) {
 			std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-			OASSERTM(!file.is_open(), "Failed to open file %s!\n", filename);
+			OASSERTM(file.is_open(), "Failed to open file %s!\n", filename);
 
 			sizet fileSize = (sizet)file.tellg();
 			m_ShaderFile.Init(p_Allocator, fileSize);
 
 			file.seekg(0);
 			file.read(m_ShaderFile.Data(), fileSize);
+			m_ShaderFile.SetSize(fileSize);
+			
 
 			file.close();
 		}
