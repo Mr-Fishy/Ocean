@@ -31,8 +31,10 @@ namespace Ocean {
 			info.codeSize = m_ShaderFile.Size();
 			info.pCode = reinterpret_cast<const u32*>(m_ShaderFile.Data());
 
-			CheckResultSuccess(vkCreateShaderModule(device, &info, nullptr, &m_Module),
-							   "Failed to create shader module!");
+			CHECK_RESULT(
+				vkCreateShaderModule(device, &info, nullptr, &m_Module),
+				"Failed to create shader module!"
+			);
 
 			m_ActiveModule = true;
 			return m_Module;
@@ -48,7 +50,7 @@ namespace Ocean {
 			OASSERTM(file.is_open(), "Failed to open file %s!\n", filename);
 
 			sizet fileSize = (sizet)file.tellg();
-			m_ShaderFile.Init(p_Allocator, fileSize);
+			m_ShaderFile.Init(fileSize);
 
 			file.seekg(0);
 			file.read(m_ShaderFile.Data(), fileSize);

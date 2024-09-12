@@ -3,13 +3,18 @@
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/HashMap.hpp"
 
-#include "Renderer/VulkanDevice.hpp"
+#include "Renderer/VulkanResources.hpp"
 
 namespace Ocean {
 
 	class Window;
 
 	namespace Vulkan {
+
+		class Device;
+		class SwapChain;
+
+
 
 		struct RendererConfig {
 			Allocator* MemAllocator = nullptr;
@@ -24,6 +29,22 @@ namespace Ocean {
 		};	// VulkanRendererConfig
 
 		class Renderer : public Service {
+		private:
+			struct SyncObjects {
+				struct _Sempahores {
+					VkSemaphore PresentComplete;
+
+					VkSemaphore RenderComplete;
+				};
+
+				struct _Fences {
+					VkFence InFlight;
+				};
+
+				_Sempahores Sempahores;
+				_Fences Fences;
+			};
+
 		public:
 			OCEAN_DECLARE_SERVICE(Renderer);
 
@@ -50,11 +71,18 @@ namespace Ocean {
 			void SetDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& info);
 			void CreateDebugMessenger();
 
+			void CreateSyncObjects();
+
+			void CreateRenderPass();
+
+			void CreateGraphicsPipeline();
+
 			/* --- */
 
 			Allocator* p_Allocator = nullptr;
 
 			VkInstance m_Instance = VK_NULL_HANDLE;
+
 		#ifdef OC_DEBUG
 
 			VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
@@ -64,6 +92,17 @@ namespace Ocean {
 			VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
 
 			Device* p_Device = nullptr;
+			SwapChain* p_SwapChain = nullptr;
+
+			SyncObjects m_SyncObjects;
+
+			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
+			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
+			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
+
+			FixedArray<Framebuffer> m_Framebuffers;
+
+			VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
 
 			/* --- */
 

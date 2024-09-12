@@ -129,7 +129,7 @@ void Sandbox::VariableUpdate(f32 delta) {
 
 
 void Sandbox::Render(f32 interpolation) {
-	// oprint("Sandbox Render!\n");
+
 }
 
 

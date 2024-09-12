@@ -13,6 +13,8 @@ namespace Ocean {
 
 	namespace ADT {
 
+		// TODO: Implement Range-Based For Loop Functionality
+
 		template <typename T>
 		class Array {
 		public:
@@ -20,33 +22,53 @@ namespace Ocean {
 			~Array() = default;
 
 			virtual void InsertAt(const T& element, u32 position) = 0;
-			virtual b8 InsertAfter(const T& element, const T& data) = 0;
+			virtual void Set(u32 position, const T& element) = 0;
 			
 			virtual void Append(const T& element) = 0;
 			virtual void Prepend(const T& element) = 0;
 
-			virtual i64 IndexOf(const T& element) const = 0;
-			virtual T* Get(u32 position) const = 0;
+			i64 IndexOf(const T& element) const {
+				for (u32 i = 0; i < m_Size; i++) {
+					if (&p_Data[i] == &element)
+						return i;
+				}
 
-			virtual T* Front() const = 0;
-			virtual T* Back() const = 0;
+				return -1;
+			}
+			T  Get(u32 position) const {
+				OASSERTM(position < m_Size, "Attempt to get element out of range!");
+
+				return p_Data[position];
+			}
+			T& Get(u32 position) {
+				OASSERTM(position < m_Size, "Attempt to get element out of range!");
+
+				return p_Data[position];
+			}
+
+			T  Front() const { return p_Data[0]; }
+			T& Front() { return p_Data[0]; }
+			T  Back() const { return p_Data[m_Size - 1]; }
+			T& Back() { return p_Data[m_Size - 1]; }
 
 			virtual void Remove(const T& element) = 0;
 			virtual void Remove(u32 position) = 0;
 
 			T* Data() const { return p_Data; }
 
-			virtual void Clear() = 0;
+			void Clear() {
+				memset(p_Data, 0, m_Size);
+
+				m_Size = 0;
+			}
 
 			u32 Size() const { return m_Size; }
 			void SetSize(u32 size) { m_Size = size; } // This is a temporary fix to handle Data() useage where it doesn't know it has new data yet.
 
-			virtual cstring ToString() const { return "Array ADT"; }
-
 		protected:
-			Allocator* p_Allocator = nullptr;
+			Allocator* p_Allocator;
 
-			T* p_Data = nullptr;
+			T* p_Data;
 
 			u32 m_Capacity, m_Size;
 		};
@@ -58,81 +80,47 @@ namespace Ocean {
 	template <typename T>
 	class DynamicArray : public ADT::Array<T> {
 	public:
-		DynamicArray() = default;
+		DynamicArray(u32 capacity) { Init(capacity); }
+		DynamicArray(const DynamicArray&);
 		~DynamicArray() = default;
 
-		void Init(Allocator* allocator, u32 initialCapacity = 4);
+		void Init(u32 initialCapacity = 4);
 		void Shutdown();
 
 		virtual void InsertAt(const T& element, u32 position) override;
-		virtual b8 InsertAfter(const T& element, const T& data) override;
+		virtual void Set(u32 position, const T& element) override;
 
 		virtual void Append(const T& element) override;
 		virtual void Prepend(const T& element) override;
 
-		virtual i64 IndexOf(const T& element) const override;
-		virtual T* Get(u32 position) const override;
-
-		virtual T* Front() const override;
-		virtual T* Back() const override;
-
 		virtual void Remove(const T& element) override;
 		virtual void Remove(u32 position) override;
 
-		virtual void Clear() override;
+		void Resize(u32 size);
 
-		void Grow(u32 amount);
-
-		virtual cstring ToString() const override;
-
-		friend std::ostream& operator << (std::ostream& os, const DynamicArray& obj);
-
-	private:
-		DynamicArray(const DynamicArray&);
-		const DynamicArray& operator = (const DynamicArray&) { }
-
-		void Resize(u32 newSize);
-
-	};
-
-	template <typename T>
-	class FixedArray : public ADT::Array<T> {
-	public:
-		void Init(Allocator* allocator, u32 capacity);
-		void Shutdown();
-
-		virtual void InsertAt(const T& element, u32 position) override;
-		virtual b8 InsertAfter(const T& element, const T& data) override;
-
-		virtual void Append(const T& element) override;
-		virtual void Prepend(const T& element) override;
-
-		virtual i64 IndexOf(const T& element) const override;
-		virtual T* Get(u32 position) const override;
-
-		virtual T* Front() const override;
-		virtual T* Back() const override;
-
-		virtual void Remove(const T& element) override;
-		virtual void Remove(u32 position) override;
-
-		virtual void Clear() override;
-
-		virtual cstring ToString() const override;
-
-		friend std::ostream& operator << (std::ostream& os, const FixedArray& obj);
-
-	private:
-		FixedArray(const FixedArray&);
-		const FixedArray& operator = (const FixedArray&) { }
+		DynamicArray& operator = (const DynamicArray&);
 
 	};
 
 	// Implementation
 
 	template<typename T>
-	inline void DynamicArray<T>::Init(Allocator* allocator, u32 initialCapacity) {
-		p_Allocator = allocator;
+	inline DynamicArray<T>::DynamicArray(const DynamicArray& array) {
+		if (this != &array) {
+			this->p_Allocator = array.p_Allocator;
+			this->m_Capacity = array.m_Capacity;
+			this->m_Size = array.m_Size;
+
+			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+
+			for (u32 i = 0; i < this->m_Size; i++)
+				this->p_Data[i] = array.p_Data[i];
+		}
+	}
+
+	template<typename T>
+	inline void DynamicArray<T>::Init(u32 initialCapacity) {
+		p_Allocator = MemoryService::Instance()->SystemAllocator();
 		m_Capacity = initialCapacity;
 
 		p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
@@ -158,6 +146,14 @@ namespace Ocean {
 	}
 
 	template<typename T>
+	inline void DynamicArray<T>::Set(u32 position, const T& element) {
+		if (position >= m_Capacity)
+			Resize(position);
+
+		p_Data[position] = element;
+	}
+
+	template<typename T>
 	inline void DynamicArray<T>::Append(const T& element) {
 		if (m_Size >= m_Capacity)
 			Resize(m_Capacity + m_Capacity);
@@ -178,29 +174,9 @@ namespace Ocean {
 	}
 
 	template<typename T>
-	inline b8 DynamicArray<T>::InsertAfter(const T& element, const T& data) {
-		if (m_Size >= m_Capacity)
-			Resize(m_Capacity + m_Capacity);
-
-		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element) {
-				for (u32 j = i + 1; j <= m_Size; j++)
-					p_Data[m_Size - j + 1] = p_Data[m_Size - j];
-
-				p_Data[i] = element;
-				m_Size++;
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	template<typename T>
 	inline void DynamicArray<T>::Remove(const T& element) {
 		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element) {
+			if (&p_Data[i] == &element) {
 				p_Data[i] = p_Data[--m_Size];
 
 				return;
@@ -211,71 +187,25 @@ namespace Ocean {
 	template<typename T>
 	inline void DynamicArray<T>::Remove(u32 position) {
 		if (position < m_Size)
-			p_Data[position] = T();
+			memset(&p_Data[position], 0, sizeof(T));
 
 		m_Size--;
 	}
 
 	template<typename T>
-	inline i64 DynamicArray<T>::IndexOf(const T& element) const {
-		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element)
-				return i;
+	inline DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray& array) {
+		if (this != &array) {
+			this->p_Allocator = array.p_Allocator;
+			this->m_Capacity = array.m_Capacity;
+			this->m_Size = array.m_Size;
+
+			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+
+			for (u32 i = 0; i < this->m_Size; i++)
+				this->p_Data[i] = array.p_Data[i];
 		}
-		
-		return -1;
-	}
 
-	template<typename T>
-	inline T* DynamicArray<T>::Get(u32 position) const {
-		if (position >= m_Size)
-			return nullptr;
-
-		return &p_Data[position];
-	}
-
-	template<typename T>
-	inline T* DynamicArray<T>::Front() const {
-		return &p_Data[0];
-	}
-
-	template<typename T>
-	inline T* DynamicArray<T>::Back() const {
-		return &p_Data[m_Size - 1];
-	}
-
-	template<typename T>
-	inline void DynamicArray<T>::Clear() {
-		memset(p_Data, 0, m_Size);
-
-		m_Size = 0;
-	}
-
-	template<typename T>
-	inline void DynamicArray<T>::Grow(u32 amount) {
-		if (amount < 4)
-			amount = 4;
-
-		Resize(m_Capacity + amount);
-	}
-
-	template<typename T>
-	inline cstring DynamicArray<T>::ToString() const {
-		std::stringstream ss;
-
-		ss << "DynamicArray: {";
-
-		for (u32 i = 0; i < m_Size - 1; i++)
-			ss << "Index: " << i << ", Data: " << p_Data[i] << ", ";
-
-		ss << "Index: " << m_Size - 1 << ", Data: " << p_Data[m_Size - 1] << "}";
-
-		return ss.str().c_str();
-	}
-
-	template <typename T>
-	std::ostream& operator << (std::ostream& os, const DynamicArray<T>& obj) {
-		return os << obj.ToString();
+		return *this;
 	}
 
 	template<typename T>
@@ -294,12 +224,54 @@ namespace Ocean {
 
 
 
+	template <typename T>
+	class FixedArray : public ADT::Array<T> {
+	public:
+		FixedArray(u32 capacity) { Init(capacity); }
+		FixedArray(const FixedArray&);
+		~FixedArray() = default;
+
+		void Init(u32 capacity = 0);
+		void Shutdown();
+
+		virtual void InsertAt(const T& element, u32 position) override;
+		virtual void Set(u32 position, const T& element) override;
+
+		virtual void Append(const T& element) override;
+		virtual void Prepend(const T& element) override;
+
+		virtual void Remove(const T& element) override;
+		virtual void Remove(u32 position) override;
+
+		FixedArray& operator = (const FixedArray&);
+
+	};
+
+	// Implementation
+
 	template<typename T>
-	inline void FixedArray<T>::Init(Allocator* allocator, u32 capacity) {
-		p_Allocator = allocator;
+	inline FixedArray<T>::FixedArray(const FixedArray& array) {
+		if (this != &array) {
+			this->p_Allocator = array.p_Allocator;
+			this->m_Capacity = array.m_Capacity;
+			this->m_Size = array.m_Size;
+
+			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+
+			for (u32 i = 0; i < this->m_Size; i++)
+				this->p_Data[i] = array.p_Data[i];
+		}
+	}
+
+	template<typename T>
+	inline void FixedArray<T>::Init(u32 capacity) {
+		p_Allocator = MemoryService::Instance()->SystemAllocator();
 		m_Capacity = capacity;
 
-		p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		if (capacity != 0)
+			p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		else
+			p_Data = nullptr;
 
 		m_Size = 0;
 	}
@@ -337,28 +309,16 @@ namespace Ocean {
 	}
 
 	template<typename T>
-	inline b8 FixedArray<T>::InsertAfter(const T& element, const T& data) {
-		OASSERTM(m_Size < m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
+	inline void FixedArray<T>::Set(u32 position, const T& element) {
+		OASSERTM(position < m_Capacity, "Fixed Array :| Attempted to set element value outside the range!");
 
-		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element) {
-				for (u32 j = i + 1; j <= m_Size; j++)
-					p_Data[m_Size - j + 1] = p_Data[m_Size - j];
-
-				p_Data[i] = element;
-				m_Size++;
-
-				return true;
-			}
-		}
-
-		return false;
+		p_Data[position] = element;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Remove(const T& element) {
 		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element) {
+			if (&p_Data[i] == &element) {
 				p_Data[i] = p_Data[--m_Size];
 
 				return;
@@ -369,63 +329,25 @@ namespace Ocean {
 	template<typename T>
 	inline void FixedArray<T>::Remove(u32 position) {
 		if (position < m_Size)
-			p_Data[position] = T();
+			memset(&p_Data[position], 0, sizeof(T));
 
 		m_Size--;
 	}
 
 	template<typename T>
-	inline i64 FixedArray<T>::IndexOf(const T& element) const {
-		for (u32 i = 0; i < m_Size; i++) {
-			if (p_Data[i] == element)
-				return i;
+	inline FixedArray<T>& FixedArray<T>::operator = (const FixedArray& array) {
+		if (this != &array) {
+			this->p_Allocator = array.p_Allocator;
+			this->m_Capacity = array.m_Capacity;
+			this->m_Size = array.m_Size;
+
+			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+
+			for (u32 i = 0; i < this->m_Size; i++)
+				this->p_Data[i] = array.p_Data[i];
 		}
 
-		return -1;
-	}
-
-	template<typename T>
-	inline T* FixedArray<T>::Get(u32 position) const {
-		if (position >= m_Size)
-			return nullptr;
-
-		return &p_Data[position];
-	}
-
-	template<typename T>
-	inline T* FixedArray<T>::Front() const {
-		return &p_Data[0];
-	}
-
-	template<typename T>
-	inline T* FixedArray<T>::Back() const {
-		return &p_Data[m_Size - 1];
-	}
-
-	template<typename T>
-	inline void FixedArray<T>::Clear() {
-		memset(p_Data, 0, m_Size);
-
-		m_Size = 0;
-	}
-
-	template<typename T>
-	inline cstring FixedArray<T>::ToString() const {
-		std::stringstream ss;
-
-		ss << "FixedArray: {";
-
-		for (u32 i = 0; i < m_Size - 1; i++)
-			ss << "Index: " << i << ", Data: " << p_Data[i] << ", ";
-
-		ss << "Index: " << m_Size - 1 << ", Data: " << p_Data[m_Size - 1] << "}";
-
-		return ss.str().c_str();
-	}
-
-	template <typename T>
-	std::ostream& operator << (std::ostream& os, const FixedArray<T>& obj) {
-		return os << obj.ToString();
+		return *this;
 	}
 
 }	// Ocean

@@ -3,6 +3,7 @@ project "Ocean"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
+	externalwarnings "off"
 
 	filter "*Lib"
 		kind "StaticLib"
@@ -51,8 +52,11 @@ project "Ocean"
 		"%{IncludeDir.TLSF}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.vkMemAlloc}",
+	}
+
+	externalincludedirs {
+		"%{IncludeDir.VulkanSDK}",
 	}
 
 	links {

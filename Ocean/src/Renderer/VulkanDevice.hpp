@@ -7,6 +7,7 @@
 #include "Ocean/Core/Primitives/Array.hpp"
 
 #include "Renderer/VulkanShader.hpp"
+#include "Renderer/VulkanFramebuffer.hpp"
 #include "Renderer/VulkanResources.hpp"
 
 namespace Ocean {
@@ -33,6 +34,19 @@ namespace Ocean {
 			void Init(DeviceConfig* config);
 			void Shutdown();
 
+			u32 GetMemoryType();
+
+			VkResult CreateBuffer();
+
+			void CopyBuffer();
+
+			VkCommandPool CreateCommandPool(u32 queueFamilyIndex, VkCommandPoolCreateFlags flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+
+			VkCommandBuffer CreateCommandBuffer();
+			void FlushCommandBuffer();
+
+			b8 IsExtensionSupported(cstring extension);
+
 			VkPhysicalDevice GetPhysical() const { return m_Physical; }
 			VkDevice GetLogical() const { return m_Device; }
 
@@ -46,17 +60,12 @@ namespace Ocean {
 
 			SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 
-			VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-			VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availableModes);
-			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
-			void CreateSwapChain();
 
-			void CreateImageViews();
+			void CreateCommandPool(QueueFamilyIndices indices);
 
-			void CreateRenderPass();
 
-			void CreateGraphicsPipeline();
+			void RecordCommandBuffer(VkCommandBuffer, u32 imageIndex);
 
 			/* --- */
 
@@ -71,20 +80,11 @@ namespace Ocean {
 			VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
 			VkQueue m_PresentQueue = VK_NULL_HANDLE;
 
-			VkSwapchainKHR m_SwapChain = VK_NULL_HANDLE;
-
-			FixedArray<VkImage> m_SwapChainImages;
-			VkFormat m_SwapChainFormat;
-			VkExtent2D m_SwapChainExtent;
-			FixedArray<VkImageView> m_SwapChainViews;
-
 			Shader m_VertShader;
 			Shader m_FragShader;
 			// TODO: HashMap<cstring, Shader*> m_Shaders;
 
-			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
-			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
-			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
+			VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 
 			/* --- */
 
