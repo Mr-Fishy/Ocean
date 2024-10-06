@@ -13,18 +13,22 @@ namespace Ocean {
 
 		class Shader {
 		public:
+			Shader() = default;
+			Shader(cstring filename);
+			~Shader() = default;
+
 			void Init(Allocator* allocator, cstring filename);
 			void Shutdown();
 
 			VkShaderModule GetShaderModule(VkDevice device);
-			void DestroyShader(VkDevice device);
+			void DestroyShader();
 
 		private:
 			void ReadShaderFile(cstring filename);
 
 			/* --- */
 
-			Allocator* p_Allocator = nullptr;
+			VkDevice p_DeviceRef = VK_NULL_HANDLE;
 
 			DynamicArray<char> m_ShaderFile;
 

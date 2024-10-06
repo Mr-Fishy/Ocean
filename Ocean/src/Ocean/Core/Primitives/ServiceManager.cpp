@@ -19,9 +19,10 @@ namespace Ocean {
 	}
 
 	void ServiceManager::Shutdown() {
-		m_Services.Clear();
-
 		oprint("ServiceManager Shutting Down\n");
+
+
+		m_Services.Clear();
 	}
 
 	void ServiceManager::AddService(Service* service, cstring name) {

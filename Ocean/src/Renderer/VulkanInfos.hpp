@@ -2,6 +2,8 @@
 
 #include "Ocean/Core/Types/ValueTypes.hpp"
 
+#include "Renderer/VulkanShader.hpp"
+
 #pragma warning(push, 0)
 #pragma warning(disable : 26495) // Uninitialized Warning
 #include <vulkan/vulkan.hpp>
@@ -43,7 +45,7 @@ namespace Ocean {
 			return info;
 		}
 
-		inline VkAttachmentDescription ColorAttachmentDescription(
+		inline VkAttachmentDescription GetColorAttachmentDescription(
 			VkFormat colorFormat
 		) {
 			VkAttachmentDescription colorAttachment{ };
@@ -62,11 +64,18 @@ namespace Ocean {
 			return colorAttachment;
 		}
 
-		inline VkSubpassDescription SubpassAttachmentDescription(
+		inline VkAttachmentReference GetColorAttachmentReference(
 		) {
-			VkAttachmentReference colorRef{ };
-			colorRef.attachment = 0;
-			colorRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			VkAttachmentReference colorReference{ };
+			colorReference.attachment = 0;
+			colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+			return colorReference;
+		}
+
+		inline VkSubpassDescription GetSubpassAttachmentDescription(
+		) {
+			VkAttachmentReference colorRef = GetColorAttachmentReference();
 
 			VkSubpassDescription subpass{ };
 			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -77,30 +86,56 @@ namespace Ocean {
 			return subpass;
 		}
 
-		/**
-		 * @brief 
-		 * @param commandPool 
-		 * @param level 
-		 * @param bufferCount 
-		 * @return 
-		 */
-		inline VkCommandBufferAllocateInfo CommandBufferAllocateInfo(
-			VkCommandPool commandPool,
-			VkCommandBufferLevel level,
-			u32 bufferCount
+		inline VkSubpassDependency GetSubpassDependency() {
+			VkSubpassDependency info{ };
+
+			info.srcSubpass = VK_SUBPASS_EXTERNAL;
+			info.dstSubpass = 0;
+
+			info.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			info.srcAccessMask = 0;
+
+			info.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			info.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+			return info;
+		}
+
+		inline VkPipelineShaderStageCreateInfo GetVertextShaderStageInfo(
+			Shader* vertexShader,
+			VkDevice device,
+			cstring name
 		) {
-			VkCommandBufferAllocateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+			VkPipelineShaderStageCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			info.stage = VK_SHADER_STAGE_VERTEX_BIT;
 
-			info.commandPool = commandPool;
+			info.module = vertexShader->GetShaderModule(device);
+			info.pName = name;
 
-			info.level = level;
-			info.commandBufferCount = bufferCount;
+			return info;
+		}
+
+		inline VkPipelineShaderStageCreateInfo GetFragmentShaderStageInfo(
+			Shader* fragmentShader,
+			VkDevice device,
+			cstring name
+		) {
+			VkPipelineShaderStageCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+			info.module = fragmentShader->GetShaderModule(device);
+			info.pName = name;
 
 			return info;
 		}
 
 
+
+		/*VkClearValue GetClearColor(f32 r, f32 g, f32 b, f32 a) {
+			return { { { r, g, b, a } } };
+		}*/
 
 	}	// Vulkan
 

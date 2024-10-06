@@ -19,7 +19,7 @@ namespace Ocean {
 		class Array {
 		public:
 			Array() = default;
-			~Array() = default;
+			~Array() { OASSERTM(!p_Data, "Array attempted deconstruction while data may still exist!"); }
 
 			virtual void InsertAt(const T& element, u32 position) = 0;
 			virtual void Set(u32 position, const T& element) = 0;
@@ -57,7 +57,8 @@ namespace Ocean {
 			T* Data() const { return p_Data; }
 
 			void Clear() {
-				memset(p_Data, 0, m_Size);
+				if (p_Data)
+					memset(p_Data, 0, m_Size);
 
 				m_Size = 0;
 			}
@@ -80,10 +81,11 @@ namespace Ocean {
 	template <typename T>
 	class DynamicArray : public ADT::Array<T> {
 	public:
+		DynamicArray() = default;
 		DynamicArray(u32 capacity) { Init(capacity); }
 		DynamicArray(const DynamicArray&);
 		~DynamicArray() = default;
-
+		
 		void Init(u32 initialCapacity = 4);
 		void Shutdown();
 
@@ -123,7 +125,10 @@ namespace Ocean {
 		p_Allocator = MemoryService::Instance()->SystemAllocator();
 		m_Capacity = initialCapacity;
 
-		p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		if (initialCapacity != 0)
+			p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		else
+			p_Data = nullptr;
 
 		m_Size = 0;
 	}

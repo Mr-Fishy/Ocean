@@ -4,6 +4,19 @@
 	#include <signal.h>
 #endif
 
+#include <string>
+
+constexpr int32_t basename_index(const char* const path, const int32_t index = 0, const int32_t slash_index = -1) {
+	return path[index] ? (path[index] == '/' || path[index] == '\\'
+						  ? basename_index(path, index + 1, index) : basename_index(path, index + 1, slash_index)
+					 ) : (slash_index + 1);
+}
+
+template <int32_t Value>
+struct require_at_compile_time {
+	static constexpr const int32_t value = Value;
+};
+
 // Macros
 
 #define ArraySize(array) (sizeof(array) / sizeof((array)[0]))
@@ -19,6 +32,8 @@
 	
 	#define OCEAN_CONCAT_OPERATOR(x, y)             x##y
 
+	#define OCEAN_LOCATION                          __FILE__
+
 #else
 
 	#define OCEAN_INLINE                            inline
@@ -28,13 +43,16 @@
 	
 	#define OCEAN_CONCAT_OPERATOR(x, y)             x y
 
+	#define OCEAN_LOCATION                          (__FILE_NAME__)
+
 #endif
 
 #define OCEAN_STRINGIFY(L)                          #L
 #define OCEAN_MAKESTRING(L)                         OCEAN_STRINGIFY(L)
 #define OCEAN_CONCAT(x, y)                          OCEAN_CONCAT_OPERATOR(x, y)
 #define OCEAN_LINE_STRING                           OCEAN_MAKESTRING(__LINE__)
-#define OCEAN_FILELINE(Message)                     __FILE__ "(" OCEAN_LINE_STRING ") : " Message
+
+#define OCEAN_FILELINE(Message)                     OCEAN_LOCATION "(" OCEAN_LINE_STRING ") : " Message
 
 #define OCEAN_UNIQUE_SUFFIX(Param)                  OCEAN_CONCAT(Param, __LINE__)
 

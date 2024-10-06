@@ -2,6 +2,7 @@
 
 #include "Renderer/VulkanRenderer.hpp"
 #include "Renderer/VulkanInfos.hpp"
+#include "Renderer/VulkanSwapChain.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -13,18 +14,6 @@ namespace Ocean {
 
 	namespace Vulkan {
 
-		struct QueueFamilyIndices {
-			std::optional<u32> GraphicsFamily;
-			std::optional<u32> PresentFamily;
-
-			static constexpr u8 UniqueFamilyCount = 2;
-
-			b8 IsComplete() const {
-				return GraphicsFamily.has_value() && PresentFamily.has_value();
-			}
-
-		};	// QueueFamilyIndices
-
 		struct SwapChainSupportDetails {
 			VkSurfaceCapabilitiesKHR Capabilities;
 
@@ -35,8 +24,15 @@ namespace Ocean {
 
 
 		void Device::Init(DeviceConfig* config) {
-			p_Allocator = config->MemAllocator;
-			p_Renderer = config->Renderer;
+			p_Allocator = config->allocator;
+			p_Renderer = config->renderer;
+			p_WindowHandle = config->windowPtr;
+
+			// Create the window surface
+			CHECK_RESULT(
+				glfwCreateWindowSurface(p_Renderer->GetVulkanInstance(), (GLFWwindow*)p_WindowHandle, nullptr, &m_Surface),
+				"Failed to create window surface!"
+			);
 
 			u32 deviceCount = 0;
 			vkEnumeratePhysicalDevices(p_Renderer->GetVulkanInstance(), &deviceCount, nullptr);
@@ -64,15 +60,15 @@ namespace Ocean {
 			vkGetDeviceQueue(m_Device, indices.PresentFamily.value(), 0, &m_PresentQueue);
 
 			CreateCommandPool(indices);
+			CreateCommandBuffer();
 		}
 
 		void Device::Shutdown() {
 			vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
-			vkDestroyDevice(m_Device, nullptr);
+			vkDestroySurfaceKHR(p_Renderer->GetVulkanInstance(), m_Surface, nullptr);
 
-			m_VertShader.Shutdown();
-			m_FragShader.Shutdown();
+			vkDestroyDevice(m_Device, nullptr);
 		}
 
 		b8 Device::IsDeviceSuitable(VkPhysicalDevice device) {
@@ -119,22 +115,23 @@ namespace Ocean {
 			return false;
 		}
 
-		QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device) {
+		QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device) const {
 			QueueFamilyIndices indices;
 
 			u32 familyCount = 0;
 			vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, nullptr);
 
-			std::vector<VkQueueFamilyProperties> families(familyCount);
-			vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, families.data());
+			FixedArray<VkQueueFamilyProperties> families(familyCount);
+			vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, families.Data());
+			families.SetSize(familyCount);
 
 			b8 canBeShared = false;
 			for (u32 i = 0; i < familyCount; i++) {
-				if (families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+				if (families.Get(i).queueFlags & VK_QUEUE_GRAPHICS_BIT)
 					indices.GraphicsFamily = i;
 
 				VkBool32 presentSupport = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, p_Renderer->GetVulkanSurface(), &presentSupport);
+				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_Surface, &presentSupport);
 
 				if (presentSupport) {
 					if (indices.GraphicsFamily.value() == i)
@@ -146,6 +143,8 @@ namespace Ocean {
 				if (indices.IsComplete())
 					break;
 			}
+
+			families.Shutdown();
 
 			if (!indices.PresentFamily.has_value() && canBeShared)
 				indices.PresentFamily.value() = indices.GraphicsFamily.value();
@@ -197,34 +196,31 @@ namespace Ocean {
 			);
 		}
 
-		SwapChainSupportDetails Device::QuerySwapChainSupport(VkPhysicalDevice device) {
+		SwapChainSupportDetails Device::QuerySwapChainSupport(VkPhysicalDevice device) const {
 			SwapChainSupportDetails details;
-			VkSurfaceKHR surface = p_Renderer->GetVulkanSurface();
 
-			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.Capabilities);
+			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &details.Capabilities);
 
 			u32 formatCount;
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &formatCount, nullptr);
 
 			if (formatCount != 0) {
 				details.Formats.resize(formatCount);
 
-				vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.Formats.data());
+				vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_Surface, &formatCount, details.Formats.data());
 			}
 
 			u32 presentModeCount;
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &presentModeCount, nullptr);
 
 			if (presentModeCount != 0) {
 				details.PresentModes.resize(presentModeCount);
 
-				vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.PresentModes.data());
+				vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &presentModeCount, details.PresentModes.data());
 			}
 
 			return details;
 		}
-
-		
 
 		void Device::CreateCommandPool(QueueFamilyIndices indices) {
 			VkCommandPoolCreateInfo info{ };
@@ -240,55 +236,138 @@ namespace Ocean {
 			);
 		}
 
-		VkCommandBuffer Device::CreateCommandBuffer() {
-			VkCommandBufferAllocateInfo allocInfo = CommandBufferAllocateInfo(
-				m_CommandPool,
-				VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-				0
-			);
+		void Device::CreateCommandBuffer() {
+			VkCommandBufferAllocateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+
+			info.commandPool = m_CommandPool;
+			/*
+			 * VK_COMMAND_BUFFER_LEVEL_PRIMARY: Can be submitted to a queue for execution, but cannot be called from other command buffers.
+			 *
+			 * VK_COMMAND_BUFFER_LEVEL_SECONDARY: Cannot be submitted directly, but can be called from primary command buffers.
+			 */
+			info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+			info.commandBufferCount = 1;
 
 			CHECK_RESULT(
-				vkAllocateCommandBuffers(m_Device, &allocInfo, &m_CommandBuffer),
+				vkAllocateCommandBuffers(m_Device, &info, &m_CommandBuffer),
 				"Failed to allocate command buffers!"
 			);
-
-			return m_CommandBuffer;
 		}
 
-		void Device::RecordCommandBuffer(VkCommandBuffer, u32 imageIndex) {
-			BeginCommandBuffer(m_CommandBuffer);
+		void Device::FlushCommandBuffer() {
+			vkResetCommandBuffer(m_CommandBuffer, 0);
+		}
 
-			{
-				BeginRenderPass(RenderPassInfo(m_CommandBuffer, m_RenderPass, m_Framebuffers.Get(imageIndex).GetFrame(), m_SwapChainExtent));
+		void Device::RecordCommandBuffer(u32 imageIndex) {
+			VkCommandBufferBeginInfo beingInfo{ };
+			beingInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-				{
-					vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+			/*
+			 * VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT: The command buffer will be re-recorded directly after executing it once.
+			 *
+			 * VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT: The command buffer is a seconday buffer that will be used entirely within a single render pass.
+			 *
+			 * VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT: The command buffer can be resubmitted while it is also already pending execution.
+			 */
+			beingInfo.flags = 0;
+			/*
+			 * pInheritanceInfo is only relevant for secondary command buffers.
+			 * It specifies which state to inherit from the primary command buffers.
+			 */
+			beingInfo.pInheritanceInfo = nullptr;
 
-					VkViewport viewport{ };
-					viewport.x = 0.0f;
-					viewport.y = 0.0f;
+			CHECK_RESULT(
+				vkBeginCommandBuffer(m_CommandBuffer, &beingInfo),
+				"Failed to begin recording command buffer!"
+			);
 
-					viewport.width = (f32)m_SwapChainExtent.width;
-					viewport.height = (f32)m_SwapChainExtent.height;
+			VkRenderPassBeginInfo renderInfo{ };
+			renderInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 
-					viewport.minDepth = 0.0f;
-					viewport.maxDepth = 1.0f;
+			renderInfo.renderPass = p_Renderer->GetRenderPass();
 
-					vkCmdSetViewport(m_CommandBuffer, 0, 1, &viewport);
+			renderInfo.framebuffer = p_SwapChain->GetFramebuffer(imageIndex);
 
-					VkRect2D scissor{ };
-					scissor.offset = { 0, 0 };
-					scissor.extent = m_SwapChainExtent;
+			renderInfo.renderArea.offset = { 0, 0 };
+			renderInfo.renderArea.extent = p_SwapChain->GetExtent();
 
-					vkCmdSetScissor(m_CommandBuffer, 0, 1, &scissor);
+			VkClearValue clearColor = { { {  0.0f, 0.0f, 0.0f, 1.0f } } };// GetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			renderInfo.clearValueCount = 1;
+			renderInfo.pClearValues = &clearColor;
 
-					vkCmdDraw(m_CommandBuffer, 3, 1, 0, 0);
-				}
+			/*
+			 * VK_SUBPASS_CONTENTS_INLINE: The render pass commands will be embedded in the primary command buffer itself and no secondary command buffers will be executed.
+			 *
+			 * VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS: The render pass commands will be executed from secondary command buffers.
+			 */
+			vkCmdBeginRenderPass(m_CommandBuffer, &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-				EndRenderPass(m_CommandBuffer);
-			}
+			/*
+			 *
+			 */
+			vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetGraphicsPipeline());
 
-			EndCommandBuffer(m_CommandBuffer);
+			VkViewport viewport{ };
+			viewport.x = viewport.y = 0.0f;
+			viewport.width = (f32)p_SwapChain->GetExtent().width;
+			viewport.height = (f32)p_SwapChain->GetExtent().height;
+			viewport.minDepth = 0.0f;
+			viewport.maxDepth = 1.0f;
+
+			vkCmdSetViewport(m_CommandBuffer, 0, 1, &viewport);
+
+			VkRect2D scissor{ };
+			scissor.offset = { 0, 0 };
+			scissor.extent = p_SwapChain->GetExtent();
+
+			vkCmdSetScissor(m_CommandBuffer, 0, 1, &scissor);
+
+			/*
+			 * vertexCount: Even though we don’t have a vertex buffer, we technically still have 3 vertices to draw.
+			 *
+			 * instanceCount: Used for instanced rendering, use 1 if you’re not doing that.
+			 *
+			 * firstVertex: Used as an offset into the vertex buffer, defines the lowest value of gl_VertexIndex.
+			 *
+			 * firstInstance: Used as an offset for instanced rendering, defines the lowest value of gl_InstanceIndex.
+			 */
+			vkCmdDraw(m_CommandBuffer, 3, 1, 0, 0);
+
+			vkCmdEndRenderPass(m_CommandBuffer);
+
+			CHECK_RESULT(
+				vkEndCommandBuffer(m_CommandBuffer),
+				"Failed to record command buffer!"
+			);
+		}
+
+		void Device::SubmitCommandBuffer(const SyncObjects& syncObjects) {
+			VkSubmitInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+			VkSemaphore waitSemaphores[] = { syncObjects.Sempahores.PresentComplete };
+			VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+			info.waitSemaphoreCount = 1;
+			info.pWaitSemaphores = waitSemaphores;
+
+			info.pWaitDstStageMask = waitStages;
+
+			VkCommandBuffer commandBuffers[] = { m_CommandBuffer };
+
+			info.commandBufferCount = 1;
+			info.pCommandBuffers = commandBuffers;
+
+			VkSemaphore signalSemaphores[] = { syncObjects.Sempahores.RenderComplete };
+
+			info.signalSemaphoreCount = 1;
+			info.pSignalSemaphores = signalSemaphores;
+
+			CHECK_RESULT(
+				vkQueueSubmit(m_GraphicsQueue, 1, &info, syncObjects.Fences.InFlight),
+				"Failed to submit draw command buffer!"
+			);
 		}
 
 	}	// Vulkan

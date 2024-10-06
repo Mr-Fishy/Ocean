@@ -91,15 +91,11 @@ namespace Ocean {
 		glfwSetWindowSizeCallback((WindowPtr)p_PlatformHandle, GLFW_ResizeCallback);
 		glfwSetKeyCallback((WindowPtr)p_PlatformHandle, GLFW_KeyCallback);
 		glfwSetCursorPosCallback((WindowPtr)p_PlatformHandle, GLFW_CursorCallback);
-
-		oprint("Window Created Successfully!\n");
 	}
 
 	void Window::Shutdown() {
 		glfwDestroyWindow((WindowPtr)p_PlatformHandle);
 		glfwTerminate();
-
-		oprint("Window Service Shutdown\n");
 	}
 
 	void Window::SetFullscreen(b8 enabled) {

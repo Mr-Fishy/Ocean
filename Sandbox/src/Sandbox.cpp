@@ -36,6 +36,9 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		Ocean::MemoryService::Instance()->SystemAllocator(),
 		p_Window,
 		config.Name,
+		p_Window->Width(),
+		p_Window->Height(),
+		2,
 		1, 0, 0
 	};
 	p_Renderer = p_ServiceManager->Get<Ocean::Vulkan::Renderer>();
@@ -113,6 +116,8 @@ b8 Sandbox::MainLoop() {
 		FrameEnd();
 	}
 
+	p_Renderer->CleanUp();
+
 	return true;
 }
 
@@ -129,7 +134,7 @@ void Sandbox::VariableUpdate(f32 delta) {
 
 
 void Sandbox::Render(f32 interpolation) {
-
+	p_Renderer->RenderFrame();
 }
 
 

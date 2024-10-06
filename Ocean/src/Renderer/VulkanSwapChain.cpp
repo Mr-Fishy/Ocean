@@ -2,6 +2,7 @@
 
 #include "Renderer/VulkanRenderer.hpp"
 #include "Renderer/VulkanDevice.hpp"
+// #include "Renderer/VulkanFramebuffer.hpp"
 
 #include "Renderer/VulkanInfos.hpp"
 
@@ -18,12 +19,6 @@ namespace Ocean {
 
 			m_SwapChain = VK_NULL_HANDLE;
 
-			// Create the window surface
-			CHECK_RESULT(
-				glfwCreateWindowSurface(p_Renderer->GetVulkanInstance(), (GLFWwindow*)config->window, nullptr, &m_Surface),
-				"Failed to create window surface!"
-			);
-
 			VkPhysicalDevice physicalDevice = p_Device->GetPhysical();
 
 			// Choose Family Queue Nodes
@@ -36,9 +31,9 @@ namespace Ocean {
 
 			// Find families that don't support present
 			FixedArray<VkBool32> supportsPresentation(queueCount);
-			for (u32 i = 0; i < queueCount; i++)
-				vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, m_Surface, &supportsPresentation.Get(i));
 			supportsPresentation.SetSize(queueCount);
+			for (u32 i = 0; i < queueCount; i++)
+				vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, p_Device->GetSurface(), &supportsPresentation.Get(i));
 
 			u32 graphicsIndex = u32_max;
 			u32 presentIndex = u32_max;
@@ -54,6 +49,7 @@ namespace Ocean {
 					}
 				}
 			}
+			queueFamilies.Shutdown();
 
 			// Only if no queue supports both
 			if (presentIndex == u32_max) {
@@ -65,6 +61,7 @@ namespace Ocean {
 					}
 				}
 			}
+			supportsPresentation.Shutdown();
 
 			OASSERTM(graphicsIndex != u32_max, "Could not find a graphics queue family!");
 			OASSERTM(presentIndex != u32_max, "Could not find a presentation queue family!");
@@ -74,10 +71,10 @@ namespace Ocean {
 
 			// Get SwapChain Format & Color Space
 			u32 formatCount;
-			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, nullptr);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, p_Device->GetSurface(), &formatCount, nullptr);
 
 			FixedArray<VkSurfaceFormatKHR> formats(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, formats.Data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, p_Device->GetSurface(), &formatCount, formats.Data());
 			formats.SetSize(formatCount);
 
 			VkFormat preferredFormats[] = {
@@ -97,50 +94,53 @@ namespace Ocean {
 
 			m_ColorFormat = formats.Get(selectedFormatIndex).format;
 			m_ColorSpace = formats.Get(selectedFormatIndex).colorSpace;
+
+			formats.Shutdown();
 		}
 
 		void SwapChain::Shutdown() {
+			for (u32 i = 0; i < m_Framebuffers.Size(); i++)
+				m_Framebuffers.Get(i).Shutdown();
+			m_Framebuffers.Shutdown();
+
 			if (m_SwapChain != VK_NULL_HANDLE) {
 				for (u32 i = 0; i < m_ImageCount; i++)
 					vkDestroyImageView(p_Device->GetLogical(), m_Buffers.Get(i).View, nullptr);
-			}
 
-			if (m_Surface != VK_NULL_HANDLE) {
 				vkDestroySwapchainKHR(p_Device->GetLogical(), m_SwapChain, nullptr);
-
-				vkDestroySurfaceKHR(p_Renderer->GetVulkanInstance(), m_Surface, nullptr);
 			}
 
-			m_Surface = VK_NULL_HANDLE;
 			m_SwapChain = VK_NULL_HANDLE;
+
+			m_Images.Shutdown();
+			m_Buffers.Shutdown();
 		}
 
 
 
-		void SwapChain::CreateSwapChain(u32* width, u32* height, b8 vsync, b8 fullscreen) {
+		void SwapChain::CreateSwapChain(u16* width, u16* height, b8 vsync, b8 fullscreen) {
 			VkSwapchainKHR oldSwapChain = m_SwapChain;
 
 			VkPhysicalDevice physicalDevice = p_Device->GetPhysical();
 			VkDevice device = p_Device->GetLogical();
 
 			VkSurfaceCapabilitiesKHR surfaceCaps;
-			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, m_Surface, &surfaceCaps);
+			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, p_Device->GetSurface(), &surfaceCaps);
 
 			u32 presentModeCount;
-			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, m_Surface, &presentModeCount, nullptr);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, p_Device->GetSurface(), &presentModeCount, nullptr);
 
 			FixedArray<VkPresentModeKHR> presentModes(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, m_Surface, &presentModeCount, presentModes.Data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, p_Device->GetSurface(), &presentModeCount, presentModes.Data());
 			presentModes.SetSize(presentModeCount);
 
-			VkExtent2D swapChainExtent{ };
 			// If width (and height) is the special value 0xFFFFFFFF, the size of the surface will be set by the swapchain
 			if (surfaceCaps.currentExtent.width == 0xFFFFFFFF) {
-				swapChainExtent.width = *width;
-				swapChainExtent.height = *height;
+				m_Extent.width = *width;
+				m_Extent.height = *height;
 			}
 			else {
-				swapChainExtent = surfaceCaps.currentExtent;
+				m_Extent = surfaceCaps.currentExtent;
 
 				*width = surfaceCaps.currentExtent.width;
 				*height = surfaceCaps.currentExtent.height;
@@ -160,6 +160,7 @@ namespace Ocean {
 					}
 				}
 			}
+			presentModes.Shutdown();
 
 			u32 desiredSwapChainImages = surfaceCaps.minImageCount + 1;
 			if (surfaceCaps.maxImageCount > 0 && desiredSwapChainImages > surfaceCaps.maxImageCount)
@@ -188,13 +189,13 @@ namespace Ocean {
 			VkSwapchainCreateInfoKHR info{ };
 			info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 
-			info.surface = m_Surface;
+			info.surface = p_Device->GetSurface();
 
 			info.minImageCount = desiredSwapChainImages;
 
 			info.imageFormat = m_ColorFormat;
 			info.imageColorSpace = m_ColorSpace;
-			info.imageExtent = { swapChainExtent.width, swapChainExtent.height };
+			info.imageExtent = { m_Extent.width, m_Extent.height };
 			info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 			info.preTransform = (VkSurfaceTransformFlagBitsKHR)preTransform;
@@ -228,6 +229,9 @@ namespace Ocean {
 					vkDestroyImageView(device, m_Buffers.Get(i).View, nullptr);
 
 				vkDestroySwapchainKHR(device, oldSwapChain, nullptr);
+
+				m_Images.Shutdown();
+				m_Buffers.Shutdown();
 			}
 
 			CHECK_RESULT(
@@ -235,15 +239,15 @@ namespace Ocean {
 				"Failed to get swapchain images!"
 			);
 
-			m_Images.Clear();
-			m_Images.Resize(m_ImageCount);
+			m_Images.Init(m_ImageCount);
 			CHECK_RESULT(
 				vkGetSwapchainImagesKHR(device, m_SwapChain, &m_ImageCount, m_Images.Data()),
 				"Failed to get swapchain images!"
 			);
+			m_Images.SetSize(m_ImageCount);
 
-			m_Buffers.Clear();
-			m_Buffers.Resize(m_ImageCount);
+			m_Buffers.Init(m_ImageCount);
+			m_Buffers.SetSize(m_ImageCount);
 			for (u32 i = 0; i < m_ImageCount; i++) {
 				VkImageViewCreateInfo imageInfo = ColorAttachmentCreateInfo(m_ColorFormat, m_Buffers.Get(i).Image = m_Images.Get(i));
 
@@ -265,8 +269,10 @@ namespace Ocean {
 
 			info.pNext = nullptr;
 
+			VkSwapchainKHR swapChains[] = { m_SwapChain };
+
 			info.swapchainCount = 1;
-			info.pSwapchains = &m_SwapChain;
+			info.pSwapchains = swapChains;
 
 			info.pImageIndices = &imageIndex;
 
@@ -276,6 +282,26 @@ namespace Ocean {
 			}
 
 			return vkQueuePresentKHR(queue, &info);
+		}
+
+		void SwapChain::CreateFramebuffers() {
+			m_Framebuffers.Init(m_ImageCount);
+			m_Framebuffers.SetSize(m_ImageCount);
+
+			for (u32 i = 0; i < m_ImageCount; i++) {
+				FramebufferConfig config(
+					p_Device->GetLogical(),
+					m_Buffers.Get(i).View,
+					m_Extent,
+					p_Renderer->GetRenderPass()
+				);
+
+				m_Framebuffers.Get(i).Init(&config);
+			}
+		}
+
+		VkFramebuffer SwapChain::GetFramebuffer(u32 index) const {
+			return m_Framebuffers.Get(index).GetFrame();
 		}
 
 	}	// Vulkan

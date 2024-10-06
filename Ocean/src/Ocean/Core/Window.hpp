@@ -24,8 +24,8 @@ namespace Ocean {
 	struct WindowData {
 		Window* Window;
 
-		u32 Width, Height;
-		u32 WindowedWidth, WindowedHeight;
+		u16 Width, Height;
+		u16 WindowedWidth, WindowedHeight;
 
 		b8 VSync = true;
 		b8 Refreshed = false;

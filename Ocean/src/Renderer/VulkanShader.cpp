@@ -10,20 +10,28 @@ namespace Ocean {
 
 	namespace Vulkan {
 
+		Shader::Shader(cstring filename) : m_ActiveModule(false) {
+			ReadShaderFile(filename);
+		}
+
 		void Shader::Init(Allocator* allocator, cstring filename) {
-			p_Allocator = allocator;
 			m_ActiveModule = false;
 
 			ReadShaderFile(filename);
 		}
 
 		void Shader::Shutdown() {
+			if (m_Module)
+				DestroyShader();
+
 			m_ShaderFile.Shutdown();
 		}
 
 		VkShaderModule Shader::GetShaderModule(VkDevice device) {
 			if (m_ActiveModule)
 				return m_Module;
+
+			p_DeviceRef = device;
 
 			VkShaderModuleCreateInfo info{ };
 			info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -40,8 +48,10 @@ namespace Ocean {
 			return m_Module;
 		}
 
-		void Shader::DestroyShader(VkDevice device) {
-			vkDestroyShaderModule(device, m_Module, nullptr);
+		void Shader::DestroyShader() {
+			vkDestroyShaderModule(p_DeviceRef, m_Module, nullptr);
+
+			m_Module = nullptr;
 		}
 
 		void Shader::ReadShaderFile(cstring filename) {

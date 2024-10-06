@@ -2,6 +2,8 @@
 
 #include "Ocean/Core/Primitives/Array.hpp"
 
+#include "Renderer/VulkanFramebuffer.hpp"
+
 #include "Renderer/VulkanResources.hpp"
 
 namespace Ocean {
@@ -17,6 +19,7 @@ namespace Ocean {
 
 		class Renderer;
 		class Device;
+		// class Framebuffer;
 
 		struct SwapChainConfig {
 			Allocator* allocator = nullptr;
@@ -59,7 +62,7 @@ namespace Ocean {
 			 * @param vsync - (Optional, default = false) Can be used to force vsync rendering using VK_PRESENT_MODE_FIFO_KHR presentation mode
 			 * @param fullscreen - N/A
 			 */
-			void CreateSwapChain(u32* width, u32* height, b8 vsync = false, b8 fullscreen = false);
+			void CreateSwapChain(u16* width, u16* height, b8 vsync = false, b8 fullscreen = false);
 
 			/**
 			 * @brief Acquires the next image in the swapchain.
@@ -78,25 +81,36 @@ namespace Ocean {
 			 */
 			VkResult QueuePresentation(VkQueue queue, u32 imageIndex, VkSemaphore waitSemaphore = VK_NULL_HANDLE);
 
+			void CreateFramebuffers();
+
+			VkFramebuffer GetFramebuffer(u32 index) const;
+
 			VkFormat GetColorFormat() const { return m_ColorFormat; }
+			VkExtent2D GetExtent() const { return m_Extent; }
+
+			u16 GetGraphicsIndex() const { return m_QueueNodeIndices.GraphicsIndex; }
+			u16 GetPresentationIndex() const { return m_QueueNodeIndices.PresentationIndex; }
+
+			u32 GetViewCount() const { return m_ImageCount; }
+			VkImageView GetImageView(u32 index) const { return m_Buffers.Get(index).View; }
 
 		private:
 			Allocator* p_Allocator;
 			Renderer* p_Renderer;
 			Device* p_Device;
 
-			VkSurfaceKHR m_Surface;
-
 			VkFormat m_ColorFormat;
 			VkColorSpaceKHR m_ColorSpace;
 			VkSwapchainKHR m_SwapChain;
+			VkExtent2D m_Extent;
 
 			QueueFamilyIndices m_QueueNodeIndices;
 
 			u32 m_ImageCount;
 
-			DynamicArray<VkImage> m_Images;
-			DynamicArray<SwapChainBuffer> m_Buffers;
+			FixedArray<VkImage> m_Images;
+			FixedArray<SwapChainBuffer> m_Buffers;
+			FixedArray<Framebuffer> m_Framebuffers;
 
 		};
 

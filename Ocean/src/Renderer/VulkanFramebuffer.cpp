@@ -5,11 +5,11 @@ namespace Ocean {
 	namespace Vulkan {
 
 		void Framebuffer::Init(FramebufferConfig* config) {
-			m_DeviceRef = config->Device;
-			m_RenderPass = config->RenderPass;
+			m_DeviceRef = config->device;
+			m_RenderPass = config->renderPass;
 
-			m_Width = config->SwapchainExtent.width;
-			m_Height = config->SwapchainExtent.height;
+			m_Width = config->swapchainExtent.width;
+			m_Height = config->swapchainExtent.height;
 
 			VkFramebufferCreateInfo info{ };
 			info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -17,7 +17,7 @@ namespace Ocean {
 			info.renderPass = m_RenderPass;
 
 			info.attachmentCount = 1;
-			info.pAttachments = &config->ImageView;
+			info.pAttachments = &config->imageView;
 
 			info.width = m_Width;
 			info.height = m_Height;
