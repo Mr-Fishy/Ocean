@@ -102,6 +102,8 @@ namespace Ocean {
 			VkRenderPass GetRenderPass() const { return m_RenderPass; }
 			VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
 
+			u8 GetMaxFramesInFlight() const { return m_MaxFramesInFlight; }
+
 			static cstring Name() { return "OCEAN_Rendering_Service"; }
 
 		private:
@@ -138,12 +140,13 @@ namespace Ocean {
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
 			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
 
-			SyncObjects m_SyncObjects;
+			FixedArray<SyncObjects> m_SyncObjects;
 
 			u16 m_Width = 0;
 			u16 m_Height = 0;
 
-			u16 m_MaxFramesInFlight = 2;
+			u8 m_MaxFramesInFlight = 2;
+			u8 m_Frame = 0;
 
 			/* --- */
 

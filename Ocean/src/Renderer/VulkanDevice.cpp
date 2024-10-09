@@ -60,10 +60,12 @@ namespace Ocean {
 			vkGetDeviceQueue(m_Device, indices.PresentFamily.value(), 0, &m_PresentQueue);
 
 			CreateCommandPool(indices);
-			CreateCommandBuffer();
+			CreateCommandBuffers();
 		}
 
 		void Device::Shutdown() {
+			m_CommandBuffers.Shutdown();
+
 			vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
 			vkDestroySurfaceKHR(p_Renderer->GetVulkanInstance(), m_Surface, nullptr);
@@ -236,7 +238,10 @@ namespace Ocean {
 			);
 		}
 
-		void Device::CreateCommandBuffer() {
+		void Device::CreateCommandBuffers() {
+			m_CommandBuffers.Init(p_Renderer->GetMaxFramesInFlight());
+			m_CommandBuffers.SetSize(p_Renderer->GetMaxFramesInFlight());
+
 			VkCommandBufferAllocateInfo info{ };
 			info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 
@@ -247,19 +252,19 @@ namespace Ocean {
 			 * VK_COMMAND_BUFFER_LEVEL_SECONDARY: Cannot be submitted directly, but can be called from primary command buffers.
 			 */
 			info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-			info.commandBufferCount = 1;
+			info.commandBufferCount = m_CommandBuffers.Size();
 
 			CHECK_RESULT(
-				vkAllocateCommandBuffers(m_Device, &info, &m_CommandBuffer),
+				vkAllocateCommandBuffers(m_Device, &info, m_CommandBuffers.Data()),
 				"Failed to allocate command buffers!"
 			);
 		}
 
-		void Device::FlushCommandBuffer() {
-			vkResetCommandBuffer(m_CommandBuffer, 0);
+		void Device::FlushCommandBuffer(u8 frame) {
+			vkResetCommandBuffer(m_CommandBuffers.Get(frame), 0);
 		}
 
-		void Device::RecordCommandBuffer(u32 imageIndex) {
+		void Device::RecordCommandBuffer(u32 imageIndex, u8 frame) {
 			VkCommandBufferBeginInfo beingInfo{ };
 			beingInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -278,7 +283,7 @@ namespace Ocean {
 			beingInfo.pInheritanceInfo = nullptr;
 
 			CHECK_RESULT(
-				vkBeginCommandBuffer(m_CommandBuffer, &beingInfo),
+				vkBeginCommandBuffer(m_CommandBuffers.Get(frame), &beingInfo),
 				"Failed to begin recording command buffer!"
 			);
 
@@ -301,12 +306,12 @@ namespace Ocean {
 			 *
 			 * VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS: The render pass commands will be executed from secondary command buffers.
 			 */
-			vkCmdBeginRenderPass(m_CommandBuffer, &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass(m_CommandBuffers.Get(frame), &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			/*
 			 *
 			 */
-			vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetGraphicsPipeline());
+			vkCmdBindPipeline(m_CommandBuffers.Get(frame), VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetGraphicsPipeline());
 
 			VkViewport viewport{ };
 			viewport.x = viewport.y = 0.0f;
@@ -315,13 +320,13 @@ namespace Ocean {
 			viewport.minDepth = 0.0f;
 			viewport.maxDepth = 1.0f;
 
-			vkCmdSetViewport(m_CommandBuffer, 0, 1, &viewport);
+			vkCmdSetViewport(m_CommandBuffers.Get(frame), 0, 1, &viewport);
 
 			VkRect2D scissor{ };
 			scissor.offset = { 0, 0 };
 			scissor.extent = p_SwapChain->GetExtent();
 
-			vkCmdSetScissor(m_CommandBuffer, 0, 1, &scissor);
+			vkCmdSetScissor(m_CommandBuffers.Get(frame), 0, 1, &scissor);
 
 			/*
 			 * vertexCount: Even though we don’t have a vertex buffer, we technically still have 3 vertices to draw.
@@ -332,17 +337,17 @@ namespace Ocean {
 			 *
 			 * firstInstance: Used as an offset for instanced rendering, defines the lowest value of gl_InstanceIndex.
 			 */
-			vkCmdDraw(m_CommandBuffer, 3, 1, 0, 0);
+			vkCmdDraw(m_CommandBuffers.Get(frame), 3, 1, 0, 0);
 
-			vkCmdEndRenderPass(m_CommandBuffer);
+			vkCmdEndRenderPass(m_CommandBuffers.Get(frame));
 
 			CHECK_RESULT(
-				vkEndCommandBuffer(m_CommandBuffer),
+				vkEndCommandBuffer(m_CommandBuffers.Get(frame)),
 				"Failed to record command buffer!"
 			);
 		}
 
-		void Device::SubmitCommandBuffer(const SyncObjects& syncObjects) {
+		void Device::SubmitCommandBuffer(const SyncObjects& syncObjects, u8 frame) {
 			VkSubmitInfo info{ };
 			info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -354,7 +359,7 @@ namespace Ocean {
 
 			info.pWaitDstStageMask = waitStages;
 
-			VkCommandBuffer commandBuffers[] = { m_CommandBuffer };
+			VkCommandBuffer commandBuffers[] = { m_CommandBuffers.Get(frame) };
 
 			info.commandBufferCount = 1;
 			info.pCommandBuffers = commandBuffers;

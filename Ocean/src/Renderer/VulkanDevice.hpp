@@ -63,9 +63,9 @@ namespace Ocean {
 
 			QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) const;
 
-			void FlushCommandBuffer();
-			void RecordCommandBuffer(u32 imageIndex);
-			void SubmitCommandBuffer(const SyncObjects& syncObjects);
+			void FlushCommandBuffer(u8 frame);
+			void RecordCommandBuffer(u32 imageIndex, u8 frame);
+			void SubmitCommandBuffer(const SyncObjects& syncObjects, u8 frame);
 
 			VkPhysicalDevice GetPhysical() const { return m_Physical; }
 			VkDevice GetLogical() const { return m_Device; }
@@ -84,7 +84,7 @@ namespace Ocean {
 			SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device) const;
 
 			void CreateCommandPool(QueueFamilyIndices indices);
-			void CreateCommandBuffer();
+			void CreateCommandBuffers();
 
 			/* --- */
 
@@ -103,7 +103,7 @@ namespace Ocean {
 			VkQueue m_PresentQueue = VK_NULL_HANDLE;
 
 			VkCommandPool m_CommandPool = VK_NULL_HANDLE;
-			VkCommandBuffer m_CommandBuffer;
+			FixedArray<VkCommandBuffer> m_CommandBuffers;
 
 			/* --- */
 

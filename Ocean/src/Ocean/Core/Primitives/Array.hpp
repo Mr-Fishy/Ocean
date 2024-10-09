@@ -232,6 +232,7 @@ namespace Ocean {
 	template <typename T>
 	class FixedArray : public ADT::Array<T> {
 	public:
+		FixedArray() = default;
 		FixedArray(u32 capacity) { Init(capacity); }
 		FixedArray(const FixedArray&);
 		~FixedArray() = default;
