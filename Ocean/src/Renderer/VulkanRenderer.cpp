@@ -115,10 +115,13 @@ namespace Ocean {
 			vkDestroyPipelineLayout(p_Device->GetLogical(), m_PipelineLayout, nullptr);
 			vkDestroyRenderPass(p_Device->GetLogical(), m_RenderPass, nullptr);
 
-			vkDestroySemaphore(p_Device->GetLogical(), m_SyncObjects.Sempahores.PresentComplete, nullptr);
-			vkDestroySemaphore(p_Device->GetLogical(), m_SyncObjects.Sempahores.RenderComplete, nullptr);
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
+				vkDestroySemaphore(p_Device->GetLogical(), m_SyncObjects.Get(i).Sempahores.PresentComplete, nullptr);
+				vkDestroySemaphore(p_Device->GetLogical(), m_SyncObjects.Get(i).Sempahores.RenderComplete, nullptr);
 
-			vkDestroyFence(p_Device->GetLogical(), m_SyncObjects.Fences.InFlight, nullptr);
+				vkDestroyFence(p_Device->GetLogical(), m_SyncObjects.Get(i).Fences.InFlight, nullptr);
+			}
+			m_SyncObjects.Shutdown();
 
 			p_SwapChain->Shutdown();
 			ofree(p_SwapChain, p_Allocator);
@@ -140,24 +143,26 @@ namespace Ocean {
 		}
 
 		void Renderer::RenderFrame() {
-			vkWaitForFences(p_Device->GetLogical(), 1, &m_SyncObjects.Fences.InFlight, VK_TRUE, u64_max);
-			vkResetFences(p_Device->GetLogical(), 1, &m_SyncObjects.Fences.InFlight);
+			vkWaitForFences(p_Device->GetLogical(), 1, &m_SyncObjects.Get(m_Frame).Fences.InFlight, VK_TRUE, u64_max);
+			vkResetFences(p_Device->GetLogical(), 1, &m_SyncObjects.Get(m_Frame).Fences.InFlight);
 
 			u32 imageIndex;
 			p_SwapChain->GetNextImage(
-				m_SyncObjects.Sempahores.PresentComplete,
+				m_SyncObjects.Get(m_Frame).Sempahores.PresentComplete,
 				&imageIndex
 			);
 
-			p_Device->FlushCommandBuffer();
-			p_Device->RecordCommandBuffer(imageIndex);
-			p_Device->SubmitCommandBuffer(m_SyncObjects);
+			p_Device->FlushCommandBuffer(m_Frame);
+			p_Device->RecordCommandBuffer(imageIndex, m_Frame);
+			p_Device->SubmitCommandBuffer(m_SyncObjects.Get(m_Frame), m_Frame);
 
 			p_SwapChain->QueuePresentation(
 				p_Device->GetPresentationQueue(),
 				imageIndex,
-				m_SyncObjects.Sempahores.RenderComplete
+				m_SyncObjects.Get(m_Frame).Sempahores.RenderComplete
 			);
+
+			m_Frame = (m_Frame + 1) % m_MaxFramesInFlight;
 		}
 
 		void Renderer::EndFrame() {
@@ -397,6 +402,9 @@ namespace Ocean {
 		}
 
 		void Renderer::CreateSyncObjects() {
+			m_SyncObjects.Init(m_MaxFramesInFlight);
+			m_SyncObjects.SetSize(m_MaxFramesInFlight);
+
 			VkSemaphoreCreateInfo semaInfo{ };
 			semaInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -405,19 +413,21 @@ namespace Ocean {
 			fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 			const VkDevice deviceRef = p_Device->GetLogical();
-			CHECK_RESULT(
-				vkCreateSemaphore(deviceRef, &semaInfo, nullptr, &m_SyncObjects.Sempahores.PresentComplete),
-				"Failed to create presentation semaphore!"
-			);
-			CHECK_RESULT(
-				vkCreateSemaphore(deviceRef, &semaInfo, nullptr, &m_SyncObjects.Sempahores.RenderComplete),
-				"Failed to create render semaphore!"
-			);
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
+				CHECK_RESULT(
+					vkCreateSemaphore(deviceRef, &semaInfo, nullptr, &m_SyncObjects.Get(i).Sempahores.PresentComplete),
+					"Failed to create presentation semaphore!"
+				);
+				CHECK_RESULT(
+					vkCreateSemaphore(deviceRef, &semaInfo, nullptr, &m_SyncObjects.Get(i).Sempahores.RenderComplete),
+					"Failed to create render semaphore!"
+				);
 
-			CHECK_RESULT(
-				vkCreateFence(deviceRef, &fenceInfo, nullptr, &m_SyncObjects.Fences.InFlight),
-				"Failed to create in-flight fence!"
-			);
+				CHECK_RESULT(
+					vkCreateFence(deviceRef, &fenceInfo, nullptr, &m_SyncObjects.Get(i).Fences.InFlight),
+					"Failed to create in-flight fence!"
+				);
+			}
 		}
 
 	}	// Vulkan

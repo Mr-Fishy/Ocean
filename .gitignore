@@ -1,6 +1,9 @@
 # Directories
 **/bin/
 bin-int/
+build/
+
+Ocean/vendor/
 
 # Files
 .vs/
@@ -10,5 +13,6 @@ bin-int/
 **.vcxproj.filters
 **.csproj
 
+
+
 # Ocean Generated Files
-**.log
