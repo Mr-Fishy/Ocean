@@ -23,7 +23,13 @@ namespace Ocean {
 			virtual void Clear() = 0;
 			virtual void Reserve(u32 amount) = 0;
 
+			/**
+			 * @return The size of the HasMap.
+			 */
 			u32 Size() const { return m_Size; }
+			/**
+			 * @return True if the HasMap is empty, False otherwise.
+			 */
 			b8 IsEmpty() const { return m_Size == 0; }
 
 		protected:
@@ -54,18 +60,56 @@ namespace Ocean {
 		HashMap() = default;
 		virtual ~HashMap() = default;
 
+		/**
+		 * @brief Initializes the HashMap. Shutdown() must be called before re-initializing.
+		 * @param allocator - The Ocean memory allocator to use.
+		 * @param initialCapacity - The initial capacity of the map.
+		 */
 		void Init(Allocator* allocator, u32 initialCapacity);
+		/**
+		 * @brief Shuts down the HashMap. This must be called before the application is closed if initialized.
+		 */
 		void Shutdown();
 
+		/**
+		 * @brief Insert's an element with the given Key.
+		 * @param key - The key to use in the map.
+		 * @param value - The value to insert.
+		 */
 		virtual void Insert(K key, T value) override;
+		/**
+		 * @brief Remove's an element from the HashMap.
+		 * @param key - The key of the element to remove.
+		 */
 		virtual void Remove(const K& key) override;
 
+		/**
+		 * @param key - The key of the element to get.
+		 * @return The pointer to the element if it is found, nullptr otherwise.
+		 */
 		virtual T* Get(const K& key) override;
+		/**
+		 * @brief Set's the value of the element with the given key.
+		 * @param key - The key of the element to set.
+		 * @param value - The value to assign to the element.
+		 */
 		virtual void Set(const K& key, const T& value) override;
+		/**
+		 * @brief Finds if an element is in the HashMap with the given Key. 
+		 * @param key - The key to search for.
+		 * @return True if the element exists, False otherwise.
+		 */
 		b8 Find(const K& key);
 		// Find and return iterator
 
+		/**
+		 * @brief Clear's the HashMap.
+		 */
 		virtual void Clear() override;
+		/**
+		 * @brief Reserve's the given amount in the HashMap to be available.
+		 * @param amount - The ammount of elements to reserve.
+		 */
 		virtual void Reserve(u32 amount) override;
 
 	private:
