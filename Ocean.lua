@@ -68,12 +68,12 @@ project "Ocean"
 		symbols "on"
 
 	filter "configurations:DebugDLL"
-		defines "OC_RELEASE"
+		defines "OC_DEBUG"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:ReleaseLib"
-		defines "OC_DEBUG"
+		defines "OC_RELEASE"
 		runtime "Debug"
 		symbols "on"
 

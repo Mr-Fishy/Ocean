@@ -4,10 +4,10 @@
 #include "Renderer/VulkanInfos.hpp"
 #include "Renderer/VulkanSwapChain.hpp"
 
+// libs
 #include <GLFW/glfw3.h>
 
 // std
-#include <optional>
 #include <set>
 
 namespace Ocean {

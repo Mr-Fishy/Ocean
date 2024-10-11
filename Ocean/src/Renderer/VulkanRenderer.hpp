@@ -47,6 +47,9 @@ namespace Ocean {
 
 
 
+		/**
+		 * @brief The syncronization objects for the renderer. AKA the presentation and rendering semaphore, as well as the frame in flight fence.
+		 */
 		struct SyncObjects {
 			struct _Sempahores {
 				VkSemaphore PresentComplete;
@@ -62,6 +65,9 @@ namespace Ocean {
 			_Fences Fences;
 		};
 
+		/**
+		 * @brief The configuration of the renderer.
+		 */
 		struct RendererConfig {
 			Allocator* MemAllocator = nullptr;
 			Window* MainWindow;
@@ -80,44 +86,110 @@ namespace Ocean {
 		};	// VulkanRendererConfig
 
 		/**
-		 * @brief 
+		 * @brief The primary renderer class that will be interacted with by the application.
 		 */
 		class Renderer : public Service {
 		public:
 			OCEAN_DECLARE_SERVICE(Renderer);
 
+			/**
+			 * @brief Initializes the Renderer with the given configuration.
+			 * @param config - The renderer configuration to use.
+			 */
 			virtual void Init(void* config) override;
+			/**
+			 * @brief Shuts down the Renderer.
+			 */
 			virtual void Shutdown() override;
 
+			/**
+			 * @brief Begin's the frame rendering.
+			 */
 			void BeginFrame();
+			/**
+			 * @brief Render's the current frame.
+			 */
 			void RenderFrame();
+			/**
+			 * @brief End's the frame rendering.
+			 */
 			void EndFrame();
 
+			/**
+			 * @brief Clean's up the GPU operations before closing. This must be called before exiting the runtime.
+			 */
 			void CleanUp();
 
+			/**
+			 * @return The aspect ratio of the Renderer's output image.
+			 */
 			f32 AspectRatio() const;
+			/**
+			 * @brief Resizes the swapchain to the given width and height.
+			 * @param width - The new width of the swapchain.
+			 * @param height - The new height of the swapchain.
+			 */
 			void ResizeSwapchain(u32 width, u32 height);
 
+			/**
+			 * @return The Renderer's Vulkan instance.
+			 */
 			VkInstance GetVulkanInstance() const { return m_Instance; }
+			/**
+			 * @return The Renderer's Vulkan Render Pass.
+			 */
 			VkRenderPass GetRenderPass() const { return m_RenderPass; }
+			/**
+			 * @return The Renderer's Vulkan Graphics Pipeline.
+			 */
 			VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
 
+			/**
+			 * @return The maximum frames in flight the Renderer has.
+			 */
 			u8 GetMaxFramesInFlight() const { return m_MaxFramesInFlight; }
 
+			/**
+			 * @return The Renderer's service name.
+			 */
 			static cstring Name() { return "OCEAN_Rendering_Service"; }
 
 		private:
+			/**
+			 * @brief Checks if the system's Vulkan library support's the layers defined in k_ValidationLayers.
+			 * @return True if supported, False otherwise.
+			 */
 			b8 CheckValidationSupport();
 
+			/**
+			 * @brief Get's the required extensions to enable for the Vulkan Instance. 
+			 * @return A vector of the extension names.
+			 */
 			std::vector<cstring> GetRequiredExtensions();
 
+			/**
+			 * @brief Sets the information for the Vulkan Debug Messenger to the given info.
+			 * @param info - The Debug Messenger info.
+			 */
 			void SetDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& info);
+			/**
+			 * @brief Creates the Vulkan Debug Messenger so that the validation layers will report errors.
+			 */
 			void CreateDebugMessenger();
 
+			/**
+			 * @brief Creates the Vulkan Render Pass for the Graphics Pipeline. 
+			 */
 			void CreateRenderPass();
 
+			/**
+			 * @brief Creates the Vulkan Graphics Pipeline so that the GPU knows how to render (or compute).
+			 */
 			void CreateGraphicsPipeline();
 
+			/**
+			 * @brief Creates the Vulkan Semaphores and Vulkan Fences that are needed for the runtime.
+			 */
 			void CreateSyncObjects();
 
 			/* --- */

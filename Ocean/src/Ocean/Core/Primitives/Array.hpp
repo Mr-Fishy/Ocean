@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/Memory.hpp"
-
-#include "Ocean/Core/Primitives/Assert.hpp"
-
 #include "Ocean/Core/Types/Bool.hpp"
+
+#include "Ocean/Core/Primitives/Memory.hpp"
+#include "Ocean/Core/Primitives/Assert.hpp"
 
 // std
 #include <sstream>
@@ -15,18 +14,25 @@ namespace Ocean {
 
 		// TODO: Implement Range-Based For Loop Functionality
 
+		/**
+		 * @brief The abstract array class.
+		 * @tparam T - The type of data to store.
+		 */
 		template <typename T>
 		class Array {
 		public:
 			Array() = default;
 			~Array() { OASSERTM(!p_Data, "Array attempted deconstruction while data may still exist!"); }
 
-			virtual void InsertAt(const T& element, u32 position) = 0;
 			virtual void Set(u32 position, const T& element) = 0;
 			
 			virtual void Append(const T& element) = 0;
 			virtual void Prepend(const T& element) = 0;
 
+			/**
+			 * @param element - The element to find.
+			 * @return The index (position) of the element, returns -1 if the element is not found.
+			 */
 			i64 IndexOf(const T& element) const {
 				for (u32 i = 0; i < m_Size; i++) {
 					if (&p_Data[i] == &element)
@@ -35,27 +41,53 @@ namespace Ocean {
 
 				return -1;
 			}
-			T  Get(u32 position) const {
+			/** 
+			 * @param position - The position of the element to get.
+			 * @return The pointer of the element at the given position. 
+			 */
+			T*  Get(u32 position) const {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
 				return p_Data[position];
 			}
+			/**
+			 * @param position - The position of the element to get.
+			 * @return The element at the given position.
+			 */
 			T& Get(u32 position) {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
 				return p_Data[position];
 			}
 
+			/** 
+			 * @return The pointer to the first element of the array.
+			 */
 			T  Front() const { return p_Data[0]; }
+			/**
+			 * @return The first element of the array.
+			 */
 			T& Front() { return p_Data[0]; }
+			/**
+			 * @return The pointer to the last element of the array.
+			 */
 			T  Back() const { return p_Data[m_Size - 1]; }
+			/**
+			 * @return The last element of the array.
+			 */
 			T& Back() { return p_Data[m_Size - 1]; }
 
 			virtual void Remove(const T& element) = 0;
 			virtual void Remove(u32 position) = 0;
 
+			/**
+			 * @return The pointer to the first element of the array.
+			 */
 			T* Data() const { return p_Data; }
 
+			/**
+			 * @brief Clear's the data within the array.
+			 */
 			void Clear() {
 				if (p_Data)
 					memset(p_Data, 0, m_Size);
@@ -63,8 +95,20 @@ namespace Ocean {
 				m_Size = 0;
 			}
 
+			/**
+			 * @return The size of the array.
+			 */
 			u32 Size() const { return m_Size; }
-			void SetSize(u32 size) { m_Size = size; } // This is a temporary fix to handle Data() useage where it doesn't know it has new data yet.
+			/**
+			 * @brief Set's the size of the array if needed. Primary use case is for when a library inserts data from the Data() pointer.
+			 * @brief Ex: Vulkan
+			 * @param size - The size to set to the array.
+			 */
+			void SetSize(u32 size) { m_Size = size; }
+			/**
+			 * @return True if the array is empty, False otherwise.
+			 */
+			b8 IsEmpty() const { return m_Size == 0; }
 
 		protected:
 			Allocator* p_Allocator;
@@ -78,6 +122,10 @@ namespace Ocean {
 
 
 
+	/**
+	 * @brief A dynamic array like std::vector. Uses Ocean memory systems and contains space optimizations.
+	 * @tparam T - The type of data to store.
+	 */
 	template <typename T>
 	class DynamicArray : public ADT::Array<T> {
 	public:
@@ -86,18 +134,49 @@ namespace Ocean {
 		DynamicArray(const DynamicArray&);
 		~DynamicArray() = default;
 		
+		/**
+		 * @brief Initializes the array. The array must be shutdown before being re-initialized.
+		 * @param initialCapacity - The initial capacity to allocate, default is 4.
+		 */
 		void Init(u32 initialCapacity = 4);
+		/**
+		 * @brief Shuts down the array. This must be done before the application is closed to release the data in memory.
+		 */
 		void Shutdown();
 
-		virtual void InsertAt(const T& element, u32 position) override;
+		/**
+		 * @brief Set's an element at the given position to the given element. The position must be within the size of the array.
+		 * @param position - The position to set.
+		 * @param element - The element to set data[position] equal to.
+		 */
 		virtual void Set(u32 position, const T& element) override;
 
+		/**
+		 * @brief Append's the given element to the end of the array. Resizes the array if needed.
+		 * @param element - The element to append.
+		 */
 		virtual void Append(const T& element) override;
+		/**
+		 * @brief Prepend's the given element to the beginning of the array. Resizes the array if needed.
+		 * @param element - The element to prepend.
+		 */
 		virtual void Prepend(const T& element) override;
 
+		/**
+		 * @brief Removes the given element from the array.
+		 * @param element - The element to remove.
+		 */
 		virtual void Remove(const T& element) override;
+		/**
+		 * @brief Removes the element at the given position.
+		 * @param position - The position to remove at.
+		 */
 		virtual void Remove(u32 position) override;
 
+		/**
+		 * @brief Resizes the capacity of the array to the new given size.
+		 * @param size - The new size to use.
+		 */
 		void Resize(u32 size);
 
 		DynamicArray& operator = (const DynamicArray&);
@@ -143,18 +222,9 @@ namespace Ocean {
 	}
 
 	template<typename T>
-	inline void DynamicArray<T>::InsertAt(const T& element, u32 position) {
-		if (position >= m_Capacity)
-			Resize(position);	// Resize to position (This can be dangerous but oh well)
-
-		p_Data[position] = element;
-	}
-
-	template<typename T>
 	inline void DynamicArray<T>::Set(u32 position, const T& element) {
-		if (position >= m_Capacity)
-			Resize(position);
-
+		OASSERTM(position < m_Size, "Attempt to set value out of array range!");
+			
 		p_Data[position] = element;
 	}
 
@@ -237,16 +307,43 @@ namespace Ocean {
 		FixedArray(const FixedArray&);
 		~FixedArray() = default;
 
+		/**
+		 * @brief Initializes the array. The array must be shutdown before being re-initialized.
+		 * @param capacity - The capacity to allocate, default is 0.
+		 */
 		void Init(u32 capacity = 0);
+		/**
+		 * @brief Shuts down the array. This must be done before the application is closed to release the data in memory.
+		 */
 		void Shutdown();
 
-		virtual void InsertAt(const T& element, u32 position) override;
+		/**
+		 * @brief Set's an element at the given position to the given element. The position must be within the size of the array.
+		 * @param position - The position to set.
+		 * @param element - The element to set data[position] equal to.
+		 */
 		virtual void Set(u32 position, const T& element) override;
 
+		/**
+		 * @brief Append's the given element to the end of the array. There must be space available.
+		 * @param element - The element to append.
+		 */
 		virtual void Append(const T& element) override;
+		/**
+		 * @brief Prepend's the given element to the beginning of the array. There must be space available.
+		 * @param element - The element to prepend.
+		 */
 		virtual void Prepend(const T& element) override;
 
+		/**
+		 * @brief Removes the given element from the array.
+		 * @param element - The element to remove.
+		 */
 		virtual void Remove(const T& element) override;
+		/**
+		 * @brief Removes the element at the given position.
+		 * @param position - The position to remove at.
+		 */
 		virtual void Remove(u32 position) override;
 
 		FixedArray& operator = (const FixedArray&);
@@ -306,12 +403,6 @@ namespace Ocean {
 
 		p_Data[0] = element;
 		m_Size++;
-	}
-
-	template<typename T>
-	inline void FixedArray<T>::InsertAt(const T& element, u32 position) {
-		if (position < m_Capacity)
-			p_Data[position] = element;
 	}
 
 	template<typename T>

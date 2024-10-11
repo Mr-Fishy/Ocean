@@ -7,7 +7,6 @@
 #include "Ocean/Core/Primitives/Array.hpp"
 
 #include "Renderer/VulkanShader.hpp"
-
 #include "Renderer/VulkanResources.hpp"
 
 // std
@@ -21,10 +20,15 @@ namespace Ocean {
 		class SwapChain;
 		struct SyncObjects;
 
-
-
+		// TODO: Convert to use FixedArray for better memory usage.
+		/**
+		 * @brief A struct that contains information of what the Physical Vulkan Device supports for the swapchain.
+		 */
 		struct SwapChainSupportDetails;
 
+		/**
+		 * @brief A struct that represents the graphics and presentation queue. Uses std::optional for device selection.
+		 */
 		struct QueueFamilyIndices {
 			std::optional<u16> GraphicsFamily;
 			std::optional<u16> PresentFamily;
@@ -37,6 +41,9 @@ namespace Ocean {
 
 		};	// QueueFamilyIndices
 
+		/**
+		 * @brief The configuration struct for the Device class.
+		 */
 		struct DeviceConfig {
 			Allocator* allocator;
 
@@ -48,42 +55,106 @@ namespace Ocean {
 
 		};	// DeviceInfo
 
+		/**
+		 * @brief The abstract Device class that manages the Vulkan Device and device selection. As well as the surface and command buffers.
+		 */
 		class Device {
 		public:
+			/**
+			 * @brief Initializes the Device with the given config. This includes selecting and creating the Logical Vulkan Device.
+			 * @param config - The configuration to use.
+			 */
 			void Init(DeviceConfig* config);
+			/**
+			 * @brief Shuts down the Device, destroying the Logical Vulkan Device and other rendering components.
+			 */
 			void Shutdown();
 
-			// u32 GetMemoryType();
-
-			// VkResult CreateBuffer();
-
-			// void CopyBuffer();
-
-			// b8 IsExtensionSupported(cstring extension);
-
+			/**
+			 * @brief Queries and determines which family indices to use for rendering and presenting commands.
+			 * @param device - The physical device to use.
+			 * @return The QueueFamilyIndices struct.
+			 */
 			QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device) const;
 
+			/**
+			 * @brief Clear's the command buffer at the give frame.
+			 * @param frame - The current frame to use.
+			 */
 			void FlushCommandBuffer(u8 frame);
+			// TODO: Confirm that imageIndex and frame are not the same.
+			/**
+			 * @brief Records a command buffer to submit to the queue.
+			 * @param imageIndex 
+			 * @param frame - The current frame to use.
+			 */
 			void RecordCommandBuffer(u32 imageIndex, u8 frame);
+			/**
+			 * @brief Submits a command buffer to the queue.
+			 * @param syncObjects - The frame's SyncObjects struct (ie. semaphores and fences).
+			 * @param frame - The current frame to use.
+			 */
 			void SubmitCommandBuffer(const SyncObjects& syncObjects, u8 frame);
 
+			/**
+			 * @return The Physical Vulkan Device.
+			 */
 			VkPhysicalDevice GetPhysical() const { return m_Physical; }
+			/**
+			 * @return The Logical Vulkan Device.
+			 */
 			VkDevice GetLogical() const { return m_Device; }
 
+			/**
+			 * @return The window surface that is being rendered to.
+			 */
 			VkSurfaceKHR GetSurface() const { return m_Surface; }
+			/**
+			 * @return The index of the presentation queue.
+			 */
 			VkQueue GetPresentationQueue() const { return m_PresentQueue; }
 
+			/**
+			 * @brief Sets the SwapChain pointer so that the device can submit commands.
+			 * @param swapChain - The SwapChain of the Renderer.
+			 */
 			void SetSwapChain(SwapChain* swapChain) { p_SwapChain = swapChain; }
 
 		private:
+			/**
+			 * @brief Determines if the device is suitable for the application's requirements.
+			 * @param device - The Physical Vulkan Device to check.
+			 * @return True if the device is suitable, False otherwise.
+			 */
 			b8 IsDeviceSuitable(VkPhysicalDevice device);
+			/**
+			 * @brief Checks if the device supports the required extensions.
+			 * @param device - The Physical Vulkan Device to check.
+			 * @return True if the extensions are supported, False otherwise.
+			 */
 			b8 CheckDeviceExtensionSupport(VkPhysicalDevice device);
 
+			/**
+			 * @brief Creates the Logical Vulkan Device once the physical device has been chosen.
+			 * @param indices - The queue indices that the renderer will submit commands to.
+			 */
 			void CreateLogicalDevice(QueueFamilyIndices indices);
 
+			/**
+			 * @brief Checks that the device supports a swapchain (ie. rendering a frame off screen and swapping it with the on-screen frame).
+			 * @param device - The Physical Vulkan Device to check.
+			 * @return The completed swapchain support details.
+			 */
 			SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device) const;
 
+			/**
+			 * @brief Creates the command pool that the renderer will submit commands through.
+			 * @param indices - The queue indices to use for rendering and presenting.
+			 */
 			void CreateCommandPool(QueueFamilyIndices indices);
+			/**
+			 * @brief Creates the command buffers that will be used to record and submit commands.
+			 */
 			void CreateCommandBuffers();
 
 			/* --- */

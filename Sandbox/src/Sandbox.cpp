@@ -43,8 +43,6 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 	};
 	p_Renderer = p_ServiceManager->Get<Ocean::Vulkan::Renderer>();
 	p_Renderer->Init(&renConfig);
-
-	oprint("Successfully Constructed Sandbox Application!\n");
 }
 
 Sandbox::~Sandbox() {
