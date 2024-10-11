@@ -4,11 +4,11 @@
 #include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/HashMap.hpp"
 
-// std
-#include <unordered_map>
-
 namespace Ocean {
 
+	/**
+	 * @brief The base manager for all services, mainly to be able to keep reference to them if needed.
+	 */
 	class ServiceManager {
 	public:
 		ServiceManager() = default;

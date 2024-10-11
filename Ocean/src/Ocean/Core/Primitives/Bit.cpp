@@ -1,7 +1,7 @@
 #include "Bit.hpp"
 
-#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Log.hpp"
+#include "Ocean/Core/Primitives/Memory.hpp"
 
 #if defined(_MSC_VER)
 

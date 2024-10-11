@@ -2,10 +2,9 @@
 
 #include "Renderer/VulkanRenderer.hpp"
 #include "Renderer/VulkanDevice.hpp"
-// #include "Renderer/VulkanFramebuffer.hpp"
-
 #include "Renderer/VulkanInfos.hpp"
 
+// libs
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
@@ -301,7 +300,7 @@ namespace Ocean {
 		}
 
 		VkFramebuffer SwapChain::GetFramebuffer(u32 index) const {
-			return m_Framebuffers.Get(index).GetFrame();
+			return m_Framebuffers.Get(index)->GetFrame();
 		}
 
 	}	// Vulkan

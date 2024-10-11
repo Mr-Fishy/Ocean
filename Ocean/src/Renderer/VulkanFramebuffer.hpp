@@ -8,6 +8,9 @@ namespace Ocean {
 
 	namespace Vulkan {
 
+		/**
+		 * @brief The configuration struct of the framebuffer.
+		 */
 		struct FramebufferConfig {
 			// Allocator* allocator;
 
@@ -20,14 +23,27 @@ namespace Ocean {
 				: device(device), imageView(view), swapchainExtent(extent), renderPass(renderPass) { }
 		};
 
+		/**
+		 * @brief A overhead class that defines a Vulkan Framebuffer.
+		 */
 		class Framebuffer {
 		public:
 			Framebuffer() = default;
 			~Framebuffer() = default;
 
+			/**
+			 * @brief Initializes the framebuffer, this includes creating the Vulkan Framebuffer.
+			 * @param config - The configuration to use for the framebuffer.
+			 */
 			void Init(FramebufferConfig* config);
+			/**
+			 * @brief Shuts down the framebuffer, also destroys the Vulkan Framebuffer.
+			 */
 			void Shutdown();
 
+			/**
+			 * @return The Vulkan Framebuffer.
+			 */
 			VkFramebuffer GetFrame() const { return m_Framebuffer; }
 
 		private:
