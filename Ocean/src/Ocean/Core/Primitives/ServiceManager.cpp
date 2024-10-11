@@ -13,15 +13,11 @@ namespace Ocean {
 	}
 
 	void ServiceManager::Init(Allocator* allocator) {
-		oprint("ServiceManager Initializing\n");
-
 		p_Allocator = allocator;
 	}
 
 	void ServiceManager::Shutdown() {
 		m_Services.Clear();
-
-		oprint("ServiceManager Shutting Down\n");
 	}
 
 	void ServiceManager::AddService(Service* service, cstring name) {

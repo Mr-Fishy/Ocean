@@ -1,15 +1,18 @@
-[submodule "GLFW"]
+[submodule "glfw"]
 	path = Ocean/vendor/glfw
 	url = https://github.com/glfw/glfw
-[submodule "ImGui"]
-	path = Ocean/vendor/imgui
-	url = https://github.com/ocornut/imgui
-[submodule "Ocean/vendor/StackWalker"]
+[submodule "StackWalker"]
 	path = Ocean/vendor/StackWalker
 	url = https://github.com/JochenKalmbach/StackWalker
 [submodule "Ocean/vendor/tlsf"]
 	path = Ocean/vendor/tlsf
 	url = https://github.com/mattconte/tlsf
+	branch = master
 [submodule "Ocean/vendor/VulkanMemoryAllocator"]
 	path = Ocean/vendor/VulkanMemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+	branch = master
+[submodule "vendor/premake/premake-cmake"]
+	path = vendor/premake/premake-cmake
+	url = https://github.com/Jarod42/premake-cmake
+	branch = master

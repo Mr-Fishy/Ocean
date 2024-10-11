@@ -19,6 +19,8 @@
 	
 	#define OCEAN_CONCAT_OPERATOR(x, y)             x##y
 
+	#define OCEAN_LOCATION                          __FILE__
+
 #else
 
 	#define OCEAN_INLINE                            inline
@@ -28,13 +30,16 @@
 	
 	#define OCEAN_CONCAT_OPERATOR(x, y)             x y
 
+	#define OCEAN_LOCATION                          (__FILE_NAME__)
+
 #endif
 
 #define OCEAN_STRINGIFY(L)                          #L
 #define OCEAN_MAKESTRING(L)                         OCEAN_STRINGIFY(L)
 #define OCEAN_CONCAT(x, y)                          OCEAN_CONCAT_OPERATOR(x, y)
 #define OCEAN_LINE_STRING                           OCEAN_MAKESTRING(__LINE__)
-#define OCEAN_FILELINE(Message)                     __FILE__ "(" OCEAN_LINE_STRING ") : " Message
+
+#define OCEAN_FILELINE(Message)                     OCEAN_LOCATION "(" OCEAN_LINE_STRING ") : " Message
 
 #define OCEAN_UNIQUE_SUFFIX(Param)                  OCEAN_CONCAT(Param, __LINE__)
 

@@ -3,6 +3,7 @@ project "Ocean"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "off"
+	externalwarnings "off"
 
 	filter "*Lib"
 		kind "StaticLib"
@@ -35,12 +36,6 @@ project "Ocean"
 		"%{IncludeDir.TLSF}/tlsf.c",
 
 		"%{IncludeDir.vkMemAlloc}/vk_mem_alloc.h",
-
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.h",
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.cpp",
-
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.h",
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.cpp",
 	}
 
 	includedirs {
@@ -50,9 +45,11 @@ project "Ocean"
 		"%{IncludeDir.StackWalker}",
 		"%{IncludeDir.TLSF}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.vkMemAlloc}",
+	}
+
+	externalincludedirs {
+		"%{IncludeDir.VulkanSDK}",
 	}
 
 	links {
@@ -60,7 +57,6 @@ project "Ocean"
 		-- "%{Library.VulkanUtils}",
 
 		"glfw",
-		"imgui",
 	}
 
 	filter "system:windows"
@@ -72,12 +68,12 @@ project "Ocean"
 		symbols "on"
 
 	filter "configurations:DebugDLL"
-		defines "OC_RELEASE"
+		defines "OC_DEBUG"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:ReleaseLib"
-		defines "OC_DEBUG"
+		defines "OC_RELEASE"
 		runtime "Debug"
 		symbols "on"
 

@@ -1,8 +1,5 @@
 #include "Numerics.hpp"
 
-#include "Ocean/Core/Primitives/Assert.hpp"
-#include "Ocean/Core/Primitives/Log.hpp"
-
 namespace Ocean {
 
 	u32 ceilu32(f32 value) {

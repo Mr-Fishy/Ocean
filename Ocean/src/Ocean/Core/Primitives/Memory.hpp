@@ -4,6 +4,7 @@
 #include "Ocean/Core/Types/Strings.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
+#include "Ocean/Core/Primitives/Macros.hpp"
 
 namespace Ocean {
 
@@ -206,14 +207,27 @@ namespace Ocean {
 	};	// MemoryService
 
 	// Macro Helpers
+#if OC_DEBUG
 
-	#define oalloca(size, allocator) ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
+	#define oalloca (size, allocator) ((allocator)->Allocate(size, 1, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+	#define oallocam(size, allocator) ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+	#define oallocat(type, count, allocator) ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+
+	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+
+	#define ofree(pointer, allocator) ((allocator)->Deallocate(pointer)); oprint("%s\n", OCEAN_FILELINE("Freeing Memory"))
+
+#else
+
+	#define oalloca (size, allocator) ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
 	#define oallocam(size, allocator) ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocat(type, allocator) ((type*)(allocator)->Allocate(sizeof(type), 1, __FILE__, __LINE__))
+	#define oallocat(type, count, allocator) ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__))
 
-	#define oallocaa(size, allocator, aligment) ((allocator)->Allocate(size, alignemnt, __FILE__, __LINE__))
+	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
 
 	#define ofree(pointer, allocator) ((allocator)->Deallocate(pointer))
+
+#endif
 
 	#define okilo(size) (size * 1024)
 	#define omega(size) (size * 1024 * 1024)

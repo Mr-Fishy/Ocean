@@ -2,6 +2,8 @@
 
 #include "Ocean/Core/Types/ValueTypes.hpp"
 
+#include "Ocean/Core/Primitives/Assert.hpp"
+
 namespace Ocean {
 
 	// Math Utils
@@ -72,6 +74,10 @@ namespace Ocean {
 
 
 	f32 get_random_value(f32 min, f32 max);
+
+
+
+	// TODO: Trig Functions (Defined Table Optimization)
 
 
 

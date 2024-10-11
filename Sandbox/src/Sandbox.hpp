@@ -30,8 +30,6 @@ private:
 
 	Ocean::Vulkan::Renderer* p_Renderer = nullptr;
 
-	// Ocean::ImguiService* p_Imgui = nullptr;
-
 };	// Sandbox
 
 
