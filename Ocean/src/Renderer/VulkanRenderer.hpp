@@ -129,7 +129,7 @@ namespace Ocean {
 			 * @param width - The new width of the swapchain.
 			 * @param height - The new height of the swapchain.
 			 */
-			void ResizeSwapchain(u32 width, u32 height);
+			void ResizeSwapchain(i32 width, i32 height);
 
 			/**
 			 * @return The Renderer's Vulkan instance.

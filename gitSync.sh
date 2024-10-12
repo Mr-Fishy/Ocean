@@ -29,3 +29,5 @@ git submodule sync;
 # didn't like that, so now I do this...
 
 git submodule foreach --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)';
+
+read -p "Meep . . ."

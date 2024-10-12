@@ -98,18 +98,7 @@ namespace Ocean {
 		}
 
 		void SwapChain::Shutdown() {
-			for (u32 i = 0; i < m_Framebuffers.Size(); i++)
-				m_Framebuffers.Get(i).Shutdown();
-			m_Framebuffers.Shutdown();
-
-			if (m_SwapChain != VK_NULL_HANDLE) {
-				for (u32 i = 0; i < m_ImageCount; i++)
-					vkDestroyImageView(p_Device->GetLogical(), m_Buffers.Get(i).View, nullptr);
-
-				vkDestroySwapchainKHR(p_Device->GetLogical(), m_SwapChain, nullptr);
-			}
-
-			m_SwapChain = VK_NULL_HANDLE;
+			CleanSwapChain();
 
 			m_Images.Shutdown();
 			m_Buffers.Shutdown();
@@ -255,6 +244,17 @@ namespace Ocean {
 					"Failed to create image view!"
 				);
 			}
+		}
+
+		void SwapChain::CleanSwapChain() {
+			for (u32 i = 0; i < m_Framebuffers.Size(); i++)
+				m_Framebuffers.Get(i).Shutdown();
+
+			for (u32 i = 0; i < m_ImageCount; i++)
+				vkDestroyImageView(p_Device->GetLogical(), m_Buffers.Get(i).View, nullptr);
+
+			vkDestroySwapchainKHR(p_Device->GetLogical(), m_SwapChain, nullptr);
+			m_SwapChain = VK_NULL_HANDLE;
 		}
 
 		VkResult SwapChain::GetNextImage(VkSemaphore presentComplete, u32* imageIndex) {

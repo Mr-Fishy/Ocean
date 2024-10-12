@@ -176,7 +176,21 @@ namespace Ocean {
 			return f32();
 		}
 
-		void Renderer::ResizeSwapchain(u32 width, u32 height) {
+		void Renderer::ResizeSwapchain(i32 width, i32 height) {
+			vkDeviceWaitIdle(p_Device->GetLogical());
+
+			while (width == 0 || height == 0) {
+				glfwGetFramebufferSize((GLFWwindow*)p_Device->GetWindowHandle(), &width, &height);
+				glfwWaitEvents();
+			}
+
+			p_SwapChain->CleanSwapChain();
+
+			m_Width = width;
+			m_Height = height;
+			p_SwapChain->CreateSwapChain(&m_Width, &m_Height);
+
+			p_SwapChain->CreateFramebuffers();
 		}
 
 

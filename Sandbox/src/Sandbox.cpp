@@ -129,6 +129,6 @@ void Sandbox::FrameEnd() {
 
 
 
-void Sandbox::OnResize(u32 width, u32 height) {
-	oprint("Sandbox OnResize! (%i, %i)\n", width, height);
+void Sandbox::OnResize(u16 width, u16 height) {
+	p_Renderer->ResizeSwapchain(width, height);
 }

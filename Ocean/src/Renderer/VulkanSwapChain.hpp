@@ -69,6 +69,10 @@ namespace Ocean {
 			 * @param fullscreen - N/A
 			 */
 			void CreateSwapChain(u16* width, u16* height, b8 vsync = false, b8 fullscreen = false);
+			/**
+			 * @brief Cleans the swapchain for recreation.
+			 */
+			void CleanSwapChain();
 
 			/**
 			 * @brief Acquires the next image in the swapchain.

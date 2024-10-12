@@ -120,6 +120,11 @@ namespace Ocean {
 			 */
 			void SetSwapChain(SwapChain* swapChain) { p_SwapChain = swapChain; }
 
+			/**
+			 * @return The GLFW window handle.
+			 */
+			void* GetWindowHandle() const { return p_WindowHandle; }
+
 		private:
 			/**
 			 * @brief Determines if the device is suitable for the application's requirements.
