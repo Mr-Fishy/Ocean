@@ -53,10 +53,6 @@ namespace Ocean {
 		m_SystemAllocator.Shutdown();
 	}
 
-	void MemoryService::Test() {
-		// TODO: Implement Memory Service Testing
-	}
-
 	// Memory Methods
 
 	void mem_copy(void* dst, void* src, sizet size) {
@@ -87,7 +83,8 @@ namespace Ocean {
 		void* pool = tlsf_get_pool(p_Handle);
 		tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
 
-		OASSERTM(stats.AllocatedBytes == 0, "Allocations still present. Check your code!");
+		if (stats.AllocatedBytes != 0)
+			oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!"));
 
 		tlsf_destroy(p_Handle);
 

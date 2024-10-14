@@ -3,7 +3,7 @@
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/VulkanResources.hpp"
+#include "Renderer/Resources.hpp"
 
 namespace Ocean {
 
@@ -34,6 +34,7 @@ namespace Ocean {
 		 * VkQueue graphicsQueue;                               - Owned by Device
 		 * VkQueue presentQueue;                                - Owned by Device
 		 * VkCommandPool commandPool;                           - Owned by Device
+		 * VertexBuffer vertexbuffer                            - Owned by Device
 		 * FixedArray<VkCommandBuffer> commandBuffer;           - Owned by Device
 		 * 
 		 * VkSwapchainKHR swapChain;                            - Owned by SwapChain

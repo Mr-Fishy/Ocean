@@ -6,8 +6,7 @@
 #include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/VulkanShader.hpp"
-#include "Renderer/VulkanResources.hpp"
+#include "Renderer/Resources.hpp"
 
 // std
 #include <optional>
@@ -18,6 +17,7 @@ namespace Ocean {
 
 		class Renderer;
 		class SwapChain;
+		class Buffer;
 		struct SyncObjects;
 
 		// TODO: Convert to use FixedArray for better memory usage.
@@ -97,6 +97,22 @@ namespace Ocean {
 			void SubmitCommandBuffer(const SyncObjects& syncObjects, u8 frame);
 
 			/**
+			 * @brief Determines the best type of memory to use on the GPU.
+			 * @param typeFilter - The bit field of suitable memory types.
+			 * @param properties - The required properties for the memory to be used.
+			 * @return The index of the memory type to use.
+			 */
+			u32 GetMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
+
+			/**
+			 * @brief Copies a SRC buffer to a DST buffer in GPU memory.
+			 * @param src - The source buffer to copy from.
+			 * @param dst - The destination buffer to copy to.
+			 * @param size - The size of the data in bytes.
+			 */
+			void CopyBuffer(Buffer* src, Buffer* dst, u32 size);
+
+			/**
 			 * @return The Physical Vulkan Device.
 			 */
 			VkPhysicalDevice GetPhysical() const { return m_Physical; }
@@ -157,6 +173,11 @@ namespace Ocean {
 			 * @param indices - The queue indices to use for rendering and presenting.
 			 */
 			void CreateCommandPool(QueueFamilyIndices indices);
+
+			void CreateVertexBuffer();
+
+			void CreateIndexBuffer();
+
 			/**
 			 * @brief Creates the command buffers that will be used to record and submit commands.
 			 */
@@ -165,10 +186,13 @@ namespace Ocean {
 			/* --- */
 
 			Allocator* p_Allocator = nullptr;
+			void* p_WindowHandle = nullptr;
+
 			Renderer* p_Renderer = nullptr;
 			SwapChain* p_SwapChain = nullptr;
 
-			void* p_WindowHandle = nullptr;
+			Buffer* p_VertexBuffer = nullptr;
+			Buffer* p_IndexBuffer = nullptr;
 
 			VkPhysicalDevice m_Physical = VK_NULL_HANDLE;
 			VkDevice m_Device = VK_NULL_HANDLE;
@@ -187,7 +211,7 @@ namespace Ocean {
 				VK_KHR_SWAPCHAIN_EXTENSION_NAME
 			};
 
-		};
+		};	// Device
 
 	}	// Vulkan
 

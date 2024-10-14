@@ -10,6 +10,7 @@ project "Ocean"
 
 	filter "*DLL"
 		kind "SharedLib"
+		defines "OC_DLL"
 
 	filter { }
 
@@ -69,12 +70,12 @@ project "Ocean"
 
 	filter "configurations:DebugDLL"
 		defines "OC_DEBUG"
-		runtime "Release"
+		runtime "Debug"
 		optimize "on"
 
 	filter "configurations:ReleaseLib"
 		defines "OC_RELEASE"
-		runtime "Debug"
+		runtime "Release"
 		symbols "on"
 
 	filter "configurations:ReleaseDLL"

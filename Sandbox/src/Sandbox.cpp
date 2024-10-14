@@ -6,7 +6,7 @@
 static Ocean::Window s_Window;
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
-	oprint("Constructing Sandbox Application!\n");
+	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
 	// ---> Init Primitive Services
 
@@ -36,8 +36,8 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		Ocean::MemoryService::Instance()->SystemAllocator(),
 		p_Window,
 		config.Name,
-		p_Window->Width(),
-		p_Window->Height(),
+		(u16)p_Window->Width(),
+		(u16)p_Window->Height(),
 		2,
 		1, 0, 0
 	};
@@ -46,7 +46,7 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 }
 
 Sandbox::~Sandbox() {
-	oprint("Deconstructing Sandbox Application!\n");
+	oprint(CONSOLE_TEXT_CYAN("Deconstructing Sandbox Application!\n"));
 
 	// Graphics
 	p_Renderer->Shutdown();

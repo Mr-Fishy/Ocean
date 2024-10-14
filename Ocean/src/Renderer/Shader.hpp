@@ -4,7 +4,7 @@
 
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/VulkanResources.hpp"
+#include "Renderer/Resources.hpp"
 
 namespace Ocean {
 

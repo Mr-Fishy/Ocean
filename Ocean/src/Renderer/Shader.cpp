@@ -1,4 +1,4 @@
-#include "VulkanShader.hpp"
+#include "Shader.hpp"
 
 #include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
@@ -59,7 +59,7 @@ namespace Ocean {
 
 			OASSERTM(file.is_open(), "Failed to open file %s!\n", filename);
 
-			sizet fileSize = (sizet)file.tellg();
+			u32 fileSize = (u32)file.tellg();
 			m_ShaderFile.Init(fileSize);
 
 			file.seekg(0);

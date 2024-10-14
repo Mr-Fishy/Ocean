@@ -1,8 +1,10 @@
-#include "VulkanDevice.hpp"
+#include "Device.hpp"
 
-#include "Renderer/VulkanRenderer.hpp"
-#include "Renderer/VulkanInfos.hpp"
-#include "Renderer/VulkanSwapChain.hpp"
+#include "Renderer/Infos.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Shader.hpp"
+#include "Renderer/SwapChain.hpp"
+#include "Renderer/Buffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -21,6 +23,20 @@ namespace Ocean {
 			std::vector<VkPresentModeKHR> PresentModes;
 
 		};	// SwapChainSupportDetails
+
+
+
+		const std::vector<Vertex> tempVertices = {
+				{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+				{{ 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+				{{ 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+				{{-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}}
+		};
+
+		const std::vector<u16> indices = {
+			0, 1, 2, 2, 3, 0
+		};
+
 
 
 		void Device::Init(DeviceConfig* config) {
@@ -60,11 +76,21 @@ namespace Ocean {
 			vkGetDeviceQueue(m_Device, indices.PresentFamily.value(), 0, &m_PresentQueue);
 
 			CreateCommandPool(indices);
+
+			CreateVertexBuffer();
+			CreateIndexBuffer();
+
 			CreateCommandBuffers();
 		}
 
 		void Device::Shutdown() {
 			m_CommandBuffers.Shutdown();
+
+			p_VertexBuffer->Shutdown();
+			ofree(p_VertexBuffer, p_Allocator);
+
+			p_IndexBuffer->Shutdown();
+			ofree(p_IndexBuffer, p_Allocator);
 
 			vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
@@ -238,6 +264,56 @@ namespace Ocean {
 			);
 		}
 
+		void Device::CreateVertexBuffer() {
+			BufferConfig config = {
+				sizeof(Vertex) * tempVertices.size(),
+				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				this
+			};
+
+			Buffer* stagingBuffer = oallocat(Buffer, 1, p_Allocator);
+			stagingBuffer->Init(&config);
+
+			stagingBuffer->SubmitData(config.size, (void*)tempVertices.data());
+
+			config.usageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+			config.memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+			p_VertexBuffer = oallocat(Buffer, 1, p_Allocator);
+			p_VertexBuffer->Init(&config);
+
+			CopyBuffer(stagingBuffer, p_VertexBuffer, config.size);
+
+			stagingBuffer->Shutdown();
+			ofree(stagingBuffer, p_Allocator);
+		}
+
+		void Device::CreateIndexBuffer() {
+			BufferConfig config = {
+				sizeof(u16) * indices.size(),
+				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				this
+			};
+
+			Buffer* stagingBuffer = oallocat(Buffer, 1, p_Allocator);
+			stagingBuffer->Init(&config);
+
+			stagingBuffer->SubmitData(config.size, (void*)indices.data());
+
+			config.usageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+			config.memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+			p_IndexBuffer = oallocat(Buffer, 1, p_Allocator);
+			p_IndexBuffer->Init(&config);
+
+			CopyBuffer(stagingBuffer, p_IndexBuffer, config.size);
+
+			stagingBuffer->Shutdown();
+			ofree(stagingBuffer, p_Allocator);
+		}
+
 		void Device::CreateCommandBuffers() {
 			m_CommandBuffers.Init(p_Renderer->GetMaxFramesInFlight());
 			m_CommandBuffers.SetSize(p_Renderer->GetMaxFramesInFlight());
@@ -265,25 +341,27 @@ namespace Ocean {
 		}
 
 		void Device::RecordCommandBuffer(u32 imageIndex, u8 frame) {
-			VkCommandBufferBeginInfo beingInfo{ };
-			beingInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+			VkCommandBuffer commandBuffer = m_CommandBuffers.Get(frame);
 
-			/*
+			VkCommandBufferBeginInfo beginInfo{ };
+			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+			/**
 			 * VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT: The command buffer will be re-recorded directly after executing it once.
 			 *
 			 * VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT: The command buffer is a seconday buffer that will be used entirely within a single render pass.
 			 *
 			 * VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT: The command buffer can be resubmitted while it is also already pending execution.
 			 */
-			beingInfo.flags = 0;
-			/*
+			beginInfo.flags = 0;
+			/**
 			 * pInheritanceInfo is only relevant for secondary command buffers.
 			 * It specifies which state to inherit from the primary command buffers.
 			 */
-			beingInfo.pInheritanceInfo = nullptr;
+			beginInfo.pInheritanceInfo = nullptr;
 
 			CHECK_RESULT(
-				vkBeginCommandBuffer(m_CommandBuffers.Get(frame), &beingInfo),
+				vkBeginCommandBuffer(commandBuffer, &beginInfo),
 				"Failed to begin recording command buffer!"
 			);
 
@@ -301,48 +379,47 @@ namespace Ocean {
 			renderInfo.clearValueCount = 1;
 			renderInfo.pClearValues = &clearColor;
 
-			/*
+			/**
 			 * VK_SUBPASS_CONTENTS_INLINE: The render pass commands will be embedded in the primary command buffer itself and no secondary command buffers will be executed.
 			 *
 			 * VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS: The render pass commands will be executed from secondary command buffers.
 			 */
-			vkCmdBeginRenderPass(m_CommandBuffers.Get(frame), &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass(commandBuffer, &renderInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			/*
-			 *
-			 */
-			vkCmdBindPipeline(m_CommandBuffers.Get(frame), VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetGraphicsPipeline());
+				/**
+				 *
+				 */
+				vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetGraphicsPipeline());
 
-			VkViewport viewport{ };
-			viewport.x = viewport.y = 0.0f;
-			viewport.width = (f32)p_SwapChain->GetExtent().width;
-			viewport.height = (f32)p_SwapChain->GetExtent().height;
-			viewport.minDepth = 0.0f;
-			viewport.maxDepth = 1.0f;
+				VkViewport viewport{ };
+				viewport.x = viewport.y = 0.0f;
+				viewport.width = (f32)p_SwapChain->GetExtent().width;
+				viewport.height = (f32)p_SwapChain->GetExtent().height;
+				viewport.minDepth = 0.0f;
+				viewport.maxDepth = 1.0f;
 
-			vkCmdSetViewport(m_CommandBuffers.Get(frame), 0, 1, &viewport);
+				vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-			VkRect2D scissor{ };
-			scissor.offset = { 0, 0 };
-			scissor.extent = p_SwapChain->GetExtent();
+				VkRect2D scissor{ };
+				scissor.offset = { 0, 0 };
+				scissor.extent = p_SwapChain->GetExtent();
 
-			vkCmdSetScissor(m_CommandBuffers.Get(frame), 0, 1, &scissor);
+				vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-			/*
-			 * vertexCount: Even though we don’t have a vertex buffer, we technically still have 3 vertices to draw.
-			 *
-			 * instanceCount: Used for instanced rendering, use 1 if you’re not doing that.
-			 *
-			 * firstVertex: Used as an offset into the vertex buffer, defines the lowest value of gl_VertexIndex.
-			 *
-			 * firstInstance: Used as an offset for instanced rendering, defines the lowest value of gl_InstanceIndex.
-			 */
-			vkCmdDraw(m_CommandBuffers.Get(frame), 3, 1, 0, 0);
+				VkBuffer vertexBuffers[] = { p_VertexBuffer->GetBuffer() };
+				VkDeviceSize offsets[] = { 0 };
 
-			vkCmdEndRenderPass(m_CommandBuffers.Get(frame));
+				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+				vkCmdBindIndexBuffer(commandBuffer, p_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT16);
+
+				// TODO: Convert Vertex Buffer and Index Buffer into a single buffer with offsets. (Use vkCmdBindVertexBuffers()).
+				vkCmdDrawIndexed(commandBuffer, (u32)indices.size(), 1, 0, 0, 0);
+
+			vkCmdEndRenderPass(commandBuffer);
 
 			CHECK_RESULT(
-				vkEndCommandBuffer(m_CommandBuffers.Get(frame)),
+				vkEndCommandBuffer(commandBuffer),
 				"Failed to record command buffer!"
 			);
 		}
@@ -373,6 +450,60 @@ namespace Ocean {
 				vkQueueSubmit(m_GraphicsQueue, 1, &info, syncObjects.Fences.InFlight),
 				"Failed to submit draw command buffer!"
 			);
+		}
+
+		u32 Device::GetMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties) {
+			VkPhysicalDeviceMemoryProperties memProperties;
+			vkGetPhysicalDeviceMemoryProperties(m_Physical, &memProperties);
+
+			for (u32 i = 0; i < memProperties.memoryTypeCount; i++) {
+				if (typeFilter & (1 << i) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+					return i;
+			}
+
+			OASSERTM(false, "Failed to find suitable memory type!");
+		}
+
+		void Device::CopyBuffer(Buffer* src, Buffer* dst, u32 size) {
+			VkCommandBufferAllocateInfo allocInfo{};
+			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+			allocInfo.commandPool = m_CommandPool;
+			allocInfo.commandBufferCount = 1;
+
+			// TODO: Create a Memory Transfer Command Pool
+			VkCommandBuffer commandBuffer;
+			vkAllocateCommandBuffers(m_Device, &allocInfo, &commandBuffer);
+
+			VkCommandBufferBeginInfo beginInfo{
+				VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+				nullptr, // pNext
+				VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+				nullptr  // pInheritance
+			};
+			vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+			VkBufferCopy copyRegion{ };
+			copyRegion.srcOffset = 0;
+			copyRegion.dstOffset = 0;
+			copyRegion.size = size;
+
+			vkCmdCopyBuffer(commandBuffer, src->GetBuffer(), dst->GetBuffer(), 1, &copyRegion);
+
+			vkEndCommandBuffer(commandBuffer);
+
+			VkSubmitInfo submitInfo{ };
+			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+			submitInfo.commandBufferCount = 1;
+			submitInfo.pCommandBuffers = &commandBuffer;
+
+			vkQueueSubmit(m_GraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+			vkQueueWaitIdle(m_GraphicsQueue);
+
+			vkFreeCommandBuffers(m_Device, m_CommandPool, 1, &commandBuffer);
 		}
 
 	}	// Vulkan

@@ -1,4 +1,4 @@
-#include "VulkanFramebuffer.hpp"
+#include "Framebuffer.hpp"
 
 namespace Ocean {
 

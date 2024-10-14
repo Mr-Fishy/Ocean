@@ -1,7 +1,10 @@
 #pragma once
 
-#include "Ocean/Core/Types/ValueTypes.hpp"
-#include "Ocean/Core/Primitives/Assert.hpp"
+// #include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Vectors.hpp"
+
+// #include "Ocean/Core/Primitives/Assert.hpp"
+#include "Ocean/Core/Primitives/Array.hpp"
 
 // TODO: Convert to use the vulkan memory allocator.
 #pragma warning(push, 0)
@@ -21,6 +24,66 @@ namespace Ocean {
 		inline const u32 k_InvalidIndex = 0xffffffff;
 
 		typedef u32 ResourceHandle;
+
+
+
+		struct Vertex {
+			fvec2 pos;
+			fvec3 color;
+
+			/**
+			 * @return The binding description of the vertex data for Vulkan.
+			 */
+			static inline VkVertexInputBindingDescription GetBindingDescription() {
+				VkVertexInputBindingDescription description{ };
+
+				// Specifies the index of the binding.
+				description.binding = 0;
+				// Sepcifies the number of bytes of one entry (aka one vertex).
+				description.stride = sizeof(Vertex);
+				/**
+				 * VK_VERTEX_INPUT_RATE_VERTEX: Move to the next data entry after each vertex.
+				 *
+				 * VK_VERTEX_INPUT_RATE_INSTANCE: Move to the next data entry after each instance.
+				 */
+				description.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+				return description;
+			}
+			/**
+			 * @return The attributes of each component of the Vertex as a fixed-size array.
+			 */
+			static inline FixedArray<VkVertexInputAttributeDescription> GetAttributeDescriptions() {
+				FixedArray<VkVertexInputAttributeDescription> attributes(2);
+				attributes.SetSize(2);
+
+				// Specifies the index of the binding.
+				attributes.Get(0).binding = 0;
+				// Specifies the 'location' of the input for the vertex shader.
+				attributes.Get(0).location = 0;
+				/**
+				 * Single Float: VK_FORMAT_R32_SFLOAT
+				 *
+				 * vec2 Float: VK_FORMAT_R32G32_SFLOAT
+				 *
+				 * vec3 Float: VK_FORMAT_R32G32B32_SFLOAT
+				 *
+				 * vec4 Float: VK_FORMAT_R32G32B32A32_SFLOAT
+				 *
+				 * There are other types defined to be able to be used as well.
+				 */
+				attributes.Get(0).format = VK_FORMAT_R32G32_SFLOAT;
+				// Specifies the number of bytes since the beginning of the entry (aka beginning of the vertex).
+				attributes.Get(0).offset = offsetof(Vertex, pos);
+
+				attributes.Get(1).binding = 0;
+				attributes.Get(1).location = 1;
+				attributes.Get(1).format = VK_FORMAT_R32G32B32_SFLOAT;
+				attributes.Get(1).offset = offsetof(Vertex, color);
+
+				return attributes;
+			}
+		};
 
 
 
@@ -81,32 +144,6 @@ namespace Ocean {
 
 
 
-		/* Not Yet Needed
-		VkBool32 GetSupportedDepthFormat(VkPhysicalDevice physical, VkFormat* depthFormat);
-
-		VkBool32 GetSupportedDepthStencilFormat(VkPhysicalDevice physical, VkFormat* depthStencilFormat);
-
-
-
-		VkBool32 FormatIsFilterable(VkPhysicalDevice physical, VkFormat format, VkImageTiling tiling);
-
-		VkBool32 FormatHasStencil(VkFormat format);
-
-
-
-		void SetImageLayout();
-
-		void SetImageLayout();
-
-		void InsertImageMemoryBarrier();
-
-
-
-		cstring ErrorCodeToString(VkResult code);
-
-		cstring DeviceTypeToString(VkPhysicalDeviceType type);
-		*/
-
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
 		 * @param messageSeverity - The severity of the message. 
@@ -140,7 +177,7 @@ namespace Ocean {
 				oprint(CONSOLE_TEXT_YELLOW("\nVulkan: %s\n\n"), pCallbackData->pMessage);
 			}
 			else {
-				oprint(CONSOLE_TEXT_GREEN("\nVulkan: %s\n\n"), pCallbackData->pMessage);
+				// oprint(CONSOLE_TEXT_GREEN("\nVulkan: %s\n\n"), pCallbackData->pMessage);
 			}
 
 			return VK_FALSE;
