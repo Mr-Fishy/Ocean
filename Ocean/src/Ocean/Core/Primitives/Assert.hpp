@@ -5,15 +5,21 @@
 
 namespace Ocean {
 
-	#define OASSERT(condition) if (!(condition)) { oprint(OCEAN_FILELINE("FALSE\n")); OCEAN_DEBUG_BREAK }
+	// Assert given that the condition is NOT true. 
+	#define OASSERT(condition) if (!(condition)) { oprint(OCEAN_FUNCTIONLINE(__FUNCTION__, "FALSE\n")); OCEAN_DEBUG_BREAK }
+
+	// Asserts when the index is outside the length from 0.
+	#define OASSERT_LENGTH(i, max) OASSERT((i) >= 0 && (i) < (max))
 
 #if defined (_MSC_VER)
 
-	#define OASSERTM(condition, message, ...) if (!(condition)) { oprint(OCEAN_FILELINE(OCEAN_CONCAT(message, "\n")), __VA_ARGS__); OCEAN_DEBUG_BREAK }
+	// Assert given that the condition is NOT true. Also can be given a message like oprint.
+	#define OASSERTM(condition, message, ...) if (!(condition)) { oprint(OCEAN_FUNCTIONLINE(__FUNCTION__, OCEAN_CONCAT(message, "\n")), __VA_ARGS__); OCEAN_DEBUG_BREAK }
 
 #else
 
-	#define OASSERTM(condition, message, ...) if (!(condition)) { oprint(OCEAN_FILELINE(OCEAN_CONCAT(message, "\n")), ## __VA_ARGS__); OCEAN_DEBUG_BREAK }
+	// Assert given that the condition is NOT true. Also can be given a message like oprint.
+	#define OASSERTM(condition, message, ...) if (!(condition)) { oprint(OCEAN_FUNCTIONLINE(__FUNCTION__, OCEAN_CONCAT(message, "\n")), ## __VA_ARGS__); OCEAN_DEBUG_BREAK }
 
 #endif
 

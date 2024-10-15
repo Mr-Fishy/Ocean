@@ -19,7 +19,7 @@ private:
 	virtual void FrameBegin() override final;
 	virtual void FrameEnd() override final;
 
-	void OnResize(u32 width, u32 height);
+	void OnResize(u16 width, u16 height);
 
 	/* --- */
 

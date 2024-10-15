@@ -1,3 +1,6 @@
+include("premake-cmake/cmake.lua")
+-- require("cmake")
+
 workspace "OceanEngine"
 	architecture "x86_64"
 	platforms "x64"
@@ -16,7 +19,6 @@ workspace "OceanEngine"
 	IncludeDir["StackWalker"] = "%{wks.location}/Ocean/vendor/StackWalker/Main"
 	IncludeDir["TLSF"       ] = "%{wks.location}/Ocean/vendor/tlsf"
 	IncludeDir["GLFW"       ] = "%{wks.location}/Ocean/vendor/glfw/include"
-	IncludeDir["IMGUI"      ] = "%{wks.location}/Ocean/vendor/imgui"
 	IncludeDir["VulkanSDK"  ] = "%{VULKAN_SDK}/Include"
 	IncludeDir["vkMemAlloc" ] = "%{wks.location}/Ocean/vendor/VulkanMemoryAllocator/include"
 
@@ -29,7 +31,6 @@ workspace "OceanEngine"
 
 	group "Dependencies"
 	 	include "Ocean/vendor/premake5-GLFW.lua"
-	 	include "Ocean/vendor/premake5-ImGui.lua"
 	group ""
 
 	group "Core"

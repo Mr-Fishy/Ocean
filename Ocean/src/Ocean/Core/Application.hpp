@@ -11,14 +11,19 @@ namespace Ocean {
 
 	class ServiceManager;
 
+	/**
+	 * @brief The configuration of the application at startup.
+	 */
 	struct ApplicationConfig {
 
-		u32 Width  = 900;
-		u32 Height = 600;
+		u32 Width  = 900; /** @brief The width of the application window. */
+		u32 Height = 600; /** @brief The height of the application window. */
 
-		cstring Name = nullptr;
+		b8 Fullscreen = false; /** @brief If the application is fullscreen. */
 
-		b8 InitBaseServices = false;
+		b8 InitBaseServices = true;
+
+		cstring Name = nullptr; /** @brief The name of the application. */
 
 		ApplicationConfig& w(u32 value) { Width = value; return *this; }
 		ApplicationConfig& h(u32 value) { Height = value; return *this; }
@@ -26,11 +31,17 @@ namespace Ocean {
 
 	};	// ApplicationConfig
 
+	/**
+	 * @brief The base Ocean application class.
+	 */
 	class Application {
 	public:
 		Application(const ApplicationConfig& config);
 		virtual ~Application();
 
+		/**
+		 * @brief Closes the application.
+		 */
 		void Close();
 
 	protected:
@@ -38,8 +49,14 @@ namespace Ocean {
 
 		/* --- */
 
+		/**
+		 * @brief Runs the primary runtime of the application.
+		 */
 		void Run();
 
+		/**
+		 * @brief Run's any unit tests if available.
+		 */
 		void TestApp();
 
 		virtual b8 MainLoop();

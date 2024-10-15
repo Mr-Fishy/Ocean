@@ -10,6 +10,7 @@ project "Ocean"
 
 	filter "*DLL"
 		kind "SharedLib"
+		defines "OC_DLL"
 
 	filter { }
 
@@ -36,12 +37,6 @@ project "Ocean"
 		"%{IncludeDir.TLSF}/tlsf.c",
 
 		"%{IncludeDir.vkMemAlloc}/vk_mem_alloc.h",
-
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.h",
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_glfw.cpp",
-
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.h",
-		"%{IncludeDir.IMGUI}/backends/imgui_impl_opengl3.cpp",
 	}
 
 	includedirs {
@@ -51,7 +46,6 @@ project "Ocean"
 		"%{IncludeDir.StackWalker}",
 		"%{IncludeDir.TLSF}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.vkMemAlloc}",
 	}
 
@@ -64,7 +58,6 @@ project "Ocean"
 		-- "%{Library.VulkanUtils}",
 
 		"glfw",
-		"imgui",
 	}
 
 	filter "system:windows"
@@ -76,13 +69,13 @@ project "Ocean"
 		symbols "on"
 
 	filter "configurations:DebugDLL"
-		defines "OC_RELEASE"
-		runtime "Release"
+		defines "OC_DEBUG"
+		runtime "Debug"
 		optimize "on"
 
 	filter "configurations:ReleaseLib"
-		defines "OC_DEBUG"
-		runtime "Debug"
+		defines "OC_RELEASE"
+		runtime "Release"
 		symbols "on"
 
 	filter "configurations:ReleaseDLL"

@@ -8,21 +8,18 @@
 namespace Ocean {
 
 	Application::Application(const ApplicationConfig& config) {
-		oprint("Constructing Ocean Application!\n");
 	}
 
 	Application::~Application() {
-		oprint("Deconstructing Ocean Application!\n");
 	}
 
 	void Application::Close() {
-		oprint("Closing Ocean Application!\n");
 	}
 
 	void Application::Run() {
 	#ifdef OC_DEBUG
 
-		TestApp();
+		// TestApp();
 
 	#endif
 
@@ -30,7 +27,6 @@ namespace Ocean {
 	}
 
 	void Application::TestApp() {
-		oprint("Testing Application Functionality!\n\n");
 	}
 
 	b8 Application::MainLoop() { return false; }

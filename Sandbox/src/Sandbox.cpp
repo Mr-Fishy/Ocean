@@ -6,7 +6,7 @@
 static Ocean::Window s_Window;
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
-	oprint("Constructing Sandbox Application!\n");
+	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
 	// ---> Init Primitive Services
 
@@ -36,31 +36,24 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		Ocean::MemoryService::Instance()->SystemAllocator(),
 		p_Window,
 		config.Name,
-		p_Window->Width(),
-		p_Window->Height(),
+		(u16)p_Window->Width(),
+		(u16)p_Window->Height(),
 		2,
 		1, 0, 0
 	};
 	p_Renderer = p_ServiceManager->Get<Ocean::Vulkan::Renderer>();
 	p_Renderer->Init(&renConfig);
-
-	// IMGUI
-	// p_Imgui = p_ServiceManager->Get<Ocean::ImguiService>();
-	// p_Imgui->Init(nullptr);
-
-	oprint("Successfully Constructed Sandbox Application!\n");
 }
 
 Sandbox::~Sandbox() {
-	oprint("Deconstructing Sandbox Application!\n");
-
-	// p_Imgui->Shutdown();
+	oprint(CONSOLE_TEXT_CYAN("Deconstructing Sandbox Application!\n"));
 
 	// Graphics
 	p_Renderer->Shutdown();
 
 	// Input
 
+	// Window
 	p_Window->Shutdown();
 
 	Ocean::oTimeServiceShutdown();
@@ -73,8 +66,6 @@ Sandbox::~Sandbox() {
 
 
 b8 Sandbox::MainLoop() {
-	oprint("Sandbox MainLoop Reached!\n");
-
 	while (!p_Window->RequestedExit()) {
 		if (!p_Window->Minimized())
 			p_Renderer->BeginFrame();
@@ -91,8 +82,6 @@ b8 Sandbox::MainLoop() {
 			p_Window->ResizeHandled();
 		}
 
-		// p_Imgui->NewFrame();
-
 		// Fixed Update
 
 		// Variable Update
@@ -104,12 +93,7 @@ b8 Sandbox::MainLoop() {
 
 			Render(f32());
 
-			// ImGui->Render()
-
 			p_Renderer->EndFrame();
-		}
-		else {
-			// ImGui::Render();
 		}
 
 		// Prepare for the next frame if needed.
@@ -124,11 +108,9 @@ b8 Sandbox::MainLoop() {
 
 
 void Sandbox::FixedUpdate(f32 delta) {
-	// oprint("Sandbox FixedUpdate!\n");
 }
 
 void Sandbox::VariableUpdate(f32 delta) {
-	// oprint("Sandbox VariableUpdate!\n");
 }
 
 
@@ -140,15 +122,13 @@ void Sandbox::Render(f32 interpolation) {
 
 
 void Sandbox::FrameBegin() {
-	// oprint("Sandbox FrameBegin!\n");
 }
 
 void Sandbox::FrameEnd() {
-	// oprint("Sandbox FrameEnd!\n");
 }
 
 
 
-void Sandbox::OnResize(u32 width, u32 height) {
-	oprint("Sandbox OnResize! (%i, %i)\n", width, height);
+void Sandbox::OnResize(u16 width, u16 height) {
+	p_Renderer->ResizeSwapchain(width, height);
 }
