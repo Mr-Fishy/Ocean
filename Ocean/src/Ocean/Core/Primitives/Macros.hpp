@@ -19,6 +19,7 @@
 	
 	#define OCEAN_CONCAT_OPERATOR(x, y)             x##y
 
+	// TODO: Figure out how to get the "trimmed" filename. It is supposed to be possible by defining a precompiler macro.
 	#define OCEAN_LOCATION                          __FILE__
 
 #else
@@ -39,7 +40,7 @@
 #define OCEAN_CONCAT(x, y)                          OCEAN_CONCAT_OPERATOR(x, y)
 #define OCEAN_LINE_STRING                           OCEAN_MAKESTRING(__LINE__)
 
-#define OCEAN_FILELINE(Message)                     OCEAN_LOCATION "(" OCEAN_LINE_STRING ") : " Message
+#define OCEAN_FUNCTIONLINE(Function, Message)       Function "(" OCEAN_LINE_STRING ") : " Message
 
 #define OCEAN_UNIQUE_SUFFIX(Param)                  OCEAN_CONCAT(Param, __LINE__)
 

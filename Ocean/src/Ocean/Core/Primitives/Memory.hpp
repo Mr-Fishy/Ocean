@@ -2,9 +2,13 @@
 
 #include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Macros.hpp"
+
+// Define this for detailed logs of where allocations and frees are completed (only when using alloc / free macros)
+// #define DETAILED_ALLOCATIONS 1
 
 namespace Ocean {
 
@@ -197,35 +201,38 @@ namespace Ocean {
 		HeapAllocator*   SystemAllocator() { return &m_SystemAllocator; }
 
 	private:
-		void Test();
-
-		/* --- */
-
 		LinearAllocator m_ScratchAllocator;
 		HeapAllocator   m_SystemAllocator;
 
 	};	// MemoryService
 
 	// Macro Helpers
-#if OC_DEBUG
+#if OC_DEBUG && DETAILED_ALLOCATIONS
 
-	#define oalloca (size, allocator) ((allocator)->Allocate(size, 1, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
-	#define oallocam(size, allocator) ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
-	#define oallocat(type, count, allocator) ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__)); \
+												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
+	
+	#define oallocam(size, allocator)			 ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__)); \
+												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
 
-	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__)); oprint("%s\n", OCEAN_FILELINE("Allocating Memory"))
+	#define oallocat(type, count, allocator)	 ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)); \
+												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
 
-	#define ofree(pointer, allocator) ((allocator)->Deallocate(pointer)); oprint("%s\n", OCEAN_FILELINE("Freeing Memory"))
+	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__)); \
+												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
+
+	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer)); \
+												 oprintret(CONSOLE_TEXT_MAGENTA(OCEAN_FUNCTIONLINE(__FUNCTION__, "Free")))
 
 #else
 
-	#define oalloca (size, allocator) ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocam(size, allocator) ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocat(type, count, allocator) ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__))
+	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
+	#define oallocam(size, allocator)			 ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__))
+	#define oallocat(type, count, allocator)	 ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__))
 
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
 
-	#define ofree(pointer, allocator) ((allocator)->Deallocate(pointer))
+	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer))
 
 #endif
 

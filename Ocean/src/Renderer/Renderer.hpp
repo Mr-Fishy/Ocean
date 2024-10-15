@@ -3,7 +3,7 @@
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/VulkanResources.hpp"
+#include "Renderer/Resources.hpp"
 
 namespace Ocean {
 
@@ -34,6 +34,7 @@ namespace Ocean {
 		 * VkQueue graphicsQueue;                               - Owned by Device
 		 * VkQueue presentQueue;                                - Owned by Device
 		 * VkCommandPool commandPool;                           - Owned by Device
+		 * VertexBuffer vertexbuffer                            - Owned by Device
 		 * FixedArray<VkCommandBuffer> commandBuffer;           - Owned by Device
 		 * 
 		 * VkSwapchainKHR swapChain;                            - Owned by SwapChain
@@ -129,7 +130,7 @@ namespace Ocean {
 			 * @param width - The new width of the swapchain.
 			 * @param height - The new height of the swapchain.
 			 */
-			void ResizeSwapchain(u32 width, u32 height);
+			void ResizeSwapchain(i32 width, i32 height);
 
 			/**
 			 * @return The Renderer's Vulkan instance.

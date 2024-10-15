@@ -2,7 +2,7 @@
 
 #include "Ocean/Core/Primitives/Memory.hpp"
 
-#include "Renderer/VulkanDevice.hpp"
+#include "Renderer/Device.hpp"
 
 namespace Ocean {
 

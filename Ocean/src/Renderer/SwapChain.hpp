@@ -2,8 +2,8 @@
 
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/VulkanFramebuffer.hpp"
-#include "Renderer/VulkanResources.hpp"
+#include "Renderer/Framebuffer.hpp"
+#include "Renderer/Resources.hpp"
 
 namespace Ocean {
 
@@ -69,6 +69,7 @@ namespace Ocean {
 			 * @param fullscreen - N/A
 			 */
 			void CreateSwapChain(u16* width, u16* height, b8 vsync = false, b8 fullscreen = false);
+			void RecreateSwapChain(u16* width, u16* height, b8 vsync = false, b8 fullscreen = false);
 
 			/**
 			 * @brief Acquires the next image in the swapchain.
