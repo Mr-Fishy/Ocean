@@ -2,7 +2,7 @@
 
 #include "Ocean/Core/Types/ValueTypes.hpp"
 
-#include "Renderer/VulkanShader.hpp"
+#include "Renderer/Shader.hpp"
 
 #pragma warning(push, 0)
 #pragma warning(disable : 26495) // Uninitialized Warning

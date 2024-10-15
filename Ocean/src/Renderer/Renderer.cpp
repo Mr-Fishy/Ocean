@@ -1,11 +1,11 @@
-#include "VulkanRenderer.hpp"
+#include "Renderer.hpp"
 
 #include "Ocean/Core/Window.hpp"
 
-#include "Renderer/VulkanInfos.hpp"
-#include "Renderer/VulkanDevice.hpp"
-#include "Renderer/VulkanSwapChain.hpp"
-#include "Renderer/VulkanFramebuffer.hpp"
+#include "Renderer/Infos.hpp"
+#include "Renderer/Device.hpp"
+#include "Renderer/SwapChain.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -84,7 +84,6 @@ namespace Ocean {
 				renConfig->MainWindow->Handle()
 			);
 
-			
 			p_Device = oallocat(Device, 1, p_Allocator);
 			p_Device->Init(&devConfig);
 
@@ -176,7 +175,17 @@ namespace Ocean {
 			return f32();
 		}
 
-		void Renderer::ResizeSwapchain(u32 width, u32 height) {
+		void Renderer::ResizeSwapchain(i32 width, i32 height) {
+			vkDeviceWaitIdle(p_Device->GetLogical());
+
+			while (width == 0 || height == 0) {
+				glfwGetFramebufferSize((GLFWwindow*)p_Device->GetWindowHandle(), &width, &height);
+				glfwWaitEvents();
+			}
+
+			m_Width = width;
+			m_Height = height;
+			p_SwapChain->RecreateSwapChain(&m_Width, &m_Height);
 		}
 
 
@@ -281,14 +290,17 @@ namespace Ocean {
 				GetFragmentShaderStageInfo(&shaders[1], p_Device->GetLogical(), "main")
 			};
 
+			auto description = Vertex::GetBindingDescription();
+			auto attributes = Vertex::GetAttributeDescriptions();
+
 			VkPipelineVertexInputStateCreateInfo vertexInfo{ };
 			vertexInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			
-			vertexInfo.vertexBindingDescriptionCount = 0;
-			vertexInfo.pVertexBindingDescriptions = nullptr; // Optional
+			vertexInfo.vertexBindingDescriptionCount = 1;
+			vertexInfo.pVertexBindingDescriptions = &description;
 			
-			vertexInfo.vertexAttributeDescriptionCount = 0;
-			vertexInfo.pVertexAttributeDescriptions = nullptr; // Optional
+			vertexInfo.vertexAttributeDescriptionCount = attributes.Size();
+			vertexInfo.pVertexAttributeDescriptions = attributes.Data();
 
 			VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 			inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

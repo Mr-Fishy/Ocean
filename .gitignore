@@ -3,8 +3,6 @@
 bin-int/
 build/
 
-Ocean/vendor/
-
 # Files
 .vs/
 **.sln

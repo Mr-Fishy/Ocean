@@ -1,8 +1,8 @@
-#include "VulkanSwapChain.hpp"
+#include "SwapChain.hpp"
 
-#include "Renderer/VulkanRenderer.hpp"
-#include "Renderer/VulkanDevice.hpp"
-#include "Renderer/VulkanInfos.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Device.hpp"
+#include "Renderer/Infos.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -100,22 +100,17 @@ namespace Ocean {
 		void SwapChain::Shutdown() {
 			for (u32 i = 0; i < m_Framebuffers.Size(); i++)
 				m_Framebuffers.Get(i).Shutdown();
-			m_Framebuffers.Shutdown();
 
-			if (m_SwapChain != VK_NULL_HANDLE) {
-				for (u32 i = 0; i < m_ImageCount; i++)
-					vkDestroyImageView(p_Device->GetLogical(), m_Buffers.Get(i).View, nullptr);
+			for (u32 i = 0; i < m_ImageCount; i++)
+				vkDestroyImageView(p_Device->GetLogical(), m_Buffers.Get(i).View, nullptr);
 
-				vkDestroySwapchainKHR(p_Device->GetLogical(), m_SwapChain, nullptr);
-			}
-
+			vkDestroySwapchainKHR(p_Device->GetLogical(), m_SwapChain, nullptr);
 			m_SwapChain = VK_NULL_HANDLE;
 
+			m_Framebuffers.Shutdown();
 			m_Images.Shutdown();
 			m_Buffers.Shutdown();
 		}
-
-
 
 		void SwapChain::CreateSwapChain(u16* width, u16* height, b8 vsync, b8 fullscreen) {
 			VkSwapchainKHR oldSwapChain = m_SwapChain;
@@ -255,6 +250,16 @@ namespace Ocean {
 					"Failed to create image view!"
 				);
 			}
+		}
+
+		void SwapChain::RecreateSwapChain(u16* width, u16* height, b8 vsync, b8 fullscreen) {
+			for (u32 i = 0; i < m_Framebuffers.Size(); i++)
+				m_Framebuffers.Get(i).Shutdown();
+			m_Framebuffers.Shutdown();
+
+			CreateSwapChain(width, height);
+
+			CreateFramebuffers();
 		}
 
 		VkResult SwapChain::GetNextImage(VkSemaphore presentComplete, u32* imageIndex) {

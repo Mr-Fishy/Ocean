@@ -22,7 +22,7 @@ namespace Ocean {
 		class Array {
 		public:
 			Array() = default;
-			~Array() { OASSERTM(!p_Data, "Array attempted deconstruction while data may still exist!"); }
+			~Array() { OASSERTM(p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")); }
 
 			virtual void Set(u32 position, const T& element) = 0;
 			
@@ -48,7 +48,7 @@ namespace Ocean {
 			T*  Get(u32 position) const {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
-				return p_Data[position];
+				return &p_Data[position];
 			}
 			/**
 			 * @param position - The position of the element to get.
@@ -132,7 +132,7 @@ namespace Ocean {
 		DynamicArray() = default;
 		DynamicArray(u32 capacity) { Init(capacity); }
 		DynamicArray(const DynamicArray&);
-		~DynamicArray() = default;
+		~DynamicArray() { Shutdown(); }
 		
 		/**
 		 * @brief Initializes the array. The array must be shutdown before being re-initialized.
@@ -192,7 +192,7 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
 
 			for (u32 i = 0; i < this->m_Size; i++)
 				this->p_Data[i] = array.p_Data[i];
@@ -204,8 +204,9 @@ namespace Ocean {
 		p_Allocator = MemoryService::Instance()->SystemAllocator();
 		m_Capacity = initialCapacity;
 
-		if (initialCapacity != 0)
-			p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		if (initialCapacity != 0) {
+			p_Data = oallocat(T, m_Capacity, p_Allocator);
+		}
 		else
 			p_Data = nullptr;
 
@@ -215,7 +216,7 @@ namespace Ocean {
 	template<typename T>
 	inline void DynamicArray<T>::Shutdown() {
 		if (m_Capacity > 0)
-			p_Allocator->Deallocate(p_Data);
+			ofree(p_Data, p_Allocator);
 
 		p_Data = nullptr;
 		m_Size = m_Capacity = 0;
@@ -268,16 +269,15 @@ namespace Ocean {
 	}
 
 	template<typename T>
-	inline DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray& array) {
+	inline DynamicArray<T>& DynamicArray<T>::operator = (const DynamicArray& array) {
 		if (this != &array) {
 			this->p_Allocator = array.p_Allocator;
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
 
-			for (u32 i = 0; i < this->m_Size; i++)
-				this->p_Data[i] = array.p_Data[i];
+			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 
 		return *this;
@@ -285,12 +285,12 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Resize(u32 newCapacity) {
-		T* newData = (T*)p_Allocator->Allocate(newCapacity * sizeof(T), alignof(T));
+		T* newData = oallocat(T, m_Capacity, p_Allocator);
 
 		if (m_Capacity) {
 			mem_copy(newData, p_Data, m_Capacity * sizeof(T));
 
-			p_Allocator->Deallocate(p_Data);
+			ofree(p_Data, p_Allocator);
 		}
 
 		p_Data = newData;
@@ -305,7 +305,7 @@ namespace Ocean {
 		FixedArray() = default;
 		FixedArray(u32 capacity) { Init(capacity); }
 		FixedArray(const FixedArray&);
-		~FixedArray() = default;
+		~FixedArray() { Shutdown(); }
 
 		/**
 		 * @brief Initializes the array. The array must be shutdown before being re-initialized.
@@ -359,10 +359,9 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
 
-			for (u32 i = 0; i < this->m_Size; i++)
-				this->p_Data[i] = array.p_Data[i];
+			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 	}
 
@@ -371,8 +370,9 @@ namespace Ocean {
 		p_Allocator = MemoryService::Instance()->SystemAllocator();
 		m_Capacity = capacity;
 
-		if (capacity != 0)
-			p_Data = (T*)p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+		if (capacity != 0) {
+			p_Data = oallocat(T, m_Capacity, p_Allocator);
+		}
 		else
 			p_Data = nullptr;
 
@@ -381,7 +381,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline void FixedArray<T>::Shutdown() {
-		p_Allocator->Deallocate(p_Data);
+		ofree(p_Data, p_Allocator);
 
 		p_Data = nullptr;
 		m_Size = m_Capacity = 0;
@@ -438,10 +438,9 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = (T*)this->p_Allocator->Allocate(m_Capacity * sizeof(T), alignof(T));
+			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
 
-			for (u32 i = 0; i < this->m_Size; i++)
-				this->p_Data[i] = array.p_Data[i];
+			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 
 		return *this;
