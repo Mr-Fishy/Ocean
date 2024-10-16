@@ -1,5 +1,8 @@
 #include "Ocean/Core/Types/Vector2D.hpp"
 #include "Ocean/Core/Types/Vector3D.hpp"
+#include "Ocean/Core/Types/Vector4D.hpp"
+
+#include "Ocean/Core/Types/Matrix4D.hpp"
 
 // Vec2
 

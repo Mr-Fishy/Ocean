@@ -45,7 +45,7 @@ namespace Ocean {
 			 * @param position - The position of the element to get.
 			 * @return The pointer of the element at the given position. 
 			 */
-			T*  Get(u32 position) const {
+			T  Get(u32 position) const {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
 				return &p_Data[position];
@@ -58,6 +58,18 @@ namespace Ocean {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
 				return p_Data[position];
+			}
+
+			T operator [] (u32 i) {
+				OASSERT_LENGTH(i, m_Capacity);
+
+				return p_Data[i];
+			}
+
+			T& operator [] (u32 i) {
+				OASSERT_LENGTH(i, m_Capacity);
+
+				return p_Data[i];
 			}
 
 			/** 
@@ -303,7 +315,7 @@ namespace Ocean {
 	class FixedArray : public ADT::Array<T> {
 	public:
 		FixedArray() = default;
-		FixedArray(u32 capacity) { Init(capacity); }
+		FixedArray(u32 capacity) { Init(capacity); SetSize(capacity); }
 		FixedArray(const FixedArray&);
 		~FixedArray() { Shutdown(); }
 

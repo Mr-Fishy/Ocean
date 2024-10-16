@@ -31,13 +31,21 @@ namespace Ocean {
 
 			VkBuffer GetBuffer() const { return m_Buffer; }
 
-		private:
+		protected:
 			Device* p_DeviceRef = nullptr;
 
 			VkBuffer m_Buffer = VK_NULL_HANDLE;
 			VkDeviceMemory m_Memory = VK_NULL_HANDLE;
 
 		};	// Buffer
+
+		class UniformBuffer : public Buffer {
+		public:
+			UniformBuffer() = default;
+			~UniformBuffer() = default;
+
+			void* GetMappedMemory(u32 size);
+		};
 
 	}	// Vulkan
 

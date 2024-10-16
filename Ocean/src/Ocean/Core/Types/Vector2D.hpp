@@ -33,8 +33,8 @@ struct vec<2, T, P> {
 
 	/* --- Data --- */
 
-	union { T x, r, s; };
-	union { T y, g, t; };
+	union { T x, r; };
+	union { T y, g; };
 
 	/* --- Component Access --- */
 	

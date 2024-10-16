@@ -77,6 +77,13 @@ namespace Ocean {
 
 
 
+	template<typename Type>
+	Type inverseSqrt(Type x) {
+		
+	}
+
+
+
 	// TODO: Trig Functions (Defined Table Optimization)
 
 

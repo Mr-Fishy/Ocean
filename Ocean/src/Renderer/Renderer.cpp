@@ -2,10 +2,13 @@
 
 #include "Ocean/Core/Window.hpp"
 
+#include "Ocean/Core/Primitives/Time.hpp"
+
 #include "Renderer/Infos.hpp"
 #include "Renderer/Device.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Framebuffer.hpp"
+// #include "Renderer/Buffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -101,8 +104,12 @@ namespace Ocean {
 			p_Device->SetSwapChain(p_SwapChain);
 
 			CreateRenderPass();
-
+			CreateDescriptorSetLayout();
 			CreateGraphicsPipeline();
+
+			CreateUniformBuffers();
+			CreateDescriptorPool();
+			CreateDescriptorSets();
 
 			p_SwapChain->CreateFramebuffers();
 
@@ -124,6 +131,17 @@ namespace Ocean {
 
 			p_SwapChain->Shutdown();
 			ofree(p_SwapChain, p_Allocator);
+
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
+				m_UniformBuffers.Get(i).UBO.Shutdown();
+			}
+			m_UniformBuffers.Shutdown();
+
+			vkDestroyDescriptorPool(p_Device->GetLogical(), m_DescriptorPool, nullptr);
+			m_DescriptorSets.Shutdown();
+
+			vkDestroyDescriptorSetLayout(p_Device->GetLogical(), m_DescriptorSetLayout, nullptr);
+
 			p_Device->Shutdown();
 			ofree(p_Device, p_Allocator);
 
@@ -153,6 +171,9 @@ namespace Ocean {
 
 			p_Device->FlushCommandBuffer(m_Frame);
 			p_Device->RecordCommandBuffer(imageIndex, m_Frame);
+
+			UpdateUniformBuffer(m_Frame);
+
 			p_Device->SubmitCommandBuffer(m_SyncObjects.Get(m_Frame), m_Frame);
 
 			p_SwapChain->QueuePresentation(
@@ -280,6 +301,29 @@ namespace Ocean {
 			);
 		}
 
+		void Renderer::CreateDescriptorSetLayout() {
+			VkDescriptorSetLayoutBinding layout{ };
+			layout.binding = 0;
+			
+			layout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			layout.descriptorCount = 1;
+
+			layout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			// This is only relevant for image sampling related descriptors.
+			layout.pImmutableSamplers = nullptr; // Optional
+
+			VkDescriptorSetLayoutCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+
+			info.bindingCount = 1;
+			info.pBindings = &layout;
+
+			CHECK_RESULT(
+				vkCreateDescriptorSetLayout(p_Device->GetLogical(), &info, nullptr, &m_DescriptorSetLayout),
+				"Failed to create descriptor set layout!"
+			);
+		}
+
 		void Renderer::CreateGraphicsPipeline() {
 			Shader* shaders = oallocat(Shader, 2, p_Allocator);
 			shaders[0].Init(p_Allocator, "src/Shaders/vert.spv");
@@ -374,7 +418,9 @@ namespace Ocean {
 			VkPipelineLayoutCreateInfo layoutInfo{ };
 			layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
-			layoutInfo.setLayoutCount = 0;
+			layoutInfo.setLayoutCount = 1;
+			layoutInfo.pSetLayouts = &m_DescriptorSetLayout;
+
 			layoutInfo.pushConstantRangeCount = 0;
 
 			CHECK_RESULT(
@@ -440,6 +486,104 @@ namespace Ocean {
 					"Failed to create in-flight fence!"
 				);
 			}
+		}
+
+		void Renderer::CreateUniformBuffers() {
+			m_UniformBuffers.Init(m_MaxFramesInFlight);
+
+			BufferConfig config{ };
+			config.device = p_Device;
+			config.size = sizeof(UniformBufferObject);
+
+			config.usageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+			config.memoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+			m_UniformBuffers.SetSize(m_MaxFramesInFlight);
+			for (u32 i = 0; i < m_MaxFramesInFlight; i++) {
+				m_UniformBuffers.Get(i).UBO.Init(&config);
+
+				m_UniformBuffers.Get(i).Data = m_UniformBuffers.Get(i).UBO.GetMappedMemory(config.size);
+			}
+		}
+
+		void Renderer::CreateDescriptorPool() {
+			VkDescriptorPoolSize poolSize{ };
+			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			poolSize.descriptorCount = (u32)m_MaxFramesInFlight;
+
+			VkDescriptorPoolCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+
+			info.poolSizeCount = 1;
+			info.pPoolSizes = &poolSize;
+
+			info.maxSets = (u32)m_MaxFramesInFlight;
+
+			CHECK_RESULT(
+				vkCreateDescriptorPool(p_Device->GetLogical(), &info, nullptr, &m_DescriptorPool),
+				"Failed to create descriptor pool!"
+			);
+		}
+
+		void Renderer::CreateDescriptorSets() {
+			FixedArray<VkDescriptorSetLayout> layouts(m_MaxFramesInFlight);
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++)
+				layouts.Set(i, m_DescriptorSetLayout);
+
+			VkDescriptorSetAllocateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+
+			info.descriptorPool = m_DescriptorPool;
+
+			info.descriptorSetCount = (u32)m_MaxFramesInFlight;
+			info.pSetLayouts = layouts.Data();
+
+			m_DescriptorSets.Init(m_MaxFramesInFlight);
+			CHECK_RESULT(
+				vkAllocateDescriptorSets(p_Device->GetLogical(), &info, m_DescriptorSets.Data()),
+				"Failed to allocate descriptor sets!"
+			);
+
+			layouts.Shutdown();
+
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
+				VkDescriptorBufferInfo bufferInfo{ };
+				bufferInfo.buffer = m_UniformBuffers[i].UBO.GetBuffer();
+				
+				bufferInfo.offset = 0;
+				bufferInfo.range = sizeof(UniformBufferObject);
+
+				VkWriteDescriptorSet write{ };
+				write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+				write.dstSet = m_DescriptorSets[i];
+				write.dstBinding = 0;
+				write.dstArrayElement = 0;
+
+				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				write.descriptorCount = 1;
+
+				write.pBufferInfo = &bufferInfo;
+				write.pImageInfo = nullptr;
+				write.pTexelBufferView = nullptr;
+
+				vkUpdateDescriptorSets(p_Device->GetLogical(), 1, &write, 0, nullptr);
+			}
+		}
+
+		void Renderer::UpdateUniformBuffer(u8 frame) {
+			static auto startTime = oTimeNow();
+
+			f32 time = oTimeFromRealiSec(startTime);
+
+			UniformBufferObject ubo{ };
+			// model = rotate(mat4(1.0f), time * radian(90.0f), vec3(0.0f, 0.0f, 1.0f));
+			// view  = lookAt(vec3(2.0f, 2.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+			// proj  = perspective(radian(45.0f), width / height, 0.1f, 10.0f);
+
+			// proj[1][1] *= -1;
+
+			memcpy(m_UniformBuffers.Get(frame).Data, &ubo, sizeof(UniformBufferObject));
 		}
 
 	}	// Vulkan

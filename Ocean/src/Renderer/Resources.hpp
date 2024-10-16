@@ -1,9 +1,8 @@
 #pragma once
 
-// #include "Ocean/Core/Types/ValueTypes.hpp"
 #include "Ocean/Core/Types/Vectors.hpp"
+#include "Ocean/Core/Types/Matrix4D.hpp"
 
-// #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
 // TODO: Convert to use the vulkan memory allocator.
@@ -83,6 +82,12 @@ namespace Ocean {
 
 				return attributes;
 			}
+		};
+
+		struct UniformBufferObject {
+			fmat4 model;
+			fmat4 view;
+			fmat4 proj;
 		};
 
 
