@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Primitives/Array.hpp"
+#include "Ocean/Core/Primitives/Queue.hpp"
 
 namespace Ocean {
 
