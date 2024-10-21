@@ -1,14 +1,16 @@
 #include "Renderer.hpp"
 
-#include "Ocean/Core/Window.hpp"
+#include "Ocean/Core/Types/glmTypes.hpp"
 
 #include "Ocean/Core/Primitives/Time.hpp"
+#include "Ocean/Core/Primitives/glmMath.hpp"
+
+#include "Ocean/Core/Window.hpp"
 
 #include "Renderer/Infos.hpp"
 #include "Renderer/Device.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Framebuffer.hpp"
-// #include "Renderer/Buffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -108,8 +110,8 @@ namespace Ocean {
 			CreateGraphicsPipeline();
 
 			CreateUniformBuffers();
-			CreateDescriptorPool();
-			CreateDescriptorSets();
+
+			p_Device->CreateDescriptors();
 
 			p_SwapChain->CreateFramebuffers();
 
@@ -136,9 +138,6 @@ namespace Ocean {
 				m_UniformBuffers.Get(i).UBO.Shutdown();
 			}
 			m_UniformBuffers.Shutdown();
-
-			vkDestroyDescriptorPool(p_Device->GetLogical(), m_DescriptorPool, nullptr);
-			m_DescriptorSets.Shutdown();
 
 			vkDestroyDescriptorSetLayout(p_Device->GetLogical(), m_DescriptorSetLayout, nullptr);
 
@@ -372,7 +371,7 @@ namespace Ocean {
 			rasterizer.lineWidth = 1.0f;
 
 			rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-			rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+			rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 			VkPipelineMultisampleStateCreateInfo multisampling{};
 			multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -506,82 +505,17 @@ namespace Ocean {
 			}
 		}
 
-		void Renderer::CreateDescriptorPool() {
-			VkDescriptorPoolSize poolSize{ };
-			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			poolSize.descriptorCount = (u32)m_MaxFramesInFlight;
-
-			VkDescriptorPoolCreateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-
-			info.poolSizeCount = 1;
-			info.pPoolSizes = &poolSize;
-
-			info.maxSets = (u32)m_MaxFramesInFlight;
-
-			CHECK_RESULT(
-				vkCreateDescriptorPool(p_Device->GetLogical(), &info, nullptr, &m_DescriptorPool),
-				"Failed to create descriptor pool!"
-			);
-		}
-
-		void Renderer::CreateDescriptorSets() {
-			FixedArray<VkDescriptorSetLayout> layouts(m_MaxFramesInFlight);
-			for (u8 i = 0; i < m_MaxFramesInFlight; i++)
-				layouts.Set(i, m_DescriptorSetLayout);
-
-			VkDescriptorSetAllocateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-
-			info.descriptorPool = m_DescriptorPool;
-
-			info.descriptorSetCount = (u32)m_MaxFramesInFlight;
-			info.pSetLayouts = layouts.Data();
-
-			m_DescriptorSets.Init(m_MaxFramesInFlight);
-			CHECK_RESULT(
-				vkAllocateDescriptorSets(p_Device->GetLogical(), &info, m_DescriptorSets.Data()),
-				"Failed to allocate descriptor sets!"
-			);
-
-			layouts.Shutdown();
-
-			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
-				VkDescriptorBufferInfo bufferInfo{ };
-				bufferInfo.buffer = m_UniformBuffers[i].UBO.GetBuffer();
-				
-				bufferInfo.offset = 0;
-				bufferInfo.range = sizeof(UniformBufferObject);
-
-				VkWriteDescriptorSet write{ };
-				write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-
-				write.dstSet = m_DescriptorSets[i];
-				write.dstBinding = 0;
-				write.dstArrayElement = 0;
-
-				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				write.descriptorCount = 1;
-
-				write.pBufferInfo = &bufferInfo;
-				write.pImageInfo = nullptr;
-				write.pTexelBufferView = nullptr;
-
-				vkUpdateDescriptorSets(p_Device->GetLogical(), 1, &write, 0, nullptr);
-			}
-		}
-
 		void Renderer::UpdateUniformBuffer(u8 frame) {
 			static auto startTime = oTimeNow();
 
-			f32 time = oTimeFromRealiSec(startTime);
+			f32 time = (f32)oTimeFromRealiSec(startTime);
 
 			UniformBufferObject ubo{ };
-			// model = rotate(mat4(1.0f), time * radian(90.0f), vec3(0.0f, 0.0f, 1.0f));
-			// view  = lookAt(vec3(2.0f, 2.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
-			// proj  = perspective(radian(45.0f), width / height, 0.1f, 10.0f);
+			ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			ubo.view  = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			ubo.proj  = glm::perspective(glm::radians(45.0f), p_SwapChain->GetExtent().width / (f32)p_SwapChain->GetExtent().height, 0.1f, 10.0f);
 
-			// proj[1][1] *= -1;
+			ubo.proj[1][1] *= -1;
 
 			memcpy(m_UniformBuffers.Get(frame).Data, &ubo, sizeof(UniformBufferObject));
 		}

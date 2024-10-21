@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ocean/Core/Types/ValueTypes.hpp"
+
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
@@ -148,10 +150,15 @@ namespace Ocean {
 			 * @return The Renderer's Vulkan Render Pass.
 			 */
 			VkRenderPass GetRenderPass() const { return m_RenderPass; }
+			VkPipelineLayout GetPipelineLayout() const { return m_PipelineLayout; }
 			/**
 			 * @return The Renderer's Vulkan Graphics Pipeline.
 			 */
 			VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
+
+			VkDescriptorSetLayout GetDescriptorLayout() const { return m_DescriptorSetLayout; }
+
+			VkBuffer GetUniformBuffer(u8 frame) const { return m_UniformBuffers.Get(frame).UBO.GetBuffer(); }
 
 			/**
 			 * @return The maximum frames in flight the Renderer has.
@@ -208,10 +215,6 @@ namespace Ocean {
 
 			void CreateUniformBuffers();
 
-			void CreateDescriptorPool();
-
-			void CreateDescriptorSets();
-
 			void UpdateUniformBuffer(u8 frame);
 
 			/* --- */
@@ -238,9 +241,6 @@ namespace Ocean {
 			FixedArray<SyncObjects> m_SyncObjects;
 
 			FixedArray<UniformData> m_UniformBuffers;
-
-			VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
-			FixedArray<VkDescriptorSet> m_DescriptorSets;
 
 			u16 m_Width = 0;
 			u16 m_Height = 0;

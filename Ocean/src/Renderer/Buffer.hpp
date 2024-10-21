@@ -27,7 +27,7 @@ namespace Ocean {
 			void Init(BufferConfig* config);
 			void Shutdown();
 
-			void SubmitData(u32 size, void* data);
+			void SubmitData(sizet size, void* data);
 
 			VkBuffer GetBuffer() const { return m_Buffer; }
 
@@ -44,7 +44,7 @@ namespace Ocean {
 			UniformBuffer() = default;
 			~UniformBuffer() = default;
 
-			void* GetMappedMemory(u32 size);
+			void* GetMappedMemory(sizet size);
 		};
 
 	}	// Vulkan

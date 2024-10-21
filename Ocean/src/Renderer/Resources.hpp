@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Types/Vectors.hpp"
-#include "Ocean/Core/Types/Matrix4D.hpp"
+#include "Ocean/Core/Types/glmTypes.hpp"
 
 #include "Ocean/Core/Primitives/Array.hpp"
 
@@ -27,8 +26,8 @@ namespace Ocean {
 
 
 		struct Vertex {
-			fvec2 pos;
-			fvec3 color;
+			glm::vec2 pos;
+			glm::vec3 color;
 
 			/**
 			 * @return The binding description of the vertex data for Vulkan.
@@ -85,9 +84,9 @@ namespace Ocean {
 		};
 
 		struct UniformBufferObject {
-			fmat4 model;
-			fmat4 view;
-			fmat4 proj;
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 proj;
 		};
 
 

@@ -29,10 +29,10 @@ project "Ocean"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
-
-		"%{IncludeDir.StackWalker}/StackWalker/StackWalker.h",
-		"%{IncludeDir.StackWalker}/StackWalker/StackWalker.cpp",
-
+		
+		"%{IncludeDir.GLM}/glm/**.hpp",
+		"%{IncludeDir.GLM}/glm/**.inl",
+		
 		"%{IncludeDir.TLSF}/tlsf.h",
 		"%{IncludeDir.TLSF}/tlsf.c",
 
@@ -43,9 +43,9 @@ project "Ocean"
 		"%{prj.name}/src",
 		"%{prj.name}/src/Ocean",
 		
-		"%{IncludeDir.StackWalker}",
 		"%{IncludeDir.TLSF}",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLM}",
 		"%{IncludeDir.vkMemAlloc}",
 	}
 

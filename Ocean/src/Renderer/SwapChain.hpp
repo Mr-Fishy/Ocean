@@ -125,7 +125,7 @@ namespace Ocean {
 			 * @param index - The index of the image view being requested.
 			 * @return The Vulkan image View at the given index.
 			 */
-			VkImageView GetImageView(u32 index) const { return m_Buffers.Get(index)->View; }
+			VkImageView GetImageView(u32 index) const { return m_Buffers.Get(index).View; }
 
 		private:
 			Allocator* p_Allocator;

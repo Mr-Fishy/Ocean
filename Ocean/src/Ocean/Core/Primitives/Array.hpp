@@ -48,7 +48,7 @@ namespace Ocean {
 			T  Get(u32 position) const {
 				OASSERTM(position < m_Size, "Attempt to get element out of range!");
 
-				return &p_Data[position];
+				return p_Data[position];
 			}
 			/**
 			 * @param position - The position of the element to get.
@@ -60,7 +60,7 @@ namespace Ocean {
 				return p_Data[position];
 			}
 
-			T operator [] (u32 i) {
+			T operator [] (u32 i) const {
 				OASSERT_LENGTH(i, m_Capacity);
 
 				return p_Data[i];
