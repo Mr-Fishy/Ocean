@@ -3,6 +3,11 @@
 #include "Ocean/Core/Primitives/Array.hpp"
 #include "Ocean/Core/Primitives/Queue.hpp"
 
+// std
+#include <thread>
+#include <mutex>
+#include <functional>
+
 namespace Ocean {
 
 	class ThreadPool {
@@ -13,9 +18,13 @@ namespace Ocean {
 		void SubmitTask();
 
 	private:
-		// FixedArray<> m_Threads;
+		mutable std::mutex m_Mutex;
+		std::condition_variable m_Conditional;
 
-		// Queue<> m_Tasks;
+		FixedArray<std::thread> m_Threads;
+		b8 m_ShutdownRequested;
+
+		PriorityQueue<std::function<void()>> m_Tasks;
 
 	};
 
