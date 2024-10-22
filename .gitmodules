@@ -14,6 +14,10 @@
 	path = vendor/premake/premake-cmake
 	url = https://github.com/Jarod42/premake-cmake
 	branch = master
+[submodule "Ocean/vendor/steamaudio"]
+	path = Ocean/vendor/steamaudio
+	url = https://github.com/ValveSoftware/steam-audio
 [submodule "Ocean/vendor/glm"]
 	path = Ocean/vendor/glm
 	url = https://github.com/g-truc/glm
+  
