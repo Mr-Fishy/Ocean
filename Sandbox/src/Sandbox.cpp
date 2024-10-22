@@ -75,8 +75,6 @@ b8 Sandbox::MainLoop() {
 		p_Window->PollEvents();
 
 		if (p_Window->Resized()) {
-			p_Renderer->ResizeSwapchain(p_Window->Width(), p_Window->Height());
-
 			OnResize(p_Window->Width(), p_Window->Height());
 
 			p_Window->ResizeHandled();

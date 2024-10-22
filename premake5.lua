@@ -16,9 +16,10 @@ workspace "OceanEngine"
 
 	-- Include Directories Relative To Workspace Folder
 	IncludeDir = { }
-	IncludeDir["StackWalker"] = "%{wks.location}/Ocean/vendor/StackWalker/Main"
 	IncludeDir["TLSF"       ] = "%{wks.location}/Ocean/vendor/tlsf"
+	IncludeDir["GLM"        ] = "%{wks.location}/Ocean/vendor/glm"
 	IncludeDir["GLFW"       ] = "%{wks.location}/Ocean/vendor/glfw/include"
+	IncludeDir["VulkanSDK"  ] = "%{VULKAN_SDK}/Include"
 	IncludeDir["VulkanSDK"  ] = "%{VULKAN_SDK}/Include"
 	IncludeDir["vkMemAlloc" ] = "%{wks.location}/Ocean/vendor/VulkanMemoryAllocator/include"
 

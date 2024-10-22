@@ -59,13 +59,21 @@ namespace Ocean {
 			vkFreeMemory(p_DeviceRef->GetLogical(), m_Memory, nullptr);
 		}
 
-		void Buffer::SubmitData(u32 size, void* data) {
+		void Buffer::SubmitData(sizet size, void* data) {
 			void* ptr = nullptr;
 			vkMapMemory(p_DeviceRef->GetLogical(), m_Memory, 0, size, 0, &ptr);
 
 			memcpy(ptr, data, (sizet)size);
 
 			vkUnmapMemory(p_DeviceRef->GetLogical(), m_Memory);
+		}
+
+		void* UniformBuffer::GetMappedMemory(sizet size) {
+			void* ptr = nullptr;
+
+			vkMapMemory(p_DeviceRef->GetLogical(), m_Memory, 0, size, 0, &ptr);
+
+			return ptr;
 		}
 
 	}	// Vulkan
