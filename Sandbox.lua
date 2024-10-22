@@ -24,6 +24,7 @@ project "Sandbox"
 		
 		"%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.vkMemAlloc}",
+		"%{IncludeDir.GLM}",
 	}
 
 	links {

@@ -110,7 +110,9 @@ namespace Ocean {
 			 * @param dst - The destination buffer to copy to.
 			 * @param size - The size of the data in bytes.
 			 */
-			void CopyBuffer(Buffer* src, Buffer* dst, u32 size);
+			void CopyBuffer(Buffer* src, Buffer* dst, sizet size);
+
+			void CreateDescriptors();
 
 			/**
 			 * @return The Physical Vulkan Device.
@@ -183,6 +185,10 @@ namespace Ocean {
 			 */
 			void CreateCommandBuffers();
 
+			void CreateDescriptorPool();
+
+			void CreateDescriptorSets();
+
 			/* --- */
 
 			Allocator* p_Allocator = nullptr;
@@ -204,6 +210,9 @@ namespace Ocean {
 
 			VkCommandPool m_CommandPool = VK_NULL_HANDLE;
 			FixedArray<VkCommandBuffer> m_CommandBuffers;
+
+			VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
+			FixedArray<VkDescriptorSet> m_DescriptorSets;
 
 			/* --- */
 

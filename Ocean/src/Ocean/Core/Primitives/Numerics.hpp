@@ -73,7 +73,16 @@ namespace Ocean {
 
 
 
+	u32 absu32(u32 x);
+	u16 absu16(u16 x);
+
+
+
 	f32 get_random_value(f32 min, f32 max);
+
+
+
+	
 
 
 

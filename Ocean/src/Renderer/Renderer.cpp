@@ -1,5 +1,10 @@
 #include "Renderer.hpp"
 
+#include "Ocean/Core/Types/glmTypes.hpp"
+
+#include "Ocean/Core/Primitives/Time.hpp"
+#include "Ocean/Core/Primitives/glmMath.hpp"
+
 #include "Ocean/Core/Window.hpp"
 
 #include "Renderer/Infos.hpp"
@@ -101,8 +106,12 @@ namespace Ocean {
 			p_Device->SetSwapChain(p_SwapChain);
 
 			CreateRenderPass();
-
+			CreateDescriptorSetLayout();
 			CreateGraphicsPipeline();
+
+			CreateUniformBuffers();
+
+			p_Device->CreateDescriptors();
 
 			p_SwapChain->CreateFramebuffers();
 
@@ -124,6 +133,14 @@ namespace Ocean {
 
 			p_SwapChain->Shutdown();
 			ofree(p_SwapChain, p_Allocator);
+
+			for (u8 i = 0; i < m_MaxFramesInFlight; i++) {
+				m_UniformBuffers.Get(i).UBO.Shutdown();
+			}
+			m_UniformBuffers.Shutdown();
+
+			vkDestroyDescriptorSetLayout(p_Device->GetLogical(), m_DescriptorSetLayout, nullptr);
+
 			p_Device->Shutdown();
 			ofree(p_Device, p_Allocator);
 
@@ -153,6 +170,9 @@ namespace Ocean {
 
 			p_Device->FlushCommandBuffer(m_Frame);
 			p_Device->RecordCommandBuffer(imageIndex, m_Frame);
+
+			UpdateUniformBuffer(m_Frame);
+
 			p_Device->SubmitCommandBuffer(m_SyncObjects.Get(m_Frame), m_Frame);
 
 			p_SwapChain->QueuePresentation(
@@ -280,6 +300,29 @@ namespace Ocean {
 			);
 		}
 
+		void Renderer::CreateDescriptorSetLayout() {
+			VkDescriptorSetLayoutBinding layout{ };
+			layout.binding = 0;
+			
+			layout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			layout.descriptorCount = 1;
+
+			layout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			// This is only relevant for image sampling related descriptors.
+			layout.pImmutableSamplers = nullptr; // Optional
+
+			VkDescriptorSetLayoutCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+
+			info.bindingCount = 1;
+			info.pBindings = &layout;
+
+			CHECK_RESULT(
+				vkCreateDescriptorSetLayout(p_Device->GetLogical(), &info, nullptr, &m_DescriptorSetLayout),
+				"Failed to create descriptor set layout!"
+			);
+		}
+
 		void Renderer::CreateGraphicsPipeline() {
 			Shader* shaders = oallocat(Shader, 2, p_Allocator);
 			shaders[0].Init(p_Allocator, "src/Shaders/vert.spv");
@@ -328,7 +371,7 @@ namespace Ocean {
 			rasterizer.lineWidth = 1.0f;
 
 			rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-			rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+			rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 			VkPipelineMultisampleStateCreateInfo multisampling{};
 			multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -374,7 +417,9 @@ namespace Ocean {
 			VkPipelineLayoutCreateInfo layoutInfo{ };
 			layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
-			layoutInfo.setLayoutCount = 0;
+			layoutInfo.setLayoutCount = 1;
+			layoutInfo.pSetLayouts = &m_DescriptorSetLayout;
+
 			layoutInfo.pushConstantRangeCount = 0;
 
 			CHECK_RESULT(
@@ -440,6 +485,39 @@ namespace Ocean {
 					"Failed to create in-flight fence!"
 				);
 			}
+		}
+
+		void Renderer::CreateUniformBuffers() {
+			m_UniformBuffers.Init(m_MaxFramesInFlight);
+
+			BufferConfig config{ };
+			config.device = p_Device;
+			config.size = sizeof(UniformBufferObject);
+
+			config.usageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+			config.memoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+			m_UniformBuffers.SetSize(m_MaxFramesInFlight);
+			for (u32 i = 0; i < m_MaxFramesInFlight; i++) {
+				m_UniformBuffers.Get(i).UBO.Init(&config);
+
+				m_UniformBuffers.Get(i).Data = m_UniformBuffers.Get(i).UBO.GetMappedMemory(config.size);
+			}
+		}
+
+		void Renderer::UpdateUniformBuffer(u8 frame) {
+			static auto startTime = oTimeNow();
+
+			f32 time = (f32)oTimeFromRealiSec(startTime);
+
+			UniformBufferObject ubo{ };
+			ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			ubo.view  = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			ubo.proj  = glm::perspective(glm::radians(45.0f), p_SwapChain->GetExtent().width / (f32)p_SwapChain->GetExtent().height, 0.1f, 10.0f);
+
+			ubo.proj[1][1] *= -1;
+
+			memcpy(m_UniformBuffers.Get(frame).Data, &ubo, sizeof(UniformBufferObject));
 		}
 
 	}	// Vulkan

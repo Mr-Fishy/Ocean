@@ -10,16 +10,7 @@
 #include <stdlib.h>
 #include <memory>
 
-// Define the following to enable StackWalker to heavy memory profile
-// #define OCEAN_MEMORY_STACK
-
 #define HEAP_ALLOCATOR_STATS
-
-#if defined(OCEAN_MEMORY_STACK)
-
-	#include "StackWalker/StackWalker.h"
-
-#endif
 
 namespace Ocean {
 
@@ -79,12 +70,14 @@ namespace Ocean {
 	}
 
 	void HeapAllocator::Shutdown() {
+	#if defined (HEAP_ALLOCATOR_STATS)
 		MemoryStats stats{ m_AllocatedSize, m_TotalSize };
 		void* pool = tlsf_get_pool(p_Handle);
 		tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
 
 		if (stats.AllocatedBytes != 0)
 			oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!"));
+	#endif
 
 		tlsf_destroy(p_Handle);
 
@@ -96,31 +89,6 @@ namespace Ocean {
 	void* HeapAllocator::Allocate(sizet size) {
 		return Allocate(size, 1);
 	}
-
-#if defined (OCEAN_MEMORY_STACK)
-
-	class OceanStackWalker : public StackWalker {
-	public:
-		OceanStackWalker() : StackWalker() { }
-
-	protected:
-		virtual void OnOutput(LPCSTR szText) {
-			oprint("\nStack: \n%s\n", szText);
-
-			StackWalker::OnOutput(szText);
-		}
-
-	};	// OceanStackWalker
-
-	void* HeapAllocator::Allocate(sizet size, sizet alignment) {
-		void* allocatedMemory = oMalloc(p_Handle, size);
-
-		oprint("Mem: %p, size %llu\n", allocatedMemory, size);
-
-		return allocatedMemory;
-	}
-
-#else
 
 	void* HeapAllocator::Allocate(sizet size, sizet alignment) {
 	#if defined (HEAP_ALLOCATOR_STATS)
@@ -136,8 +104,6 @@ namespace Ocean {
 
 	#endif
 	}
-
-#endif
 
 	void* HeapAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
 		return Allocate(size, alignment);

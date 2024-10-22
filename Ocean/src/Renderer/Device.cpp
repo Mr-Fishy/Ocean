@@ -84,6 +84,9 @@ namespace Ocean {
 		}
 
 		void Device::Shutdown() {
+			vkDestroyDescriptorPool(m_Device, m_DescriptorPool, nullptr);
+			m_DescriptorSets.Shutdown();
+
 			m_CommandBuffers.Shutdown();
 
 			p_VertexBuffer->Shutdown();
@@ -336,6 +339,76 @@ namespace Ocean {
 			);
 		}
 
+		void Device::CreateDescriptorPool() {
+			u32 maxFrames = p_Renderer->GetMaxFramesInFlight();
+
+			VkDescriptorPoolSize poolSize{ };
+			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			poolSize.descriptorCount = maxFrames;
+
+			VkDescriptorPoolCreateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+
+			info.poolSizeCount = 1;
+			info.pPoolSizes = &poolSize;
+
+			info.maxSets = maxFrames;
+
+			CHECK_RESULT(
+				vkCreateDescriptorPool(m_Device, &info, nullptr, &m_DescriptorPool),
+				"Failed to create descriptor pool!"
+			);
+		}
+
+		void Device::CreateDescriptorSets() {
+			u32 maxFrames = p_Renderer->GetMaxFramesInFlight();
+
+			FixedArray<VkDescriptorSetLayout> layouts(maxFrames);
+			for (u8 i = 0; i < maxFrames; i++)
+				layouts.Set(i, p_Renderer->GetDescriptorLayout());
+
+			VkDescriptorSetAllocateInfo info{ };
+			info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+
+			info.descriptorPool = m_DescriptorPool;
+
+			info.descriptorSetCount = (u32)maxFrames;
+			info.pSetLayouts = layouts.Data();
+
+			m_DescriptorSets.Init(maxFrames);
+			CHECK_RESULT(
+				vkAllocateDescriptorSets(m_Device, &info, m_DescriptorSets.Data()),
+				"Failed to allocate descriptor sets!"
+			);
+			m_DescriptorSets.SetSize(maxFrames);
+
+			layouts.Shutdown();
+
+			for (u8 i = 0; i < maxFrames; i++) {
+				VkDescriptorBufferInfo bufferInfo{ };
+				bufferInfo.buffer = p_Renderer->GetUniformBuffer(i);
+
+				bufferInfo.offset = 0;
+				bufferInfo.range = sizeof(UniformBufferObject);
+
+				VkWriteDescriptorSet write{ };
+				write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+				write.dstSet = m_DescriptorSets[i];
+				write.dstBinding = 0;
+				write.dstArrayElement = 0;
+
+				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				write.descriptorCount = 1;
+
+				write.pBufferInfo = &bufferInfo;
+				write.pImageInfo = nullptr;
+				write.pTexelBufferView = nullptr;
+
+				vkUpdateDescriptorSets(m_Device, 1, &write, 0, nullptr);
+			}
+		}
+
 		void Device::FlushCommandBuffer(u8 frame) {
 			vkResetCommandBuffer(m_CommandBuffers.Get(frame), 0);
 		}
@@ -413,6 +486,8 @@ namespace Ocean {
 
 				vkCmdBindIndexBuffer(commandBuffer, p_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT16);
 
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetPipelineLayout(), 0, 1, &m_DescriptorSets.Get(frame), 0, nullptr);
+
 				// TODO: Convert Vertex Buffer and Index Buffer into a single buffer with offsets. (Use vkCmdBindVertexBuffers()).
 				vkCmdDrawIndexed(commandBuffer, (u32)indices.size(), 1, 0, 0, 0);
 
@@ -464,7 +539,7 @@ namespace Ocean {
 			OASSERTM(false, "Failed to find suitable memory type!");
 		}
 
-		void Device::CopyBuffer(Buffer* src, Buffer* dst, u32 size) {
+		void Device::CopyBuffer(Buffer* src, Buffer* dst, sizet size) {
 			VkCommandBufferAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 
@@ -504,6 +579,12 @@ namespace Ocean {
 			vkQueueWaitIdle(m_GraphicsQueue);
 
 			vkFreeCommandBuffers(m_Device, m_CommandPool, 1, &commandBuffer);
+		}
+
+		void Device::CreateDescriptors() {
+			CreateDescriptorPool();
+
+			CreateDescriptorSets();
 		}
 
 	}	// Vulkan

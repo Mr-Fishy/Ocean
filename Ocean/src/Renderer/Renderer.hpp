@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Ocean/Core/Types/ValueTypes.hpp"
+
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
 #include "Renderer/Resources.hpp"
+#include "Renderer/Buffer.hpp"
 
 namespace Ocean {
 
@@ -13,6 +16,7 @@ namespace Ocean {
 
 		class Device;
 		class SwapChain;
+		class UniformBuffer;
 
 
 		/**
@@ -90,6 +94,12 @@ namespace Ocean {
 		 * @brief The primary renderer class that will be interacted with by the application.
 		 */
 		class Renderer : public Service {
+		private:
+			struct UniformData {
+				UniformBuffer UBO;
+				void* Data;
+			};
+
 		public:
 			OCEAN_DECLARE_SERVICE(Renderer);
 
@@ -140,10 +150,15 @@ namespace Ocean {
 			 * @return The Renderer's Vulkan Render Pass.
 			 */
 			VkRenderPass GetRenderPass() const { return m_RenderPass; }
+			VkPipelineLayout GetPipelineLayout() const { return m_PipelineLayout; }
 			/**
 			 * @return The Renderer's Vulkan Graphics Pipeline.
 			 */
 			VkPipeline GetGraphicsPipeline() const { return m_GraphicsPipeline; }
+
+			VkDescriptorSetLayout GetDescriptorLayout() const { return m_DescriptorSetLayout; }
+
+			VkBuffer GetUniformBuffer(u8 frame) const { return m_UniformBuffers.Get(frame).UBO.GetBuffer(); }
 
 			/**
 			 * @return The maximum frames in flight the Renderer has.
@@ -184,6 +199,11 @@ namespace Ocean {
 			void CreateRenderPass();
 
 			/**
+			 * @brief 
+			 */
+			void CreateDescriptorSetLayout();
+
+			/**
 			 * @brief Creates the Vulkan Graphics Pipeline so that the GPU knows how to render (or compute).
 			 */
 			void CreateGraphicsPipeline();
@@ -192,6 +212,10 @@ namespace Ocean {
 			 * @brief Creates the Vulkan Semaphores and Vulkan Fences that are needed for the runtime.
 			 */
 			void CreateSyncObjects();
+
+			void CreateUniformBuffers();
+
+			void UpdateUniformBuffer(u8 frame);
 
 			/* --- */
 
@@ -211,9 +235,12 @@ namespace Ocean {
 			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
 
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
+			VkDescriptorSetLayout m_DescriptorSetLayout = VK_NULL_HANDLE;
 			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
 
 			FixedArray<SyncObjects> m_SyncObjects;
+
+			FixedArray<UniformData> m_UniformBuffers;
 
 			u16 m_Width = 0;
 			u16 m_Height = 0;

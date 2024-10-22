@@ -197,8 +197,8 @@ namespace Ocean {
 
 		static cstring Name() { return "OCEAN_Memory_Service"; }
 
-		LinearAllocator* ScratchAllocator() { return &m_ScratchAllocator; }
-		HeapAllocator*   SystemAllocator() { return &m_SystemAllocator; }
+		Allocator* ScratchAllocator() { return &m_ScratchAllocator; }
+		Allocator* SystemAllocator()  { return &m_SystemAllocator; }
 
 	private:
 		LinearAllocator m_ScratchAllocator;
