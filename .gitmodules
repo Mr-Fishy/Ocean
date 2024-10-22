@@ -17,3 +17,6 @@
 [submodule "Ocean/vendor/StackWalker"]
 	path = Ocean/vendor/StackWalker
 	url = https://github.com/JochenKalmbach/StackWalker
+[submodule "Ocean/vendor/steamaudio"]
+	path = Ocean/vendor/steamaudio
+	url = https://github.com/ValveSoftware/steam-audio
