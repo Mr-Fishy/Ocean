@@ -8,28 +8,28 @@
 typedef unsigned long long u64;
 typedef u64 sizet;
 
-static const u64 u64_max = 0xffffffffffffffffui64;
+static const u64 u64_max = 0xffffffffffffffffu64;
 
 /**
  * @brief 32 bit unsigned integer.
  */
 typedef unsigned int u32;
 
-static const u32 u32_max = 0xffffffffui32;
+static const u32 u32_max = 0xffffffffu32;
 
 /**
  * @brief 16 bit unsigned integer.
  */
 typedef unsigned short u16;
 
-static const u16 u16_max = 0xffffui16;
+static const u16 u16_max = 0xffffu16;
 
 /**
  * @brief 8 bit unsigned integer.
  */
 typedef unsigned char u8;
 
-static const u8 u8_max = 0xffui8;
+static const u8 u8_max = 0xffu8;
 
 // Signed Integers
 

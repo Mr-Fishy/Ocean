@@ -7,20 +7,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB_RECURSE Ocean_Glob RELATIVE_PATH src/ *.cpp)
 
 add_library(
-    ${CMAKE_PROJECT_NAME}
+    ${PROJECT_NAME}
 
     ${Ocean_Glob}
 )
 
-include_directories(
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+
     src
     vendor
 
-    
+    ${GLFW_DIRECTORY}
+    ${GLM_DIRECTORY}
+    ${TLSF_DIRECTORY}
+    ${VK_MEM_ALLOC_DIRECTORY}
+
+    ${Vulkan_INCLUDE_DIRS}
 )
 
 target_link_libraries(
-    ${CMAKE_PROJECT_NAME}
+    ${PROJECT_NAME}
 
     GLFW
+
+    ${Vulkan_LIBRARIES}
 )
