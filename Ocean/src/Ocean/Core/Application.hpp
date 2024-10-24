@@ -16,18 +16,18 @@ namespace Ocean {
 	 */
 	struct ApplicationConfig {
 
-		u32 Width  = 900; /** @brief The width of the application window. */
-		u32 Height = 600; /** @brief The height of the application window. */
+		u32 width  = 900; /** @brief The width of the application window. */
+		u32 height = 600; /** @brief The height of the application window. */
 
-		b8 Fullscreen = false; /** @brief If the application is fullscreen. */
+		b8 fullscreen = false; /** @brief If the application is fullscreen. */
 
-		b8 InitBaseServices = true;
+		b8 initBaseServices = true;
 
-		cstring Name = nullptr; /** @brief The name of the application. */
+		cstring name = nullptr; /** @brief The name of the application. */
 
-		ApplicationConfig& w(u32 value) { Width = value; return *this; }
-		ApplicationConfig& h(u32 value) { Height = value; return *this; }
-		ApplicationConfig& name(cstring value) { Name = value; return *this; }
+		ApplicationConfig& w(u32 value) { width = value; return *this; }
+		ApplicationConfig& h(u32 value) { height = value; return *this; }
+		ApplicationConfig& name(cstring value) { name = value; return *this; }
 
 	};	// ApplicationConfig
 
@@ -74,6 +74,10 @@ namespace Ocean {
 		static Application* s_Instance;
 
 		ServiceManager* p_ServiceManager = nullptr;
+
+	private:
+		Application(const Application&) { }
+		Application operator = (const Application&) { }
 	};
 
 	Application* CreateApplication();

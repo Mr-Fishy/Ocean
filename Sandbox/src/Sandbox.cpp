@@ -21,9 +21,9 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// Window
 	Ocean::WindowConfig winConfig{
-		config.Width,
-		config.Height,
-		config.Name,
+		config.width,
+		config.height,
+		config.name,
 		Ocean::MemoryService::Instance()->SystemAllocator()
 	};
 	p_Window = &s_Window;
@@ -35,7 +35,7 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 	Ocean::Vulkan::RendererConfig renConfig{
 		Ocean::MemoryService::Instance()->SystemAllocator(),
 		p_Window,
-		config.Name,
+		config.name,
 		(u16)p_Window->Width(),
 		(u16)p_Window->Height(),
 		2,

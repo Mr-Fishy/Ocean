@@ -14,23 +14,22 @@ add_library(
 
 target_include_directories(
     ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
 
     src
     vendor
 
-    ${GLFW_DIRECTORY}
-    ${GLM_DIRECTORY}
     ${TLSF_DIRECTORY}
-    ${VK_MEM_ALLOC_DIRECTORY}
 
     ${Vulkan_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     ${PROJECT_NAME}
+    PRIVATE
 
     GLFW
-
+    glm::glm
     ${Vulkan_LIBRARIES}
 )
+message(STATUS "All required steps Completed, EOF for ${PROJECT_NAME} at time: ${time}\n")

@@ -20,17 +20,16 @@ namespace Ocean {
 		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
 
 		oprint("\t> Window Refreshed!\n");
-		data->Refreshed = true;
+		data->refreshed = true;
 	}
 
 	static void GLFW_ResizeCallback(GLFWwindow* window, i32 width, i32 height) {
 		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
 
-		data->Width = width;
-		data->Height = height;
+		data->width = width;
+		data->height = height;
 
-		oprint("\t> Window Resized! (%i, %i)\n", width, height);
-		data->Resized = true;
+		data->resized = true;
 	}
 
 	static void GLFW_KeyCallback(GLFWwindow* window, i32 key, i32 scancode, i32 action, i32 mods) {
@@ -39,10 +38,10 @@ namespace Ocean {
 		oprint("\t> Window Key-Callback! (%s)\n", glfwGetKeyName(key, scancode));
 
 		if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
-			data->Window->SetFullscreen(data->Fullscreen = !data->Fullscreen);
+			data->window->SetFullscreen(data->fullscreen = !data->fullscreen);
 
 		if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
-			data->Window->CenterMouse(data->CenteredCursor = !data->CenteredCursor);
+			data->window->CenterMouse(data->centeredCursor = !data->centeredCursor);
 	}
 
 	static void GLFW_CursorCallback(GLFWwindow* window, f64 xpos, f64 ypos) {
@@ -74,11 +73,11 @@ namespace Ocean {
 
 		WindowConfig& windowConfig = *(WindowConfig*)(config);
 
-		m_Data.Window = this;
-		m_Data.Width = windowConfig.Width;
-		m_Data.Height = windowConfig.Height;
+		m_Data.window = this;
+		m_Data.width = windowConfig.width;
+		m_Data.height = windowConfig.height;
 
-		p_PlatformHandle = (void*)glfwCreateWindow(m_Data.Width, m_Data.Height, windowConfig.Name, NULL, NULL);
+		p_PlatformHandle = (void*)glfwCreateWindow(m_Data.width, m_Data.height, windowConfig.name, NULL, NULL);
 
 		if (!p_PlatformHandle) {
 			oprint("GLFW Window Error!\n");
@@ -103,14 +102,14 @@ namespace Ocean {
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 		if (enabled) {
-			m_Data.WindowedWidth = m_Data.Width;
-			m_Data.WindowedHeight = m_Data.Height;
-			oprint("Setting backup size (%i, %i)\n", m_Data.WindowedWidth, m_Data.WindowedHeight);
+			m_Data.windowedWidth = m_Data.width;
+			m_Data.windowedHeight = m_Data.height;
+			oprint("Setting backup size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
 			glfwSetWindowMonitor((WindowPtr)p_PlatformHandle, monitor, NULL, NULL, mode->width, mode->height, mode->refreshRate);
 		}
 		else {
-			oprint("Returning to size (%i, %i)\n", m_Data.WindowedWidth, m_Data.WindowedHeight);
-			glfwSetWindowMonitor((WindowPtr)p_PlatformHandle, NULL, (mode->width / 2) - (m_Data.WindowedWidth / 2), (mode->height / 2) - (m_Data.WindowedHeight / 2), m_Data.WindowedWidth, m_Data.WindowedHeight, NULL);
+			oprint("Returning to size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
+			glfwSetWindowMonitor((WindowPtr)p_PlatformHandle, NULL, (mode->width / 2) - (m_Data.windowedWidth / 2), (mode->height / 2) - (m_Data.windowedHeight / 2), m_Data.windowedWidth, m_Data.windowedHeight, NULL);
 		}
 	}
 

@@ -13,12 +13,12 @@ namespace Ocean {
 	 */
 	struct WindowConfig {
 
-		u32 Width;
-		u32 Height;
+		u32 width;
+		u32 height;
 
-		cstring Name;
+		cstring name;
 
-		Allocator* Allocator;
+		Allocator* allocator;
 
 	};	// WindowConfig
 
@@ -28,16 +28,16 @@ namespace Ocean {
 	 * @brief The window data to handle in GLFW.
 	 */
 	struct WindowData {
-		Window* Window;
+		Window* window;
 
-		u16 Width, Height;
-		u16 WindowedWidth, WindowedHeight;
+		u16 width, height;
+		u16 windowedWidth, windowedHeight;
 
-		b8 VSync = true;
-		b8 Refreshed = false;
-		b8 CenteredCursor = false;
-		b8 Resized = false;
-		b8 Fullscreen = false;
+		b8 vSync = true;
+		b8 refreshed = false;
+		b8 centeredCursor = false;
+		b8 resized = false;
+		b8 fullscreen = false;
 	};
 
 	/**
@@ -73,11 +73,11 @@ namespace Ocean {
 		/**
 		 * @return The window width in screen coordinates.
 		 */
-		u32 Width() const { return m_Data.Width; }
+		u32 Width() const { return m_Data.width; }
 		/**
 		 * @return The window height in screen coordinates.
 		 */
-		u32 Height() const { return m_Data.Height; }
+		u32 Height() const { return m_Data.height; }
 		/**
 		 * @return The window handle from glfw.
 		 */
@@ -96,11 +96,11 @@ namespace Ocean {
 		/**
 		 * @return True if the window has been resized, False otherwise.
 		 */
-		b8 Resized() const { return m_Data.Resized; }
+		b8 Resized() const { return m_Data.resized; }
 		/**
 		 * @brief Tells the window that the resize has been handled.
 		 */
-		void ResizeHandled() { m_Data.Resized = false; }
+		void ResizeHandled() { m_Data.resized = false; }
 
 	private:
 		void* p_PlatformHandle = nullptr;

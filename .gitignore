@@ -3,8 +3,10 @@
 bin-int/
 build/
 
-# Files
 .vs/
+.vscode/
+
+# Files
 **.sln
 **.vcxproj
 **.vcxproj.user

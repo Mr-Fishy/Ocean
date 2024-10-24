@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.11)
+cmake_policy(VERSION 3.22)
 
 project(OceanEngine)
 
@@ -28,21 +29,25 @@ else()
 endif()
 
 # These flags only work if on GCC.
-set(My_Flags "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
-set(CMAKE_CXX_FLAGS "${My_Flags}")
+set(GCC_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
+set(CMAKE_CXX_FLAGS "${GCC_FLAGS}")
 
 ### Vulkan ###
+#define VULKAN FOUND FIRST
+set(Vulkan_FOUND False)
+
 if (DEFINED VULKAN_SDK_PATH)
+    message(STATUS "VULKAN SDK PATH IS DEFINED")
     set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include")
     set(Vulkan_LIBRARIES "${VULKAN_SDK_PATH}/Lib")
-    set(Vulkan_FOUND "True")
+    set(Vulkan_FOUND True)
 else()
+    message(STATUS "VULKAN SDK PATH IS NOT DEFINED")
     find_package(Vulkan REQUIRED)
-    message(STATUS "Found Vulkan: $ENV{VULKAN_SDK}")
 endif()
 
 if (NOT Vulkan_FOUND)
-    mesage(FATAL_ERROR "Could not find Vulkan library!")
+    mesage(FATAL_ERROR " Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
 else()
     message(STATUS "Using Vulkan library at: ${Vulkan_LIBRARIES}")
 endif()
@@ -71,16 +76,24 @@ set(OCEAN_VENDOR_DIRECTORY "${PROJECT_SOURCE_DIR}/Ocean/vendor")
 set(GLFW_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glfw/include")
 set(GLM_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/glm")
 set(TLSF_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/tlsf")
-set(VK_MEM_ALLOC_DIRECTORY "${PROJECT_SOURCE_DIR}/Ocean/vendor/VulkanMemoryAllocator/include")
 
 ### Projects ###
+message(STATUS "Passing off to Bob the builder\n")
+
 # GLFW CMAKE FLAGS
 set(GLFW_BUILD_WAYLAND OFF) # Wayland Support For Linux / Unix
-set(GLFW_BUILD_X11 OFF)     # X11 Support For Linux / Unix
-set(GLFW_BUILD_COCOA OFF)   # Cocoa Support For 
-set(GLFW_BUILD_DOCS OFF)    # GLFW DoxyGen Documentation Building
+set(GLFW_BUILD_X11     OFF) # X11 Support For Linux / Unix
+set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For 
+set(GLFW_BUILD_DOCS    OFF) # GLFW DoxyGen Documentation Building
+
 add_subdirectory(Ocean/vendor/glfw)
+
+# GLM CMAKE FLAGS (NONE)
+add_subdirectory(Ocean/vendor/glm)
 
 add_subdirectory(Ocean)
 
 add_subdirectory(Sandbox)
+
+message(STATUS "All required steps Completed, EOF for ${PROJECT_NAME} at time: ${time}\n")
+message(STATUS "Clever little rats. I will not forget what you have done here today.")
