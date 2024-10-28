@@ -22,7 +22,7 @@ namespace Ocean {
 		class Array {
 		public:
 			Array() = default;
-			~Array() { OASSERTM(p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")); }
+			~Array() { OASSERTM(this->p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")); }
 
 			virtual void Set(u32 position, const T& element) = 0;
 			
@@ -34,8 +34,8 @@ namespace Ocean {
 			 * @return The index (position) of the element, returns -1 if the element is not found.
 			 */
 			i64 IndexOf(const T& element) const {
-				for (u32 i = 0; i < m_Size; i++) {
-					if (&p_Data[i] == &element)
+				for (u32 i = 0; i < this->m_Size; i++) {
+					if (&this->p_Data[i] == &element)
 						return i;
 				}
 
@@ -46,48 +46,48 @@ namespace Ocean {
 			 * @return The pointer of the element at the given position. 
 			 */
 			T  Get(u32 position) const {
-				OASSERTM(position < m_Size, "Attempt to get element out of range!");
+				OASSERTM(position < this->m_Size, "Attempt to get element out of range!");
 
-				return p_Data[position];
+				return this->p_Data[position];
 			}
 			/**
 			 * @param position - The position of the element to get.
 			 * @return The element at the given position.
 			 */
 			T& Get(u32 position) {
-				OASSERTM(position < m_Size, "Attempt to get element out of range!");
+				OASSERTM(position < this->m_Size, "Attempt to get element out of range!");
 
-				return p_Data[position];
+				return this->p_Data[position];
 			}
 
 			T operator [] (u32 i) const {
-				OASSERT_LENGTH(i, m_Capacity);
+				OASSERT_LENGTH(i, this->m_Capacity);
 
-				return p_Data[i];
+				return this->p_Data[i];
 			}
 
 			T& operator [] (u32 i) {
-				OASSERT_LENGTH(i, m_Capacity);
+				OASSERT_LENGTH(i, this->m_Capacity);
 
-				return p_Data[i];
+				return this->p_Data[i];
 			}
 
 			/** 
 			 * @return The pointer to the first element of the array.
 			 */
-			T  Front() const { return p_Data[0]; }
+			T  Front() const { return this->p_Data[0]; }
 			/**
 			 * @return The first element of the array.
 			 */
-			T& Front() { return p_Data[0]; }
+			T& Front() { return this->p_Data[0]; }
 			/**
 			 * @return The pointer to the last element of the array.
 			 */
-			T  Back() const { return p_Data[m_Size - 1]; }
+			T  Back() const { return this->p_Data[this->m_Size - 1]; }
 			/**
 			 * @return The last element of the array.
 			 */
-			T& Back() { return p_Data[m_Size - 1]; }
+			T& Back() { return this->p_Data[this->m_Size - 1]; }
 
 			virtual void Remove(const T& element) = 0;
 			virtual void Remove(u32 position) = 0;
@@ -95,32 +95,32 @@ namespace Ocean {
 			/**
 			 * @return The pointer to the first element of the array.
 			 */
-			T* Data() const { return p_Data; }
+			T* Data() const { return this->p_Data; }
 
 			/**
 			 * @brief Clear's the data within the array.
 			 */
 			void Clear() {
-				if (p_Data)
-					memset(p_Data, 0, m_Size);
+				if (this->p_Data)
+					memset(this->p_Data, 0, this->m_Size);
 
-				m_Size = 0;
+				this->m_Size = 0;
 			}
 
 			/**
 			 * @return The size of the array.
 			 */
-			u32 Size() const { return m_Size; }
+			u32 Size() const { return this->m_Size; }
 			/**
 			 * @brief Set's the size of the array if needed. Primary use case is for when a library inserts data from the Data() pointer.
 			 * @brief Ex: Vulkan
 			 * @param size - The size to set to the array.
 			 */
-			void SetSize(u32 size) { m_Size = size; }
+			void SetSize(u32 size) { this->m_Size = size; }
 			/**
 			 * @return True if the array is empty, False otherwise.
 			 */
-			b8 IsEmpty() const { return m_Size == 0; }
+			b8 IsEmpty() const { return this->m_Size == 0; }
 
 		protected:
 			Allocator* p_Allocator;
@@ -204,7 +204,7 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 
 			for (u32 i = 0; i < this->m_Size; i++)
 				this->p_Data[i] = array.p_Data[i];
@@ -213,59 +213,59 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Init(u32 initialCapacity) {
-		p_Allocator = MemoryService::Instance()->SystemAllocator();
-		m_Capacity = initialCapacity;
+		this->p_Allocator = MemoryService::Instance()->SystemAllocator();
+		this->m_Capacity = initialCapacity;
 
 		if (initialCapacity != 0) {
-			p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 		}
 		else
-			p_Data = nullptr;
+			this->p_Data = nullptr;
 
-		m_Size = 0;
+		this->m_Size = 0;
 	}
 
 	template<typename T>
 	inline void DynamicArray<T>::Shutdown() {
-		if (m_Capacity > 0)
-			ofree(p_Data, p_Allocator);
+		if (this->m_Capacity > 0)
+			ofree(this->p_Data, this->p_Allocator);
 
-		p_Data = nullptr;
-		m_Size = m_Capacity = 0;
+		this->p_Data = nullptr;
+		this->m_Size = this->m_Capacity = 0;
 	}
 
 	template<typename T>
 	inline void DynamicArray<T>::Set(u32 position, const T& element) {
-		OASSERTM(position < m_Size, "Attempt to set value out of array range!");
+		OASSERTM(position < this->m_Size, "Attempt to set value out of array range!");
 			
-		p_Data[position] = element;
+		this->p_Data[position] = element;
 	}
 
 	template<typename T>
 	inline void DynamicArray<T>::Append(const T& element) {
-		if (m_Size >= m_Capacity)
-			Resize(m_Capacity + m_Capacity);
+		if (this->m_Size >= this->m_Capacity)
+			Resize(this->m_Capacity + this->m_Capacity);
 
-		p_Data[m_Size++] = element;
+		this->p_Data[this->m_Size++] = element;
 	}
 
 	template<typename T>
 	inline void DynamicArray<T>::Prepend(const T& element) {
-		if (m_Size >= m_Capacity)
-			Resize(m_Capacity + m_Capacity);
+		if (this->m_Size >= this->m_Capacity)
+			Resize(this->m_Capacity + this->m_Capacity);
 
-		for (u32 i = 1; i <= m_Size; i++)
-			p_Data[m_Size - i + 1] = p_Data[m_Size - i];
+		for (u32 i = 1; i <= this->m_Size; i++)
+			this->p_Data[this->m_Size - i + 1] = this->p_Data[this->m_Size - i];
 
-		p_Data[0] = element;
-		m_Size++;
+		this->p_Data[0] = element;
+		this->m_Size++;
 	}
 
 	template<typename T>
 	inline void DynamicArray<T>::Remove(const T& element) {
-		for (u32 i = 0; i < m_Size; i++) {
-			if (&p_Data[i] == &element) {
-				p_Data[i] = p_Data[--m_Size];
+		for (u32 i = 0; i < this->m_Size; i++) {
+			if (&this->p_Data[i] == &element) {
+				this->p_Data[i] = this->p_Data[--this->m_Size];
 
 				return;
 			}
@@ -274,10 +274,10 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Remove(u32 position) {
-		if (position < m_Size)
-			memset(&p_Data[position], 0, sizeof(T));
+		if (position < this->m_Size)
+			memset(&this->p_Data[position], 0, sizeof(T));
 
-		m_Size--;
+		this->m_Size--;
 	}
 
 	template<typename T>
@@ -287,9 +287,9 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 
-			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
+			mem_copy(this->p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 
 		return *this;
@@ -297,16 +297,16 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Resize(u32 newCapacity) {
-		T* newData = oallocat(T, m_Capacity, p_Allocator);
+		T* newData = oallocat(T, this->m_Capacity, this->p_Allocator);
 
-		if (m_Capacity) {
-			mem_copy(newData, p_Data, m_Capacity * sizeof(T));
+		if (this->m_Capacity) {
+			mem_copy(newData, this->p_Data, this->m_Capacity * sizeof(T));
 
-			ofree(p_Data, p_Allocator);
+			ofree(this->p_Data, this->p_Allocator);
 		}
 
-		p_Data = newData;
-		m_Capacity = newCapacity;
+		this->p_Data = newData;
+		this->m_Capacity = newCapacity;
 	}
 
 
@@ -315,7 +315,7 @@ namespace Ocean {
 	class FixedArray : public ADT::Array<T> {
 	public:
 		FixedArray() = default;
-		FixedArray(u32 capacity) { Init(capacity); SetSize(capacity); }
+		FixedArray(u32 capacity) { Init(capacity); this->SetSize(capacity); }
 		FixedArray(const FixedArray&);
 		~FixedArray() { Shutdown(); }
 
@@ -371,64 +371,64 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 
-			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
+			mem_copy(this->p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Init(u32 capacity) {
-		p_Allocator = MemoryService::Instance()->SystemAllocator();
-		m_Capacity = capacity;
+		this->p_Allocator = MemoryService::Instance()->SystemAllocator();
+		this->m_Capacity = capacity;
 
 		if (capacity != 0) {
-			p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 		}
 		else
-			p_Data = nullptr;
+			this->p_Data = nullptr;
 
-		m_Size = 0;
+		this->m_Size = 0;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Shutdown() {
-		ofree(p_Data, p_Allocator);
+		ofree(this->p_Data, this->p_Allocator);
 
-		p_Data = nullptr;
-		m_Size = m_Capacity = 0;
+		this->p_Data = nullptr;
+		this->m_Size = this->m_Capacity = 0;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Append(const T& element) {
-		OASSERTM(m_Size < m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
+		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
 
-		p_Data[m_Size++] = element;
+		this->p_Data[this->m_Size++] = element;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Prepend(const T& element) {
-		OASSERTM(m_Size < m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
+		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
 
-		for (u32 i = 1; i <= m_Size; i++)
-			p_Data[m_Size - i + 1] = p_Data[m_Size - i];
+		for (u32 i = 1; i <= this->m_Size; i++)
+			this->p_Data[this->m_Size - i + 1] = this->p_Data[this->m_Size - i];
 
-		p_Data[0] = element;
-		m_Size++;
+		this->p_Data[0] = element;
+		this->m_Size++;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Set(u32 position, const T& element) {
-		OASSERTM(position < m_Capacity, "Fixed Array :| Attempted to set element value outside the range!");
+		OASSERTM(position < this->m_Capacity, "Fixed Array :| Attempted to set element value outside the range!");
 
-		p_Data[position] = element;
+		this->p_Data[position] = element;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Remove(const T& element) {
-		for (u32 i = 0; i < m_Size; i++) {
-			if (&p_Data[i] == &element) {
-				p_Data[i] = p_Data[--m_Size];
+		for (u32 i = 0; i < this->m_Size; i++) {
+			if (&this->p_Data[i] == &element) {
+				this->p_Data[i] = this->p_Data[--this->m_Size];
 
 				return;
 			}
@@ -437,10 +437,10 @@ namespace Ocean {
 
 	template<typename T>
 	inline void FixedArray<T>::Remove(u32 position) {
-		if (position < m_Size)
-			memset(&p_Data[position], 0, sizeof(T));
+		if (position < this->m_Size)
+			memset(&this->p_Data[position], 0, sizeof(T));
 
-		m_Size--;
+		this->m_Size--;
 	}
 
 	template<typename T>
@@ -450,9 +450,9 @@ namespace Ocean {
 			this->m_Capacity = array.m_Capacity;
 			this->m_Size = array.m_Size;
 
-			this->p_Data = oallocat(T, m_Capacity, p_Allocator);
+			this->p_Data = oallocat(T, this->m_Capacity, this->p_Allocator);
 
-			mem_copy(p_Data, array.p_Data, array.m_Size * sizeof(T));
+			mem_copy(this->p_Data, array.p_Data, array.m_Size * sizeof(T));
 		}
 
 		return *this;

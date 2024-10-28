@@ -250,6 +250,8 @@ namespace Ocean {
 			return extensions;
 		}
 
+	#ifdef OC_DEBUG
+
 		void Renderer::SetDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& info) {
 			info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 
@@ -270,10 +272,12 @@ namespace Ocean {
 			SetDebugMessengerInfo(info);
 
 			CHECK_RESULT(
-				CreateDebugUtilsMessengerEXT(m_Instance, &info, nullptr, &m_DebugMessenger),
+				CreateDebugUtilsMessengerEXT(m_Instance, &info, nullptr, &this->m_DebugMessenger),
 				"Failed to set up debug messenger!"
 			);
 		}
+
+	#endif
 
 		void Renderer::CreateRenderPass() {
 			VkAttachmentDescription colorAttachment = GetColorAttachmentDescription(p_SwapChain->GetColorFormat());

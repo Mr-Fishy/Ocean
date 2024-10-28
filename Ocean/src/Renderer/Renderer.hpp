@@ -183,6 +183,8 @@ namespace Ocean {
 			 */
 			std::vector<cstring> GetRequiredExtensions();
 
+		#ifdef OC_DEBUG
+
 			/**
 			 * @brief Sets the information for the Vulkan Debug Messenger to the given info.
 			 * @param info - The Debug Messenger info.
@@ -192,6 +194,8 @@ namespace Ocean {
 			 * @brief Creates the Vulkan Debug Messenger so that the validation layers will report errors.
 			 */
 			void CreateDebugMessenger();
+
+		#endif
 
 			/**
 			 * @brief Creates the Vulkan Render Pass for the Graphics Pipeline. 
