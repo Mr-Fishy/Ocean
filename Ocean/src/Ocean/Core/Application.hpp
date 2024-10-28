@@ -25,9 +25,7 @@ namespace Ocean {
 
 		cstring name = nullptr; /** @brief The name of the application. */
 
-		ApplicationConfig& w(u32 value) { width = value; return *this; }
-		ApplicationConfig& h(u32 value) { height = value; return *this; }
-		ApplicationConfig& name(cstring value) { name = value; return *this; }
+		ApplicationConfig(cstring name, u32 w, u32 h, b8 fullscreen = false) : name(name), width(w), height(h), fullscreen(fullscreen) { }
 
 	};	// ApplicationConfig
 
@@ -76,8 +74,8 @@ namespace Ocean {
 		ServiceManager* p_ServiceManager = nullptr;
 
 	private:
-		Application(const Application&) { }
-		Application operator = (const Application&) { }
+		Application(const Application&) = delete;
+		Application operator = (const Application&) = delete;
 	};
 
 	Application* CreateApplication();

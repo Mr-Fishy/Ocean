@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.11)
-cmake_policy(VERSION 3.22)
+cmake_minimum_required(VERSION 3.11...3.22)
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+endif()
 
 project(OceanEngine)
 
@@ -27,10 +31,6 @@ if(CMAKE_CXX_COMPILER)
 else()
     message(FATAL_ERROR "Compiler Reassessment: Compiler not found. Status: Calamitous.")
 endif()
-
-# These flags only work if on GCC.
-set(GCC_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
-set(CMAKE_CXX_FLAGS "${GCC_FLAGS}")
 
 ### Vulkan ###
 #define VULKAN FOUND FIRST
@@ -71,29 +71,49 @@ endif()
 
 ### Directories ###
 set(OCEAN_SRC_DIRECTORY    "${PROJECT_SOURCE_DIR}/Ocean/src")
-set(OCEAN_VENDOR_DIRECTORY "${PROJECT_SOURCE_DIR}/Ocean/vendor")
 
 set(GLFW_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glfw/include")
 set(GLM_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/glm")
 set(TLSF_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/tlsf")
 
 ### Projects ###
-message(STATUS "Passing off to Bob the builder\n")
-
+message(STATUS)
+message(STATUS "Passing off to Bob the builder")
+string(TIMESTAMP time)
+message(STATUS "GLFW Starting (${time})...")
+message(STATUS)
 # GLFW CMAKE FLAGS
 set(GLFW_BUILD_WAYLAND OFF) # Wayland Support For Linux / Unix
 set(GLFW_BUILD_X11     OFF) # X11 Support For Linux / Unix
 set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For 
 set(GLFW_BUILD_DOCS    OFF) # GLFW DoxyGen Documentation Building
 
-add_subdirectory(Ocean/vendor/glfw)
+add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
 
-# GLM CMAKE FLAGS (NONE)
-add_subdirectory(Ocean/vendor/glm)
+string(TIMESTAMP time)
+message(STATUS "GLM Starting (${time})...")
+# GLM CMAKE FLAGS
+if (BUILD_SHARED_LIBS)
+    set(GLM_BUILD_LIBRARY ON)
+else()
+    set(GLM_BUILD_LIBRARY OFF)
+endif()
+set(GLM_ENABLE_CXX_17 ON)
+set(GLM_BUILD_TESTS OFF)
 
+add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
+
+message(STATUS)
+string(TIMESTAMP time)
+message(STATUS "Ocean Starting (${time})...")
+message(STATUS)
 add_subdirectory(Ocean)
 
+string(TIMESTAMP time)
+message(STATUS "Sandbox Starting (${time})...")
+message(STATUS)
 add_subdirectory(Sandbox)
 
+string(TIMESTAMP time)
 message(STATUS "All required steps Completed, EOF for ${PROJECT_NAME} at time: ${time}\n")
 message(STATUS "Clever little rats. I will not forget what you have done here today.")

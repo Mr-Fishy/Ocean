@@ -1,7 +1,7 @@
 # Directories
 **/bin/
-bin-int/
-build/
+**/bin-int/
+**/build/
 
 .vs/
 .vscode/
@@ -12,7 +12,5 @@ build/
 **.vcxproj.user
 **.vcxproj.filters
 **.csproj
-
-
 
 # Ocean Generated Files
