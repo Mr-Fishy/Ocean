@@ -6,10 +6,12 @@
 
 namespace Ocean {
 
-	typedef void (*PrintCallback)(const char*); // Additional callback for printing.
+	typedef void (*PrintCallback)(const char*); /** @brief Additional callback for printing. */
 
 	class LogService : public Service {
 	public:
+		virtual ~LogService() = default;
+
 		OCEAN_DECLARE_SERVICE(LogService);
 
 		void PrintFormat(cstring format, ...) const;
@@ -25,9 +27,9 @@ namespace Ocean {
 
 	// Macros
 
-	// Print's the given string and arguments to the console.
+	/** @brief Print's the given string and arguments to the console. */
 	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__)
-	// Print's the given string and arguments to the console. Add's a new line after the output.
+	/** @brief Print's the given string and arguments to the console. Add's a new line after the output. */
 	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
 
 }	// Ocean

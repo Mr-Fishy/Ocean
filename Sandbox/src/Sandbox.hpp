@@ -2,6 +2,7 @@
 
 // Ocean
 #include <Ocean/Ocean.hpp>
+#include <Ocean/Core/EntryPoint.hpp>
 
 class Sandbox : public Ocean::Application {
 public:

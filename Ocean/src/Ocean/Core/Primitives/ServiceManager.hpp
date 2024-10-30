@@ -11,7 +11,7 @@ namespace Ocean {
 	 */
 	class ServiceManager {
 	public:
-		ServiceManager() = default;
+		ServiceManager() : p_Allocator(nullptr), m_Services() { }
 		~ServiceManager() = default;
 
 		OCEAN_DECLARE_SERVICE(ServiceManager);
@@ -54,6 +54,9 @@ namespace Ocean {
 		T* Get();
 
 	private:
+		ServiceManager(const ServiceManager&) = delete;
+		ServiceManager operator = (const ServiceManager&) = delete;
+
 		Allocator* p_Allocator = nullptr;
 
 		HashMap<cstring, Service*> m_Services;
@@ -62,7 +65,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline T* ServiceManager::Get() {
-		T* service = (T*)GetService(T::Name());
+		T* service = static_cast<T*>(GetService(T::Name()));
 		if (service == nullptr) {
 			AddService(T::Instance(), T::Name());
 		}

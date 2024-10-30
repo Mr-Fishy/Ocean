@@ -5,7 +5,7 @@
 #include "Ocean/Core/Types/ValueTypes.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 
-int main(int argc, char** argv);
+int main(/* int argc, char** argv */);
 
 namespace Ocean {
 
@@ -16,14 +16,14 @@ namespace Ocean {
 	 */
 	struct ApplicationConfig {
 
+		cstring name = nullptr; /** @brief The name of the application. */
+
 		u32 width  = 900; /** @brief The width of the application window. */
 		u32 height = 600; /** @brief The height of the application window. */
 
 		b8 fullscreen = false; /** @brief If the application is fullscreen. */
 
 		b8 initBaseServices = true;
-
-		cstring name = nullptr; /** @brief The name of the application. */
 
 		ApplicationConfig(cstring name, u32 w, u32 h, b8 fullscreen = false) : name(name), width(w), height(h), fullscreen(fullscreen) { }
 
@@ -43,7 +43,7 @@ namespace Ocean {
 		void Close();
 
 	protected:
-		friend int ::main(int argc, char** argv);
+		friend int ::main(/* int argc, char** argv */);
 
 		/* --- */
 
@@ -57,15 +57,15 @@ namespace Ocean {
 		 */
 		void TestApp();
 
-		virtual b8 MainLoop();
+		virtual b8 MainLoop() = 0;
 
-		virtual void FixedUpdate(f32 delta);
-		virtual void VariableUpdate(f32 delta);
+		virtual void FixedUpdate(f32 delta) = 0;
+		virtual void VariableUpdate(f32 delta) = 0;
 		
-		virtual void Render(f32 interpolation);
+		virtual void Render(f32 interpolation) = 0;
 
-		virtual void FrameBegin();
-		virtual void FrameEnd();
+		virtual void FrameBegin() = 0;
+		virtual void FrameEnd() = 0;
 
 		/* --- */
 

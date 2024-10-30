@@ -5,6 +5,8 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif()
 
+option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
+
 project(OceanEngine)
 
 # Finds the system it is on. for fun and debugging if needed
@@ -47,7 +49,7 @@ else()
 endif()
 
 if (NOT Vulkan_FOUND)
-    mesage(FATAL_ERROR " Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
+    message(FATAL_ERROR " Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
 else()
     message(STATUS "Using Vulkan library at: ${Vulkan_LIBRARIES}")
 endif()
@@ -102,6 +104,9 @@ set(GLM_ENABLE_CXX_17 ON)
 set(GLM_BUILD_TESTS OFF)
 
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
+
+# TODO: Figure out best way to do compile options, probably by setting a variable and using it in Ocean and Sandbox
+# add_compile_definitions("-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
 
 message(STATUS)
 string(TIMESTAMP time)

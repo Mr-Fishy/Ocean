@@ -7,11 +7,14 @@ namespace Ocean {
 	 */
 	class Service {
 	public:
-		virtual void Init(void* config) { }
-		virtual void Shutdown() { }
+		virtual ~Service() = default;
+
+		virtual void Init(void* config) = 0;
+		virtual void Shutdown() = 0;
 
 	};	// Service
 
-	#define OCEAN_DECLARE_SERVICE(Type) static Type* Instance();
+	/** @brief Defines a simple Instance retrieval function. */
+	#define OCEAN_DECLARE_SERVICE(Type) static Type* Instance()
 
 }	// Ocean

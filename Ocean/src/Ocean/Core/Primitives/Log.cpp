@@ -4,13 +4,7 @@
 
 #include "Ocean/Core/Primitives/Macros.hpp"
 
-#if defined (_MSC_VER)
-
-	#define WIN32_LEAN_AND_MEAN
-	#include <Windows.h>
-
-#endif
-
+// std
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -25,14 +19,6 @@ namespace Ocean {
 		printf("%s", logBuffer);
 	}
 
-#if defined (_MSC_VER)
-
-	static void OutputVisualStudio(char* logBuffer) {
-		OutputDebugStringA(logBuffer);
-	}
-
-#endif
-
 	LogService* LogService::Instance() {
 		return &s_LogService;
 	}
@@ -42,26 +28,12 @@ namespace Ocean {
 
 		va_start(args, format);
 
-	#if defined(_MSC_VER)
-
-		vsnprintf_s(LogBuffer, ArraySize(LogBuffer), format, args);
-
-	#else
-
 		vsnprintf(LogBuffer, ArraySize(LogBuffer), format, args);
-
-	#endif
 
 		LogBuffer[ArraySize(LogBuffer) - 1] = '\0';
 		va_end(args);
 
 		OutputConsole(LogBuffer);
-
-	#if defined(_MSC_VER)
-
-		OutputVisualStudio(LogBuffer);
-
-	#endif
 
 		if (m_PrintCallback)
 			m_PrintCallback(LogBuffer);

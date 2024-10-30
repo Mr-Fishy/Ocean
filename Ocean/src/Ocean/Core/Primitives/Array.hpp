@@ -22,8 +22,18 @@ namespace Ocean {
 		template <typename T>
 		class Array {
 		public:
-			Array() = default;
-			~Array() { OASSERTM(this->p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")) }
+			Array() : p_Allocator(nullptr), p_Data(nullptr), m_Capacity(0), m_Size(0) { }
+			Array(const Array& array) { 
+				if (this != &array) {
+					this->p_Allocator = array->p_Allocator;
+				}
+			}
+			Array operator = (const Array& array) {
+				if (this != &array) {
+					this->p_Allocator = array->p_Allocator;
+				}
+			}
+			virtual ~Array() { OASSERTM(this->p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")) }
 
 			virtual void Set(u32 position, const T& element) = 0;
 			

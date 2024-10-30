@@ -227,8 +227,8 @@ namespace Ocean {
 #else
 
 	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocam(size, allocator)			 ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocat(type, count, allocator)	 ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__))
+	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1, __FILE__, __LINE__)))
+	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)))
 
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
 

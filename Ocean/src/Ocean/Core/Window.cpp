@@ -9,7 +9,7 @@
 namespace Ocean {
 
 	static void GLFW_ErrorCallback(i32 error, cstring description) {
-		oprint("GLWF Error: %s\n", description);
+		oprint("GLWF Error (%i): %s\n", error, description);
 	}
 
 	// TODO: Event calls and input handling
@@ -24,7 +24,7 @@ namespace Ocean {
 	// }
 
 	static void GLFW_ResizeCallback(GLFWwindow* window, i32 width, i32 height) {
-		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
+		WindowDataPtr data = static_cast<WindowDataPtr>(glfwGetWindowUserPointer(window));
 
 		data->width = width;
 		data->height = height;
@@ -33,7 +33,7 @@ namespace Ocean {
 	}
 
 	static void GLFW_KeyCallback(GLFWwindow* window, i32 key, i32 scancode, i32 action, i32 mods) {
-		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
+		WindowDataPtr data = static_cast<WindowDataPtr>(glfwGetWindowUserPointer(window));
 
 		oprint("\t> Window Key-Callback! (%s)\n", glfwGetKeyName(key, scancode));
 
@@ -71,13 +71,13 @@ namespace Ocean {
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-		WindowConfig& windowConfig = *(WindowConfig*)(config);
+		WindowConfig& windowConfig = *static_cast<WindowConfig*>(config);
 
 		m_Data.window = this;
 		m_Data.width = windowConfig.width;
 		m_Data.height = windowConfig.height;
 
-		p_PlatformHandle = (void*)glfwCreateWindow(m_Data.width, m_Data.height, windowConfig.name, NULL, NULL);
+		p_PlatformHandle = static_cast<void*>(glfwCreateWindow(m_Data.width, m_Data.height, windowConfig.name, NULL, NULL));
 
 		if (!p_PlatformHandle) {
 			oprint("GLFW Window Error!\n");
@@ -85,15 +85,15 @@ namespace Ocean {
 			return;
 		}
 
-		glfwSetWindowUserPointer((WindowPtr)p_PlatformHandle, &m_Data);
+		glfwSetWindowUserPointer(static_cast<WindowPtr>(p_PlatformHandle), &m_Data);
 		// glfwSetWindowRefreshCallback((WindowPtr)p_PlatformHandle, GLFW_RefreshCallback);
-		glfwSetWindowSizeCallback((WindowPtr)p_PlatformHandle, GLFW_ResizeCallback);
-		glfwSetKeyCallback((WindowPtr)p_PlatformHandle, GLFW_KeyCallback);
-		glfwSetCursorPosCallback((WindowPtr)p_PlatformHandle, GLFW_CursorCallback);
+		glfwSetWindowSizeCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_ResizeCallback);
+		glfwSetKeyCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_KeyCallback);
+		glfwSetCursorPosCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CursorCallback);
 	}
 
 	void Window::Shutdown() {
-		glfwDestroyWindow((WindowPtr)p_PlatformHandle);
+		glfwDestroyWindow(static_cast<WindowPtr>(p_PlatformHandle));
 		glfwTerminate();
 	}
 
@@ -105,25 +105,25 @@ namespace Ocean {
 			m_Data.windowedWidth = m_Data.width;
 			m_Data.windowedHeight = m_Data.height;
 			oprint("Setting backup size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
-			glfwSetWindowMonitor((WindowPtr)p_PlatformHandle, monitor, NULL, NULL, mode->width, mode->height, mode->refreshRate);
+			glfwSetWindowMonitor(static_cast<WindowPtr>(p_PlatformHandle), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 		}
 		else {
 			oprint("Returning to size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
-			glfwSetWindowMonitor((WindowPtr)p_PlatformHandle, NULL, (mode->width / 2) - (m_Data.windowedWidth / 2), (mode->height / 2) - (m_Data.windowedHeight / 2), m_Data.windowedWidth, m_Data.windowedHeight, NULL);
+			glfwSetWindowMonitor(static_cast<WindowPtr>(p_PlatformHandle), nullptr, (mode->width / 2) - (m_Data.windowedWidth / 2), (mode->height / 2) - (m_Data.windowedHeight / 2), m_Data.windowedWidth, m_Data.windowedHeight, mode->refreshRate);
 		}
 	}
 
 	void Window::CenterMouse(b8 enabled) const {
 		if (enabled)
-			glfwSetInputMode((WindowPtr)p_PlatformHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		else
-			glfwSetInputMode((WindowPtr)p_PlatformHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
 	void Window::PollEvents() {
 		glfwPollEvents();
 
-		if (glfwWindowShouldClose((WindowPtr)p_PlatformHandle))
+		if (glfwWindowShouldClose(static_cast<WindowPtr>(p_PlatformHandle)))
 			m_RequestedExit = true;
 	}
 

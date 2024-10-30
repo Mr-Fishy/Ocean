@@ -29,9 +29,9 @@ namespace Ocean {
 
 	template <typename To, typename From>
 	To safe_cast(From a) {
-		To result = (To)a;
+		To result = static_cast<To>(a);
 
-		From check = (From)result;
+		From check = static_cast<From>(result);
 		OASSERT(check == result);
 
 		return result;

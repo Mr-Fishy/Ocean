@@ -28,10 +28,10 @@ namespace Ocean {
 	 * @brief The window data to handle in GLFW.
 	 */
 	struct WindowData {
-		Window* window;
+		Window* window = nullptr;
 
-		u16 width, height;
-		u16 windowedWidth, windowedHeight;
+		u16 width = 0, height = 0;
+		u16 windowedWidth = 0, windowedHeight = 0;
 
 		b8 vSync = true;
 		b8 refreshed = false;
@@ -45,6 +45,9 @@ namespace Ocean {
 	 */
 	class Window : public Service {
 	public:
+		Window() : p_PlatformHandle(nullptr), m_Data() { }
+		virtual ~Window() = default;
+
 		/**
 		 * @brief Initializes the window.
 		 * @param config - The configuration of the window using WindowConfig.
@@ -103,7 +106,12 @@ namespace Ocean {
 		void ResizeHandled() { m_Data.resized = false; }
 
 	private:
-		void* p_PlatformHandle = nullptr;
+		Window(Window&) = delete;
+		Window operator = (Window&) = delete;
+
+		/* --- */
+
+		void* p_PlatformHandle;
 
 		b8 m_RequestedExit = false;
 		b8 m_Minimized = false;

@@ -1,8 +1,5 @@
 #include "Sandbox.hpp"
 
-// Ocean
-#include <Ocean/Core/EntryPoint.hpp>
-
 static Ocean::Window s_Window;
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
@@ -99,6 +96,8 @@ b8 Sandbox::MainLoop() {
 	}
 
 	p_Renderer->CleanUp();
+
+	Close();
 
 	return true;
 }
