@@ -25,20 +25,9 @@ namespace Ocean {
 
 	// Macros
 
-#if defined (_MSC_VER)
-
-	// Print's the given string and arguments to the console.
-	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, __VA_ARGS__)
-	// Print's the given string and arguments to the console. Add's a new line after the output.
-	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
-
-#else
-
 	// Print's the given string and arguments to the console.
 	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__)
 	// Print's the given string and arguments to the console. Add's a new line after the output.
 	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
-
-#endif
 
 }	// Ocean

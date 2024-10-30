@@ -75,11 +75,13 @@ target_link_libraries(
     PRIVATE ${Vulkan_LIBRARIES}
 )
 
-set(OCEAN_DEBUG_OPTIONS "-Wall")
+if (GNU)
 
-target_compile_options(
-    ${PROJECT_NAME}
-    PRIVATE
+    set(OCEAN_DEBUG_OPTIONS "OC_DEBUG=1 -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
 
-    "$<$<CONFIG:DEBUG>:${OCEAN_DEBUG_OPTIONS}>"
-)
+    target_compile_options(
+        ${PROJECT_NAME}
+        PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_DEBUG_OPTIONS}>"
+    )
+
+endif()

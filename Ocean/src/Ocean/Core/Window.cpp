@@ -16,12 +16,12 @@ namespace Ocean {
 
 	typedef WindowData* WindowDataPtr;
 
-	static void GLFW_RefreshCallback(GLFWwindow* window) {
-		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
+	// static void GLFW_RefreshCallback(GLFWwindow* window) {
+	// 	WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);
 
-		oprint("\t> Window Refreshed!\n");
-		data->refreshed = true;
-	}
+	// 	oprint("\t> Window Refreshed!\n");
+	// 	data->refreshed = true;
+	// }
 
 	static void GLFW_ResizeCallback(GLFWwindow* window, i32 width, i32 height) {
 		WindowDataPtr data = (WindowDataPtr)glfwGetWindowUserPointer(window);

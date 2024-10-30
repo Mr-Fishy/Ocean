@@ -6,6 +6,7 @@
 #include "Ocean/Core/Primitives/Assert.hpp"
 
 // std
+#include <cstring>
 #include <sstream>
 
 namespace Ocean {
@@ -22,7 +23,7 @@ namespace Ocean {
 		class Array {
 		public:
 			Array() = default;
-			~Array() { OASSERTM(this->p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")); }
+			~Array() { OASSERTM(this->p_Data == nullptr, CONSOLE_TEXT_RED("Array attempted deconstruction while data may still exist!")) }
 
 			virtual void Set(u32 position, const T& element) = 0;
 			
@@ -46,7 +47,7 @@ namespace Ocean {
 			 * @return The pointer of the element at the given position. 
 			 */
 			T  Get(u32 position) const {
-				OASSERTM(position < this->m_Size, "Attempt to get element out of range!");
+				OASSERTM(position < this->m_Size, "Attempt to get element out of range!")
 
 				return this->p_Data[position];
 			}
@@ -55,7 +56,7 @@ namespace Ocean {
 			 * @return The element at the given position.
 			 */
 			T& Get(u32 position) {
-				OASSERTM(position < this->m_Size, "Attempt to get element out of range!");
+				OASSERTM(position < this->m_Size, "Attempt to get element out of range!")
 
 				return this->p_Data[position];
 			}
@@ -236,7 +237,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Set(u32 position, const T& element) {
-		OASSERTM(position < this->m_Size, "Attempt to set value out of array range!");
+		OASSERTM(position < this->m_Size, "Attempt to set value out of array range!")
 			
 		this->p_Data[position] = element;
 	}
@@ -401,14 +402,14 @@ namespace Ocean {
 
 	template<typename T>
 	inline void FixedArray<T>::Append(const T& element) {
-		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
+		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!")
 
 		this->p_Data[this->m_Size++] = element;
 	}
 
 	template<typename T>
 	inline void FixedArray<T>::Prepend(const T& element) {
-		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!");
+		OASSERTM(this->m_Size < this->m_Capacity, "Fixed Array :| Attempted to append element to a full array!")
 
 		for (u32 i = 1; i <= this->m_Size; i++)
 			this->p_Data[this->m_Size - i + 1] = this->p_Data[this->m_Size - i];
@@ -419,7 +420,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline void FixedArray<T>::Set(u32 position, const T& element) {
-		OASSERTM(position < this->m_Capacity, "Fixed Array :| Attempted to set element value outside the range!");
+		OASSERTM(position < this->m_Capacity, "Fixed Array :| Attempted to set element value outside the range!")
 
 		this->p_Data[position] = element;
 	}
