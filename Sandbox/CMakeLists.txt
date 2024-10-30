@@ -27,3 +27,14 @@ target_link_libraries(
     
     PRIVATE Ocean
 )
+
+if (GNU)
+
+    set(SANDBOX_DEBUG_OPTIONS "OC_DEBUG=1 -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
+
+    target_compile_options(
+        ${PROJECT_NAME}
+        PRIVATE "$<$<CONFIG:DEBUG>:${SANDBOX_DEBUG_OPTIONS}>"
+    )
+
+endif()

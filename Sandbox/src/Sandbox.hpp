@@ -35,10 +35,7 @@ private:
 
 
 Ocean::Application* Ocean::CreateApplication() {
-	Ocean::ApplicationConfig config;
-	config.w(1200);
-	config.h(800);
-	config.name("Ocean Sandbox");
+	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
 
 	return new Sandbox(config);
 }

@@ -9,7 +9,15 @@
 #define OCEAN_INLINE                                inline
 #define OCEAN_FINLINE                               always_inline
 
-#define OCEAN_DEBUG_BREAK                           raise(SIGTRAP);
+#if defined(SIGTRAP)
+
+    #define OCEAN_DEBUG_BREAK                       raise(SIGTRAP)
+
+#else
+
+    #define OCEAN_DEBUG_BREAK                       raise(SIGABRT)
+
+#endif
 
 #define OCEAN_CONCAT_OPERATOR(x, y)                 x y
 
@@ -20,7 +28,7 @@
 #define OCEAN_CONCAT(x, y)                          OCEAN_CONCAT_OPERATOR(x, y)
 #define OCEAN_LINE_STRING                           OCEAN_MAKESTRING(__line__)
 
-#define OCEAN_FUNCTIONLINE(Function, Message)       (Function " (" OCEAN_LINE_STRING "): " Message)
+#define OCEAN_FUNCTIONLINE(Function, Message)       OCEAN_MAKESTRING(Function) " (" OCEAN_LINE_STRING "): " OCEAN_MAKESTRING(Message)
 
 #define OCEAN_UNIQUE_SUFFIX(Param)                  OCEAN_CONCAT(Param, __line__)
 
