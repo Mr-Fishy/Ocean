@@ -75,9 +75,7 @@ target_link_libraries(
     PRIVATE ${Vulkan_LIBRARIES}
 )
 
-set(OCEAN_DEBUG_OPTIONS "OC_DEBUG=1")
-
 target_compile_options(
     ${PROJECT_NAME}
-    PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_DEBUG_OPTIONS}>"
+    PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
 )

@@ -537,6 +537,7 @@ namespace Ocean {
 			}
 
 			OASSERTM(false, "Failed to find suitable memory type!");
+			return 0;
 		}
 
 		void Device::CopyBuffer(Buffer* src, Buffer* dst, sizet size) {

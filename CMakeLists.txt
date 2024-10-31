@@ -105,8 +105,7 @@ set(GLM_BUILD_TESTS OFF)
 
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 
-# TODO: Figure out best way to do compile options, probably by setting a variable and using it in Ocean and Sandbox
-# add_compile_definitions("-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
+set(OCEAN_COMPILE_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
 
 message(STATUS)
 string(TIMESTAMP time)

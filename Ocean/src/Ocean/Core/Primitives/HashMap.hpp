@@ -296,7 +296,7 @@ namespace Ocean {
 	inline void HashMap<K, T>::Resize(u32 newCapacity) {
 		KeyValue* oldSlots = this->p_Slots;
 
-		this->p_Slots = oallocat(KeyValue*, newCapacity, this->p_Allocator);
+		this->p_Slots = oallocat(KeyValue, newCapacity, this->p_Allocator);
 		this->m_Threshold = (newCapacity * 9) / 10;
 		this->m_Mask = newCapacity - 1;
 

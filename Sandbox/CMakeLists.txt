@@ -28,13 +28,7 @@ target_link_libraries(
     PRIVATE Ocean
 )
 
-if (GNU)
-
-    set(SANDBOX_DEBUG_OPTIONS "")
-
-    target_compile_options(
-        ${PROJECT_NAME}
-        PRIVATE "$<$<CONFIG:DEBUG>:${SANDBOX_DEBUG_OPTIONS}>"
-    )
-
-endif()
+target_compile_options(
+    ${PROJECT_NAME}
+    PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
+)
