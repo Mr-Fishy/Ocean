@@ -28,7 +28,7 @@ target_link_libraries(
     PRIVATE Ocean
 )
 
-target_compile_options(
-    ${PROJECT_NAME}
-    PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
-)
+# target_compile_options(
+#     ${PROJECT_NAME}
+#     PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
+# )

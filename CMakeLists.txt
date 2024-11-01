@@ -16,10 +16,8 @@ if(WIN32)
     message(STATUS "System: Windows")
 elseif(APPLE)
     message(STATUS "System: MACOS")
-    
 elseif(UNIX)
     message(STATUS "System: Linux/Unix")
-    
 else()
     message(WARNING "OS Assessment: Unknown platform. Status: Disastrous.")
 endif()
@@ -105,7 +103,9 @@ set(GLM_BUILD_TESTS OFF)
 
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 
+# -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic
 set(OCEAN_COMPILE_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
+set(CMAKE_CXX_FLAGS "${OCEAN_COMPILE_FLAGS}")
 
 message(STATUS)
 string(TIMESTAMP time)

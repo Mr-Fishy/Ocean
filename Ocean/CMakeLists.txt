@@ -72,10 +72,10 @@ target_link_libraries(
 
     PUBLIC glm::glm
     PRIVATE glfw
-    PRIVATE ${Vulkan_LIBRARIES}
+    PUBLIC ${Vulkan_LIBRARIES}
 )
 
-target_compile_options(
-    ${PROJECT_NAME}
-    PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
-)
+# target_compile_options(
+#     ${PROJECT_NAME}
+#     PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
+# )
