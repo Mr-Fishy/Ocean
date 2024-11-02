@@ -3,6 +3,8 @@ project(Ocean VERSION 0.1 DESCRIPTION "The Core Engine")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# GLob all of the following files in the directories.
+
 # Root Files
 file(GLOB Ocean_ROOT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/*.hpp)
 
@@ -24,6 +26,8 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
 # Renderer Files
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
+
+# Group all of the files per their source for IDE / Editor
 
 source_group("Root File" FILES ${Ocean_ROOT_HEADER})
 
@@ -70,8 +74,9 @@ target_include_directories(
 target_link_libraries(
     ${PROJECT_NAME}
 
-    PUBLIC glm::glm
     PRIVATE glfw
+
+    PUBLIC glm::glm
     PUBLIC ${Vulkan_LIBRARIES}
 )
 

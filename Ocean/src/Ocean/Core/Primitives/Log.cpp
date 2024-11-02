@@ -10,8 +10,6 @@
 
 namespace Ocean {
 
-	LogService s_LogService;
-
 	static constexpr u32 k_StringBufferSize = 1024 * 1024;
 	static char LogBuffer[k_StringBufferSize];
 
@@ -19,8 +17,16 @@ namespace Ocean {
 		printf("%s", logBuffer);
 	}
 
-	LogService* LogService::Instance() {
-		return &s_LogService;
+	
+	
+	// TODO: Change to static instance on heap rather than on stack.
+	static LogService* s_LogService = nullptr;
+	
+	LogService& LogService::Instance() {
+		if (s_LogService == nullptr)
+			s_LogService = new LogService();
+
+		return *s_LogService;
 	}
 
 	void LogService::PrintFormat(cstring format, ...) const {

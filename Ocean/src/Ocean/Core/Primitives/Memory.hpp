@@ -190,7 +190,7 @@ namespace Ocean {
 
 	class MemoryService : public Service {
 	public:
-		OCEAN_DECLARE_SERVICE(MemoryService);
+		static MemoryService& Instance();
 
 		virtual void Init(void* config) override;
 		virtual void Shutdown() override;

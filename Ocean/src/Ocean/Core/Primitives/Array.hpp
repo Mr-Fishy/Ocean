@@ -224,7 +224,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DynamicArray<T>::Init(u32 initialCapacity) {
-		this->p_Allocator = MemoryService::Instance()->SystemAllocator();
+		this->p_Allocator = MemoryService::Instance().SystemAllocator();
 		this->m_Capacity = initialCapacity;
 
 		if (initialCapacity != 0) {
@@ -390,7 +390,7 @@ namespace Ocean {
 
 	template<typename T>
 	inline void FixedArray<T>::Init(u32 capacity) {
-		this->p_Allocator = MemoryService::Instance()->SystemAllocator();
+		this->p_Allocator = MemoryService::Instance().SystemAllocator();
 		this->m_Capacity = capacity;
 
 		if (capacity != 0) {

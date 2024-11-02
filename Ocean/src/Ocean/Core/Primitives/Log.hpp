@@ -10,9 +10,7 @@ namespace Ocean {
 
 	class LogService : public Service {
 	public:
-		virtual ~LogService() = default;
-
-		OCEAN_DECLARE_SERVICE(LogService);
+		static LogService& Instance();
 
 		void PrintFormat(cstring format, ...) const;
 
@@ -21,6 +19,9 @@ namespace Ocean {
 		static cstring Name() { return "OCEAN_Log_Service"; }
 
 	private:
+		LogService() = default;
+		virtual ~LogService() = default;
+
 		PrintCallback m_PrintCallback = nullptr;
 
 	};	// LogService
@@ -28,8 +29,9 @@ namespace Ocean {
 	// Macros
 
 	/** @brief Print's the given string and arguments to the console. */
-	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__)
+	#define oprint(format, ...)    Ocean::LogService::Instance().PrintFormat(format, ## __VA_ARGS__)
+
 	/** @brief Print's the given string and arguments to the console. Add's a new line after the output. */
-	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
+	#define oprintret(format, ...) Ocean::LogService::Instance().PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance().PrintFormat("\n")
 
 }	// Ocean

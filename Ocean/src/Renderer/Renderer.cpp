@@ -19,10 +19,13 @@ namespace Ocean {
 
 	namespace Vulkan {
 
-		Renderer s_Renderer;
+		static Renderer* s_Renderer = nullptr;
 
-		Renderer* Renderer::Instance() {
-			return &s_Renderer;
+		Renderer& Renderer::Instance() {
+			if (s_Renderer == nullptr)
+				s_Renderer = new Renderer();
+
+			return *s_Renderer;
 		}
 
 		void Renderer::Init(void* config) {

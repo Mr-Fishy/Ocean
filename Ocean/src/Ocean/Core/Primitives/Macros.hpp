@@ -6,8 +6,12 @@
 
 #define ArraySize(array) (sizeof(array) / sizeof((array)[0]))
 
+/** @brief Inline descriptor. */
 #define OCEAN_INLINE                                inline
+/** @brief Force inline descriptor. */
 #define OCEAN_FINLINE                               always_inline
+
+#define OCEAN_EXP                                   extern
 
 #if defined(SIGTRAP)
 
@@ -19,10 +23,13 @@
 
 #endif
 
+/** @brief Concatenate two strings */
 #define OCEAN_CONCAT_OPERATOR(x, y)                 x y
 
+/** @brief Get's the filename in the location. */
 #define OCEAN_LOCATION                              __FILE_NAME__
 
+/** @brief Stringify's the given constant. */
 #define OCEAN_STRINGIFY(L)                          #L
 #define OCEAN_MAKESTRING(L)                         OCEAN_STRINGIFY(L)
 #define OCEAN_CONCAT(x, y)                          OCEAN_CONCAT_OPERATOR(x, y)

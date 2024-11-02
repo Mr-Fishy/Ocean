@@ -101,7 +101,7 @@ namespace Ocean {
 			};
 
 		public:
-			OCEAN_DECLARE_SERVICE(Renderer);
+			static Renderer& Instance();
 
 			/**
 			 * @brief Initializes the Renderer with the given configuration.

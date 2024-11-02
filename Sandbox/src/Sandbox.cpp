@@ -7,12 +7,12 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// ---> Init Primitive Services
 
-	Ocean::MemoryService::Instance()->Init(nullptr);
+	Ocean::MemoryService::Instance().Init(nullptr);
 
 	Ocean::oTimeServiceInit();
 
-	p_ServiceManager = Ocean::ServiceManager::Instance();
-	p_ServiceManager->Init(Ocean::MemoryService::Instance()->SystemAllocator());
+	p_ServiceManager = &Ocean::ServiceManager::Instance();
+	p_ServiceManager->Init(Ocean::MemoryService::Instance().SystemAllocator());
 
 	// ---> Init Foundation
 
@@ -21,7 +21,7 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		config.width,
 		config.height,
 		config.name,
-		Ocean::MemoryService::Instance()->SystemAllocator()
+		Ocean::MemoryService::Instance().SystemAllocator()
 	};
 	p_Window = &s_Window;
 	p_Window->Init(&winConfig);
@@ -30,7 +30,7 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// Graphics
 	Ocean::Vulkan::RendererConfig renConfig{
-		Ocean::MemoryService::Instance()->SystemAllocator(),
+		Ocean::MemoryService::Instance().SystemAllocator(),
 		p_Window,
 		config.name,
 		(u16)p_Window->Width(),
@@ -57,7 +57,7 @@ Sandbox::~Sandbox() {
 
 	p_ServiceManager->Shutdown();
 
-	Ocean::MemoryService::Instance()->Shutdown();
+	Ocean::MemoryService::Instance().Shutdown();
 }
 
 

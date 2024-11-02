@@ -146,7 +146,7 @@ namespace Ocean {
 			vkCmdEndRenderPass(buffer);
 		}
 
-
+	#if defined(OC_DEBUG)
 
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
@@ -212,6 +212,8 @@ namespace Ocean {
 				func(instance, debugMessenger, pAllocator);
 			}
 		}
+		
+	#endif
 
 	}	// Vulkan
 

@@ -27,12 +27,15 @@ namespace Ocean {
 
 	// Memory Service
 
-	static MemoryService s_MemoryService;
-
 	static sizet s_Size = omega(32) + tlsf_size() + 8;
 
-	MemoryService* MemoryService::Instance() {
-		return &s_MemoryService;
+	static MemoryService* s_MemoryService = nullptr;
+
+	MemoryService& MemoryService::Instance() {
+		if (s_MemoryService == nullptr)
+			s_MemoryService = new MemoryService();
+
+		return *s_MemoryService;
 	}
 
 	void MemoryService::Init(void* config) {

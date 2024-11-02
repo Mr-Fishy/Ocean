@@ -6,10 +6,13 @@
 
 namespace Ocean {
 
-	static ServiceManager s_ServiceManager;
+	static ServiceManager* s_ServiceManager = nullptr;
 
-	ServiceManager* ServiceManager::Instance() {
-		return &s_ServiceManager;
+	ServiceManager& ServiceManager::Instance() {
+		if (s_ServiceManager == nullptr)
+			s_ServiceManager = new ServiceManager();
+
+		return *s_ServiceManager;
 	}
 
 	void ServiceManager::Init(Allocator* allocator) {
