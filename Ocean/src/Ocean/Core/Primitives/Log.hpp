@@ -10,6 +10,9 @@ namespace Ocean {
 
 	class LogService : public Service {
 	public:
+		LogService() = default;
+		virtual ~LogService() = default;
+
 		static LogService& Instance();
 
 		void PrintFormat(cstring format, ...) const;
@@ -19,8 +22,7 @@ namespace Ocean {
 		static cstring Name() { return "OCEAN_Log_Service"; }
 
 	private:
-		LogService() = default;
-		virtual ~LogService() = default;
+		static LogService* s_Instance;
 
 		PrintCallback m_PrintCallback = nullptr;
 

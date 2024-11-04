@@ -17,16 +17,15 @@ namespace Ocean {
 		printf("%s", logBuffer);
 	}
 
-	
-	
-	// TODO: Change to static instance on heap rather than on stack.
-	static LogService* s_LogService = nullptr;
+
+
+	LogService* LogService::s_Instance = nullptr;
 	
 	LogService& LogService::Instance() {
-		if (s_LogService == nullptr)
-			s_LogService = new LogService();
+		if (s_Instance == nullptr)
+			s_Instance = new LogService();
 
-		return *s_LogService;
+		return *s_Instance;
 	}
 
 	void LogService::PrintFormat(cstring format, ...) const {

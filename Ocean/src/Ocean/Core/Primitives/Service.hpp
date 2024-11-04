@@ -7,6 +7,8 @@ namespace Ocean {
 	 */
 	class Service {
 	public:
+		virtual ~Service() = default;
+
 		virtual void Init(void* config) { }
 		virtual void Shutdown() { }
 
