@@ -8,7 +8,7 @@
 
 // std
 #include <stdlib.h>
-#include <memory>
+#include <cstring>
 
 #define HEAP_ALLOCATOR_STATS
 
@@ -76,7 +76,7 @@ namespace Ocean {
 	#if defined (HEAP_ALLOCATOR_STATS)
 		MemoryStats stats{ m_AllocatedSize, m_TotalSize };
 		void* pool = tlsf_get_pool(p_Handle);
-		tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
+		// FIX: tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
 
 		if (stats.AllocatedBytes != 0)
 			oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!"));

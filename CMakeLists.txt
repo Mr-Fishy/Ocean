@@ -85,7 +85,7 @@ message(STATUS)
 # GLFW CMAKE FLAGS
 set(GLFW_BUILD_WAYLAND OFF) # Wayland Support For Linux / Unix
 set(GLFW_BUILD_X11     OFF) # X11 Support For Linux / Unix
-set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For 
+set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For MacOS
 set(GLFW_BUILD_DOCS    OFF) # GLFW DoxyGen Documentation Building
 
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)

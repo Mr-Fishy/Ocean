@@ -34,8 +34,8 @@ namespace Ocean {
 	 */
 	class Application {
 	public:
-		Application(const ApplicationConfig& config);
-		virtual ~Application();
+		Application(const ApplicationConfig& config) { }
+		virtual ~Application() = default;
 
 		/**
 		 * @brief Closes the application.
