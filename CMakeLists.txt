@@ -83,8 +83,8 @@ string(TIMESTAMP time)
 message(STATUS "GLFW Starting (${time})...")
 message(STATUS)
 # GLFW CMAKE FLAGS
-set(GLFW_BUILD_WAYLAND OFF) # Wayland Support For Linux / Unix
-set(GLFW_BUILD_X11     OFF) # X11 Support For Linux / Unix
+set(GLFW_BUILD_WAYLAND ON) # Wayland Support For Linux / Unix
+set(GLFW_BUILD_X11     ON) # X11 Support For Linux / Unix
 set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For MacOS
 set(GLFW_BUILD_DOCS    OFF) # GLFW DoxyGen Documentation Building
 
