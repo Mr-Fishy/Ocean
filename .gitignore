@@ -2,9 +2,11 @@
 **/bin/
 **/bin-int/
 **/build/
+**/steamaudio/
 
 .vs/
 .vscode/
+.cache
 
 # Files
 **.sln
@@ -14,4 +16,4 @@
 **.csproj
 
 # Ocean Generated Files
-/.cache
+

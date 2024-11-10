@@ -75,6 +75,7 @@ set(OCEAN_SRC_DIRECTORY    "${PROJECT_SOURCE_DIR}/Ocean/src")
 set(GLFW_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glfw/include")
 set(GLM_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/glm")
 set(TLSF_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/tlsf")
+set(STEAM_AUDIO_DIRECTORY  "${PROJECT_SOURCE_DIR}/Ocean/vendor/steamaudio/include")
 
 ### Projects ###
 message(STATUS)
@@ -82,17 +83,15 @@ message(STATUS "Passing off to Bob the builder")
 string(TIMESTAMP time)
 message(STATUS "GLFW Starting (${time})...")
 message(STATUS)
-# GLFW CMAKE FLAGS
-set(GLFW_BUILD_WAYLAND ON) # Wayland Support For Linux / Unix
-set(GLFW_BUILD_X11     ON) # X11 Support For Linux / Unix
-set(GLFW_BUILD_COCOA   OFF) # Cocoa Support For MacOS
-set(GLFW_BUILD_DOCS    OFF) # GLFW DoxyGen Documentation Building
 
+# GLFW
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
-
 string(TIMESTAMP time)
+message(STATUS)
+
+
 message(STATUS "GLM Starting (${time})...")
-# GLM CMAKE FLAGS
+# GLM CMAKE
 if (BUILD_SHARED_LIBS)
     set(GLM_BUILD_LIBRARY ON)
 else()
@@ -102,12 +101,13 @@ set(GLM_ENABLE_CXX_17 ON)
 set(GLM_BUILD_TESTS OFF)
 
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
+string(TIMESTAMP time)
+message(STATUS)
 
 # -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic
 set(OCEAN_COMPILE_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
 set(CMAKE_CXX_FLAGS "${OCEAN_COMPILE_FLAGS}")
 
-message(STATUS)
 string(TIMESTAMP time)
 message(STATUS "Ocean Starting (${time})...")
 message(STATUS)

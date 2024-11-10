@@ -8,21 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Root Files
 file(GLOB Ocean_ROOT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/*.hpp)
 
-foreach(FILE_PATH ${Ocean_ROOT_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-
 # Core Files
 file(GLOB Ocean_CORE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.hpp)
 file(GLOB Ocean_CORE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.cpp)
-
-message(STATUS)
-foreach(FILE_PATH ${Ocean_CORE_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_CORE_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
 
 file(GLOB Ocean_INPUT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.hpp)
 file(GLOB Ocean_INPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.cpp)
@@ -31,75 +19,46 @@ file(GLOB Ocean_PRIMI_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Primitiv
 file(GLOB Ocean_TYPES_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Types/*.hpp)
 file(GLOB Ocean_TYPES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Types/*.cpp)
 
-message(STATUS)
-foreach(FILE_PATH ${Ocean_INPUT_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_INPUT_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_PRIMI_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_PRIMI_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_TYPES_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_TYPES_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-
 # Platform Files
 file(GLOB Ocean_PLAT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.hpp)
 file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
-
-message(STATUS)
-foreach(FILE_PATH ${Ocean_PLAT_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_PLAT_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
 
 # Renderer Files
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
 
-message(STATUS)
-foreach(FILE_PATH ${Ocean_REND_HEADER})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-foreach(FILE_PATH ${Ocean_REND_SOURCE})
-    message(STATUS "File: ${FILE_PATH}")
-endforeach()
-
 # Vendor Files (Non-Libraries)
+## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
 file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 
+## Steam Audio
+file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
+
 # Group all of the files per their source for IDE / Editor
 
-source_group("Root File" FILES ${Ocean_ROOT_HEADER})
+source_group("Root Header" FILES ${Ocean_ROOT_HEADER})
 
-source_group("Core Files" FILES ${Ocean_CORE_HEADER})
-source_group("Core Files" FILES ${Ocean_CORE_SOURCE})
+source_group("Core Headers" FILES ${Ocean_CORE_HEADER})
+source_group("Core Sources" FILES ${Ocean_CORE_SOURCE})
 
-source_group("Input Files" FILES ${Ocean_INPUT_HEADER})
-source_group("Input Files" FILES ${Ocean_INPUT_SOURCE})
-source_group("Primitive Files" FILES ${Ocean_PRIMI_HEADER})
-source_group("Primitive Files" FILES ${Ocean_PRIMI_SOURCE})
-source_group("Type Files" FILES ${Ocean_TYPES_HEADER})
-source_group("Type Files" FILES ${Ocean_TYPES_SOURCE})
+source_group("Input Headers" FILES ${Ocean_INPUT_HEADER})
+source_group("Input Sources" FILES ${Ocean_INPUT_SOURCE})
+source_group("Primitive Headers" FILES ${Ocean_PRIMI_HEADER})
+source_group("Primitive Sources" FILES ${Ocean_PRIMI_SOURCE})
+source_group("Type Headers" FILES ${Ocean_TYPES_HEADER})
+source_group("Type Sources" FILES ${Ocean_TYPES_SOURCE})
 
-source_group("Platform Files" FILES ${Ocean_PLAT_HEADER})
-source_group("Platform Files" FILES ${Ocean_PLAT_SOURCE})
+source_group("Platform Headers" FILES ${Ocean_PLAT_HEADER})
+source_group("Platform Sources" FILES ${Ocean_PLAT_SOURCE})
 
-source_group("Renderer Files" FILES ${Ocean_REND_HEADER})
-source_group("Renderer Files" FILES ${Ocean_REND_SOURCE})
+source_group("Renderer Headers" FILES ${Ocean_REND_HEADER})
+source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
 
-source_group("tlsf Files" FILES ${tlsf_FILES})
+source_group("tlsf Headers" FILES ${tlsf_HEADER})
+source_group("tlsf Sources" FILES ${tlsf_SOURCE})
+
+source_group("Steam Audio Headers" FILES ${steamaudio_HEADER})
 
 add_library(
     ${PROJECT_NAME}
@@ -116,27 +75,35 @@ add_library(
     ${Ocean_REND_HEADER} ${Ocean_REND_SOURCE}
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
+    ${steamaudio_HEADER}
 )
 
 target_include_directories(
     ${PROJECT_NAME}
     
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/src/
 
     PRIVATE ${TLSF_DIRECTORY}
+    PUBLIC  ${STEAM_AUDIO_DIRECTORY}
+
     PRIVATE ${Vulkan_INCLUDE_DIRS}
 )
+
+# The following assumes that the platforms are x64
+if (APPLE)
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/osx/libphonon.dylib")
+elseif (WIN32)
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/windows-x64/phonon.dll")
+else ()
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/linux-x64/libphonon.so")
+endif ()
 
 target_link_libraries(
     ${PROJECT_NAME}
 
     PRIVATE glfw
+    PRIVATE ${SteamAudio_LIBRARIES}
 
     PUBLIC glm::glm
     PUBLIC ${Vulkan_LIBRARIES}
 )
-
-# target_compile_options(
-#     ${PROJECT_NAME}
-#     PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
-# )
