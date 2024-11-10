@@ -305,7 +305,7 @@ namespace Ocean {
 		}
 
 		VkFramebuffer SwapChain::GetFramebuffer(u32 index) const {
-			return m_Framebuffers.Get(index)->GetFrame();
+			return m_Framebuffers.Get(index).GetFrame();
 		}
 
 	}	// Vulkan

@@ -190,15 +190,15 @@ namespace Ocean {
 
 	class MemoryService : public Service {
 	public:
-		OCEAN_DECLARE_SERVICE(MemoryService);
+		static MemoryService& Instance();
 
 		virtual void Init(void* config) override;
 		virtual void Shutdown() override;
 
 		static cstring Name() { return "OCEAN_Memory_Service"; }
 
-		LinearAllocator* ScratchAllocator() { return &m_ScratchAllocator; }
-		HeapAllocator*   SystemAllocator() { return &m_SystemAllocator; }
+		Allocator* ScratchAllocator() { return &m_ScratchAllocator; }
+		Allocator* SystemAllocator()  { return &m_SystemAllocator; }
 
 	private:
 		LinearAllocator m_ScratchAllocator;
@@ -227,8 +227,8 @@ namespace Ocean {
 #else
 
 	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocam(size, allocator)			 ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocat(type, count, allocator)	 ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__))
+	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1, __FILE__, __LINE__)))
+	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)))
 
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
 

@@ -139,24 +139,24 @@ namespace Ocean {
 
 	template<typename K, typename T>
 	inline void HashMap<K, T>::Init(Allocator* allocator, u32 initialCapacity) {
-		p_Allocator = allocator;
-		m_Capacity = initialCapacity < 4 ? 4 : initialCapacity;
-		m_Size = 0;
-		m_Threshold = (m_Capacity * 9) / 10;
-		m_Mask = m_Capacity - 1;
+		this->p_Allocator = allocator;
+		this->m_Capacity = initialCapacity < 4 ? 4 : initialCapacity;
+		this->m_Size = 0;
+		this->m_Threshold = (this->m_Capacity * 9) / 10;
+		this->m_Mask = this->m_Capacity - 1;
 
-		p_Slots = (KeyValue*)p_Allocator->Allocate(sizeof(KeyValue) * m_Capacity, alignof(KeyValue));
+		this->p_Slots = oallocat(KeyValue*, this->m_Capacity, this->p_Allocator);
 	}
 
 	template<typename K, typename T>
 	inline void HashMap<K, T>::Shutdown() {
-		p_Allocator->Deallocate(p_Slots);
+		ofree(this->p_Slots, this->p_Allocator);
 	}
 
 	template<typename K, typename T>
 	inline void HashMap<K, T>::Insert(K key, T value) {
-		if (++m_Size >= m_Threshold)
-			Resize(m_Capacity + m_Capacity);
+		if (++this->m_Size >= this->m_Threshold)
+			Resize(this->m_Capacity + this->m_Capacity);
 
 		InternalInsert(HashKey(key), key, value);
 	}
@@ -168,15 +168,15 @@ namespace Ocean {
 		if (i == -1)
 			return;
 
-		p_Slots[i].Hash |= 0x80000000; // Mark as deleted
-		m_Size--;
+		this->p_Slots[i].Hash |= 0x80000000; // Mark as deleted
+		this->m_Size--;
 	}
 
 	template<typename K, typename T>
 	inline T* HashMap<K, T>::Get(const K& key) {
 		const i32 i = LookupIndex(HashKey(key), key);
 
-		return i != -1 ? &p_Slots[i].Value : nullptr;
+		return i != -1 ? &this->p_Slots[i].Value : nullptr;
 	}
 
 	template<typename K, typename T>
@@ -186,7 +186,7 @@ namespace Ocean {
 		if (i == -1)
 			return;
 
-		p_Slots[i].Value = value;
+		this->p_Slots[i].Value = value;
 	}
 
 	template<typename K, typename T>
@@ -198,10 +198,10 @@ namespace Ocean {
 
 	template<typename K, typename T>
 	inline void HashMap<K, T>::Clear() {
-		for (u32 i = 0; i < m_Capacity; i++)
-			p_Slots[i].Hash |= 0x80000000; // Mark as deleted
+		for (u32 i = 0; i < this->m_Capacity; i++)
+			this->p_Slots[i].Hash |= 0x80000000; // Mark as deleted
 
-		m_Size = 0;
+		this->m_Size = 0;
 	}
 
 	template<typename K, typename T>
@@ -232,7 +232,7 @@ namespace Ocean {
 
 	template<typename K, typename T>
 	inline u32 HashMap<K, T>::ProbeDist(const u32& hash, const u32& pos) {
-		return (pos + m_Capacity - DesiredPos(hash)) & m_Mask;
+		return (pos + this->m_Capacity - DesiredPos(hash)) & this->m_Mask;
 	}
 
 	template<typename K, typename T>
@@ -245,15 +245,15 @@ namespace Ocean {
 		u32 pos = DesiredPos(hash);
 		u32 dist = 0;
 
-		for (u32 i = 0; i < m_Capacity; i++) {
-			if (p_Slots[pos].Hash == 0)
+		for (u32 i = 0; i < this->m_Capacity; i++) {
+			if (this->p_Slots[pos].Hash == 0)
 				return -1;
-			else if (dist > ProbeDist(p_Slots[pos].Hash, pos))
+			else if (dist > ProbeDist(this->p_Slots[pos].Hash, pos))
 				return -1;
-			else if (p_Slots[pos].Hash == hash && p_Slots[pos].Key == key)
+			else if (this->p_Slots[pos].Hash == hash && this->p_Slots[pos].Key == key)
 				return pos;
 
-			pos = (pos + 1) & m_Mask;
+			pos = (pos + 1) & this->m_Mask;
 			dist++;
 		}
 
@@ -267,46 +267,46 @@ namespace Ocean {
 
 		// m_Capacity limits the loop to only iterate 
 		// over the available slots, better protecting from infinite looping.
-		for (u32 i = 0; i < m_Capacity; i++) {
-			if (p_Slots[pos].Hash = 0) {
-				p_Slots[pos] = { key, value, hash };
+		for (u32 i = 0; i < this->m_Capacity; i++) {
+			if (this->p_Slots[pos].Hash = 0) {
+				this->p_Slots[pos] = { key, value, hash };
 
 				return;
 			}
 
 			u32 probeDist = ProbeDist(hash, pos);
 			if (probeDist < dist) {
-				if (IsDeleted(p_Slots[pos].Hash)) {
-					p_Slots[pos] = { key, value, hash };
+				if (IsDeleted(this->p_Slots[pos].Hash)) {
+					this->p_Slots[pos] = { key, value, hash };
 
 					return;
 				}
 
-				std::swap(hash,  p_Slots[pos].Hash);
-				std::swap(key,   p_Slots[pos].Key);
-				std::swap(value, p_Slots[pos].Value);
+				std::swap(hash,  this->p_Slots[pos].Hash);
+				std::swap(key,   this->p_Slots[pos].Key);
+				std::swap(value, this->p_Slots[pos].Value);
 			}
 
-			pos = (pos + 1) & m_Mask;
+			pos = (pos + 1) & this->m_Mask;
 			dist++;
 		}
 	}
 
 	template<typename K, typename T>
 	inline void HashMap<K, T>::Resize(u32 newCapacity) {
-		KeyValue* oldSlots = p_Slots;
+		KeyValue* oldSlots = this->p_Slots;
 
-		p_Slots = (KeyValue*)p_Allocator->Allocate(sizeof(KeyValue) * newCapacity, alignof(KeyValue));
-		m_Threshold = (newCapacity * 9) / 10;
-		m_Mask = newCapacity - 1;
+		this->p_Slots = oallocat(KeyValue, newCapacity, this->p_Allocator);
+		this->m_Threshold = (newCapacity * 9) / 10;
+		this->m_Mask = newCapacity - 1;
 
-		for (u32 i = 0; i < m_Capacity; i++) {
+		for (u32 i = 0; i < this->m_Capacity; i++) {
 			if (oldSlots[i].Hash != 0 && !IsDeleted(oldSlots[i].Hash))
 				InternalInsert(oldSlots[i].Hash, oldSlots[i].Key, oldSlots[i].Value);
 		}
 
-		p_Allocator->Deallocate(oldSlots);
-		m_Capacity = newCapacity;
+		ofree(oldSlots, this->p_Allocator);
+		this->m_Capacity = newCapacity;
 	}
 
 }	// Ocean

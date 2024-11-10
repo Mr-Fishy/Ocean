@@ -11,16 +11,13 @@ namespace Ocean {
 	 */
 	class ServiceManager {
 	public:
-		ServiceManager() = default;
-		~ServiceManager() = default;
-
-		OCEAN_DECLARE_SERVICE(ServiceManager);
+		static ServiceManager& Instance();
 
 		/**
 		 * @brief Initializes the Service Manager with no services.
 		 * @param allocator - The Ocean memory allocator to use, by default it is the Memory Service System Allocator.
 		 */
-		void Init(Allocator* allocator = MemoryService::Instance()->SystemAllocator());
+		void Init(Allocator* allocator = MemoryService::Instance().SystemAllocator());
 		/**
 		 * @brief Shuts down the Service Manager. All services need to be shutdown before calling this.
 		 */
@@ -54,6 +51,12 @@ namespace Ocean {
 		T* Get();
 
 	private:
+		ServiceManager() : p_Allocator(nullptr), m_Services() { }
+		~ServiceManager() = default;
+
+		ServiceManager(const ServiceManager&) = delete;
+		ServiceManager operator = (const ServiceManager&) = delete;
+
 		Allocator* p_Allocator = nullptr;
 
 		HashMap<cstring, Service*> m_Services;
@@ -62,12 +65,12 @@ namespace Ocean {
 
 	template<typename T>
 	inline T* ServiceManager::Get() {
-		T* service = (T*)GetService(T::Name());
+		T* service = static_cast<T*>(GetService(T::Name()));
 		if (service == nullptr) {
-			AddService(T::Instance(), T::Name());
+			AddService(&T::Instance(), T::Name());
 		}
 
-		return T::Instance();
+		return &T::Instance();
 	}
 
 }	// Ocean

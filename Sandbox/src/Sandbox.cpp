@@ -1,8 +1,5 @@
 #include "Sandbox.hpp"
 
-// Ocean
-#include <Ocean/Core/EntryPoint.hpp>
-
 static Ocean::Window s_Window;
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
@@ -10,21 +7,21 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// ---> Init Primitive Services
 
-	Ocean::MemoryService::Instance()->Init(nullptr);
+	Ocean::MemoryService::Instance().Init(nullptr);
 
 	Ocean::oTimeServiceInit();
 
-	p_ServiceManager = Ocean::ServiceManager::Instance();
-	p_ServiceManager->Init(Ocean::MemoryService::Instance()->SystemAllocator());
+	p_ServiceManager = &Ocean::ServiceManager::Instance();
+	p_ServiceManager->Init(Ocean::MemoryService::Instance().SystemAllocator());
 
 	// ---> Init Foundation
 
 	// Window
 	Ocean::WindowConfig winConfig{
-		config.Width,
-		config.Height,
-		config.Name,
-		Ocean::MemoryService::Instance()->SystemAllocator()
+		config.width,
+		config.height,
+		config.name,
+		Ocean::MemoryService::Instance().SystemAllocator()
 	};
 	p_Window = &s_Window;
 	p_Window->Init(&winConfig);
@@ -33,9 +30,9 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 
 	// Graphics
 	Ocean::Vulkan::RendererConfig renConfig{
-		Ocean::MemoryService::Instance()->SystemAllocator(),
+		Ocean::MemoryService::Instance().SystemAllocator(),
 		p_Window,
-		config.Name,
+		config.name,
 		(u16)p_Window->Width(),
 		(u16)p_Window->Height(),
 		2,
@@ -60,7 +57,7 @@ Sandbox::~Sandbox() {
 
 	p_ServiceManager->Shutdown();
 
-	Ocean::MemoryService::Instance()->Shutdown();
+	Ocean::MemoryService::Instance().Shutdown();
 }
 
 
@@ -75,8 +72,6 @@ b8 Sandbox::MainLoop() {
 		p_Window->PollEvents();
 
 		if (p_Window->Resized()) {
-			p_Renderer->ResizeSwapchain(p_Window->Width(), p_Window->Height());
-
 			OnResize(p_Window->Width(), p_Window->Height());
 
 			p_Window->ResizeHandled();
@@ -101,6 +96,8 @@ b8 Sandbox::MainLoop() {
 	}
 
 	p_Renderer->CleanUp();
+
+	Close();
 
 	return true;
 }

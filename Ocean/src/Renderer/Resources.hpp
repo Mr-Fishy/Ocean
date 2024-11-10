@@ -1,9 +1,7 @@
 #pragma once
 
-// #include "Ocean/Core/Types/ValueTypes.hpp"
-#include "Ocean/Core/Types/Vectors.hpp"
+#include "Ocean/Core/Types/glmTypes.hpp"
 
-// #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
 // TODO: Convert to use the vulkan memory allocator.
@@ -28,8 +26,8 @@ namespace Ocean {
 
 
 		struct Vertex {
-			fvec2 pos;
-			fvec3 color;
+			glm::vec2 pos;
+			glm::vec3 color;
 
 			/**
 			 * @return The binding description of the vertex data for Vulkan.
@@ -83,6 +81,12 @@ namespace Ocean {
 
 				return attributes;
 			}
+		};
+
+		struct UniformBufferObject {
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 proj;
 		};
 
 
@@ -142,7 +146,7 @@ namespace Ocean {
 			vkCmdEndRenderPass(buffer);
 		}
 
-
+	#if defined(OC_DEBUG)
 
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
@@ -208,6 +212,8 @@ namespace Ocean {
 				func(instance, debugMessenger, pAllocator);
 			}
 		}
+		
+	#endif
 
 	}	// Vulkan
 
