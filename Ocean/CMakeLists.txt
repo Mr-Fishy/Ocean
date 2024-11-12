@@ -94,20 +94,12 @@ target_include_directories(
     PRIVATE ${Vulkan_INCLUDE_DIRS}
 )
 
-# The following assumes that the platforms are x64
-if (APPLE)
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/osx/libphonon.dylib")
-elseif (WIN32)
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/windows-x64/phonon.dll")
-else ()
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/linux-x64/libphonon.so")
-endif ()
-
 target_link_libraries(
     ${PROJECT_NAME}
 
     PRIVATE glfw
-    PRIVATE ${SteamAudio_LIBRARIES}
+    # TODO: The steam libraries propbably need a cmake library file to define everything so that it can be included conventionally.
+    # PRIVATE ${SteamAudio_LIBRARIES}
 
     PUBLIC glm::glm-header-only
     PUBLIC ${Vulkan_LIBRARIES}

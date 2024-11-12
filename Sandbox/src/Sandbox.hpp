@@ -10,6 +10,9 @@ public:
 	~Sandbox();
 
 private:
+	Sandbox(const Sandbox&) = delete;
+	Sandbox& operator = (const Sandbox&) = delete;
+
 	virtual b8 MainLoop() override final;
 
 	virtual void FixedUpdate(Timestep delta) override final;

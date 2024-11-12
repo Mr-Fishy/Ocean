@@ -114,7 +114,12 @@ namespace Ocean {
 			/**
 			 * @brief Shuts down the Renderer.
 			 */
-			void Shutdown();
+			static void Shutdown();
+
+		private:
+			void IntermediateShutdown();
+
+		public:
 
 			/**
 			 * @brief Begin's the frame rendering.

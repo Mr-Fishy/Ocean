@@ -10,6 +10,7 @@
 
 #include "Renderer/Infos.hpp"
 #include "Renderer/Device.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Framebuffer.hpp"
 
@@ -22,7 +23,7 @@ namespace Ocean {
 
 		Renderer& Renderer::Instance() {
 			if (s_Instance == nullptr)
-				s_Instance = oallocat(Renderer, 1, MemoryService::Instance().SystemAllocator());
+				s_Instance = new Renderer;
 
 			return *s_Instance;
 		}
@@ -121,6 +122,12 @@ namespace Ocean {
 		}
 
 		void Renderer::Shutdown() {
+			Instance().CleanUp();
+
+			delete &Instance();
+		}
+
+		void Renderer::IntermediateShutdown() {
 			vkDestroyPipeline(p_Device->GetLogical(), m_GraphicsPipeline, nullptr);
 			vkDestroyPipelineLayout(p_Device->GetLogical(), m_PipelineLayout, nullptr);
 			vkDestroyRenderPass(p_Device->GetLogical(), m_RenderPass, nullptr);

@@ -108,6 +108,15 @@ add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 string(TIMESTAMP time)
 message(STATUS)
 
+# The following assumes that the platforms are x64
+if (APPLE)
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/osx/libphonon.dylib")
+elseif (WIN32)
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/windows-x64/phonon.dll")
+else ()
+    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/linux-x64/libphonon.so")
+endif ()
+
 # -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic
 set(OCEAN_COMPILE_FLAGS -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic)
 

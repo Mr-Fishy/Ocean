@@ -17,11 +17,14 @@ add_executable(
 
 target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE
+    
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/
+)
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/
+target_include_directories(
+    ${PROJECT_NAME} SYSTEM
 
-    ${Vulkan_INCLUDE_DIRS}
+    PRIVATE ${Vulkan_INCLUDE_DIRS}
 )
 
 target_link_libraries(
@@ -30,7 +33,10 @@ target_link_libraries(
     PRIVATE Ocean
 )
 
-# target_compile_options(
-#     ${PROJECT_NAME}
-#     PRIVATE "$<$<CONFIG:DEBUG>:${OCEAN_COMPILE_FLAGS}>"
-# )
+target_compile_options(
+    ${PROJECT_NAME} PRIVATE
+
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>: ${OCEAN_COMPILE_FLAGS}>
+
+    $<$<CXX_COMPILER_ID:MSVC>: /W4>
+)

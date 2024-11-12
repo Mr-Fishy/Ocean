@@ -1,5 +1,4 @@
 #include "Sandbox.hpp"
-#include "Ocean/Core/Primitives/Memory.hpp"
 
 Ocean::Application* Ocean::CreateApplication() {
 	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
@@ -9,11 +8,7 @@ Ocean::Application* Ocean::CreateApplication() {
 
 
 
-static Ocean::Window s_Window;
-
-
-
-Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
+Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config), p_Renderer(nullptr) {
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
 	// ---> Init Primitive Services
@@ -33,8 +28,9 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		config.height,
 		config.name,
 	};
-	p_Window = static_cast<Ocean ::Window *>(Ocean ::MemoryService ::Instance().SystemAllocator()->Allocate(sizeof(Ocean ::Window) * 1, alignof(Ocean ::Window), "c:\\dev\\Ocean\\Sandbox\\src\\Sandbox.cpp", 36));
-
+	// TODO: Figure out why below doesn't work.
+	// p_Window = oallocat(Ocean::Window, 1, Ocean::MemoryService::Instance().SystemAllocator());
+	p_Window = new Ocean::Window;
 	p_Window->Init(&winConfig);
 
 	// Input
@@ -44,8 +40,8 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 		Ocean::MemoryService::Instance().SystemAllocator(),
 		p_Window,
 		config.name,
-		(u16)p_Window->Width(),
-		(u16)p_Window->Height(),
+		static_cast<u16>(p_Window->Width()),
+		static_cast<u16>(p_Window->Height()),
 		2,
 		1, 0, 0
 	};
@@ -57,14 +53,15 @@ Sandbox::~Sandbox() {
 	oprint(CONSOLE_TEXT_CYAN("Deconstructing Sandbox Application!\n"));
 
 	// Graphics
-	p_Renderer->Shutdown();
+	Ocean::Vulkan::Renderer::Shutdown();
 
 	// Input
 
 	// Window
 	p_Window->Shutdown();
-	ofree(p_Window, Ocean::MemoryService::Instance().SystemAllocator());
+	delete p_Window;
 
+	// Primitives
 	Ocean::ServiceManager::Shutdown();
 
 	Ocean::oTimeServiceShutdown();
@@ -72,13 +69,17 @@ Sandbox::~Sandbox() {
 	Ocean::MemoryService::Shutdown();
 }
 
-
+// TODO: Fix Update Blocking When Window Is Grabbed (Moving)
 
 b8 Sandbox::MainLoop() {
 	Timestep currentTime(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
 	Timestep accumulator(0.0f);
 
-	Timestep dt(0.01f);
+	Timestep dt(0.02f);
+
+	u32 accumulatorCounter = 0;
+	Timestep time(0.0f);
+	u32 frameCount = 0;
 
 	while (!p_Window->RequestedExit()) {
 		Timestep t(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
@@ -86,6 +87,14 @@ b8 Sandbox::MainLoop() {
 		currentTime = t;
 
 		accumulator += frameTime;
+		time += frameTime;
+		
+		if (time.GetSeconds() >= 5.0f ) {
+			time -= 5.0f;
+			oprint("Frames per 5 seconds: %i (%f fps)\n", frameCount, frameCount / 5.0f);
+			oprint("Fixed Updates per 5 seconds: %i (%f ups)\n", accumulatorCounter, accumulatorCounter / 5.0f);
+			frameCount = accumulatorCounter = 0;
+		}
 
 		if (!p_Window->Minimized())
 			p_Renderer->BeginFrame();
@@ -101,9 +110,11 @@ b8 Sandbox::MainLoop() {
 		}
 
 		// Fixed Update
-		while (accumulator >= dt) {
-			// TODO: Interpolation (For Physics Engine)
+		while (accumulator.GetSeconds() >= dt.GetSeconds()) {
+			// TODO: Interpolation (For Physics Engine and Renderer)
 			FixedUpdate(dt);
+
+			accumulatorCounter++;
 
 			accumulator -= dt;
 		}
@@ -120,6 +131,8 @@ b8 Sandbox::MainLoop() {
 
 		// Prepare for the next frame if needed.
 		FrameEnd();
+
+		frameCount++;
 	}
 
 	p_Renderer->CleanUp();
