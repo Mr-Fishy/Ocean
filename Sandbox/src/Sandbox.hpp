@@ -12,8 +12,8 @@ public:
 private:
 	virtual b8 MainLoop() override final;
 
-	virtual void FixedUpdate(f32 delta) override final;
-	virtual void VariableUpdate(f32 delta);
+	virtual void FixedUpdate(Timestep delta) override final;
+	virtual void VariableUpdate(Timestep delta) override final;
 
 	virtual void Render(f32 interpolation) override final;
 
@@ -26,17 +26,9 @@ private:
 
 	// Time
 
-	Ocean::Window* p_Window = nullptr;
+	static inline Ocean::Window* p_Window = nullptr;
 	// Input Service
 
 	Ocean::Vulkan::Renderer* p_Renderer = nullptr;
 
 };	// Sandbox
-
-
-
-Ocean::Application* Ocean::CreateApplication() {
-	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
-
-	return new Sandbox(config);
-}

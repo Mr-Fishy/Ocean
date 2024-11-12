@@ -32,6 +32,11 @@ else()
     message(FATAL_ERROR "Compiler Reassessment: Compiler not found. Status: Calamitous.")
 endif()
 
+if (MSVC)
+    message(STATUS)
+    message(FATAL_ERROR "Ocean Only Supports GCC Compilers!")
+endif ()
+
 ### Vulkan ###
 #define VULKAN FOUND FIRST
 set(Vulkan_FOUND False)
@@ -99,14 +104,12 @@ else()
 endif()
 set(GLM_ENABLE_CXX_17 ON)
 set(GLM_BUILD_TESTS OFF)
-
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 string(TIMESTAMP time)
 message(STATUS)
 
 # -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic
-set(OCEAN_COMPILE_FLAGS "-Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic")
-set(CMAKE_CXX_FLAGS "${OCEAN_COMPILE_FLAGS}")
+set(OCEAN_COMPILE_FLAGS -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic)
 
 string(TIMESTAMP time)
 message(STATUS "Ocean Starting (${time})...")

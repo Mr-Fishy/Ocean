@@ -82,9 +82,14 @@ target_include_directories(
     ${PROJECT_NAME}
     
     PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/src/
+)
+
+target_include_directories(
+    ${PROJECT_NAME} SYSTEM
 
     PRIVATE ${TLSF_DIRECTORY}
     PUBLIC  ${STEAM_AUDIO_DIRECTORY}
+    PUBLIC  ${GLM_DIRECTORY}
 
     PRIVATE ${Vulkan_INCLUDE_DIRS}
 )
@@ -104,6 +109,22 @@ target_link_libraries(
     PRIVATE glfw
     PRIVATE ${SteamAudio_LIBRARIES}
 
-    PUBLIC glm::glm
+    PUBLIC glm::glm-header-only
     PUBLIC ${Vulkan_LIBRARIES}
+)
+
+target_compile_options(
+    ${PROJECT_NAME} PRIVATE
+
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>: ${OCEAN_COMPILE_FLAGS}>
+
+    $<$<CXX_COMPILER_ID:MSVC>: /W4>
+)
+
+target_compile_definitions(
+    ${PROJECT_NAME}
+
+    PRIVATE $<$<PLATFORM_ID:Windows>: WIN32_LEAN_AND_MEAN>
+    PUBLIC $<$<CONFIG:Debug>: OC_DEBUG>
+    PUBLIC $<$<CONFIG:Release>: OC_RELEASE>
 )

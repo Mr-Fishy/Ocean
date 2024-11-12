@@ -2,15 +2,20 @@
 
 #include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
-#include "Ocean/Core/Types/Bool.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Macros.hpp"
+#include "Ocean/Core/Primitives/Log.hpp"
+#include <cstddef>
 
 // Define this for detailed logs of where allocations and frees are completed (only when using alloc / free macros)
 // #define DETAILED_ALLOCATIONS 1
 
 namespace Ocean {
+
+	#define okilo(size) (size * 1024)
+	#define omega(size) (size * 1024 * 1024)
+	#define ogiga(size) (size * 1024 * 1024 * 1024)
 
 	// Memory Methods
 
@@ -38,15 +43,27 @@ namespace Ocean {
 	struct MemoryStats {
 
 		sizet AllocatedBytes;
-		sizet TotalBytes;
+		sizet FreedBytes;
 
 		u32 AllocationCount;
+		u32 FreeCount;
 
-		void Add(sizet a) {
+		sizet Add(sizet a) {
 			if (a) {
 				AllocatedBytes += a;
-				++AllocationCount;
+				AllocationCount++;
 			}
+
+			return a;
+		}
+
+		sizet Remove(sizet a) {
+			if (a) {
+				FreedBytes += a;
+				FreeCount++;
+			}
+
+			return a;
 		}
 
 	};	// MemoryStats
@@ -184,16 +201,19 @@ namespace Ocean {
 
 	struct MemoryServiceConfig {
 
-		sizet MaxDynamicSize = 16 * 1024 * 1024; // Default size of 16MB of dynamic memory.
+		sizet MaxDynamicSize = omega(16); // Default size of 16MB of dynamic memory.
 
 	};	// MemoryServiceConfig
 
 	class MemoryService : public Service {
 	public:
+		MemoryService() : m_ScratchAllocator(), m_SystemAllocator() { }
+		~MemoryService() = default;
+
 		static MemoryService& Instance();
 
 		virtual void Init(void* config) override;
-		virtual void Shutdown() override;
+		static void Shutdown();
 
 		static cstring Name() { return "OCEAN_Memory_Service"; }
 
@@ -201,43 +221,21 @@ namespace Ocean {
 		Allocator* SystemAllocator()  { return &m_SystemAllocator; }
 
 	private:
+		static inline MemoryService* s_Instance =  nullptr;
+
 		LinearAllocator m_ScratchAllocator;
 		HeapAllocator   m_SystemAllocator;
 
 	};	// MemoryService
 
 	// Macro Helpers
-#if OC_DEBUG && DETAILED_ALLOCATIONS
 
-	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__)); \
-												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
-	
-	#define oallocam(size, allocator)			 ((u8*)(allocator)->Allocate(size, 1, __FILE__, __LINE__)); \
-												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
-
-	#define oallocat(type, count, allocator)	 ((type*)(allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)); \
-												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
-
-	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__)); \
-												 oprintret(CONSOLE_TEXT_GREEN(OCEAN_FUNCTIONLINE(__FUNCTION__, "Allocation")))
-
-	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer)); \
-												 oprintret(CONSOLE_TEXT_MAGENTA(OCEAN_FUNCTIONLINE(__FUNCTION__, "Free")))
-
-#else
-
-	#define oalloca (size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
+	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1, __FILE__, __LINE__)))
 	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)))
 
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
 
 	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer))
-
-#endif
-
-	#define okilo(size) (size * 1024)
-	#define omega(size) (size * 1024 * 1024)
-	#define ogiga(size) (size * 1024 * 1024 * 1024)
 
 }	// Ocean

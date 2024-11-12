@@ -1,6 +1,17 @@
 #include "Sandbox.hpp"
+#include "Ocean/Core/Primitives/Memory.hpp"
+
+Ocean::Application* Ocean::CreateApplication() {
+	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
+
+	return new Sandbox(config);
+}
+
+
 
 static Ocean::Window s_Window;
+
+
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
@@ -12,18 +23,18 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 	Ocean::oTimeServiceInit();
 
 	p_ServiceManager = &Ocean::ServiceManager::Instance();
-	p_ServiceManager->Init(Ocean::MemoryService::Instance().SystemAllocator());
+	p_ServiceManager->Init();
 
 	// ---> Init Foundation
 
 	// Window
-	Ocean::WindowConfig winConfig{
+	Ocean::WindowConfig winConfig {
 		config.width,
 		config.height,
 		config.name,
-		Ocean::MemoryService::Instance().SystemAllocator()
 	};
-	p_Window = &s_Window;
+	p_Window = static_cast<Ocean ::Window *>(Ocean ::MemoryService ::Instance().SystemAllocator()->Allocate(sizeof(Ocean ::Window) * 1, alignof(Ocean ::Window), "c:\\dev\\Ocean\\Sandbox\\src\\Sandbox.cpp", 36));
+
 	p_Window->Init(&winConfig);
 
 	// Input
@@ -52,18 +63,30 @@ Sandbox::~Sandbox() {
 
 	// Window
 	p_Window->Shutdown();
+	ofree(p_Window, Ocean::MemoryService::Instance().SystemAllocator());
+
+	Ocean::ServiceManager::Shutdown();
 
 	Ocean::oTimeServiceShutdown();
 
-	p_ServiceManager->Shutdown();
-
-	Ocean::MemoryService::Instance().Shutdown();
+	Ocean::MemoryService::Shutdown();
 }
 
 
 
 b8 Sandbox::MainLoop() {
+	Timestep currentTime(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
+	Timestep accumulator(0.0f);
+
+	Timestep dt(0.01f);
+
 	while (!p_Window->RequestedExit()) {
+		Timestep t(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
+		Timestep frameTime(t - currentTime);
+		currentTime = t;
+
+		accumulator += frameTime;
+
 		if (!p_Window->Minimized())
 			p_Renderer->BeginFrame();
 
@@ -78,14 +101,18 @@ b8 Sandbox::MainLoop() {
 		}
 
 		// Fixed Update
+		while (accumulator >= dt) {
+			// TODO: Interpolation (For Physics Engine)
+			FixedUpdate(dt);
+
+			accumulator -= dt;
+		}
 
 		// Variable Update
+		VariableUpdate(frameTime);
 
 		if (!p_Window->Minimized()) {
-			// Command Buffer
-
-			// Interpolation
-
+			// TODO: Interpolation
 			Render(f32());
 
 			p_Renderer->EndFrame();
@@ -104,10 +131,10 @@ b8 Sandbox::MainLoop() {
 
 
 
-void Sandbox::FixedUpdate(f32 delta) {
+void Sandbox::FixedUpdate(Timestep delta) {
 }
 
-void Sandbox::VariableUpdate(f32 delta) {
+void Sandbox::VariableUpdate(Timestep delta) {
 }
 
 

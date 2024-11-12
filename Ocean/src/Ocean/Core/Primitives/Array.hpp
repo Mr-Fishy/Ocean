@@ -7,7 +7,7 @@
 
 // std
 #include <cstring>
-#include <sstream>
+
 
 namespace Ocean {
 
@@ -25,7 +25,7 @@ namespace Ocean {
 			Array() : p_Allocator(nullptr), p_Data(nullptr), m_Capacity(0), m_Size(0) { }
 			Array(const Array& array) { 
 				if (this != &array) {
-					this->p_Allocator = array->p_Allocator;
+					this->p_Allocator = array.p_Allocator;
 				}
 			}
 			Array operator = (const Array& array) {
@@ -209,7 +209,7 @@ namespace Ocean {
 	// Implementation
 
 	template<typename T>
-	inline DynamicArray<T>::DynamicArray(const DynamicArray& array) {
+	inline DynamicArray<T>::DynamicArray(const DynamicArray& array) : ADT::Array<T>() {
 		if (this != &array) {
 			this->p_Allocator = array.p_Allocator;
 			this->m_Capacity = array.m_Capacity;
@@ -376,7 +376,7 @@ namespace Ocean {
 	// Implementation
 
 	template<typename T>
-	inline FixedArray<T>::FixedArray(const FixedArray& array) {
+	inline FixedArray<T>::FixedArray(const FixedArray& array) : ADT::Array<T>() {
 		if (this != &array) {
 			this->p_Allocator = array.p_Allocator;
 			this->m_Capacity = array.m_Capacity;
