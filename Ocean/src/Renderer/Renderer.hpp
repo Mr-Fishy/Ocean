@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/FloatingPoints.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/Resources.hpp"
 #include "Renderer/Buffer.hpp"
+
+// libs
+#include <vulkan/vulkan_core.h>
 
 namespace Ocean {
 
@@ -101,7 +103,15 @@ namespace Ocean {
 			};
 
 		public:
-			Renderer() : m_SyncObjects(), m_UniformBuffers() { }
+		#ifdef OC_DEBUG
+
+			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), m_DebugMessenger(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0) { }
+
+		#else
+
+			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0) { }
+		
+		#endif
 			~Renderer() = default;
 
 			static Renderer& Instance();
@@ -179,6 +189,9 @@ namespace Ocean {
 			static cstring Name() { return "OCEAN_Rendering_Service"; }
 
 		private:
+			Renderer(const Renderer&) = delete;
+			Renderer& operator = (const Renderer&) = delete;
+
 			/**
 			 * @brief Checks if the system's Vulkan library support's the layers defined in k_ValidationLayers.
 			 * @return True if supported, False otherwise.
@@ -233,34 +246,34 @@ namespace Ocean {
 
 			static inline Renderer* s_Instance = nullptr;
 
-			Allocator* p_Allocator = nullptr;
+			Allocator* p_Allocator;
 
-			VkInstance m_Instance = VK_NULL_HANDLE;
+			VkInstance m_Instance;
 
 		#ifdef OC_DEBUG
 
-			VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
+			VkDebugUtilsMessengerEXT m_DebugMessenger;
 
 		#endif
 
-			Device* p_Device = nullptr;
-			SwapChain* p_SwapChain = nullptr;
+			Device* p_Device;
+			SwapChain* p_SwapChain;
 
-			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
+			VkRenderPass m_RenderPass;
 
-			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
-			VkDescriptorSetLayout m_DescriptorSetLayout = VK_NULL_HANDLE;
-			VkPipeline m_GraphicsPipeline = VK_NULL_HANDLE;
+			VkPipelineLayout m_PipelineLayout;
+			VkDescriptorSetLayout m_DescriptorSetLayout;
+			VkPipeline m_GraphicsPipeline;
 
 			FixedArray<SyncObjects> m_SyncObjects;
 
 			FixedArray<UniformData> m_UniformBuffers;
 
-			u16 m_Width = 0;
-			u16 m_Height = 0;
+			u16 m_Width;
+			u16 m_Height;
 
-			u8 m_MaxFramesInFlight = 2;
-			u8 m_Frame = 0;
+			u8 m_MaxFramesInFlight;
+			u8 m_Frame;
 
 			/* --- */
 

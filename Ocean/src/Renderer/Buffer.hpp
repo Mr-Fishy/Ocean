@@ -39,13 +39,16 @@ namespace Ocean {
 
 		};	// Buffer
 
+
+
 		class UniformBuffer : public Buffer {
 		public:
 			UniformBuffer() = default;
 			~UniformBuffer() = default;
 
 			void* GetMappedMemory(sizet size);
-		};
+
+		};	// Uniform Buffer
 
 	}	// Vulkan
 

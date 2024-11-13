@@ -1,8 +1,6 @@
 #include "Device.hpp"
 
-#include "Renderer/Infos.hpp"
 #include "Renderer/Renderer.hpp"
-#include "Renderer/Shader.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Buffer.hpp"
 
@@ -10,7 +8,6 @@
 #include <GLFW/glfw3.h>
 
 // std
-#include <set>
 
 namespace Ocean {
 
@@ -21,6 +18,8 @@ namespace Ocean {
 
 			std::vector<VkSurfaceFormatKHR> Formats;
 			std::vector<VkPresentModeKHR> PresentModes;
+
+			SwapChainSupportDetails() : Capabilities{ }, Formats(), PresentModes() { }
 
 		};	// SwapChainSupportDetails
 
@@ -46,7 +45,7 @@ namespace Ocean {
 
 			// Create the window surface
 			CHECK_RESULT(
-				glfwCreateWindowSurface(p_Renderer->GetVulkanInstance(), (GLFWwindow*)p_WindowHandle, nullptr, &m_Surface),
+				glfwCreateWindowSurface(p_Renderer->GetVulkanInstance(), static_cast<GLFWwindow*>(p_WindowHandle), nullptr, &m_Surface),
 				"Failed to create window surface!"
 			);
 
@@ -209,7 +208,7 @@ namespace Ocean {
 			VkDeviceCreateInfo createInfo{ };
 			createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-			createInfo.queueCreateInfoCount = (u32)queueInfos.size();
+			createInfo.queueCreateInfoCount = static_cast<u32>(queueInfos.size());
 			createInfo.pQueueCreateInfos = queueInfos.data();
 
 			createInfo.pEnabledFeatures = &deviceFeatures;
@@ -278,7 +277,7 @@ namespace Ocean {
 			Buffer* stagingBuffer = oallocat(Buffer, 1, p_Allocator);
 			stagingBuffer->Init(&config);
 
-			stagingBuffer->SubmitData(config.size, (void*)tempVertices.data());
+			stagingBuffer->SubmitData(config.size, const_cast<void*>(reinterpret_cast<const void*>(tempVertices.data())));
 
 			config.usageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 			config.memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -303,7 +302,7 @@ namespace Ocean {
 			Buffer* stagingBuffer = oallocat(Buffer, 1, p_Allocator);
 			stagingBuffer->Init(&config);
 
-			stagingBuffer->SubmitData(config.size, (void*)indices.data());
+			stagingBuffer->SubmitData(config.size, const_cast<void*>(reinterpret_cast<const void*>(indices.data())));
 
 			config.usageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 			config.memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -372,7 +371,7 @@ namespace Ocean {
 
 			info.descriptorPool = m_DescriptorPool;
 
-			info.descriptorSetCount = (u32)maxFrames;
+			info.descriptorSetCount = static_cast<u32>(maxFrames);
 			info.pSetLayouts = layouts.Data();
 
 			m_DescriptorSets.Init(maxFrames);
@@ -466,8 +465,8 @@ namespace Ocean {
 
 				VkViewport viewport{ };
 				viewport.x = viewport.y = 0.0f;
-				viewport.width = (f32)p_SwapChain->GetExtent().width;
-				viewport.height = (f32)p_SwapChain->GetExtent().height;
+				viewport.width = static_cast<f32>(p_SwapChain->GetExtent().width);
+				viewport.height = static_cast<f32>(p_SwapChain->GetExtent().height);
 				viewport.minDepth = 0.0f;
 				viewport.maxDepth = 1.0f;
 
@@ -489,7 +488,7 @@ namespace Ocean {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_Renderer->GetPipelineLayout(), 0, 1, &m_DescriptorSets.Get(frame), 0, nullptr);
 
 				// TODO: Convert Vertex Buffer and Index Buffer into a single buffer with offsets. (Use vkCmdBindVertexBuffers()).
-				vkCmdDrawIndexed(commandBuffer, (u32)indices.size(), 1, 0, 0, 0);
+				vkCmdDrawIndexed(commandBuffer, static_cast<u32>(indices.size()), 1, 0, 0, 0);
 
 			vkCmdEndRenderPass(commandBuffer);
 

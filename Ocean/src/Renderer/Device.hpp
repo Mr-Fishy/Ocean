@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
 
-#include "Ocean/Core/Primitives/Service.hpp"
-#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
+#include "Ocean/Core/Primitives/Memory.hpp"
 
-#include "Renderer/Resources.hpp"
+// libs
+#include <vulkan/vulkan.hpp>
 
 // std
 #include <optional>
@@ -34,6 +34,8 @@ namespace Ocean {
 			std::optional<u16> PresentFamily;
 
 			static constexpr u8 UniqueFamilyCount = 2;
+
+			QueueFamilyIndices() : GraphicsFamily(), PresentFamily() { }
 
 			b8 IsComplete() const {
 				return GraphicsFamily.has_value() && PresentFamily.has_value();
@@ -191,27 +193,27 @@ namespace Ocean {
 
 			/* --- */
 
-			Allocator* p_Allocator = nullptr;
-			void* p_WindowHandle = nullptr;
+			Allocator* p_Allocator;
+			void* p_WindowHandle;
 
-			Renderer* p_Renderer = nullptr;
-			SwapChain* p_SwapChain = nullptr;
+			Renderer* p_Renderer;
+			SwapChain* p_SwapChain;
 
-			Buffer* p_VertexBuffer = nullptr;
-			Buffer* p_IndexBuffer = nullptr;
+			Buffer* p_VertexBuffer;
+			Buffer* p_IndexBuffer;
 
-			VkPhysicalDevice m_Physical = VK_NULL_HANDLE;
-			VkDevice m_Device = VK_NULL_HANDLE;
+			VkPhysicalDevice m_Physical;
+			VkDevice m_Device;
 
-			VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
+			VkSurfaceKHR m_Surface;
 
-			VkQueue m_GraphicsQueue = VK_NULL_HANDLE;
-			VkQueue m_PresentQueue = VK_NULL_HANDLE;
+			VkQueue m_GraphicsQueue;
+			VkQueue m_PresentQueue;
 
-			VkCommandPool m_CommandPool = VK_NULL_HANDLE;
+			VkCommandPool m_CommandPool;
 			FixedArray<VkCommandBuffer> m_CommandBuffers;
 
-			VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
+			VkDescriptorPool m_DescriptorPool;
 			FixedArray<VkDescriptorSet> m_DescriptorSets;
 
 			/* --- */
