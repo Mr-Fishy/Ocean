@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Ocean/Core/Types/Bool.hpp"
-#include "Ocean/Core/Types/FloatingPoints.hpp"
+#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Strings.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
-#include "Ocean/Core/Primitives/Array.hpp"
 
 namespace Ocean {
 
@@ -17,8 +16,6 @@ namespace Ocean {
 		u32 height;
 
 		cstring name;
-
-		Allocator* allocator;
 
 	};	// WindowConfig
 
@@ -56,7 +53,7 @@ namespace Ocean {
 		/**
 		 * @brief Shuts down the window.
 		 */
-		virtual void Shutdown() override;
+		void Shutdown();
 
 		/**
 		 * @param enabled - Set's fullscreen on or off according to True or False.

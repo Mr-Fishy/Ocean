@@ -10,7 +10,6 @@ namespace Ocean {
 		virtual ~Service() = default;
 
 		virtual void Init(void* config) { }
-		virtual void Shutdown() { }
 
 	};	// Service
 

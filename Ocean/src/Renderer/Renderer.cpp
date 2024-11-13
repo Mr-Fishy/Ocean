@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 
+#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Types/glmTypes.hpp"
 
 #include "Ocean/Core/Primitives/Time.hpp"
@@ -9,6 +10,7 @@
 
 #include "Renderer/Infos.hpp"
 #include "Renderer/Device.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Framebuffer.hpp"
 
@@ -19,13 +21,11 @@ namespace Ocean {
 
 	namespace Vulkan {
 
-		static Renderer* s_Renderer = nullptr;
-
 		Renderer& Renderer::Instance() {
-			if (s_Renderer == nullptr)
-				s_Renderer = new Renderer();
+			if (s_Instance == nullptr)
+				s_Instance = new Renderer;
 
-			return *s_Renderer;
+			return *s_Instance;
 		}
 
 		void Renderer::Init(void* config) {
@@ -122,6 +122,12 @@ namespace Ocean {
 		}
 
 		void Renderer::Shutdown() {
+			Instance().CleanUp();
+
+			delete &Instance();
+		}
+
+		void Renderer::IntermediateShutdown() {
 			vkDestroyPipeline(p_Device->GetLogical(), m_GraphicsPipeline, nullptr);
 			vkDestroyPipelineLayout(p_Device->GetLogical(), m_PipelineLayout, nullptr);
 			vkDestroyRenderPass(p_Device->GetLogical(), m_RenderPass, nullptr);
@@ -332,8 +338,8 @@ namespace Ocean {
 
 		void Renderer::CreateGraphicsPipeline() {
 			Shader* shaders = oallocat(Shader, 2, p_Allocator);
-			shaders[0].Init(p_Allocator, "src/Shaders/vert.spv");
-			shaders[1].Init(p_Allocator, "src/Shaders/frag.spv");
+			shaders[0].Init("src/Shaders/vert.spv");
+			shaders[1].Init("src/Shaders/frag.spv");
 
 			VkPipelineShaderStageCreateInfo shaderStages[] = {
 				GetVertextShaderStageInfo(&shaders[0], p_Device->GetLogical(), "main"),

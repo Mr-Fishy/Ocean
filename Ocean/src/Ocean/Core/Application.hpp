@@ -4,6 +4,7 @@
 
 #include "Ocean/Core/Types/ValueTypes.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
+#include "Ocean/Core/Types/Timestep.hpp"
 
 int main(/* int argc, char** argv */);
 
@@ -59,8 +60,8 @@ namespace Ocean {
 
 		virtual b8 MainLoop() = 0;
 
-		virtual void FixedUpdate(f32 delta) = 0;
-		virtual void VariableUpdate(f32 delta) = 0;
+		virtual void FixedUpdate(Timestep delta) = 0;
+		virtual void VariableUpdate(Timestep delta) = 0;
 		
 		virtual void Render(f32 interpolation) = 0;
 

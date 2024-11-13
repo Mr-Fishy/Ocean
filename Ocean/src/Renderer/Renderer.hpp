@@ -101,6 +101,9 @@ namespace Ocean {
 			};
 
 		public:
+			Renderer() : m_SyncObjects(), m_UniformBuffers() { }
+			~Renderer() = default;
+
 			static Renderer& Instance();
 
 			/**
@@ -111,7 +114,12 @@ namespace Ocean {
 			/**
 			 * @brief Shuts down the Renderer.
 			 */
-			virtual void Shutdown() override;
+			static void Shutdown();
+
+		private:
+			void IntermediateShutdown();
+
+		public:
 
 			/**
 			 * @brief Begin's the frame rendering.
@@ -222,6 +230,8 @@ namespace Ocean {
 			void UpdateUniformBuffer(u8 frame);
 
 			/* --- */
+
+			static inline Renderer* s_Instance = nullptr;
 
 			Allocator* p_Allocator = nullptr;
 

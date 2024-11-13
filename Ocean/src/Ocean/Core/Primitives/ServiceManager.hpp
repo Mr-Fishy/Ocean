@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Ocean/Core/Primitives/Service.hpp"
-#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/HashMap.hpp"
 
 namespace Ocean {
@@ -17,11 +16,11 @@ namespace Ocean {
 		 * @brief Initializes the Service Manager with no services.
 		 * @param allocator - The Ocean memory allocator to use, by default it is the Memory Service System Allocator.
 		 */
-		void Init(Allocator* allocator = MemoryService::Instance().SystemAllocator());
+		void Init();
 		/**
 		 * @brief Shuts down the Service Manager. All services need to be shutdown before calling this.
 		 */
-		void Shutdown();
+		static void Shutdown();
 
 		/**
 		 * @brief Add's a service to the service manager. 
@@ -51,13 +50,13 @@ namespace Ocean {
 		T* Get();
 
 	private:
-		ServiceManager() : p_Allocator(nullptr), m_Services() { }
+		ServiceManager() : m_Services(4) { }
 		~ServiceManager() = default;
 
 		ServiceManager(const ServiceManager&) = delete;
 		ServiceManager operator = (const ServiceManager&) = delete;
 
-		Allocator* p_Allocator = nullptr;
+		static inline ServiceManager* s_Instance = nullptr;
 
 		HashMap<cstring, Service*> m_Services;
 

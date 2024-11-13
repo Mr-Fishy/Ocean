@@ -2,7 +2,6 @@
 
 #include "Ocean/Core/Types/Bool.hpp"
 
-#include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Memory.hpp"
 
 namespace Ocean {
@@ -12,7 +11,17 @@ namespace Ocean {
 		template <typename K, typename T>
 		class Map {
 		public:
-			Map() = default;
+			Map() : p_Allocator(nullptr), m_Size(0), m_Capacity(0) { }
+			Map(const Map& map) {
+				if (this != &map) {
+					this->p_Allocator = map.p_Allocator;
+				}
+			}
+			Map operator = (const Map& map) {
+				if (this != &map) {
+					this->p_Allocator = map.p_Allocator;
+				}
+			}
 			virtual ~Map() = default;
 
 			virtual void Insert(K key, T value) = 0;
@@ -34,10 +43,10 @@ namespace Ocean {
 			b8 IsEmpty() const { return m_Size == 0; }
 
 		protected:
-			Allocator* p_Allocator = nullptr;
+			Allocator* p_Allocator;
 
-			u32 m_Size = 0;
-			u32 m_Capacity = 0;
+			u32 m_Size;
+			u32 m_Capacity;
 
 		};
 
@@ -58,15 +67,19 @@ namespace Ocean {
 		};	// KeyValue
 
 	public:
-		HashMap() = default;
+		HashMap() : ADT::Map<K, T>(), p_Slots(nullptr) { Init(4); }
+		HashMap(u32 capacity) { Init(capacity); }
+		HashMap(const HashMap&);
 		virtual ~HashMap() = default;
+
+		HashMap& operator = (const HashMap&);
 
 		/**
 		 * @brief Initializes the HashMap. Shutdown() must be called before re-initializing.
 		 * @param allocator - The Ocean memory allocator to use.
 		 * @param initialCapacity - The initial capacity of the map.
 		 */
-		void Init(Allocator* allocator, u32 initialCapacity);
+		void Init(u32 initialCapacity);
 		/**
 		 * @brief Shuts down the HashMap. This must be called before the application is closed if initialized.
 		 */
@@ -137,15 +150,17 @@ namespace Ocean {
 
 	// Implementation
 
+
+
 	template<typename K, typename T>
-	inline void HashMap<K, T>::Init(Allocator* allocator, u32 initialCapacity) {
-		this->p_Allocator = allocator;
+	inline void HashMap<K, T>::Init(u32 initialCapacity) {
+		this->p_Allocator = MemoryService::Instance().SystemAllocator();
 		this->m_Capacity = initialCapacity < 4 ? 4 : initialCapacity;
 		this->m_Size = 0;
 		this->m_Threshold = (this->m_Capacity * 9) / 10;
 		this->m_Mask = this->m_Capacity - 1;
 
-		this->p_Slots = oallocat(KeyValue*, this->m_Capacity, this->p_Allocator);
+		this->p_Slots = oallocat(KeyValue, this->m_Capacity, this->p_Allocator);
 	}
 
 	template<typename K, typename T>
@@ -268,7 +283,7 @@ namespace Ocean {
 		// m_Capacity limits the loop to only iterate 
 		// over the available slots, better protecting from infinite looping.
 		for (u32 i = 0; i < this->m_Capacity; i++) {
-			if (this->p_Slots[pos].Hash = 0) {
+			if (this->p_Slots[pos].Hash == 0) {
 				this->p_Slots[pos] = { key, value, hash };
 
 				return;
