@@ -4,7 +4,8 @@
 
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/Resources.hpp"
+// libs
+#include <vulkan/vulkan.h>
 
 namespace Ocean {
 
@@ -20,16 +21,18 @@ namespace Ocean {
 		 */
 		class Shader {
 		public:
-			Shader() = default;
+			Shader() : p_DeviceRef(VK_NULL_HANDLE), m_ShaderFile(), m_Module(VK_NULL_HANDLE), m_ActiveModule(false) { }
+			Shader(const Shader& shader);
 			Shader(cstring filename);
 			~Shader() = default;
 
+			Shader& operator = (const Shader&);
+
 			/**
 			 * @brief Initializes the Shader to use the given allocator and filename.
-			 * @param allocator - The Ocean memory allocator to use.
 			 * @param filename - The file to load the shader from. Loading from the src directory of the application.
 			 */
-			void Init(Allocator* allocator, cstring filename);
+			void Init(cstring filename);
 			/**
 			 * @brief Shuts down the shader, if the shader module has not been destroyed, it will destroy it.
 			 */
@@ -54,12 +57,12 @@ namespace Ocean {
 
 			/* --- */
 
-			VkDevice p_DeviceRef = VK_NULL_HANDLE;
+			VkDevice p_DeviceRef;
 
 			DynamicArray<char> m_ShaderFile;
 
-			VkShaderModule m_Module = VK_NULL_HANDLE;
-			b8 m_ActiveModule = false;
+			VkShaderModule m_Module;
+			b8 m_ActiveModule;
 		};
 
 	}	// Vulkan

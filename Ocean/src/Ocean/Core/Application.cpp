@@ -7,12 +7,6 @@
 
 namespace Ocean {
 
-	Application::Application(const ApplicationConfig& config) {
-	}
-
-	Application::~Application() {
-	}
-
 	void Application::Close() {
 	}
 
@@ -28,17 +22,5 @@ namespace Ocean {
 
 	void Application::TestApp() {
 	}
-
-	b8 Application::MainLoop() { return false; }
-
-	void Application::FixedUpdate(f32 delta) { }
-
-	void Application::VariableUpdate(f32 delta) { }
-
-	void Application::Render(f32 interpolation) { }
-
-	void Application::FrameBegin() { }
-
-	void Application::FrameEnd() { }
 
 }	// Ocean

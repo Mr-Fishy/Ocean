@@ -6,11 +6,14 @@
 
 namespace Ocean {
 
-	typedef void (*PrintCallback)(const char*); // Additional callback for printing.
+	typedef void (*PrintCallback)(const char*); /** @brief Additional callback for printing. */
 
 	class LogService : public Service {
 	public:
-		OCEAN_DECLARE_SERVICE(LogService);
+		LogService() = default;
+		virtual ~LogService() = default;
+
+		static LogService& Instance();
 
 		void PrintFormat(cstring format, ...) const;
 
@@ -19,26 +22,18 @@ namespace Ocean {
 		static cstring Name() { return "OCEAN_Log_Service"; }
 
 	private:
+		static LogService* s_Instance;
+
 		PrintCallback m_PrintCallback = nullptr;
 
 	};	// LogService
 
 	// Macros
 
-#if defined (_MSC_VER)
+	/** @brief Print's the given string and arguments to the console. */
+	#define oprint(format, ...)    Ocean::LogService::Instance().PrintFormat(format, ## __VA_ARGS__)
 
-	// Print's the given string and arguments to the console.
-	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, __VA_ARGS__)
-	// Print's the given string and arguments to the console. Add's a new line after the output.
-	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
-
-#else
-
-	// Print's the given string and arguments to the console.
-	#define oprint(format, ...)    Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__)
-	// Print's the given string and arguments to the console. Add's a new line after the output.
-	#define oprintret(format, ...) Ocean::LogService::Instance()->PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance()->PrintFormat("\n")
-
-#endif
+	/** @brief Print's the given string and arguments to the console. Add's a new line after the output. */
+	#define oprintret(format, ...) Ocean::LogService::Instance().PrintFormat(format, ## __VA_ARGS__); Ocean::LogService::Instance().PrintFormat("\n")
 
 }	// Ocean

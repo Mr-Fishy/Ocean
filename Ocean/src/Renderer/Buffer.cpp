@@ -63,7 +63,7 @@ namespace Ocean {
 			void* ptr = nullptr;
 			vkMapMemory(p_DeviceRef->GetLogical(), m_Memory, 0, size, 0, &ptr);
 
-			memcpy(ptr, data, (sizet)size);
+			memcpy(ptr, data, static_cast<sizet>(size));
 
 			vkUnmapMemory(p_DeviceRef->GetLogical(), m_Memory);
 		}

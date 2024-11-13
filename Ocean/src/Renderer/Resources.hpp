@@ -5,11 +5,8 @@
 #include "Ocean/Core/Primitives/Array.hpp"
 
 // TODO: Convert to use the vulkan memory allocator.
-#pragma warning(push, 0)
-#pragma warning(disable : 26495) // Uninitialized Warning
 #include <vulkan/vulkan.hpp>
 // #include "vk_mem_alloc.h"
-#pragma warning(pop)
 
 namespace Ocean {
 
@@ -146,7 +143,7 @@ namespace Ocean {
 			vkCmdEndRenderPass(buffer);
 		}
 
-
+	#if defined(OC_DEBUG)
 
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
@@ -212,6 +209,8 @@ namespace Ocean {
 				func(instance, debugMessenger, pAllocator);
 			}
 		}
+		
+	#endif
 
 	}	// Vulkan
 

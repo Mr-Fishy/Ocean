@@ -1,5 +1,6 @@
 #include "Memory.hpp"
 
+#include "Macros.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/MemoryUtils.hpp"
 
@@ -8,31 +9,33 @@
 
 // std
 #include <stdlib.h>
-#include <memory>
+#include <cstring>
 
-#define HEAP_ALLOCATOR_STATS
+/** @brief Records statistics for heap allocations. */
+// #define HEAP_ALLOCATOR_STATS
 
 namespace Ocean {
 
 	// Walker Methods
 
-	static void ExitWalker(void* ptr, sizet size, i32 used, void* user) {
-		MemoryStats* stats = static_cast<MemoryStats*>(user);
+	#ifdef HEAP_ALLOCATOR_STATS
 
-		stats->Add(used ? size : 0);
+		static void ExitWalker(void* ptr, sizet size, i32 used, void* user) {
+			if (used)
+				oprint("Found active allocation %p, %llu\n", ptr, size);
+		}
 
-		if (used)
-			oprint("Found active allocation %p, %llu\n", ptr, size);
-	}
+	#endif
 
 	// Memory Service
 
-	static MemoryService s_MemoryService;
-
 	static sizet s_Size = omega(32) + tlsf_size() + 8;
 
-	MemoryService* MemoryService::Instance() {
-		return &s_MemoryService;
+	MemoryService& MemoryService::Instance() {
+		if (!s_Instance)
+			s_Instance = new MemoryService();
+
+		return *s_Instance;
 	}
 
 	void MemoryService::Init(void* config) {
@@ -41,7 +44,9 @@ namespace Ocean {
 	}
 
 	void MemoryService::Shutdown() {
-		m_SystemAllocator.Shutdown();
+		Instance().m_SystemAllocator.Shutdown();
+
+		delete &Instance();
 	}
 
 	// Memory Methods
@@ -58,9 +63,14 @@ namespace Ocean {
 
 	// Heap Allocator
 
+	#ifdef HEAP_ALLOCATOR_STATS
+
+		static MemoryStats s_Stats{ 0, 0, 0 };
+
+	#endif
+
 	HeapAllocator::~HeapAllocator() { }
 
-	// TODO: Finish implementing Memory Stats so that it is accurate.
 	void HeapAllocator::Init(sizet size) {
 		p_Memory = malloc(size);
 		m_TotalSize = size;
@@ -70,13 +80,19 @@ namespace Ocean {
 	}
 
 	void HeapAllocator::Shutdown() {
-	#if defined (HEAP_ALLOCATOR_STATS)
-		MemoryStats stats{ m_AllocatedSize, m_TotalSize };
-		void* pool = tlsf_get_pool(p_Handle);
-		tlsf_walk_pool(pool, ExitWalker, (void*)&stats);
+	#ifdef HEAP_ALLOCATOR_STATS
+		if (s_Stats.AllocatedBytes != s_Stats.FreedBytes)
+			oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!\n"));
 
-		if (stats.AllocatedBytes != 0)
-			oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!"));
+		void* pool = tlsf_get_pool(p_Handle);
+		tlsf_walk_pool(pool, ExitWalker, static_cast<void*>(&s_Stats));
+
+		oprint(CONSOLE_TEXT_CYAN("Memory Heap Stats:\n"));
+		oprint(CONSOLE_TEXT_CYAN("\tAllocated Bytes: %i\n"), s_Stats.AllocatedBytes);
+		oprint(CONSOLE_TEXT_CYAN("\tFreed Bytes: %i\n"), s_Stats.FreedBytes);
+		oprint(CONSOLE_TEXT_CYAN("\tTotal Allocations: %i\n"), s_Stats.AllocationCount);
+		oprint(CONSOLE_TEXT_CYAN("\tTotal Free's: %i\n"), s_Stats.FreeCount);
+
 	#endif
 
 		tlsf_destroy(p_Handle);
@@ -91,10 +107,10 @@ namespace Ocean {
 	}
 
 	void* HeapAllocator::Allocate(sizet size, sizet alignment) {
-	#if defined (HEAP_ALLOCATOR_STATS)
+	#ifdef HEAP_ALLOCATOR_STATS
 
 		void* allocatedMemory = alignment == 1 ? tlsf_malloc(p_Handle, size) : tlsf_memalign(p_Handle, alignment, size);
-		m_AllocatedSize += tlsf_block_size(allocatedMemory);
+		m_AllocatedSize += s_Stats.Add(tlsf_block_size(allocatedMemory));
 
 		return allocatedMemory;
 
@@ -110,9 +126,9 @@ namespace Ocean {
 	}
 
 	void HeapAllocator::Deallocate(void* ptr) {
-	#if defined (HEAP_ALLOCATOR_STATS)
+	#ifdef HEAP_ALLOCATOR_STATS
 
-		m_AllocatedSize -= tlsf_block_size(ptr);
+		m_AllocatedSize -= s_Stats.Remove(tlsf_block_size(ptr));
 
 		tlsf_free(p_Handle, ptr);
 
@@ -126,7 +142,7 @@ namespace Ocean {
 	// Stack Allocator
 
 	void StackAllocator::Init(sizet size) {
-		p_Memory = (u8*)malloc(size);
+		p_Memory = static_cast<u8*>(malloc(size));
 		m_AllocatedSize = 0;
 		m_TotalSize = size;
 	}

@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 
+#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Types/glmTypes.hpp"
 
 #include "Ocean/Core/Primitives/Time.hpp"
@@ -9,6 +10,7 @@
 
 #include "Renderer/Infos.hpp"
 #include "Renderer/Device.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
 #include "Renderer/Framebuffer.hpp"
 
@@ -19,10 +21,11 @@ namespace Ocean {
 
 	namespace Vulkan {
 
-		Renderer s_Renderer;
+		Renderer& Renderer::Instance() {
+			if (s_Instance == nullptr)
+				s_Instance = new Renderer;
 
-		Renderer* Renderer::Instance() {
-			return &s_Renderer;
+			return *s_Instance;
 		}
 
 		void Renderer::Init(void* config) {
@@ -119,6 +122,12 @@ namespace Ocean {
 		}
 
 		void Renderer::Shutdown() {
+			Instance().CleanUp();
+
+			delete &Instance();
+		}
+
+		void Renderer::IntermediateShutdown() {
 			vkDestroyPipeline(p_Device->GetLogical(), m_GraphicsPipeline, nullptr);
 			vkDestroyPipelineLayout(p_Device->GetLogical(), m_PipelineLayout, nullptr);
 			vkDestroyRenderPass(p_Device->GetLogical(), m_RenderPass, nullptr);
@@ -250,6 +259,8 @@ namespace Ocean {
 			return extensions;
 		}
 
+	#ifdef OC_DEBUG
+
 		void Renderer::SetDebugMessengerInfo(VkDebugUtilsMessengerCreateInfoEXT& info) {
 			info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 
@@ -270,10 +281,12 @@ namespace Ocean {
 			SetDebugMessengerInfo(info);
 
 			CHECK_RESULT(
-				CreateDebugUtilsMessengerEXT(m_Instance, &info, nullptr, &m_DebugMessenger),
+				CreateDebugUtilsMessengerEXT(m_Instance, &info, nullptr, &this->m_DebugMessenger),
 				"Failed to set up debug messenger!"
 			);
 		}
+
+	#endif
 
 		void Renderer::CreateRenderPass() {
 			VkAttachmentDescription colorAttachment = GetColorAttachmentDescription(p_SwapChain->GetColorFormat());
@@ -325,8 +338,8 @@ namespace Ocean {
 
 		void Renderer::CreateGraphicsPipeline() {
 			Shader* shaders = oallocat(Shader, 2, p_Allocator);
-			shaders[0].Init(p_Allocator, "src/Shaders/vert.spv");
-			shaders[1].Init(p_Allocator, "src/Shaders/frag.spv");
+			shaders[0].Init("src/Shaders/vert.spv");
+			shaders[1].Init("src/Shaders/frag.spv");
 
 			VkPipelineShaderStageCreateInfo shaderStages[] = {
 				GetVertextShaderStageInfo(&shaders[0], p_Device->GetLogical(), "main"),

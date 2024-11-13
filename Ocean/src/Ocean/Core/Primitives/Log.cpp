@@ -4,19 +4,11 @@
 
 #include "Ocean/Core/Primitives/Macros.hpp"
 
-#if defined (_MSC_VER)
-
-	#define WIN32_LEAN_AND_MEAN
-	#include <Windows.h>
-
-#endif
-
+// std
 #include <stdio.h>
 #include <stdarg.h>
 
 namespace Ocean {
-
-	LogService s_LogService;
 
 	static constexpr u32 k_StringBufferSize = 1024 * 1024;
 	static char LogBuffer[k_StringBufferSize];
@@ -25,16 +17,15 @@ namespace Ocean {
 		printf("%s", logBuffer);
 	}
 
-#if defined (_MSC_VER)
 
-	static void OutputVisualStudio(char* logBuffer) {
-		OutputDebugStringA(logBuffer);
-	}
 
-#endif
+	LogService* LogService::s_Instance = nullptr;
+	
+	LogService& LogService::Instance() {
+		if (s_Instance == nullptr)
+			s_Instance = new LogService();
 
-	LogService* LogService::Instance() {
-		return &s_LogService;
+		return *s_Instance;
 	}
 
 	void LogService::PrintFormat(cstring format, ...) const {
@@ -42,26 +33,12 @@ namespace Ocean {
 
 		va_start(args, format);
 
-	#if defined(_MSC_VER)
-
-		vsnprintf_s(LogBuffer, ArraySize(LogBuffer), format, args);
-
-	#else
-
 		vsnprintf(LogBuffer, ArraySize(LogBuffer), format, args);
-
-	#endif
 
 		LogBuffer[ArraySize(LogBuffer) - 1] = '\0';
 		va_end(args);
 
 		OutputConsole(LogBuffer);
-
-	#if defined(_MSC_VER)
-
-		OutputVisualStudio(LogBuffer);
-
-	#endif
 
 		if (m_PrintCallback)
 			m_PrintCallback(LogBuffer);

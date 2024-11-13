@@ -1,7 +1,8 @@
 #include "Shader.hpp"
 
-#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
+
+#include "Renderer/Resources.hpp"
 
 // std
 #include <fstream>
@@ -10,11 +11,24 @@ namespace Ocean {
 
 	namespace Vulkan {
 
-		Shader::Shader(cstring filename) : m_ActiveModule(false) {
+		Shader::Shader(const Shader& shader) : p_DeviceRef(shader.p_DeviceRef), m_ShaderFile(shader.m_ShaderFile), m_Module(shader.m_Module), m_ActiveModule(shader.m_ActiveModule) { }
+
+		Shader::Shader(cstring filename) : p_DeviceRef(VK_NULL_HANDLE), m_ShaderFile(), m_Module(VK_NULL_HANDLE), m_ActiveModule(false) {
 			ReadShaderFile(filename);
 		}
 
-		void Shader::Init(Allocator* allocator, cstring filename) {
+		Shader& Shader::operator = (const Shader& shader) {
+			if (this != &shader) {
+				this->p_DeviceRef = shader.p_DeviceRef;
+				this->m_ShaderFile = shader.m_ShaderFile;
+				this->m_Module = shader.m_Module;
+				this->m_ActiveModule = shader.m_ActiveModule;
+			}
+
+			return *this;
+		}
+
+		void Shader::Init(cstring filename) {
 			m_ActiveModule = false;
 
 			ReadShaderFile(filename);
@@ -59,7 +73,7 @@ namespace Ocean {
 
 			OASSERTM(file.is_open(), "Failed to open file %s!\n", filename);
 
-			u32 fileSize = (u32)file.tellg();
+			u32 fileSize = static_cast<u32>(file.tellg());
 			m_ShaderFile.Init(fileSize);
 
 			file.seekg(0);
