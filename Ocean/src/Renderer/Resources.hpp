@@ -143,7 +143,7 @@ namespace Ocean {
 			vkCmdEndRenderPass(buffer);
 		}
 
-	#if defined(OC_DEBUG)
+	#ifdef OC_DEBUG
 
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
@@ -204,7 +204,7 @@ namespace Ocean {
 			VkDebugUtilsMessengerEXT debugMessenger,
 			const VkAllocationCallbacks* pAllocator
 		) {
-			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+			auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
 			if (func != nullptr) {
 				func(instance, debugMessenger, pAllocator);
 			}

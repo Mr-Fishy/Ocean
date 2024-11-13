@@ -12,3 +12,8 @@
 	path = Ocean/vendor/tlsf
 	url = https://github.com/mattconte/tlsf
 	branch = master
+
+[submodule "Ocean/vendor/steamaudio"]
+	path = Ocean/vendor/steamaudio
+	url = https://github.com/Mr-Fishy/steam-audio
+	branch = Latest-Release
