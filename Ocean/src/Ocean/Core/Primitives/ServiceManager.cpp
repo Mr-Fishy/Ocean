@@ -1,23 +1,24 @@
 #include "ServiceManager.hpp"
 
 #include "Ocean/Core/Primitives/Assert.hpp"
-
-#include <iterator>
+#include "Ocean/Core/Primitives/Memory.hpp"
 
 namespace Ocean {
 
-	static ServiceManager s_ServiceManager;
+	ServiceManager& ServiceManager::Instance() {
+		if (!s_Instance) {
+			s_Instance = oallocat(ServiceManager, 1, MemoryService::Instance().SystemAllocator());
+		}
 
-	ServiceManager* ServiceManager::Instance() {
-		return &s_ServiceManager;
+		return *s_Instance;
 	}
 
-	void ServiceManager::Init(Allocator* allocator) {
-		p_Allocator = allocator;
+	void ServiceManager::Init() {
+		
 	}
 
 	void ServiceManager::Shutdown() {
-		m_Services.Clear();
+		ofree(&Instance(), MemoryService::Instance().SystemAllocator());
 	}
 
 	void ServiceManager::AddService(Service* service, cstring name) {

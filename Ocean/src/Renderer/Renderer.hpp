@@ -101,7 +101,10 @@ namespace Ocean {
 			};
 
 		public:
-			OCEAN_DECLARE_SERVICE(Renderer);
+			Renderer() : m_SyncObjects(), m_UniformBuffers() { }
+			~Renderer() = default;
+
+			static Renderer& Instance();
 
 			/**
 			 * @brief Initializes the Renderer with the given configuration.
@@ -111,7 +114,12 @@ namespace Ocean {
 			/**
 			 * @brief Shuts down the Renderer.
 			 */
-			virtual void Shutdown() override;
+			static void Shutdown();
+
+		private:
+			void IntermediateShutdown();
+
+		public:
 
 			/**
 			 * @brief Begin's the frame rendering.
@@ -183,6 +191,8 @@ namespace Ocean {
 			 */
 			std::vector<cstring> GetRequiredExtensions();
 
+		#ifdef OC_DEBUG
+
 			/**
 			 * @brief Sets the information for the Vulkan Debug Messenger to the given info.
 			 * @param info - The Debug Messenger info.
@@ -192,6 +202,8 @@ namespace Ocean {
 			 * @brief Creates the Vulkan Debug Messenger so that the validation layers will report errors.
 			 */
 			void CreateDebugMessenger();
+
+		#endif
 
 			/**
 			 * @brief Creates the Vulkan Render Pass for the Graphics Pipeline. 
@@ -218,6 +230,8 @@ namespace Ocean {
 			void UpdateUniformBuffer(u8 frame);
 
 			/* --- */
+
+			static inline Renderer* s_Instance = nullptr;
 
 			Allocator* p_Allocator = nullptr;
 

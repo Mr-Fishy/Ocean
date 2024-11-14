@@ -4,8 +4,9 @@
 
 #include "Ocean/Core/Types/ValueTypes.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
+#include "Ocean/Core/Types/Timestep.hpp"
 
-int main(int argc, char** argv);
+int main(/* int argc, char** argv */);
 
 namespace Ocean {
 
@@ -16,18 +17,16 @@ namespace Ocean {
 	 */
 	struct ApplicationConfig {
 
-		u32 Width  = 900; /** @brief The width of the application window. */
-		u32 Height = 600; /** @brief The height of the application window. */
+		cstring name = nullptr; /** @brief The name of the application. */
 
-		b8 Fullscreen = false; /** @brief If the application is fullscreen. */
+		u32 width  = 900; /** @brief The width of the application window. */
+		u32 height = 600; /** @brief The height of the application window. */
 
-		b8 InitBaseServices = true;
+		b8 fullscreen = false; /** @brief If the application is fullscreen. */
 
-		cstring Name = nullptr; /** @brief The name of the application. */
+		b8 initBaseServices = true;
 
-		ApplicationConfig& w(u32 value) { Width = value; return *this; }
-		ApplicationConfig& h(u32 value) { Height = value; return *this; }
-		ApplicationConfig& name(cstring value) { Name = value; return *this; }
+		ApplicationConfig(cstring name, u32 w, u32 h, b8 fullscreen = false) : name(name), width(w), height(h), fullscreen(fullscreen) { }
 
 	};	// ApplicationConfig
 
@@ -36,8 +35,8 @@ namespace Ocean {
 	 */
 	class Application {
 	public:
-		Application(const ApplicationConfig& config);
-		virtual ~Application();
+		Application(const ApplicationConfig& config) { }
+		virtual ~Application() = default;
 
 		/**
 		 * @brief Closes the application.
@@ -45,7 +44,7 @@ namespace Ocean {
 		void Close();
 
 	protected:
-		friend int ::main(int argc, char** argv);
+		friend int ::main(/* int argc, char** argv */);
 
 		/* --- */
 
@@ -59,21 +58,25 @@ namespace Ocean {
 		 */
 		void TestApp();
 
-		virtual b8 MainLoop();
+		virtual b8 MainLoop() = 0;
 
-		virtual void FixedUpdate(f32 delta);
-		virtual void VariableUpdate(f32 delta);
+		virtual void FixedUpdate(Timestep delta) = 0;
+		virtual void VariableUpdate(Timestep delta) = 0;
 		
-		virtual void Render(f32 interpolation);
+		virtual void Render(f32 interpolation) = 0;
 
-		virtual void FrameBegin();
-		virtual void FrameEnd();
+		virtual void FrameBegin() = 0;
+		virtual void FrameEnd() = 0;
 
 		/* --- */
 
 		static Application* s_Instance;
 
 		ServiceManager* p_ServiceManager = nullptr;
+
+	private:
+		Application(const Application&) = delete;
+		Application operator = (const Application&) = delete;
 	};
 
 	Application* CreateApplication();

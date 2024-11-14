@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Ocean/Core/Primitives/Service.hpp"
-#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/HashMap.hpp"
 
 namespace Ocean {
@@ -11,20 +10,17 @@ namespace Ocean {
 	 */
 	class ServiceManager {
 	public:
-		ServiceManager() = default;
-		~ServiceManager() = default;
-
-		OCEAN_DECLARE_SERVICE(ServiceManager);
+		static ServiceManager& Instance();
 
 		/**
 		 * @brief Initializes the Service Manager with no services.
 		 * @param allocator - The Ocean memory allocator to use, by default it is the Memory Service System Allocator.
 		 */
-		void Init(Allocator* allocator = MemoryService::Instance()->SystemAllocator());
+		void Init();
 		/**
 		 * @brief Shuts down the Service Manager. All services need to be shutdown before calling this.
 		 */
-		void Shutdown();
+		static void Shutdown();
 
 		/**
 		 * @brief Add's a service to the service manager. 
@@ -54,7 +50,13 @@ namespace Ocean {
 		T* Get();
 
 	private:
-		Allocator* p_Allocator = nullptr;
+		ServiceManager() : m_Services(4) { }
+		~ServiceManager() = default;
+
+		ServiceManager(const ServiceManager&) = delete;
+		ServiceManager operator = (const ServiceManager&) = delete;
+
+		static inline ServiceManager* s_Instance = nullptr;
 
 		HashMap<cstring, Service*> m_Services;
 
@@ -62,12 +64,12 @@ namespace Ocean {
 
 	template<typename T>
 	inline T* ServiceManager::Get() {
-		T* service = (T*)GetService(T::Name());
+		T* service = static_cast<T*>(GetService(T::Name()));
 		if (service == nullptr) {
-			AddService(T::Instance(), T::Name());
+			AddService(&T::Instance(), T::Name());
 		}
 
-		return T::Instance();
+		return &T::Instance();
 	}
 
 }	// Ocean

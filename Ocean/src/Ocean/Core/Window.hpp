@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Ocean/Core/Types/Bool.hpp"
-#include "Ocean/Core/Types/FloatingPoints.hpp"
+#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Strings.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
-#include "Ocean/Core/Primitives/Array.hpp"
 
 namespace Ocean {
 
@@ -13,12 +12,10 @@ namespace Ocean {
 	 */
 	struct WindowConfig {
 
-		u32 Width;
-		u32 Height;
+		u32 width;
+		u32 height;
 
-		cstring Name;
-
-		Allocator* Allocator;
+		cstring name;
 
 	};	// WindowConfig
 
@@ -28,16 +25,16 @@ namespace Ocean {
 	 * @brief The window data to handle in GLFW.
 	 */
 	struct WindowData {
-		Window* Window;
+		Window* window = nullptr;
 
-		u16 Width, Height;
-		u16 WindowedWidth, WindowedHeight;
+		u16 width = 0, height = 0;
+		u16 windowedWidth = 0, windowedHeight = 0;
 
-		b8 VSync = true;
-		b8 Refreshed = false;
-		b8 CenteredCursor = false;
-		b8 Resized = false;
-		b8 Fullscreen = false;
+		b8 vSync = true;
+		b8 refreshed = false;
+		b8 centeredCursor = false;
+		b8 resized = false;
+		b8 fullscreen = false;
 	};
 
 	/**
@@ -45,6 +42,9 @@ namespace Ocean {
 	 */
 	class Window : public Service {
 	public:
+		Window() : p_PlatformHandle(nullptr), m_Data() { }
+		virtual ~Window() = default;
+
 		/**
 		 * @brief Initializes the window.
 		 * @param config - The configuration of the window using WindowConfig.
@@ -53,7 +53,7 @@ namespace Ocean {
 		/**
 		 * @brief Shuts down the window.
 		 */
-		virtual void Shutdown() override;
+		void Shutdown();
 
 		/**
 		 * @param enabled - Set's fullscreen on or off according to True or False.
@@ -73,11 +73,11 @@ namespace Ocean {
 		/**
 		 * @return The window width in screen coordinates.
 		 */
-		u32 Width() const { return m_Data.Width; }
+		u32 Width() const { return m_Data.width; }
 		/**
 		 * @return The window height in screen coordinates.
 		 */
-		u32 Height() const { return m_Data.Height; }
+		u32 Height() const { return m_Data.height; }
 		/**
 		 * @return The window handle from glfw.
 		 */
@@ -96,14 +96,19 @@ namespace Ocean {
 		/**
 		 * @return True if the window has been resized, False otherwise.
 		 */
-		b8 Resized() const { return m_Data.Resized; }
+		b8 Resized() const { return m_Data.resized; }
 		/**
 		 * @brief Tells the window that the resize has been handled.
 		 */
-		void ResizeHandled() { m_Data.Resized = false; }
+		void ResizeHandled() { m_Data.resized = false; }
 
 	private:
-		void* p_PlatformHandle = nullptr;
+		Window(Window&) = delete;
+		Window operator = (Window&) = delete;
+
+		/* --- */
+
+		void* p_PlatformHandle;
 
 		b8 m_RequestedExit = false;
 		b8 m_Minimized = false;

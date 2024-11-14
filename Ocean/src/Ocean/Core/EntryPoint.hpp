@@ -7,25 +7,21 @@
 // std
 #include <iostream>
 
-#ifdef OC_PLATFORM_WINDOWS
+extern Ocean::Application* Ocean::CreateApplication();
 
-	extern Ocean::Application* Ocean::CreateApplication();
+int main(/* int argc, char** argv */) {
+	Ocean::Application* app = Ocean::CreateApplication();
 
-	int main(int argc, char** argv) {
-		Ocean::Application* app = Ocean::CreateApplication();
-
-		try {
-			app->Run();
-		}
-		catch (const std::exception& e) {
-			std::cerr << e.what() << std::endl;
-
-			delete app;
-			return EXIT_FAILURE;
-		}
+	try {
+		app->Run();
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
 
 		delete app;
-		return EXIT_SUCCESS;
+		return EXIT_FAILURE;
 	}
 
-#endif // OC_PLATFORM_WINDOWS
+	delete app;
+	return EXIT_SUCCESS;
+}
