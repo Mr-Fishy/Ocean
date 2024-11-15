@@ -1,0 +1,80 @@
+#pragma once
+
+#include <iostream>
+#include <phonon.h>
+namespace Ocean{
+    namespace DOGsystem{
+        class audio{
+            public:
+                audio();
+                virtual ~audio();
+            private:
+            //TODO: THIS IS JUST TO VISUALIZE WHAT I NEED TO BREAK UP.
+                //Context Settings
+                IPLContextSettings contextSettings{};
+                IPLAudioSettings audioSettings{};
+                IPLHRTFSettings hrtfSettings{};
+                //Binaural effect settings
+                IPLBinauralEffectSettings Binaural_effectSettings{};
+                IPLBinauralEffectParams Binaural_params{};
+                //Abisonic effect
+                IPLAmbisonicsEncodeEffectSettings Ambisonic_effectSettings{};
+                IPLAmbisonicsEncodeEffectParams Ambisonic_params{};
+                IPLAmbisonicsDecodeEffectSettings Ambisonicdec_effectSettings{};
+                //Direct effect
+                IPLDirectEffectSettings Direct_effectSettings{};
+                IPLDirectEffectParams Direct_params{};
+                //Attenuation
+                IPLDistanceAttenuationModel distanceAttenuationModel{};
+                //Air absorbtion
+                IPLAirAbsorptionModel airAbsorptionModel{};
+                //Directivity
+                IPLDirectivity directivity{};
+                //Scene
+                    //Scene runtime
+                    IPLSceneSettings sceneSettings{};
+                    IPLStaticMeshSettings staticMeshSettings{};
+                    IPLInstancedMeshSettings instancedMeshSettings{};
+                    //Scene not runtime
+                    IPLSerializedObjectSettings soSettings{};
+                //Simulation
+                IPLSimulationSettings simulationSettings{};
+                IPLSimulationInputs inputs{};
+                IPLSimulationSharedInputs sharedInputs{};
+                IPLSimulationOutputs outputs{};
+                    //Sources
+                    iplSourceSettings sourceSettings{};
+                    //Reflections
+                    IPLReflectionEffectSettings effectSettings{};
+                    IPLSimulationSettings Reflect_simulationSettings{};
+                    IPLSimulationInputs Reflect_inputs{};
+                    IPLSimulationSharedInputs Reflect_sharedInputs{};
+                    IPLSimulationOutputs Reflect_outputs{};
+                //Baking
+                IPLProbeGenerationParams probeParams{};
+                    //Baked reflections
+                    IPLBakeDataIdentifier Baked_identifier{};
+                    IPLReflectionsBakeParams bakeParams{};
+                    //Load into sim
+                    IPLSimulationInputs Baked_inputs{};
+                //Pathing
+                    //Baking Pathing
+                    IPLBakeDataIdentifier identifier{};
+                    IPLPathBakeParams bakeParams{};
+                    //more sim
+                    IPLSimulationSettings Pathing_simulationSettings{};
+                    IPLSourceSettings Pathing_sourceSettings{};
+                    IPLSimulationInputs Pathing_inputs{};
+                    IPLSimulationOutputs Pathing_outputs{};
+
+                IPLPathEffectSettings Path_effectSettings{};
+                
+
+                virtual void context_Creation(IPLContextSettings& contextSettings, IPLContext& context){};
+                virtual void HRTF_Creation(IPLHRTFSettings& context){};
+                virtual void buffer_Creation(int audio_Channels =1, int audio_Samples =512){};
+                virtual void Binaural_Effect(IPLContext& context,IPLAudioSettings& audioSettings,IPLBinauralEffectSettings& effectSetting, IPLBinauralEffect& hrtf){};
+                virtual void 
+        };
+    }
+}

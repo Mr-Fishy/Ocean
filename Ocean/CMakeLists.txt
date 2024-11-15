@@ -27,6 +27,10 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
 
+#audio files
+file(GLOB Ocean_AUDIO_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)
+file(GLOB Ocean_AUDIO_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.cpp)
+
 # Vendor Files (Non-Libraries)
 ## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
@@ -34,6 +38,7 @@ file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 
 ## Steam Audio
 file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
+
 
 # Group all of the files per their source for IDE / Editor
 
@@ -58,6 +63,8 @@ source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
 
+source_group("Audio Headers" FILES ${Ocean_AUDIO_HEADER})
+source_group("Audio Sources" FILES ${Ocean_AUDIO_SOURCE})
 source_group("Steam Audio Headers" FILES ${steamaudio_HEADER})
 
 add_library(
@@ -73,6 +80,7 @@ add_library(
     ${Ocean_PLAT_HEADER}  ${Ocean_PLAT_SOURCE}
 
     ${Ocean_REND_HEADER} ${Ocean_REND_SOURCE}
+    ${Ocean_AUDIO_HEADER} ${Ocean_AUDIO_SOURCE}
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
     ${steamaudio_HEADER}
