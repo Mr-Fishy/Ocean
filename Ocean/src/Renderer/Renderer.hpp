@@ -10,6 +10,10 @@
 // libs
 #include <vulkan/vulkan_core.h>
 
+// std
+#include <array>
+#include <vector>
+
 namespace Ocean {
 
 	class Window;

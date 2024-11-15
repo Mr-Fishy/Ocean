@@ -12,7 +12,6 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config), 
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
 	// ---> Init Primitive Services
-
 	Ocean::MemoryService::Instance().Init(nullptr);
 
 	Ocean::oTimeServiceInit();

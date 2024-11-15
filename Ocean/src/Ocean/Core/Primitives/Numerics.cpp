@@ -2,20 +2,22 @@
 
 namespace Ocean {
 
+	// TODO: Type casting protection (out of bounds protection)
+
 	u32 ceilu32(f32 value) {
-		return u32();
+		return static_cast<u32>(value) + 1;
 	}
 
 	u32 ceilu32(f64 value) {
-		return u32();
+		return static_cast<u32>(value) + 1;
 	}
 
 	u16 ceilu16(f32 value) {
-		return u16();
+		return static_cast<u16>(value) + 1;
 	}
 
 	u16 ceilu16(f64 value) {
-		return u16();
+		return static_cast<u16>(value) + 1;
 	}
 
 

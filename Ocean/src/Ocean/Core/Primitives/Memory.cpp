@@ -177,10 +177,10 @@ namespace Ocean {
 
 	void StackAllocator::Deallocate(void* ptr) {
 		OASSERT(ptr >= p_Memory);
-		OASSERTM(ptr < p_Memory + m_TotalSize, "Out of bound free on Stack Allocator. Attempting to free %p, %llu after beginning of buffer (memory %p, size %llu, allocated %llu).", (u8*)ptr, (u8*)ptr - p_Memory, p_Memory, m_TotalSize, m_AllocatedSize);
-		OASSERTM(ptr < p_Memory + m_AllocatedSize, "Out of allocated bound free on Stack Allocator. Attempting to free %p, %llu after beginning of buffer (memory %p, size %llu, allocated %llu).", (u8*)ptr, (u8*)ptr - p_Memory, p_Memory, m_TotalSize, m_AllocatedSize);
+		OASSERTM(ptr < p_Memory + m_TotalSize, "Out of bound free on Stack Allocator. Attempting to free %p, %llu after beginning of buffer (memory %p, size %llu, allocated %llu).", static_cast<u8*>(ptr), static_cast<u8*>(ptr) - p_Memory, p_Memory, m_TotalSize, m_AllocatedSize);
+		OASSERTM(ptr < p_Memory + m_AllocatedSize, "Out of allocated bound free on Stack Allocator. Attempting to free %p, %llu after beginning of buffer (memory %p, size %llu, allocated %llu).", static_cast<u8*>(ptr), static_cast<u8*>(ptr) - p_Memory, p_Memory, m_TotalSize, m_AllocatedSize);
 
-		m_AllocatedSize = (u8*)ptr - p_Memory;
+		m_AllocatedSize = static_cast<u8*>(ptr) - p_Memory;
 	}
 
 	sizet StackAllocator::GetMarker() const {
@@ -200,7 +200,7 @@ namespace Ocean {
 	// Double Stack Allocator
 
 	void DoubleStackAllocator::Init(sizet size) {
-		p_Memory = (u8*)malloc(size);
+		p_Memory = static_cast<u8*>(malloc(size));
 		m_TotalSize = m_Top = size;
 		m_Bottom = 0;
 	}
@@ -296,7 +296,7 @@ namespace Ocean {
 	}
 
 	void LinearAllocator::Init(sizet size) {
-		p_Memory = (u8*)malloc(size);
+		p_Memory = static_cast<u8*>(malloc(size));
 		m_TotalSize = size;
 		m_AllocatedSize = 0;
 	}

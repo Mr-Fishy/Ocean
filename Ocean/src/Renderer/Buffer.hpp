@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Renderer/Resources.hpp"
+#include "Ocean/Core/Types/Integers.hpp"
+
+// libs
+#include <vulkan/vulkan_core.h>
 
 namespace Ocean {
 

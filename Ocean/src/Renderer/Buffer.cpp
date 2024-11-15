@@ -1,5 +1,6 @@
 #include "Buffer.hpp"
 
+#include "Renderer/Resources.hpp"
 #include "Renderer/Device.hpp"
 
 namespace Ocean {
@@ -67,6 +68,8 @@ namespace Ocean {
 
 			vkUnmapMemory(p_DeviceRef->GetLogical(), m_Memory);
 		}
+
+
 
 		void* UniformBuffer::GetMappedMemory(sizet size) {
 			void* ptr = nullptr;
