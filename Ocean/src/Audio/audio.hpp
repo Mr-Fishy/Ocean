@@ -43,7 +43,7 @@ namespace Ocean{
                 IPLSimulationSharedInputs sharedInputs{};
                 IPLSimulationOutputs outputs{};
                     //Sources
-                    iplSourceSettings sourceSettings{};
+                    IPLSourceSettings sourceSettings{};
                     //Reflections
                     IPLReflectionEffectSettings effectSettings{};
                     IPLSimulationSettings Reflect_simulationSettings{};
@@ -53,14 +53,14 @@ namespace Ocean{
                 //Baking
                 IPLProbeGenerationParams probeParams{};
                     //Baked reflections
-                    IPLBakeDataIdentifier Baked_identifier{};
-                    IPLReflectionsBakeParams bakeParams{};
+                    IPLBakedDataIdentifier Baked_identifier{};
+                    IPLReflectionsBakeParams Baked_bakeParams{};
                     //Load into sim
                     IPLSimulationInputs Baked_inputs{};
                 //Pathing
                     //Baking Pathing
-                    IPLBakeDataIdentifier identifier{};
-                    IPLPathBakeParams bakeParams{};
+                    IPLBakedDataIdentifier Pathing_identifier{};
+                    IPLPathBakeParams Pathing_bakeParams{};
                     //more sim
                     IPLSimulationSettings Pathing_simulationSettings{};
                     IPLSourceSettings Pathing_sourceSettings{};
@@ -74,7 +74,6 @@ namespace Ocean{
                 virtual void HRTF_Creation(IPLHRTFSettings& context){};
                 virtual void buffer_Creation(int audio_Channels =1, int audio_Samples =512){};
                 virtual void Binaural_Effect(IPLContext& context,IPLAudioSettings& audioSettings,IPLBinauralEffectSettings& effectSetting, IPLBinauralEffect& hrtf){};
-                virtual void 
         };
     }
 }
