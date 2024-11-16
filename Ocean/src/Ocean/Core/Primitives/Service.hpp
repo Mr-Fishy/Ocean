@@ -9,7 +9,7 @@ namespace Ocean {
 	public:
 		virtual ~Service() = default;
 
-		virtual void Init(void* config) { }
+		virtual void Init(void* config = nullptr) { }
 
 	};	// Service
 

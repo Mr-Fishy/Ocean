@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Ocean/Core/Types/glmTypes.hpp"
-
 #include "Ocean/Core/Primitives/Array.hpp"
 
-// TODO: Convert to use the vulkan memory allocator.
+// libs
 #include <vulkan/vulkan.hpp>
-// #include "vk_mem_alloc.h"
+
+#include <glm/ext/vector_float2.hpp>
+#include <glm/ext/vector_float3.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
 
 namespace Ocean {
 
@@ -143,7 +144,7 @@ namespace Ocean {
 			vkCmdEndRenderPass(buffer);
 		}
 
-	#if defined(OC_DEBUG)
+	#ifdef OC_DEBUG
 
 		/**
 		 * @brief Sets the Vulkan debug callback for validation layer messages.
@@ -204,7 +205,7 @@ namespace Ocean {
 			VkDebugUtilsMessengerEXT debugMessenger,
 			const VkAllocationCallbacks* pAllocator
 		) {
-			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+			auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
 			if (func != nullptr) {
 				func(instance, debugMessenger, pAllocator);
 			}

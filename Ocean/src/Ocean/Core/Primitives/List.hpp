@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+
+#include "Ocean/Core/Primitives/Memory.hpp"
 
 namespace Ocean {
 
@@ -9,7 +11,7 @@ namespace Ocean {
 		template<typename T>
 		class List {
 		public:
-			List() = default;
+			List() : p_Allocator(nullptr), m_Size(0) { }
 			virtual ~List() = default;
 
 			virtual void Insert(const T& element, u32 position) = 0;
@@ -92,7 +94,7 @@ namespace Ocean {
 		};
 
 	public:
-		DoubleLinkedList() = default;
+		DoubleLinkedList() : ADT::List<T>() { }
 		virtual ~DoubleLinkedList() = default;
 
 		void Init();
@@ -118,21 +120,21 @@ namespace Ocean {
 
 	template<typename T>
 	inline void SingleLinkedList<T>::Init() {
-		p_Allocator = MemoryService::Instance()->SystemAllocator();
-		m_Size = 0;
+		this->p_Allocator = MemoryService::Instance().SystemAllocator();
+		this->m_Size = 0;
 	}
 
 	template<typename T>
 	inline void SingleLinkedList<T>::Shutdown() {
-		while (p_Head) {
-			Node* temp = p_Head->next;
+		while (this->p_Head) {
+			Node* temp = this->p_Head->next;
 
-			ofree(p_Head, p_Allocator);
+			ofree(this->p_Head, this->p_Allocator);
 
-			p_Head = temp;
+			this->p_Head = temp;
 		}
 
-		p_Head = nullptr;
+		this->p_Head = nullptr;
 	}
 
 	template<typename T>
@@ -160,69 +162,69 @@ namespace Ocean {
 
 	template<typename T>
 	inline void SingleLinkedList<T>::Clear() {
-		while (p_Head) {
-			Node* temp = p_Head->next;
+		while (this->p_Head) {
+			Node* temp = this->p_Head->next;
 
-			ofree(p_Head, p_Allocator);
+			ofree(this->p_Head, this->p_Allocator);
 
-			p_Head = temp;
+			this->p_Head = temp;
 		}
 
-		p_Head = nullptr;
-		m_Size = 0;
+		this->p_Head = nullptr;
+		this->m_Size = 0;
 	}
 
 
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Init() {
-		p_Allocator = MemoryService::Instance()->SystemAllocator();
-		m_Size = 0;
+		this->p_Allocator = MemoryService::Instance().SystemAllocator();
+		this->m_Size = 0;
 	}
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Shutdown() {
-		while (p_Head) {
-			Node* temp = p_Head->next;
+		while (this->p_Head) {
+			Node* temp = this->p_Head->next;
 
-			ofree(p_Head, p_Allocator);
+			ofree(this->p_Head, this->p_Allocator);
 
-			p_Head = temp;
+			this->p_Head = temp;
 		}
 
-		p_Head = p_Tail = nullptr;
+		this->p_Head = this->p_Tail = nullptr;
 	}
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Insert(const T& element, u32 position) {
-		OASSERT_LENGTH(position, m_Size);
+		OASSERT_LENGTH(position, this->m_Size);
 
-		Node* temp = oallocat(Node, 1, p_Allocator);
+		Node* temp = oallocat(Node, 1, this->p_Allocator);
 		temp->data = element;
 
-		if (p_Head == nullptr || position == 0) { // Front of list optimization.
-			temp->next = p_Head;
+		if (this->p_Head == nullptr || position == 0) { // Front of list optimization.
+			temp->next = this->p_Head;
 			temp->prev = nullptr;
 
-			if (p_Head)
-				p_Head->prev = temp;
+			if (this->p_Head)
+				this->p_Head->prev = temp;
 			else
-				p_Tail = temp;
+				this->p_Tail = temp;
 
-			p_Head = temp;
+			this->p_Head = temp;
 		}
-		else if (position == m_Size) { // Back of list optimization.
+		else if (position == this->m_Size) { // Back of list optimization.
 			temp->next = nullptr;
-			temp->prev = p_Tail;
+			temp->prev = this->p_Tail;
 
-			p_Tail->next = temp;
-			p_Tail = temp;
+			this->p_Tail->next = temp;
+			this->p_Tail = temp;
 		}
 		else { // Anywhere else.
 			Node* curr = nullptr;
 
-			if (position <= (m_Size / 2)) {
-				curr = p_Head;
+			if (position <= (this->m_Size / 2)) {
+				curr = this->p_Head;
 
 				for (u32 i = 1; i < position; i++)
 					curr = curr->next;
@@ -236,9 +238,9 @@ namespace Ocean {
 				curr->next = temp;
 			}
 			else {
-				curr = p_Tail;
+				curr = this->p_Tail;
 
-				for (u32 i = m_Size - 1; i > position; i--)
+				for (u32 i = this->m_Size - 1; i > position; i--)
 					curr = curr->prev;
 
 				temp->next = curr;
@@ -251,36 +253,36 @@ namespace Ocean {
 			}
 		}
 
-		m_Size++;
+		this->m_Size++;
 	}
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Remove(u32 position) {
-		OASSERT_LENGTH(position, m_Size);
+		OASSERT_LENGTH(position, this->m_Size);
 
 		Node* curr = nullptr;
 
 		if (position == 0) {
-			curr = p_Head;
+			curr = this->p_Head;
 
-			p_Head = p_Head->next;
+			this->p_Head = this->p_Head->next;
 		}
-		else if (position == m_Size - 1) {
-			curr = p_Tail;
+		else if (position == this->m_Size - 1) {
+			curr = this->p_Tail;
 
-			p_Tail = p_Tail->prev;
+			this->p_Tail = this->p_Tail->prev;
 		}
 		else {
-			if (position <= (m_Size / 2)) {
-				curr = p_Head;
+			if (position <= (this->m_Size / 2)) {
+				curr = this->p_Head;
 
 				for (u32 i = 0; i < position; i++)
 					curr = curr->next;
 			}
 			else {
-				curr = p_Tail;
+				curr = this->p_Tail;
 
-				for (u32 i = m_Size - 1; i > position; i--)
+				for (u32 i = this->m_Size - 1; i > position; i--)
 					curr = curr->prev;
 			}
 
@@ -291,15 +293,15 @@ namespace Ocean {
 				curr->prev->next = curr->next;
 		}
 
-		ofree(curr, p_Allocator);
-		m_Size--;
+		ofree(curr, this->p_Allocator);
+		this->m_Size--;
 	}
 
 	template<typename T>
 	inline i64 DoubleLinkedList<T>::IndexOf(const T& element) const {
-		Node* curr = p_Head;
+		Node* curr = this->p_Head;
 
-		for (u32 i = 0; i < m_Size; i++) {
+		for (u32 i = 0; i < this->m_Size; i++) {
 			if (curr->data == element)
 				return i;
 
@@ -311,20 +313,20 @@ namespace Ocean {
 
 	template<typename T>
 	inline T DoubleLinkedList<T>::Get(u32 position) const {
-		OASSERT_LENGTH(position, m_Size);
+		OASSERT_LENGTH(position, this->m_Size);
 
 		Node* curr = nullptr;
 
-		if (position <= (m_Size / 2)) {
-			curr = p_Head;
+		if (position <= (this->m_Size / 2)) {
+			curr = this->p_Head;
 
 			for (u32 i = 0; i < position; i++)
 				curr = curr->next;
 		}
 		else {
-			curr = p_Tail;
+			curr = this->p_Tail;
 
-			for (u32 i = m_Size; i > position; i++)
+			for (u32 i = this->m_Size; i > position; i++)
 				curr = curr->prev;
 		}
 
@@ -333,20 +335,20 @@ namespace Ocean {
 
 	template<typename T>
 	inline T& DoubleLinkedList<T>::Get(u32 position) {
-		OASSERT_LENGTH(position, m_Size);
+		OASSERT_LENGTH(position, this->m_Size);
 
 		Node* curr = nullptr;
 
-		if (position <= (m_Size / 2)) {
-			curr = p_Head;
+		if (position <= (this->m_Size / 2)) {
+			curr = this->p_Head;
 
 			for (u32 i = 0; i < position; i++)
 				curr = curr->next;
 		}
 		else {
-			curr = p_Tail;
+			curr = this->p_Tail;
 
-			for (u32 i = m_Size; i > position; i++)
+			for (u32 i = this->m_Size; i > position; i++)
 				curr = curr->prev;
 		}
 
@@ -355,16 +357,16 @@ namespace Ocean {
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Clear() {
-		while (p_Head) {
-			Node* temp = p_Head->next;
+		while (this->p_Head) {
+			Node* temp = this->p_Head->next;
 
-			ofree(p_Head, p_Allocator);
+			ofree(this->p_Head, this->p_Allocator);
 
-			p_Head = temp;
+			this->p_Head = temp;
 		}
 
-		p_Head = p_Tail = nullptr;
-		m_Size = 0;
+		this->p_Head = this->p_Tail = nullptr;
+		this->m_Size = 0;
 	}
 
 }	// Ocean

@@ -6,6 +6,7 @@
 
 // libs
 #include <GLFW/glfw3.h>
+#include <vulkan/vulkan_core.h>
 
 namespace Ocean {
 

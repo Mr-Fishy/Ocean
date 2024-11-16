@@ -1,10 +1,7 @@
 #include "Renderer.hpp"
 
 #include "Ocean/Core/Primitives/Memory.hpp"
-#include "Ocean/Core/Types/glmTypes.hpp"
-
 #include "Ocean/Core/Primitives/Time.hpp"
-#include "Ocean/Core/Primitives/glmMath.hpp"
 
 #include "Ocean/Core/Window.hpp"
 
@@ -12,10 +9,13 @@
 #include "Renderer/Device.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
-#include "Renderer/Framebuffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/trigonometric.hpp>
 
 namespace Ocean {
 
@@ -29,7 +29,7 @@ namespace Ocean {
 		}
 
 		void Renderer::Init(void* config) {
-			RendererConfig* renConfig = (RendererConfig*)config;
+			RendererConfig* renConfig = static_cast<RendererConfig*>(config);
 			p_Allocator = renConfig->MemAllocator;
 
 			m_Width = renConfig->Width;
@@ -51,14 +51,14 @@ namespace Ocean {
 			createInfo.pApplicationInfo = &appInfo;
 
 			auto extensions = GetRequiredExtensions();
-			createInfo.enabledExtensionCount = (u32)extensions.size();
+			createInfo.enabledExtensionCount = static_cast<u32>(extensions.size());
 			createInfo.ppEnabledExtensionNames = extensions.data();
 
 		#ifdef OC_DEBUG
 
 			OASSERTM(CheckValidationSupport(), "Validation layers requested, but not available!");
 
-			createInfo.enabledLayerCount = (u32)k_ValidationLayers.size();
+			createInfo.enabledLayerCount = static_cast<u32>(k_ValidationLayers.size());
 			createInfo.ppEnabledLayerNames = k_ValidationLayers.data();
 
 			VkDebugUtilsMessengerCreateInfoEXT debugInfo{ };
@@ -208,7 +208,7 @@ namespace Ocean {
 			vkDeviceWaitIdle(p_Device->GetLogical());
 
 			while (width == 0 || height == 0) {
-				glfwGetFramebufferSize((GLFWwindow*)p_Device->GetWindowHandle(), &width, &height);
+				glfwGetFramebufferSize(static_cast<GLFWwindow*>(p_Device->GetWindowHandle()), &width, &height);
 				glfwWaitEvents();
 			}
 
@@ -521,12 +521,12 @@ namespace Ocean {
 		void Renderer::UpdateUniformBuffer(u8 frame) {
 			static auto startTime = oTimeNow();
 
-			f32 time = (f32)oTimeFromRealiSec(startTime);
+			f32 time = static_cast<f32>(oTimeFromRealiSec(startTime));
 
 			UniformBufferObject ubo{ };
 			ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			ubo.view  = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			ubo.proj  = glm::perspective(glm::radians(45.0f), p_SwapChain->GetExtent().width / (f32)p_SwapChain->GetExtent().height, 0.1f, 10.0f);
+			ubo.proj  = glm::perspective(glm::radians(45.0f), p_SwapChain->GetExtent().width / static_cast<f32>(p_SwapChain->GetExtent().height), 0.1f, 10.0f);
 
 			ubo.proj[1][1] *= -1;
 
