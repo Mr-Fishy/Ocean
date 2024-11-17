@@ -27,6 +27,9 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
 
+file(GLOB Ocean_RENCOMP_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.hpp)
+file(GLOB Ocean_RENCOMP_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.cpp)
+
 # Vendor Files (Non-Libraries)
 ## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
@@ -55,6 +58,9 @@ source_group("Platform Sources" FILES ${Ocean_PLAT_SOURCE})
 source_group("Renderer Headers" FILES ${Ocean_REND_HEADER})
 source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
 
+source_group("Renderer Component Headers" FILES ${Ocean_RENCOMP_HEADER})
+source_group("Renderer Component Sources" FILES ${Ocean_RENCOMP_SOURCE})
+
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
 
@@ -73,6 +79,7 @@ add_library(
     ${Ocean_PLAT_HEADER}  ${Ocean_PLAT_SOURCE}
 
     ${Ocean_REND_HEADER} ${Ocean_REND_SOURCE}
+    ${Ocean_RENCOMP_HEADER} ${Ocean_RENCOMP_SOURCE}
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
     ${steamaudio_HEADER}
@@ -119,4 +126,34 @@ target_compile_definitions(
     PRIVATE $<$<PLATFORM_ID:Windows>: WIN32_LEAN_AND_MEAN>
     PUBLIC $<$<CONFIG:Debug>: OC_DEBUG>
     PUBLIC $<$<CONFIG:Release>: OC_RELEASE>
+)
+
+find_program(GLSL_VALIDATOR glslangValidator HINTS
+    ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE} 
+    /usr/bin 
+    /usr/local/bin 
+    ${VULKAN_SDK_PATH}/Bin
+    ${VULKAN_SDK_PATH}/Bin32
+    $ENV{VULKAN_SDK}/Bin/ 
+    $ENV{VULKAN_SDK}/Bin32/
+)
+
+file(GLOB Ocean_GLSL_SOURCE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.vert"
+)
+
+foreach(GLSL ${Ocean_GLSL_SOURCE})
+    get_filename_component(FILE_NAME ${GLSL} NAME)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
+    add_custom_command(
+        OUTPUT ${SPIRV}
+        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+        DEPENDS ${GLSL})
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+endforeach(GLSL)
+
+add_custom_target(
+    Shaders
+    DEPENDS ${SPIRV_BINARY_FILES}
 )

@@ -5,9 +5,7 @@
 namespace Ocean {
 
     void Renderer2D::Init() {
-        s_Data = oallocat(Data, 1, MemoryService::Instance().SystemAllocator());
 
-        
     }
 
     void Renderer2D::Shutdown() {

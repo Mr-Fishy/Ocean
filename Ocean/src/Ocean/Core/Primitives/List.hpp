@@ -3,6 +3,7 @@
 #include "Ocean/Core/Types/Bool.hpp"
 
 #include "Ocean/Core/Primitives/Memory.hpp"
+#include "Ocean/Core/Primitives/Assert.hpp"
 
 namespace Ocean {
 

@@ -2,7 +2,7 @@
 
 #include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
-#include "Renderer/Buffer.hpp"
+#include "Renderer/Components/Buffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>

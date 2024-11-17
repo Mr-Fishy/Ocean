@@ -5,7 +5,7 @@
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
 
-#include "Renderer/Buffer.hpp"
+#include "Renderer/Components/Buffer.hpp"
 
 // libs
 #include <vulkan/vulkan_core.h>

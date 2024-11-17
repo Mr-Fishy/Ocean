@@ -1,7 +1,10 @@
 #include "Buffer.hpp"
 
+#include "Renderer/Components/VkTypes.hpp"
+
 #include "Renderer/Resources.hpp"
 #include "Renderer/Device.hpp"
+#include <vulkan/vulkan_core.h>
 
 namespace Ocean {
 
@@ -12,19 +15,10 @@ namespace Ocean {
 
 			VkDevice device = p_DeviceRef->GetLogical();
 
-			VkBufferCreateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-			// Specifies the size of the buffer in bytes.
-			info.size = config->size;
-			// Specifies the usage of the buffer.
-			info.usage = config->usageFlags;
-			// Specifies that the sharing mode is exclusive to a single queue family.
-			info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			// Used to configure sparse buffer memory.
-			info.flags = 0;
+			ExclusiveBufferCreation createInfo(config->size, config->usageFlags);
 
 			CHECK_RESULT(
-				vkCreateBuffer(device, &info, nullptr, &m_Buffer),
+				vkCreateBuffer(device, &createInfo, nullptr, &m_Buffer),
 				"Failed to create vertex buffer!"
 			);
 
@@ -39,15 +33,13 @@ namespace Ocean {
 			VkMemoryRequirements memRequirements;
 			vkGetBufferMemoryRequirements(device, m_Buffer, &memRequirements);
 
-			VkMemoryAllocateInfo allocInfo{ };
-			allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-
-			allocInfo.allocationSize = memRequirements.size;
-
-			allocInfo.memoryTypeIndex = p_DeviceRef->GetMemoryType(memRequirements.memoryTypeBits, config->memoryFlags);
+			MemoryAllocation allocationInfo(
+				memRequirements.size, 
+				p_DeviceRef->GetMemoryType(memRequirements.memoryTypeBits, config->memoryFlags)
+			);
 
 			CHECK_RESULT(
-				vkAllocateMemory(device, &allocInfo, nullptr, &m_Memory),
+				vkAllocateMemory(device, &allocationInfo, nullptr, &m_Memory),
 				"Failed to allocate vertex buffer memory!"
 			);
 
