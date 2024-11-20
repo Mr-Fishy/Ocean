@@ -49,7 +49,7 @@ namespace Ocean {
 		 * @brief Initializes the window.
 		 * @param config - The configuration of the window using WindowConfig.
 		 */
-		virtual void Init(void* config) override;
+		void Init(WindowConfig* config);
 		/**
 		 * @brief Shuts down the window.
 		 */

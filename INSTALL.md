@@ -10,13 +10,41 @@
 
 ## Install Steps (Windows)
 
-### Install GCC Compiler
+### Install GCC / G++ Compiler
 
-Follow the [Visual Studio Code C++ Guide](https://code.visualstudio.com/docs/languages/cpp) to install the required features for C++ development, make sure to use the minGW-x64 compiler platform to be able to use GCC.
+Download and install the [MSYS2](https://www.msys2.org/) plaftorm. Then open the MSYS2 (general) terminal, where you can enter the following command:
+
+```bash
+pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
+```
+
+Press Y when prompted, this should install the needed compilers. Next to be able to use the compilers, open the __Edit environment variables for your account__ application and in your __User variables__, select the `PATH` variable and select __Edit__. Then, assuming you used the default install location for MSYS2, add the following path to your `PATH` variables:
+
+```bash
+C:\msys64\ucrt64\bin
+```
+
+To confirm that GCC, G++, and GDB are installed and available on Windows, open a Windows Terminal and enter the following commands:
+
+```bash
+gcc --version
+g++ --version
+gdb --version
+```
+
+The commands should each print the info for the package, if not then either your `PATH` variable is incorrect, or the package did not install.
 
 ### Install CMake For Windows
 
-Install the latest CMake release. Note that other versions may be required to proved functionality support as CMake attempts to be backwards compatible but is not perfect.
+Install the latest CMake release. Note that other versions may be required to proved functionality support as CMake attempts to be backwards compatible but it is not perfect.
+
+CMake also requires Ninja, a file editing / operation library to build projects. To install it, open a MSYS2 terminal and enter the following command:
+
+```bash
+pacman -S mingw-w64-x86_64-ninja
+```
+
+After ninja is installed, everything should be ready to go.
 
 ## Install Steps (WSL Ubuntu)
 

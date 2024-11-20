@@ -5,7 +5,9 @@
 
 #include "Ocean/Core/Window.hpp"
 
-#include "Renderer/Infos.hpp"
+#include "Renderer/Components/Shader.hpp"
+#include "Renderer/Components/VkTypes.hpp"
+
 #include "Renderer/Device.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
@@ -28,18 +30,17 @@ namespace Ocean {
 			return *s_Instance;
 		}
 
-		void Renderer::Init(void* config) {
-			RendererConfig* renConfig = static_cast<RendererConfig*>(config);
-			p_Allocator = renConfig->MemAllocator;
+		void Renderer::Init(RendererConfig* config) {
+			p_Allocator = config->MemAllocator;
 
-			m_Width = renConfig->Width;
-			m_Height = renConfig->Height;
+			m_Width = config->Width;
+			m_Height = config->Height;
 
 			VkApplicationInfo appInfo{ };
 			appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 
-			appInfo.pApplicationName = renConfig->AppName;
-			appInfo.applicationVersion = VK_MAKE_API_VERSION(1, renConfig->AppVersionMajor, renConfig->AppVersionMinor, renConfig->AppVersionPatch);
+			appInfo.pApplicationName = config->AppName;
+			appInfo.applicationVersion = VK_MAKE_API_VERSION(1, config->AppVersionMajor, config->AppVersionMinor, config->AppVersionPatch);
 
 			appInfo.pEngineName = "Ocean Engine";
 			appInfo.engineVersion = VK_MAKE_API_VERSION(1, 1, 0, 0);
@@ -89,7 +90,7 @@ namespace Ocean {
 			DeviceConfig devConfig(
 				p_Allocator,
 				this,
-				renConfig->MainWindow->Handle()
+				config->MainWindow->Handle()
 			);
 
 			p_Device = oallocat(Device, 1, p_Allocator);
@@ -99,7 +100,7 @@ namespace Ocean {
 				p_Allocator,
 				this,
 				p_Device,
-				renConfig->MainWindow->Handle()
+				config->MainWindow->Handle()
 			);
 
 			p_SwapChain = oallocat(SwapChain, 1, p_Allocator);
@@ -165,20 +166,19 @@ namespace Ocean {
 
 
 		void Renderer::BeginFrame() {
-		}
-
-		void Renderer::RenderFrame() {
 			vkWaitForFences(p_Device->GetLogical(), 1, &m_SyncObjects.Get(m_Frame).Fences.InFlight, VK_TRUE, u64_max);
 			vkResetFences(p_Device->GetLogical(), 1, &m_SyncObjects.Get(m_Frame).Fences.InFlight);
 
-			u32 imageIndex;
 			p_SwapChain->GetNextImage(
 				m_SyncObjects.Get(m_Frame).Sempahores.PresentComplete,
-				&imageIndex
+				&m_VulkanFrame
 			);
 
 			p_Device->FlushCommandBuffer(m_Frame);
-			p_Device->RecordCommandBuffer(imageIndex, m_Frame);
+		}
+
+		void Renderer::RenderFrame() {
+			p_Device->RecordCommandBuffer(m_VulkanFrame, m_Frame);
 
 			UpdateUniformBuffer(m_Frame);
 
@@ -186,7 +186,7 @@ namespace Ocean {
 
 			p_SwapChain->QueuePresentation(
 				p_Device->GetPresentationQueue(),
-				imageIndex,
+				m_VulkanFrame,
 				m_SyncObjects.Get(m_Frame).Sempahores.RenderComplete
 			);
 
@@ -289,15 +289,21 @@ namespace Ocean {
 	#endif
 
 		void Renderer::CreateRenderPass() {
-			VkAttachmentDescription colorAttachment = GetColorAttachmentDescription(p_SwapChain->GetColorFormat());
+			RenderPass::ColorAttachmentDescription colorAttachment(
+				p_SwapChain->GetColorFormat()
+			);
 
-			VkSubpassDescription subpass = GetSubpassAttachmentDescription();
+			RenderPass::ColorAttachmentReference colorRef(
+				0
+			);
+			RenderPass::GraphicsSubpassDescription subpass(
+				1,
+				&colorRef
+			);
 
-			VkSubpassDependency dependency = GetSubpassDependency();
+			RenderPass::GraphicsSubpassDependency dependency;
 
-			VkRenderPassCreateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-
+			RenderPass::CreateInfo info;
 			info.attachmentCount = 1;
 			info.pAttachments = &colorAttachment;
 
@@ -338,12 +344,12 @@ namespace Ocean {
 
 		void Renderer::CreateGraphicsPipeline() {
 			Shader* shaders = oallocat(Shader, 2, p_Allocator);
-			shaders[0].Init("src/Shaders/vert.spv");
-			shaders[1].Init("src/Shaders/frag.spv");
+			shaders[0].Init("src/Shaders/vert.spv", p_Device->GetLogical());
+			shaders[1].Init("src/Shaders/frag.spv", p_Device->GetLogical());
 
 			VkPipelineShaderStageCreateInfo shaderStages[] = {
-				GetVertextShaderStageInfo(&shaders[0], p_Device->GetLogical(), "main"),
-				GetFragmentShaderStageInfo(&shaders[1], p_Device->GetLogical(), "main")
+				Pipeline::VertexStageInfo(shaders[0].GetShaderModule(), "main"),
+				Pipeline::FragmentStageInfo(shaders[1].GetShaderModule(), "main")
 			};
 
 			auto description = Vertex::GetBindingDescription();

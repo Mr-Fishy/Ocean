@@ -22,17 +22,14 @@ namespace Ocean {
 		class Shader {
 		public:
 			Shader() : p_DeviceRef(VK_NULL_HANDLE), m_ShaderFile(), m_Module(VK_NULL_HANDLE), m_ActiveModule(false) { }
-			Shader(const Shader& shader);
-			Shader(cstring filename);
+			Shader(cstring filename, VkDevice deviceRef);
 			~Shader() = default;
-
-			Shader& operator = (const Shader&);
 
 			/**
 			 * @brief Initializes the Shader to use the given allocator and filename.
 			 * @param filename - The file to load the shader from. Loading from the src directory of the application.
 			 */
-			void Init(cstring filename);
+			void Init(cstring filename, VkDevice deviceRef);
 			/**
 			 * @brief Shuts down the shader, if the shader module has not been destroyed, it will destroy it.
 			 */
@@ -42,13 +39,18 @@ namespace Ocean {
 			 * @param device - Vulkan Device to get the shader module from (in most cases this will be the same device as in Ocean::Device).
 			 * @return The Vulkan Shader Module necessary for building the Vulkan Graphics Pipeline.
 			 */
-			VkShaderModule GetShaderModule(VkDevice device);
+			VkShaderModule GetShaderModule();
 			/**
 			 * @brief Destroy's the Vulkan Shader Module.
 			 */
 			void DestroyShader();
 
 		private:
+			Shader(const Shader& shader) = delete;
+			Shader& operator = (const Shader&) = delete;
+
+			/* --- */
+
 			/**
 			 * @brief Load's the shader file into an array.
 			 * @param filename - The filename (path included) of the shader file to load.

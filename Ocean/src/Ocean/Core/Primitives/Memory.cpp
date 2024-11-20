@@ -38,9 +38,8 @@ namespace Ocean {
 		return *s_Instance;
 	}
 
-	void MemoryService::Init(void* config) {
-		MemoryServiceConfig* memoryConfig = static_cast<MemoryServiceConfig*>(config);
-		m_SystemAllocator.Init(memoryConfig ? memoryConfig->MaxDynamicSize : s_Size);
+	void MemoryService::Init(MemoryServiceConfig* config) {
+		m_SystemAllocator.Init(config ? config->MaxDynamicSize : s_Size);
 	}
 
 	void MemoryService::Shutdown() {

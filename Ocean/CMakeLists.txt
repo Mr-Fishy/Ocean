@@ -95,7 +95,6 @@ target_include_directories(
     ${PROJECT_NAME} SYSTEM
 
     PRIVATE ${TLSF_DIRECTORY}
-    PUBLIC  ${STEAM_AUDIO_DIRECTORY}
     PUBLIC  ${GLM_DIRECTORY}
 
     PRIVATE ${Vulkan_INCLUDE_DIRS}
@@ -105,8 +104,7 @@ target_link_libraries(
     ${PROJECT_NAME}
 
     PRIVATE glfw
-    # TODO: The steam libraries propbably need a cmake library file to define everything so that it can be included conventionally.
-    # PRIVATE ${SteamAudio_LIBRARIES}
+    PUBLIC SteamAudio
 
     PUBLIC glm::glm-header-only
     PUBLIC ${Vulkan_LIBRARIES}
@@ -126,34 +124,4 @@ target_compile_definitions(
     PRIVATE $<$<PLATFORM_ID:Windows>: WIN32_LEAN_AND_MEAN>
     PUBLIC $<$<CONFIG:Debug>: OC_DEBUG>
     PUBLIC $<$<CONFIG:Release>: OC_RELEASE>
-)
-
-find_program(GLSL_VALIDATOR glslangValidator HINTS
-    ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE} 
-    /usr/bin 
-    /usr/local/bin 
-    ${VULKAN_SDK_PATH}/Bin
-    ${VULKAN_SDK_PATH}/Bin32
-    $ENV{VULKAN_SDK}/Bin/ 
-    $ENV{VULKAN_SDK}/Bin32/
-)
-
-file(GLOB Ocean_GLSL_SOURCE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.frag"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.vert"
-)
-
-foreach(GLSL ${Ocean_GLSL_SOURCE})
-    get_filename_component(FILE_NAME ${GLSL} NAME)
-    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
-    add_custom_command(
-        OUTPUT ${SPIRV}
-        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
-        DEPENDS ${GLSL})
-    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-endforeach(GLSL)
-
-add_custom_target(
-    Shaders
-    DEPENDS ${SPIRV_BINARY_FILES}
 )

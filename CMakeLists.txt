@@ -38,17 +38,12 @@ if (MSVC)
 endif ()
 
 ### Vulkan ###
-#define VULKAN FOUND FIRST
 set(Vulkan_FOUND False)
+find_package(Vulkan REQUIRED)
 
-if (DEFINED VULKAN_SDK_PATH)
+if (DEFINED ${VULKAN_SDK_PATH})
     message(STATUS "VULKAN SDK PATH IS DEFINED")
-    set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include")
-    set(Vulkan_LIBRARIES "${VULKAN_SDK_PATH}/Lib")
     set(Vulkan_FOUND True)
-else()
-    message(STATUS "VULKAN SDK PATH IS NOT DEFINED")
-    find_package(Vulkan REQUIRED)
 endif()
 
 if (NOT Vulkan_FOUND)
@@ -58,7 +53,35 @@ else()
 endif()
 
 ### Shaders ###
-# TODO GLSL & Compile Step
+find_program(GLSL_VALIDATOR glslangValidator HINTS
+    ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE} 
+    /usr/bin 
+    /usr/local/bin 
+    ${VULKAN_SDK_PATH}/Bin
+    ${VULKAN_SDK_PATH}/Bin32
+    $ENV{VULKAN_SDK}/Bin/ 
+    $ENV{VULKAN_SDK}/Bin32/
+)
+
+file(GLOB Ocean_GLSL_SOURCE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.vert"
+)
+
+foreach(GLSL ${Ocean_GLSL_SOURCE})
+    get_filename_component(FILE_NAME ${GLSL} NAME)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
+    add_custom_command(
+        OUTPUT ${SPIRV}
+        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+        DEPENDS ${GLSL})
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+endforeach(GLSL)
+
+add_custom_target(
+    Shaders
+    DEPENDS ${SPIRV_BINARY_FILES}
+)
 
 ### Library Type ###
 option(BUILD_SHARED_LIBS "Building with shared libraries..." OFF)
@@ -96,7 +119,7 @@ message(STATUS)
 
 
 message(STATUS "GLM Starting (${time})...")
-# GLM CMAKE
+# GLM
 if (BUILD_SHARED_LIBS)
     set(GLM_BUILD_LIBRARY ON)
 else()
@@ -108,17 +131,24 @@ add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 string(TIMESTAMP time)
 message(STATUS)
 
-# The following assumes that the platforms are x64
-if (APPLE)
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/osx/libphonon.dylib")
-elseif (WIN32)
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/windows-x64/phonon.dll")
-else ()
-    set(SteamAudio_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/lib/linux-x64/libphonon.so")
-endif ()
+message(STATUS "Steam Audio Starting (${time})...")
+# Steam Audio
+add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
+string(TIMESTAMP time)
+message(STATUS)
 
-# -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic
-set(OCEAN_COMPILE_FLAGS -Wall -Wextra -Wold-style-cast -Wsign-promo -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Weffc++ -pedantic)
+set(
+    OCEAN_COMPILE_FLAGS
+    -Wall
+    -Wextra
+    -Wold-style-cast
+    -Wsign-promo
+    -Woverloaded-virtual
+    -Wctor-dtor-privacy
+    -Wnon-virtual-dtor
+    -Weffc++
+    -pedantic
+)
 
 string(TIMESTAMP time)
 message(STATUS "Ocean Starting (${time})...")

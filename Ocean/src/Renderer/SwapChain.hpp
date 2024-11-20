@@ -3,7 +3,6 @@
 #include "Ocean/Core/Primitives/Array.hpp"
 
 #include "Renderer/Framebuffer.hpp"
-#include "Renderer/Resources.hpp"
 
 namespace Ocean {
 

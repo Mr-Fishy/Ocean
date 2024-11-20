@@ -17,12 +17,6 @@ namespace Ocean {
 
 
 
-		inline const u32 k_InvalidIndex = 0xffffffff;
-
-		typedef u32 ResourceHandle;
-
-
-
 		struct Vertex {
 			glm::vec2 pos;
 			glm::vec3 color;
@@ -191,7 +185,7 @@ namespace Ocean {
 			const VkAllocationCallbacks* pAllocator,
 			VkDebugUtilsMessengerEXT* pDebugMessenger
 		) {
-			auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+			auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
 			if (func != nullptr) {
 				return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
 			}

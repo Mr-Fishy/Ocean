@@ -1,8 +1,9 @@
 #include "SwapChain.hpp"
 
+#include "Renderer/Components/VkTypes.hpp"
+
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Device.hpp"
-#include "Renderer/Infos.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -193,7 +194,7 @@ namespace Ocean {
 			info.imageExtent = { m_Extent.width, m_Extent.height };
 			info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-			info.preTransform = (VkSurfaceTransformFlagBitsKHR)preTransform;
+			info.preTransform = static_cast<VkSurfaceTransformFlagBitsKHR>(preTransform);
 
 			info.imageArrayLayers = 1;
 			info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -244,7 +245,10 @@ namespace Ocean {
 			m_Buffers.Init(m_ImageCount);
 			m_Buffers.SetSize(m_ImageCount);
 			for (u32 i = 0; i < m_ImageCount; i++) {
-				VkImageViewCreateInfo imageInfo = ColorAttachmentCreateInfo(m_ColorFormat, m_Buffers.Get(i).Image = m_Images.Get(i));
+				ImageViews::CreateInfo imageInfo(
+					m_ColorFormat,
+					m_Buffers.Get(i).Image = m_Images.Get(i)
+				);
 
 				CHECK_RESULT(
 					vkCreateImageView(device, &imageInfo, nullptr, &m_Buffers.Get(i).View),

@@ -1,8 +1,11 @@
 #include "Device.hpp"
 
+#include "Ocean/Core/Primitives/Macros.hpp"
+#include "Renderer/Components/VkTypes.hpp"
+#include "Renderer/Components/Buffer.hpp"
+
 #include "Renderer/Renderer.hpp"
 #include "Renderer/SwapChain.hpp"
-#include "Renderer/Components/Buffer.hpp"
 
 // libs
 #include <GLFW/glfw3.h>
@@ -191,13 +194,11 @@ namespace Ocean {
 
 			f32 queuePriority = 1.0f;
 			for (u32 queueFamily : uniqueQueueFamilies) {
-				VkDeviceQueueCreateInfo queueInfo{ };
-				queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-
-				queueInfo.queueFamilyIndex = queueFamily;
-
-				queueInfo.queueCount = 1;
-				queueInfo.pQueuePriorities = &queuePriority;
+				Devices::QueueCreation queueInfo(
+					queueFamily,
+					1,
+					&queuePriority
+				);
 
 				queueInfos.emplace_back(queueInfo);
 			}
@@ -205,20 +206,13 @@ namespace Ocean {
 			VkPhysicalDeviceFeatures deviceFeatures{ };
 			vkGetPhysicalDeviceFeatures(m_Physical, &deviceFeatures);
 
-			VkDeviceCreateInfo createInfo{ };
-			createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
-			createInfo.queueCreateInfoCount = static_cast<u32>(queueInfos.size());
-			createInfo.pQueueCreateInfos = queueInfos.data();
-
-			createInfo.pEnabledFeatures = &deviceFeatures;
-
-			createInfo.enabledExtensionCount = ArraySize(k_DeviceExtensions);
-			createInfo.ppEnabledExtensionNames = k_DeviceExtensions;
-
-			// Newer versions of Vulkan do not require this.
-			createInfo.enabledLayerCount = 0;
-			createInfo.ppEnabledLayerNames = nullptr;
+			Devices::CreateInfo createInfo(
+				queueInfos.size(),
+				queueInfos.data(),
+				&deviceFeatures,
+				ArraySize(k_DeviceExtensions),
+				k_DeviceExtensions
+			);
 
 			CHECK_RESULT(
 				vkCreateDevice(m_Physical, &createInfo, nullptr, &m_Device),
@@ -253,15 +247,13 @@ namespace Ocean {
 		}
 
 		void Device::CreateCommandPool(QueueFamilyIndices indices) {
-			VkCommandPoolCreateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-
-			info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-
-			info.queueFamilyIndex = indices.GraphicsFamily.value();
+			CommandPoolCreateInfo createInfo(
+				VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+				indices.GraphicsFamily.value()
+			);
 
 			CHECK_RESULT(
-				vkCreateCommandPool(m_Device, &info, nullptr, &m_CommandPool),
+				vkCreateCommandPool(m_Device, &createInfo, nullptr, &m_CommandPool),
 				"Failed to create command pool!"
 			);
 		}
@@ -320,20 +312,13 @@ namespace Ocean {
 			m_CommandBuffers.Init(p_Renderer->GetMaxFramesInFlight());
 			m_CommandBuffers.SetSize(p_Renderer->GetMaxFramesInFlight());
 
-			VkCommandBufferAllocateInfo info{ };
-			info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-
-			info.commandPool = m_CommandPool;
-			/*
-			 * VK_COMMAND_BUFFER_LEVEL_PRIMARY: Can be submitted to a queue for execution, but cannot be called from other command buffers.
-			 *
-			 * VK_COMMAND_BUFFER_LEVEL_SECONDARY: Cannot be submitted directly, but can be called from primary command buffers.
-			 */
-			info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-			info.commandBufferCount = m_CommandBuffers.Size();
+			PrimaryCommandBufferAllocation allocInfo(
+				m_CommandPool,
+				m_CommandBuffers.Size()
+			);
 
 			CHECK_RESULT(
-				vkAllocateCommandBuffers(m_Device, &info, m_CommandBuffers.Data()),
+				vkAllocateCommandBuffers(m_Device, &allocInfo, m_CommandBuffers.Data()),
 				"Failed to allocate command buffers!"
 			);
 		}
@@ -540,13 +525,10 @@ namespace Ocean {
 		}
 
 		void Device::CopyBuffer(Buffer* src, Buffer* dst, sizet size) {
-			VkCommandBufferAllocateInfo allocInfo{};
-			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-			allocInfo.commandPool = m_CommandPool;
-			allocInfo.commandBufferCount = 1;
+			PrimaryCommandBufferAllocation allocInfo(
+				m_CommandPool,
+				1
+			);
 
 			// TODO: Create a Memory Transfer Command Pool
 			VkCommandBuffer commandBuffer;

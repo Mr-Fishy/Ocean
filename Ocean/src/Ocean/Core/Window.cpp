@@ -44,7 +44,7 @@ namespace Ocean {
 
 	typedef GLFWwindow* WindowPtr;
 
-	void Window::Init(void* config) {
+	void Window::Init(WindowConfig* config) {
 		glfwSetErrorCallback(GLFW_ErrorCallback);
 
 		if (!glfwInit()) {
@@ -63,13 +63,11 @@ namespace Ocean {
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-		WindowConfig& windowConfig = *static_cast<WindowConfig*>(config);
-
 		m_Data.window = this;
-		m_Data.width = windowConfig.width;
-		m_Data.height = windowConfig.height;
+		m_Data.width = config->width;
+		m_Data.height = config->height;
 
-		p_PlatformHandle = static_cast<void*>(glfwCreateWindow(m_Data.width, m_Data.height, windowConfig.name, NULL, NULL));
+		p_PlatformHandle = static_cast<void*>(glfwCreateWindow(m_Data.width, m_Data.height, config->name, NULL, NULL));
 
 		if (!p_PlatformHandle) {
 			oprint("GLFW Window Error!\n");

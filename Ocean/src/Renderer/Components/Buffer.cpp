@@ -15,7 +15,10 @@ namespace Ocean {
 
 			VkDevice device = p_DeviceRef->GetLogical();
 
-			ExclusiveBufferCreation createInfo(config->size, config->usageFlags);
+			Buffers::ExclusiveCreateInfo createInfo(
+				config->size,
+				config->usageFlags
+			);
 
 			CHECK_RESULT(
 				vkCreateBuffer(device, &createInfo, nullptr, &m_Buffer),
@@ -25,9 +28,9 @@ namespace Ocean {
 			/**
 			 * VkMemoryRequirements:
 			 * size: The size of the required amount of memory in bytes, this may differ from bufferInfo.size.
-			 *
+			 * 
 			 * alignment: The offset in bytes where the buffer begins in the allocated memory, depends on bufferIno.usage and bufferInfo.flags.
-			 *
+			 * 
 			 * memoryTypeBits: Bit field of the memory types that are suitable for the buffer.
 			 */
 			VkMemoryRequirements memRequirements;

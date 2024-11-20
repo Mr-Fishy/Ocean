@@ -109,11 +109,11 @@ namespace Ocean {
 		public:
 		#ifdef OC_DEBUG
 
-			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), m_DebugMessenger(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0) { }
+			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), m_DebugMessenger(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0), m_VulkanFrame(0) { }
 
 		#else
 
-			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0) { }
+			Renderer() : p_Allocator(nullptr), m_Instance(VK_NULL_HANDLE), p_Device(nullptr), p_SwapChain(nullptr), m_RenderPass(VK_NULL_HANDLE), m_PipelineLayout(VK_NULL_HANDLE), m_DescriptorSetLayout(VK_NULL_HANDLE), m_GraphicsPipeline(VK_NULL_HANDLE), m_SyncObjects(), m_UniformBuffers(), m_Width(0), m_Height(0), m_MaxFramesInFlight(2), m_Frame(0), m_VulkanFrame(0) { }
 		
 		#endif
 			~Renderer() = default;
@@ -124,7 +124,7 @@ namespace Ocean {
 			 * @brief Initializes the Renderer with the given configuration.
 			 * @param config - The renderer configuration to use.
 			 */
-			virtual void Init(void* config) override;
+			void Init(RendererConfig* config);
 			/**
 			 * @brief Shuts down the Renderer.
 			 */
@@ -278,6 +278,8 @@ namespace Ocean {
 
 			u8 m_MaxFramesInFlight;
 			u8 m_Frame;
+
+			u32 m_VulkanFrame;
 
 			/* --- */
 

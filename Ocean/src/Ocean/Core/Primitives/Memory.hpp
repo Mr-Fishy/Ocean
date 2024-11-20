@@ -212,7 +212,7 @@ namespace Ocean {
 
 		static MemoryService& Instance();
 
-		virtual void Init(void* config) override;
+		void Init(MemoryServiceConfig* config = nullptr);
 		static void Shutdown();
 
 		static cstring Name() { return "OCEAN_Memory_Service"; }
