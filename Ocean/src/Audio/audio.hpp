@@ -75,5 +75,19 @@ namespace Ocean{
                 virtual void buffer_Creation(int audio_Channels =1, int audio_Samples =512){};
                 virtual void Binaural_Effect(IPLContext& context,IPLAudioSettings& audioSettings,IPLBinauralEffectSettings& effectSetting, IPLBinauralEffect& hrtf){};
         };
+        class UPDOG{
+            public:
+            
+            UPDOG(IPLContext& context, void* alloc = nullptr, void* free = nullptr);
+            ~UPDOG();
+
+            private:
+            IPLContextSettings contextSettings{};
+            IPLContext context =nullptr;
+            IPLHRTF hrtf = nullptr;
+            //For memory;
+            void* callback = nullptr;
+            void* free = nullptr;
+        };
     }
 }
