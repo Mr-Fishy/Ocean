@@ -446,6 +446,7 @@ namespace Ocean {
             struct CreateInfo : public VkRenderPassCreateInfo {
                 CreateInfo() {
                     this->sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+                    this->pNext = nullptr;
                     this->flags = 0;
                 }
 
@@ -521,14 +522,22 @@ namespace Ocean {
                 }
                 GraphicsSubpassDescription(
                     u32 colorCount, VkAttachmentReference* colorAttachments,
-
                     u32 flags = 0
                 ) {
                     this->flags = flags;
                     this->pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
+                    this->inputAttachmentCount = 0;
+                    this->pInputAttachments = nullptr;
+
                     this->colorAttachmentCount = colorCount;
                     this->pColorAttachments = colorAttachments;
+
+                    this->pResolveAttachments = nullptr;
+                    this->pDepthStencilAttachment = nullptr;
+
+                    this->preserveAttachmentCount = 0;
+                    this->pPreserveAttachments = nullptr;
                 }
 
             };  // SubpassDescription

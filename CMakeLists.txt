@@ -137,6 +137,12 @@ add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 string(TIMESTAMP time)
 message(STATUS)
 
+message(STATUS "Vulkan Memory Allocator Starting (${time})...")
+# Steam Audio
+add_subdirectory(Ocean/vendor/vma EXCLUDE_FROM_ALL)
+string(TIMESTAMP time)
+message(STATUS)
+
 set(
     OCEAN_COMPILE_FLAGS
     -Wall

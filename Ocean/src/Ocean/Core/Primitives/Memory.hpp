@@ -79,7 +79,6 @@ namespace Ocean {
 
 		virtual void* Allocate(sizet size) = 0;
 		virtual void* Allocate(sizet size, sizet alignment) = 0;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) = 0;
 
 		virtual void Deallocate(void* ptr) = 0;
 
@@ -94,7 +93,6 @@ namespace Ocean {
 
 		virtual void* Allocate(sizet size) override;
 		virtual void* Allocate(sizet size, sizet alignment) override;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) override;
 
 		virtual void Deallocate(void* ptr) override;
 
@@ -114,7 +112,6 @@ namespace Ocean {
 
 		virtual void* Allocate(sizet size) override;
 		virtual void* Allocate(sizet size, sizet alignment) override;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) override;
 
 		virtual void Deallocate(void* ptr) override;
 
@@ -138,7 +135,6 @@ namespace Ocean {
 
 		virtual void* Allocate(sizet size) override;
 		virtual void* Allocate(sizet size, sizet alignment) override;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) override;
 
 		virtual void Deallocate(void* ptr) override;
 
@@ -173,7 +169,6 @@ namespace Ocean {
 
 		virtual void* Allocate(sizet size) override;
 		virtual void* Allocate(sizet size, sizet alignment) override;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) override;
 
 		virtual void Deallocate(void* ptr) override;
 
@@ -191,7 +186,6 @@ namespace Ocean {
 	public:
 		virtual void* Allocate(sizet size) override;
 		virtual void* Allocate(sizet size, sizet alignment) override;
-		virtual void* Allocate(sizet size, sizet alignment, cstring file, i32 line) override;
 
 		virtual void Deallocate(void* ptr) override;
 
@@ -230,11 +224,11 @@ namespace Ocean {
 
 	// Macro Helpers
 
-	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1, __FILE__, __LINE__))
-	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1, __FILE__, __LINE__)))
-	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type), __FILE__, __LINE__)))
+	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1))
+	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1))
+	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type))))
 
-	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment, __FILE__, __LINE__))
+	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment))
 
 	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer))
 

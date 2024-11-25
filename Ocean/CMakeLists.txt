@@ -104,7 +104,8 @@ target_link_libraries(
     ${PROJECT_NAME}
 
     PRIVATE glfw
-    PUBLIC SteamAudio
+    PRIVATE SteamAudio
+    PRIVATE GPUOpen::VulkanMemoryAllocator
 
     PUBLIC glm::glm-header-only
     PUBLIC ${Vulkan_LIBRARIES}

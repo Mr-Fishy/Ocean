@@ -120,10 +120,6 @@ namespace Ocean {
 	#endif
 	}
 
-	void* HeapAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
-		return Allocate(size, alignment);
-	}
-
 	void HeapAllocator::Deallocate(void* ptr) {
 	#ifdef HEAP_ALLOCATOR_STATS
 
@@ -170,10 +166,6 @@ namespace Ocean {
 		return p_Memory + newStart;
 	}
 
-	void* StackAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
-		return Allocate(size, alignment);
-	}
-
 	void StackAllocator::Deallocate(void* ptr) {
 		OASSERT(ptr >= p_Memory);
 		OASSERTM(ptr < p_Memory + m_TotalSize, "Out of bound free on Stack Allocator. Attempting to free %p, %llu after beginning of buffer (memory %p, size %llu, allocated %llu).", static_cast<u8*>(ptr), static_cast<u8*>(ptr) - p_Memory, p_Memory, m_TotalSize, m_AllocatedSize);
@@ -213,11 +205,6 @@ namespace Ocean {
 	}
 
 	void* DoubleStackAllocator::Allocate(sizet size, sizet alignment) {
-		OASSERT(false);
-		return nullptr;
-	}
-
-	void* DoubleStackAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
 		OASSERT(false);
 		return nullptr;
 	}
@@ -326,10 +313,6 @@ namespace Ocean {
 		return p_Memory + newStart;
 	}
 
-	void* LinearAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
-		return Allocate(size, alignment);
-	}
-
 	void LinearAllocator::Deallocate(void* ptr) {
 		oprint("Linear Allocator Deallocate called when it does not do anything!");
 		// This allocator does not allocate on a per-pointer base.
@@ -345,10 +328,6 @@ namespace Ocean {
 	}
 
 	void* MallocAllocator::Allocate(sizet size, sizet alignment) {
-		return malloc(size);
-	}
-
-	void* MallocAllocator::Allocate(sizet size, sizet alignment, cstring file, i32 line) {
 		return malloc(size);
 	}
 
