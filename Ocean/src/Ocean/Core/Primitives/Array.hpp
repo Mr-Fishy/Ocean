@@ -286,7 +286,7 @@ namespace Ocean {
 	template<typename T>
 	inline void DynamicArray<T>::Remove(u32 position) {
 		if (position < this->m_Size)
-			memset(&this->p_Data[position], 0, sizeof(T));
+			this->p_Data[position] = T();
 
 		this->m_Size--;
 	}
@@ -449,7 +449,7 @@ namespace Ocean {
 	template<typename T>
 	inline void FixedArray<T>::Remove(u32 position) {
 		if (position < this->m_Size)
-			memset(&this->p_Data[position], 0, sizeof(T));
+			this->p_Data[position] = T();
 
 		this->m_Size--;
 	}

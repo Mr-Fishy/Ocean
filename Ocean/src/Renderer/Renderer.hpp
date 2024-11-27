@@ -104,6 +104,8 @@ namespace Ocean {
 			struct UniformData {
 				UniformBuffer UBO;
 				void* Data;
+
+				UniformData() : UBO(), Data(nullptr) { }
 			};
 
 		public:

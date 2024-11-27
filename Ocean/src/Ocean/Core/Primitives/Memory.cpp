@@ -1,8 +1,6 @@
 #include "Memory.hpp"
 
-#include "Macros.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
-#include "Ocean/Core/Primitives/MemoryUtils.hpp"
 
 // libs
 #include "tlsf.h"
@@ -105,7 +103,7 @@ namespace Ocean {
 		return Allocate(size, 1);
 	}
 
-	void* HeapAllocator::Allocate(sizet size, sizet alignment) {
+	void* HeapAllocator::Allocate(sizet size, [[maybe_unused]]sizet alignment) {
 	#ifdef HEAP_ALLOCATOR_STATS
 
 		void* allocatedMemory = alignment == 1 ? tlsf_malloc(p_Handle, size) : tlsf_memalign(p_Handle, alignment, size);
@@ -313,7 +311,7 @@ namespace Ocean {
 		return p_Memory + newStart;
 	}
 
-	void LinearAllocator::Deallocate(void* ptr) {
+	void LinearAllocator::Deallocate([[maybe_unused]]void* ptr) {
 		oprint("Linear Allocator Deallocate called when it does not do anything!");
 		// This allocator does not allocate on a per-pointer base.
 	}
@@ -327,7 +325,7 @@ namespace Ocean {
 		return malloc(size);
 	}
 
-	void* MallocAllocator::Allocate(sizet size, sizet alignment) {
+	void* MallocAllocator::Allocate(sizet size, [[maybe_unused]]sizet alignment) {
 		return malloc(size);
 	}
 

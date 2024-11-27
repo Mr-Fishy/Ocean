@@ -1,8 +1,11 @@
 #include "Time.hpp"
 
+#include "Ocean/Core/Types/FloatingPoints.hpp"
+#include "Ocean/Core/Types/CompilerDefines.hpp"
+
 #if defined(_MSC_VER)
 
-	#define WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN 1
 	#include <Windows.h>
 
 #else
@@ -10,9 +13,6 @@
 	#include <time.h>
 
 #endif
-
-#include <stdio.h>
-#include <time.h>
 
 namespace Ocean {
 
@@ -44,7 +44,7 @@ namespace Ocean {
 	// Computes (value*numer) / denom without overflow, as long as both
 	// (numer * denom) and the overall result fit into i64 (which is the case
 	// for our time conversions).
-	static i64 int64_mul_div(i64 value, i64 numer, i64 denom) {
+	OC_UNUSED static i64 int64_mul_div(i64 value, i64 numer, i64 denom) {
 		const i64 q = value / denom;
 		const i64 r = value % denom;
 		// Decompose value as (value / denom * denom + value % denom),
@@ -68,7 +68,7 @@ namespace Ocean {
 
 		clock_t time = clock();
 
-		const u64 microseconds = (u64)1000000 * time / CLOCKS_PER_SEC;
+		const u64 microseconds = 1000000ULL * time / CLOCKS_PER_SEC;
 
 	#endif
 
@@ -76,15 +76,15 @@ namespace Ocean {
 	}
 
 	f64 oTimeMicroSec(Time t) {
-		return (f64)t;
+		return static_cast<f64>(t);
 	}
 
 	f64 oTimeMilliSec(Time t) {
-		return (f64)t / 1000.0;
+		return static_cast<f64>(t) / 1000.0;
 	}
 
 	f64 oTimeRealiSec(Time t) {
-		return (f64)t / 1000000.0;
+		return static_cast<f64>(t) / 1000000.0;
 	}
 
 	Time oTimeFrom(Time start) {

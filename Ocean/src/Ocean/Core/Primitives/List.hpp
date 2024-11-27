@@ -13,7 +13,22 @@ namespace Ocean {
 		class List {
 		public:
 			List() : p_Allocator(nullptr), m_Size(0) { }
+			List(const List<T>& list) {
+				if (&this != list) {
+					this->p_Allocator = list.p_Allocator;
+					this->m_Size = list.m_Size;
+				}
+			}
 			virtual ~List() = default;
+
+			List<T>& operator = (const List<T>& list) {
+				if (&this != list) {
+					this->p_Allocator = list.p_Allocator;
+					this->m_Size = list.m_Size;
+				}
+
+				return *this;
+			}
 
 			virtual void Insert(const T& element, u32 position) = 0;
 			virtual void Remove(u32 position) = 0;
@@ -61,7 +76,7 @@ namespace Ocean {
 		};
 
 	public:
-		SingleLinkedList() = default;
+		SingleLinkedList() : p_Head(nullptr) { }
 		virtual ~SingleLinkedList() = default;
 
 		void Init();
@@ -95,8 +110,11 @@ namespace Ocean {
 		};
 
 	public:
-		DoubleLinkedList() : ADT::List<T>() { }
+		DoubleLinkedList() : ADT::List<T>(), p_Head(nullptr), p_Tail(nullptr) { }
+		DoubleLinkedList(const DoubleLinkedList<T>&);
 		virtual ~DoubleLinkedList() = default;
+
+		DoubleLinkedList<T>& operator = (const DoubleLinkedList<T>&);
 
 		void Init();
 		void Shutdown();
@@ -116,8 +134,6 @@ namespace Ocean {
 		Node* p_Tail = nullptr;
 
 	};
-
-
 
 	template<typename T>
 	inline void SingleLinkedList<T>::Init() {
@@ -176,6 +192,16 @@ namespace Ocean {
 	}
 
 
+
+	template<typename T>
+	inline DoubleLinkedList<T>::DoubleLinkedList(const DoubleLinkedList<T>& list) {
+
+	}
+
+	template<typename T>
+	inline DoubleLinkedList<T>& DoubleLinkedList<T>::operator = (const DoubleLinkedList<T>& list) {
+
+	}
 
 	template<typename T>
 	inline void DoubleLinkedList<T>::Init() {

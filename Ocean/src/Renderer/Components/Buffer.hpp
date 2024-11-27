@@ -24,7 +24,7 @@ namespace Ocean {
 
 		class Buffer {
 		public:
-			Buffer() = default;
+			Buffer() : p_DeviceRef(nullptr), m_Buffer(VK_NULL_HANDLE), m_Memory(VK_NULL_HANDLE) { }
 			~Buffer() = default;
 
 			void Init(BufferConfig* config);
@@ -35,10 +35,10 @@ namespace Ocean {
 			VkBuffer GetBuffer() const { return m_Buffer; }
 
 		protected:
-			Device* p_DeviceRef = nullptr;
+			Device* p_DeviceRef;
 
-			VkBuffer m_Buffer = VK_NULL_HANDLE;
-			VkDeviceMemory m_Memory = VK_NULL_HANDLE;
+			VkBuffer m_Buffer;
+			VkDeviceMemory m_Memory;
 
 		};	// Buffer
 
@@ -46,7 +46,7 @@ namespace Ocean {
 
 		class UniformBuffer : public Buffer {
 		public:
-			UniformBuffer() = default;
+			UniformBuffer() : Buffer() { }
 			~UniformBuffer() = default;
 
 			void* GetMappedMemory(sizet size);

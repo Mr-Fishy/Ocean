@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Ocean/Core/Base.hpp"
-
-#include "Ocean/Core/Types/ValueTypes.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+#include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 #include "Ocean/Core/Types/Timestep.hpp"
 
@@ -35,7 +34,7 @@ namespace Ocean {
 	 */
 	class Application {
 	public:
-		Application(const ApplicationConfig& config) { }
+		Application([[maybe_unused]]const ApplicationConfig& config) { }
 		virtual ~Application() = default;
 
 		/**

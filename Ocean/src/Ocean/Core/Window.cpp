@@ -24,7 +24,7 @@ namespace Ocean {
 		data->resized = true;
 	}
 
-	static void GLFW_KeyCallback(GLFWwindow* window, i32 key, i32 scancode, i32 action, i32 mods) {
+	static void GLFW_KeyCallback(GLFWwindow* window, i32 key, i32 scancode, i32 action, [[maybe_unused]] i32 mods) {
 		WindowDataPtr data = static_cast<WindowDataPtr>(glfwGetWindowUserPointer(window));
 
 		oprint("\t> Window Key-Callback! (%s)\n", glfwGetKeyName(key, scancode));

@@ -160,11 +160,11 @@ namespace Ocean {
 		 * @param pUserData - The User callback data of the error.
 		 * @return VK_SUCCESS if successfull error report, flagged otherwise.
 		 */
-		static VKAPI_ATTR VkBool32 VKAPI_CALL oDebugCallback(
+		[[nodiscard]] static VKAPI_ATTR VkBool32 VKAPI_CALL oDebugCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-			VkDebugUtilsMessageTypeFlagsEXT messageType,
+			[[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-			void* pUserData
+			[[maybe_unused]] void* pUserData
 		) {
 			if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
 				OASSERTM(false, CONSOLE_TEXT_RED("\nVulkan: %s\n"), pCallbackData->pMessage);
@@ -179,7 +179,7 @@ namespace Ocean {
 			return VK_FALSE;
 		}
 
-		static VkResult CreateDebugUtilsMessengerEXT(
+		[[nodiscard]] static VkResult CreateDebugUtilsMessengerEXT(
 			VkInstance instance,
 			const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 			const VkAllocationCallbacks* pAllocator,
