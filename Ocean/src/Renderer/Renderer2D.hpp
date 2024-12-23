@@ -1,95 +1,54 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/List.hpp"
+#include "Ocean/Core/Types/FloatingPoints.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
+#include "Ocean/Core/Types/SharedPtr.hpp"
+
+#include "Renderer/Texture.hpp"
 
 // libs
-#include <glm/ext/vector_float2.hpp>
-#include <glm/ext/vector_float3.hpp>
-#include <glm/ext/vector_float4.hpp>
+#include <glm/glm.hpp>
 
 namespace Ocean {
 
-    namespace Vulkan {
+    class Camera;
 
-        struct Vertex;
+    namespace Shrimp {
 
-        class Buffer;
+        class Renderer2D {
+        public:
+            static void Init();
+            static void Shutdown();
 
-    }   // Vulkan
+            static void BeginScene(const Camera& camera);
+            // TODO: Editor Camera
+            static void EndScene();
+            static void Flush();
 
-    /* 
-     * Renderer2D Design
-     * 
-     */
+            static void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
+            static void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
 
-    class Renderer2D {
-    private:
-        struct Statistics {
-            u32 DrawCalls = 0;
-            u32 VertCount = 0;
-            u32 IndexCount = 0;
+            static void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
+            static void DrawQuad(const glm::mat4& transform, const SharedPtr<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
+            
+            struct Statistics {
+                u32 drawCalls = 0;
+                u32 quadCount = 0;
 
-            u32 GetTotalVertexCount() const { return VertCount; }
-            u32 GetTotalIndexCount() const { return IndexCount; }
+                inline u32 GetVertexCount() const { return this->quadCount * 4; }
+                inline u32 GetIndexCount() const { return this->quadCount * 6; }
 
-        };  // Statistics
+            };  // Statistics
 
-        struct Data {
-            static constexpr u32 MaxTris = 40000;
-            static constexpr u32 MaxVerts = MaxTris * 3;
-            static constexpr u32 MaxIndices = MaxTris * 3;
-            static constexpr u8 MaxTextureSlots = 32;
+            static void ResetStats();
+            static Statistics GetStats();
 
-            DoubleLinkedList<Vulkan::Vertex> Vertices;
-            Vulkan::Buffer* VertexBuffer;
-            DoubleLinkedList<u32> Indices;
-            Vulkan::Buffer* IndexBuffer;
+        private:
+            static void StartBatch();
+            static void NextBatch();
 
-        };  // Data
+        };  // Renderer2D
 
-    public:
-        static void Init();
-        static void Shutdown();
-
-        static void BeginScene(/* const Camera& camera */);
-        static void EndScene();
-        static void Flush();
-
-        // TODO: Transparency (4 component color)
-
-        static void DrawRect(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
-        static void DrawRect(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
-
-        // static void DrawRect(const glm::vec2& pos, const glm::vec2& size, const Texture& texture);
-        // static void DrawRect(const glm::vec3& pos, const glm::vec2& size, const Texture& texture);
-
-        // TODO: Circles
-        // static void DrawCirc(const glm::vec2& pos, f32 radius, const glm::vec4& color);
-        // static void DrawCirc(const glm::vec3& pos, f32 radius, const glm::vec4& color);
-
-        // static void DrawCirc(const glm::vec2& pos, f32 radius, const Texture& texture);
-        // static void DrawCirc(const glm::vec3& pos, f32 radius, const Texture& texture);
-
-        // TODO: Triangles
-        // static void DrawTri(const glm::vec2& pos, f32 base, f32 height, const glm::vec4& color);
-        // static void DrawTri(const glm::vec3& pos, f32 base, f32 height, const glm::vec4& color);
-
-        // static void DrawTri(const glm::vec2& pos, f32 base, f32 height, const Texture& texture);
-        // static void DrawTri(const glm::vec3& pos, f32 base, f32 height, const Texture& texture);
-
-        // TODO: Polygons
-
-        static void ResetStats();
-        static void PrintStats();
-
-    private:
-        static void FlushAndReset();
-
-        /* --- */
-
-        static inline Data* s_Data = nullptr;
-
-    };
+    }   // Shrimp
 
 }   // Ocean

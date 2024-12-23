@@ -104,6 +104,9 @@ set(GLFW_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glfw/include")
 set(GLM_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/glm")
 set(TLSF_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/tlsf")
 set(STEAM_AUDIO_DIRECTORY  "${PROJECT_SOURCE_DIR}/Ocean/vendor/steamaudio/include")
+set(GLAD_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glad/include")
+set(STB_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/stb")
+
 
 ### Projects ###
 message(STATUS)

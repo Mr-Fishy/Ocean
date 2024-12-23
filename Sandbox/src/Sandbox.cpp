@@ -8,7 +8,7 @@ Ocean::Application* Ocean::CreateApplication() {
 
 
 
-Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config), p_Renderer(nullptr) {
+Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config) {
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
 	// ---> Init Primitive Services
@@ -35,24 +35,11 @@ Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Application(config), 
 	// Input
 
 	// Graphics
-	Ocean::Vulkan::RendererConfig renConfig{
-		Ocean::MemoryService::Instance().SystemAllocator(),
-		p_Window,
-		config.name,
-		static_cast<u16>(p_Window->Width()),
-		static_cast<u16>(p_Window->Height()),
-		2,
-		1, 0, 0
-	};
-	p_Renderer = p_ServiceManager->Get<Ocean::Vulkan::Renderer>();
-	p_Renderer->Init(&renConfig);
+
 }
 
 Sandbox::~Sandbox() {
 	oprint(CONSOLE_TEXT_CYAN("Deconstructing Sandbox Application!\n"));
-
-	// Graphics
-	Ocean::Vulkan::Renderer::Shutdown();
 
 	// Input
 
@@ -96,7 +83,7 @@ b8 Sandbox::MainLoop() {
 		}
 
 		if (!p_Window->Minimized())
-			p_Renderer->BeginFrame();
+			// p_Renderer->BeginFrame();
 
 		FrameBegin();
 
@@ -125,7 +112,7 @@ b8 Sandbox::MainLoop() {
 			// TODO: Interpolation
 			Render(f32());
 
-			p_Renderer->EndFrame();
+			// p_Renderer->EndFrame();
 		}
 
 		// Prepare for the next frame if needed.
@@ -134,7 +121,7 @@ b8 Sandbox::MainLoop() {
 		frameCount++;
 	}
 
-	p_Renderer->CleanUp();
+	// p_Renderer->CleanUp();
 
 	Close();
 
@@ -152,7 +139,7 @@ void Sandbox::VariableUpdate(Timestep delta) {
 
 
 void Sandbox::Render(f32 interpolation) {
-	p_Renderer->RenderFrame();
+	// p_Renderer->RenderFrame();
 }
 
 
@@ -166,5 +153,5 @@ void Sandbox::FrameEnd() {
 
 
 void Sandbox::OnResize(u16 width, u16 height) {
-	p_Renderer->ResizeSwapchain(width, height);
+	// p_Renderer->ResizeSwapchain(width, height);
 }

@@ -49,3 +49,5 @@
 #define CONSOLE_TEXT_MAGENTA(Text)                  ("\x1b[35m" Text "\033[0m")
 #define CONSOLE_TEXT_CYAN(Text)                     ("\x1b[36m" Text "\033[0m")
 #define CONSOLE_TEXT_WHITE(Text)                    ("\x1b[37m" Text "\033[0m")
+
+#define OC_UNUSED [[maybe_unused]]

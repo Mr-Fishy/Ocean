@@ -8,7 +8,7 @@
 
 #include "Ocean/Core/Types/glmTypes.hpp"
 
-#include "Ocean/core/Primitives/Memory.hpp"
+#include "Ocean/Core/Primitives/Memory.hpp"
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Log.hpp"
 #include "Ocean/Core/Primitives/Time.hpp"
@@ -19,5 +19,3 @@
 
 #include "Ocean/Core/Application.hpp"
 #include "Ocean/Core/Window.hpp"
-
-#include "Renderer/Renderer.hpp"

@@ -38,6 +38,13 @@ file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 ## Steam Audio
 file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
 
+# GLAD Source Files
+file(GLOB_RECURSE glad_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include/*.h)
+file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/src/*.c)
+
+# STB
+file(GLOB stb_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/*.h)
+
 # Group all of the files per their source for IDE / Editor
 
 source_group("Root Header" FILES ${Ocean_ROOT_HEADER})
@@ -66,6 +73,11 @@ source_group("tlsf Sources" FILES ${tlsf_SOURCE})
 
 source_group("Steam Audio Headers" FILES ${steamaudio_HEADER})
 
+source_group("glad Headers" FILES ${glad_HEADER})
+source_group("glad Sources" FILES ${glad_SOURCE})
+
+source_group("stb Headers" FILES ${stb_HEADER})
+
 add_library(
     ${PROJECT_NAME}
 
@@ -83,18 +95,22 @@ add_library(
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
     ${steamaudio_HEADER}
+    ${glad_HEADER} ${glad_SOURCE}
+    ${stb_HEADER}
 )
 
 target_include_directories(
     ${PROJECT_NAME}
     
-    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    PUBLIC ${OCEAN_SRC_DIRECTORY}
 )
 
 target_include_directories(
     ${PROJECT_NAME} SYSTEM
 
+    PRIVATE ${GLAD_DIRECTORY}
     PRIVATE ${TLSF_DIRECTORY}
+    PRIVATE ${STB_DIRECTORY}
     PUBLIC  ${GLM_DIRECTORY}
 
     PRIVATE ${Vulkan_INCLUDE_DIRS}

@@ -1,62 +1,83 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/Array.hpp"
+#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+#include "Ocean/Core/Types/Integers.hpp"
 
-#include "Renderer/Resources.hpp"
+// std
+#include <initializer_list>
+#include <vector>
 
 namespace Ocean {
 
-	namespace Vulkan {
+    namespace Shrimp {
 
-		/**
-		 * @brief The configuration struct of the framebuffer.
-		 */
-		struct FramebufferConfig {
-			// Allocator* allocator;
+        enum FramebufferFormat {
+            None = 0,
 
-			VkDevice device;
-			VkImageView imageView;
-			VkExtent2D swapchainExtent;
-			VkRenderPass renderPass;
+            // Color
+            RGBA8,
+            Red_Int,
 
-			FramebufferConfig(VkDevice device, VkImageView view, VkExtent2D extent, VkRenderPass renderPass)
-				: device(device), imageView(view), swapchainExtent(extent), renderPass(renderPass) { }
-		};
+            // Depth / Stencil
+            Depth24_Stencil8,
 
-		/**
-		 * @brief A overhead class that defines a Vulkan Framebuffer.
-		 */
-		class Framebuffer {
-		public:
-			Framebuffer() = default;
-			~Framebuffer() = default;
+            // Defaults
+            Depth = Depth24_Stencil8
 
-			/**
-			 * @brief Initializes the framebuffer, this includes creating the Vulkan Framebuffer.
-			 * @param config - The configuration to use for the framebuffer.
-			 */
-			void Init(FramebufferConfig* config);
-			/**
-			 * @brief Shuts down the framebuffer, also destroys the Vulkan Framebuffer.
-			 */
-			void Shutdown();
+        };  // FramebufferFormat
 
-			/**
-			 * @return The Vulkan Framebuffer.
-			 */
-			VkFramebuffer GetFrame() const { return m_Framebuffer; }
+        struct FramebufferTextureSpec {
+            FramebufferTextureSpec() : textureFormat(FramebufferFormat::None) { }
+            FramebufferTextureSpec(FramebufferFormat format) : textureFormat(format) { }
 
-		private:
-			VkDevice m_DeviceRef = VK_NULL_HANDLE;
+            FramebufferFormat textureFormat;
 
-			VkFramebuffer m_Framebuffer = VK_NULL_HANDLE;
-			VkRenderPass m_RenderPass = VK_NULL_HANDLE;
-			VkSampler m_Sampler = VK_NULL_HANDLE;
+        };  // FramebufferTextureSpec
 
-			u32 m_Width = 0, m_Height = 0;
+        struct FramebufferAttachmentSpec {
+            FramebufferAttachmentSpec() : attachments() { }
+            FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : attachments(attachments) { }
 
-		};
+            std::vector<FramebufferTextureSpec> attachments;
 
-	}	// Vulkan
+        };  // FramebufferAttachmentSpec
 
-}	// Ocean
+        struct FramebufferSpecification {
+            FramebufferSpecification() : width(0), height(0), samples(1), attachments(), swapChainTarget(false) { }
+
+            u32 width, height;
+
+            u32 samples;
+
+            FramebufferAttachmentSpec attachments;
+
+            b8 swapChainTarget;
+
+        };  // FramebufferSpecification
+
+
+
+        class Framebuffer {
+        public:
+            virtual ~Framebuffer() = default;
+
+            virtual void Bind() = 0;
+            virtual void Unbind() = 0;
+
+            virtual void Resize(u32 width, u32 height) = 0;
+            
+            virtual u32 ReadPixel(u32 attachmentIndex, i32 x, i32 y) = 0;
+
+            virtual u32 GetColorAttachmentID(u32 index = 0) const = 0;
+            virtual void ClearAttachment(u32 attachmentIndex, i32 value) = 0;
+
+            virtual const FramebufferSpecification& GetSpecification() const = 0;
+
+            static SharedPtr<Framebuffer> Create(const FramebufferSpecification& spec);
+
+        };  // Framebuffer
+
+    }   // Ocean
+
+}   // Ocean

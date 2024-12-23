@@ -1,28 +1,27 @@
-#include "Framebuffer.hpp"
+#include "VertexArray.hpp"
 
 #include "Ocean/Core/Primitives/Assert.hpp"
-#include "Ocean/Core/Types/SharedPtr.hpp"
 
 #include "Renderer/RendererAPI.hpp"
-#include "Renderer/OpenGL/gl_Framebuffer.hpp"
+#include "Renderer/OpenGL/gl_VertexArray.hpp"
 
 namespace Ocean {
 
     namespace Shrimp {
 
-        SharedPtr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec) {
+        SharedPtr<VertexArray> VertexArray::Create() {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
-                
+
                 case RendererAPI::OpenGL:
-                    return MakeSharedPtr<glFramebuffer>(spec);
-                
+                    return MakeSharedPtr<glVertexArray>();
+
                 case RendererAPI::Vulkan:
-                    break;
+                break;
             }
 
-            OASSERTM(false, "Unkown RendererAPI");
+            OASSERTM(false, "Unkown RendererAPI!");
             return nullptr;
         }
 

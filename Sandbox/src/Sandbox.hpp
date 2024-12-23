@@ -32,6 +32,4 @@ private:
 	static inline Ocean::Window* p_Window = nullptr;
 	// Input Service
 
-	Ocean::Vulkan::Renderer* p_Renderer = nullptr;
-
 };	// Sandbox
