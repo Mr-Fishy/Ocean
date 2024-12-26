@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Ocean/Core/Primitives/Array.hpp"
 #include "Ocean/Core/Types/Bool.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 #include "Ocean/Core/Types/Timestep.hpp"
+#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Ocean/Core/Window.hpp"
 
 int main(/* int argc, char** argv */);
 
@@ -23,7 +26,7 @@ namespace Ocean {
 
 		b8 fullscreen = false; /** @brief If the application is fullscreen. */
 
-		b8 initBaseServices = true;
+		// TODO: Service Enabling / Disabling (i.e. ability to disable audio if not needed).
 
 		ApplicationConfig(cstring name, u32 w, u32 h, b8 fullscreen = false) : name(name), width(w), height(h), fullscreen(fullscreen) { }
 
@@ -34,7 +37,7 @@ namespace Ocean {
 	 */
 	class Application {
 	public:
-		Application([[maybe_unused]]const ApplicationConfig& config) { }
+		Application(const ApplicationConfig& config);
 		virtual ~Application() = default;
 
 		/**
@@ -57,21 +60,30 @@ namespace Ocean {
 		 */
 		void TestApp();
 
-		virtual b8 MainLoop() = 0;
+		/**
+		 * @brief The runtime loop of the application.
+		 * 
+		 * @return b8 True if successful runtime. False otherwise.
+		 */
+		b8 MainLoop();
 
 		virtual void FixedUpdate(Timestep delta) = 0;
 		virtual void VariableUpdate(Timestep delta) = 0;
 		
-		virtual void Render(f32 interpolation) = 0;
+		void Render(f32 interpolation);
 
 		virtual void FrameBegin() = 0;
 		virtual void FrameEnd() = 0;
 
+		void OnResize(u16 width, u16 height);
+
 		/* --- */
 
-		static Application* s_Instance;
+		inline static Application* s_Instance;
 
-		ServiceManager* p_ServiceManager = nullptr;
+		UniquePtr<ServiceManager> p_ServiceManager;
+
+		DynamicArray<Window> m_Windows;
 
 	private:
 		Application(const Application&) = delete;

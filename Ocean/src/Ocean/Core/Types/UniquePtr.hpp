@@ -4,11 +4,23 @@
 
 template <class Type>
 class UniquePtr {
+private:
+    struct TypeFlag {
+        Type* flag;
+
+    };  // TypeFlag
+
+    template <typename ... _Args>
+    inline UniquePtr(OC_UNUSED TypeFlag flag, _Args&& ... args) : p_Pointer(oallocat(Type, 1, Ocean::MemoryService::Instance().SystemAllocator())) {
+        new(this->p_Pointer) Type(std::forward<_Args>(args)...);
+    }
+
+    template <class T, typename ... Args>
+    friend constexpr UniquePtr<T> MakeUniquePtr(Args&& ... args);
+
 public:
     inline UniquePtr() : p_Pointer(nullptr) { }
     inline UniquePtr(Type* pointer) : p_Pointer(pointer) { }
-    template <typename ... Args>
-    inline UniquePtr(Args&& ... args) : p_Pointer(oallocat(Type, 1, Ocean::MemoryService::Instance().SystemAllocator())(std::forward(args)...)) { }
     UniquePtr(const UniquePtr<Type>& other) = delete;
     inline ~UniquePtr() {
         ofree(p_Pointer, Ocean::MemoryService::Instance().SystemAllocator());
@@ -37,5 +49,5 @@ inline constexpr UniquePtr<T> MakeUniquePtr(Args&& ... args) {
 
     #endif
 
-    return UniquePtr<T>(std::forward<Args>(args)...);
+    return UniquePtr<T>({ nullptr }, std::forward<Args>(args)...);
 }

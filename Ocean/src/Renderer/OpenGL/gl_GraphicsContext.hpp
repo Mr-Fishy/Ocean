@@ -10,8 +10,12 @@ namespace Ocean {
     
         class glGraphicsContext : public GraphicsContext {
         public:
+            glGraphicsContext() = delete;
             glGraphicsContext(GLFWwindow* window);
+            glGraphicsContext(const glGraphicsContext&) = delete;
             virtual ~glGraphicsContext();
+
+            glGraphicsContext& operator = (const glGraphicsContext&) = delete;
 
             virtual void Init() override final;
             
