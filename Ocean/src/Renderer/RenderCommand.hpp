@@ -16,9 +16,6 @@ namespace Ocean {
 
         class RenderCommand {
         public:
-            RenderCommand();
-            ~RenderCommand();
-
             inline static void Init() {
                 s_RendererAPI->Init();
             }
@@ -39,7 +36,7 @@ namespace Ocean {
             }
 
         private:
-            static inline UniquePtr<RendererAPI> s_RendererAPI = MakeUniquePtr<RendererAPI>();
+            inline static UniquePtr<RendererAPI> s_RendererAPI = RendererAPI::Create();
 
         };  // RenderCommand
 

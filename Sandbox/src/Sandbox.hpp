@@ -1,6 +1,8 @@
 #pragma once
 
 // Ocean
+#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Ocean/Core/Window.hpp"
 #include <Ocean/Ocean.hpp>
 #include <Ocean/Core/EntryPoint.hpp>
 
@@ -18,5 +20,9 @@ private:
 
 	virtual void FrameBegin() override final;
 	virtual void FrameEnd() override final;
+
+	/* --- */
+
+	UniquePtr<Ocean::Window> m_Window;
 
 };	// Sandbox

@@ -125,7 +125,7 @@ template <class T, typename ... Args>
 constexpr SharedPtr<T> MakeSharedPtr(Args&& ... args) {
     #ifdef OC_DEBUG
 
-        oprint(CONSOLE_TEXT_GREEN("Making Shared Pointer."));
+        oprint(CONSOLE_TEXT_GREEN("\tMaking Shared Pointer.\n"));
 
     #endif
 

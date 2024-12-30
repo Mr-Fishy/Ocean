@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/Array.hpp"
 #include "Ocean/Core/Types/Bool.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 #include "Ocean/Core/Types/Timestep.hpp"
 #include "Ocean/Core/Types/UniquePtr.hpp"
-#include "Ocean/Core/Window.hpp"
+
+#include "Ocean/Core/Primitives/Macros.hpp"
 
 int main(/* int argc, char** argv */);
 
@@ -38,7 +38,7 @@ namespace Ocean {
 	class Application {
 	public:
 		Application(const ApplicationConfig& config);
-		virtual ~Application() = default;
+		virtual ~Application();
 
 		/**
 		 * @brief Closes the application.
@@ -79,15 +79,14 @@ namespace Ocean {
 
 		/* --- */
 
-		inline static Application* s_Instance;
+		inline static Application* s_Instance = nullptr;
 
 		UniquePtr<ServiceManager> p_ServiceManager;
 
-		DynamicArray<Window> m_Windows;
+		b8 m_Running;
 
 	private:
-		Application(const Application&) = delete;
-		Application operator = (const Application&) = delete;
+		OC_NO_COPY(Application);
 	};
 
 	Application* CreateApplication();

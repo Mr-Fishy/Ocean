@@ -9,7 +9,7 @@ namespace Ocean {
 
     namespace Shrimp {
     
-        glShader::glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource) {
+        glShader::glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource) : m_RendererID() {
             u32 vertex, fragment, geometry;
 
             // Vertex Shader
@@ -70,49 +70,49 @@ namespace Ocean {
             glUseProgram(0);
         }
 
-        void glShader::SetInt(cstring name, i32 value) {
+        void glShader::SetInt(cstring name, i32 value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniform1i(location, value);
         }
         
-        void glShader::SetIntArray(cstring name, i32* array, u32 length) {
+        void glShader::SetIntArray(cstring name, i32* array, u32 length) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
             
             glUniform1iv(location, length, array);
         }
 
-        void glShader::SetFloat(cstring name, f32 value) {
+        void glShader::SetFloat(cstring name, f32 value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniform1f(location, value);
         }
         
-        void glShader::SetVec2f(cstring name, const glm::vec2& value) {
+        void glShader::SetVec2f(cstring name, const glm::vec2& value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniform2f(location, value.x, value.y);
         }
         
-        void glShader::SetVec3f(cstring name, const glm::vec3& value) {
+        void glShader::SetVec3f(cstring name, const glm::vec3& value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniform3f(location, value.x, value.y, value.z);
         }
         
-        void glShader::SetVec4f(cstring name, const glm::vec4& value) {
+        void glShader::SetVec4f(cstring name, const glm::vec4& value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniform4f(location, value.x, value.y, value.z, value.w);
         }
 
-        void glShader::SetMat4f(cstring name, const glm::mat4& value) {
+        void glShader::SetMat4f(cstring name, const glm::mat4& value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
         }
 
-        void glShader::SetMat3f(cstring name, const glm::mat3& value) {
+        void glShader::SetMat3f(cstring name, const glm::mat3& value) const {
             GLint location = glGetUniformLocation(this->m_RendererID, name);
 
             glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));

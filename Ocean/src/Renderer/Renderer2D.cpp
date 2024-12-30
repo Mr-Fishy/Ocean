@@ -40,6 +40,12 @@ namespace Ocean {
         };  // QuadVertex
 
         struct RendererData {
+            RendererData() : quadVertexArray(), quadVertexBuffer(), textureShader(), colorTexture(), textureSlots(), stats() { }
+            RendererData(const RendererData&) = delete;
+            ~RendererData() = default;
+
+            RendererData& operator = (const RendererData&) = delete;
+
             static constexpr u32 maxQuads = 20000;
             static constexpr u32 maxVertices = maxQuads * 4;
             static constexpr u32 maxIndices = maxQuads * 6;
@@ -199,7 +205,7 @@ namespace Ocean {
             s_Data.stats.quadCount++;
         }
 
-        void Renderer2D::DrawQuad(const glm::mat4& transform, const SharedPtr<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor, i32 entityID) {
+        void Renderer2D::DrawQuad(OC_UNUSED const glm::mat4& transform, OC_UNUSED const SharedPtr<Texture2D>& texture, OC_UNUSED f32 tilingFactor, OC_UNUSED const glm::vec4& tintColor, OC_UNUSED i32 entityID) {
 
         }
 

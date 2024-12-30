@@ -11,20 +11,21 @@
 
 namespace Ocean {
 
-	Application::Application(OC_UNUSED const ApplicationConfig& config) : p_ServiceManager(&ServiceManager::Instance()), m_Windows() {
-		OASSERTM(s_Instance != nullptr, "Application already exists!");
+	Application::Application(OC_UNUSED const ApplicationConfig& config) : p_ServiceManager(nullptr), m_Running(false) {
+		OASSERTM(!
+		
+		s_Instance, "Application already exists!");
 		s_Instance = this;
 
 		MemoryService::Instance().Init(nullptr);
 
 		oTimeServiceInit();
 
+		p_ServiceManager.SetPtr(&ServiceManager::Instance());
 		p_ServiceManager->Init();
-
-		Shrimp::Renderer::Init();
 	}
 
-	void Application::Close() {
+	Application::~Application() {
 		Shrimp::Renderer::Shutdown();
 
 		Ocean::ServiceManager::Shutdown();
@@ -34,6 +35,10 @@ namespace Ocean {
 		Ocean::MemoryService::Shutdown();
 	}
 
+	void Application::Close() {
+		this->m_Running = false;
+	}
+
 	void Application::Run() {
 	#ifdef OC_DEBUG
 
@@ -41,6 +46,7 @@ namespace Ocean {
 
 	#endif
 
+		this->m_Running = true;
 		// TODO: Application error reporting.
 		if (!MainLoop())
 			oprint("Application Runtime Error: (ERROR)");
@@ -61,7 +67,7 @@ namespace Ocean {
 		u32 frameCount = 0;
 
 		// TODO: Remove lifetime dependency on the main window as an application can run without a window.
-		while (!this->m_Windows[0].RequestedExit()) {
+		while (this->m_Running) {
 			Timestep t(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
 			Timestep frameTime(t - currentTime);
 			currentTime = t;
@@ -76,19 +82,19 @@ namespace Ocean {
 				frameCount = accumulatorCounter = 0;
 			}
 
-			if (!this->m_Windows[0].Minimized()) {
-				// p_Renderer->BeginFrame();
-			}
+			// if (!this->m_Windows[0]->Minimized()) {
+			// 	// p_Renderer->BeginFrame();
+			// }
 
 			FrameBegin();
 
-			this->m_Windows[0].PollEvents();
+			// this->m_Windows[0]->PollEvents();
 
-			if (this->m_Windows[0].Resized()) {
-				OnResize(this->m_Windows[0].Width(), this->m_Windows[0].Height());
+			// if (this->m_Windows[0]->Resized()) {
+			// 	OnResize(this->m_Windows[0]->Width(), this->m_Windows[0]->Height());
 
-				this->m_Windows[0].ResizeHandled();
-			}
+			// 	this->m_Windows[0]->ResizeHandled();
+			// }
 
 			// Fixed Update
 			while (accumulator.GetSeconds() >= dt.GetSeconds()) {
@@ -103,22 +109,18 @@ namespace Ocean {
 			// Variable Update
 			VariableUpdate(frameTime);
 
-			if (!this->m_Windows[0].Minimized()) {
-				// TODO: Interpolation
-				Render(f32());
+			// if (!this->m_Windows[0]->Minimized()) {
+			// 	// TODO: Interpolation
+			// 	Render(f32());
 
-				// p_Renderer->EndFrame();
-			}
+			// 	// p_Renderer->EndFrame();
+			// }
 
 			// Prepare for the next frame if needed.
 			FrameEnd();
 
 			frameCount++;
 		}
-
-		// p_Renderer->CleanUp();
-
-		Close();
 
 		return true;
 	}

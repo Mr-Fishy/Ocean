@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Types/SharedPtr.hpp"
+
 #include "Renderer/RendererAPI.hpp"
 
 namespace Ocean {

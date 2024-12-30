@@ -7,7 +7,7 @@ namespace Ocean {
 
 	ServiceManager& ServiceManager::Instance() {
 		if (!s_Instance) {
-			s_Instance = oallocat(ServiceManager, 1, MemoryService::Instance().SystemAllocator());
+			s_Instance = oallocat(ServiceManager, 1, oSystemAllocator);
 		}
 
 		return *s_Instance;
@@ -18,7 +18,7 @@ namespace Ocean {
 	}
 
 	void ServiceManager::Shutdown() {
-		ofree(&Instance(), MemoryService::Instance().SystemAllocator());
+		ofree(&Instance(), oSystemAllocator);
 	}
 
 	void ServiceManager::AddService(Service* service, cstring name) {

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.11...3.22)
+cmake_policy(VERSION 3.11)
 
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
@@ -36,6 +37,10 @@ if (MSVC)
     message(STATUS)
     message(FATAL_ERROR "Ocean Only Supports GCC Compilers!")
 endif ()
+
+### OpenGL ###
+set(OpenGL_GL_PREFERENCE GLVND)
+find_package(OpenGL REQUIRED)
 
 ### Vulkan ###
 set(Vulkan_FOUND False)

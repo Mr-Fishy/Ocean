@@ -27,8 +27,11 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
 
-file(GLOB Ocean_RENCOMP_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.hpp)
-file(GLOB Ocean_RENCOMP_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.cpp)
+file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/OpenGL/*.hpp)
+file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/OpenGL/*.cpp)
+
+file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Vulkan/*.hpp)
+file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Vulkan/*.cpp)
 
 # Vendor Files (Non-Libraries)
 ## TLSF
@@ -39,8 +42,8 @@ file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
 
 # GLAD Source Files
-file(GLOB_RECURSE glad_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include/*.h)
-file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/src/*.c)
+file(GLOB_RECURSE glad_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include/*.h)
+file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/*.c)
 
 # STB
 file(GLOB stb_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/*.h)
@@ -65,8 +68,11 @@ source_group("Platform Sources" FILES ${Ocean_PLAT_SOURCE})
 source_group("Renderer Headers" FILES ${Ocean_REND_HEADER})
 source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
 
-source_group("Renderer Component Headers" FILES ${Ocean_RENCOMP_HEADER})
-source_group("Renderer Component Sources" FILES ${Ocean_RENCOMP_SOURCE})
+source_group("OpenGL Renderer Headers" FILES ${Ocean_GL_REND_HEADER})
+source_group("OpenGL Renderer Sources" FILES ${Ocean_GL_REND_SOURCE})
+
+source_group("Vulkan Renderer Headers" FILES ${Ocean_VK_REND_HEADER})
+source_group("Vulkan Renderer Sources" FILES ${Ocean_VK_REND_SOURCE})
 
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
@@ -91,11 +97,12 @@ add_library(
     ${Ocean_PLAT_HEADER}  ${Ocean_PLAT_SOURCE}
 
     ${Ocean_REND_HEADER} ${Ocean_REND_SOURCE}
-    ${Ocean_RENCOMP_HEADER} ${Ocean_RENCOMP_SOURCE}
+    ${Ocean_GL_REND_HEADER} ${Ocean_GL_REND_SOURCE}
+    ${Ocean_VK_REND_HEADER} ${Ocean_VK_REND_SOURCE}
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
-    ${steamaudio_HEADER}
     ${glad_HEADER} ${glad_SOURCE}
+    ${steamaudio_HEADER}
     ${stb_HEADER}
 )
 
@@ -113,6 +120,7 @@ target_include_directories(
     PRIVATE ${STB_DIRECTORY}
     PUBLIC  ${GLM_DIRECTORY}
 
+    PRIVATE ${OpenGL_INCLUDE_DIRS}
     PRIVATE ${Vulkan_INCLUDE_DIRS}
 )
 
@@ -122,9 +130,10 @@ target_link_libraries(
     PRIVATE glfw
     PRIVATE SteamAudio
     PRIVATE GPUOpen::VulkanMemoryAllocator
+    PRIVATE ${OPENGL_LIBRARIES}
+    PRIVATE ${Vulkan_LIBRARIES}
 
     PUBLIC glm::glm-header-only
-    PUBLIC ${Vulkan_LIBRARIES}
 )
 
 target_compile_options(

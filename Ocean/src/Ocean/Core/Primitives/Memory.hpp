@@ -209,10 +209,10 @@ namespace Ocean {
 		void Init(MemoryServiceConfig* config = nullptr);
 		static void Shutdown();
 
-		static cstring Name() { return "OCEAN_Memory_Service"; }
-
 		Allocator* ScratchAllocator() { return &m_ScratchAllocator; }
 		Allocator* SystemAllocator()  { return &m_SystemAllocator; }
+
+		inline virtual cstring GetName() const override { return "OCEAN_Memory_Service"; }
 
 	private:
 		static inline MemoryService* s_Instance =  nullptr;
@@ -223,6 +223,9 @@ namespace Ocean {
 	};	// MemoryService
 
 	// Macro Helpers
+
+	#define oSystemAllocator                     Ocean::MemoryService::Instance().SystemAllocator()
+	#define oScratchAllocator                    Ocean::MemoryService::Instance().ScratchAllocator()
 
 	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1))
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1))

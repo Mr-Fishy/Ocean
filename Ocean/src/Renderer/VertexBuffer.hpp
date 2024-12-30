@@ -95,7 +95,7 @@ namespace Ocean {
         class BufferLayout {
         public:
             BufferLayout() = default;
-            BufferLayout(const std::initializer_list<BufferElement>& elements) : m_Stride(0), m_Elements(elements) {
+            BufferLayout(const std::initializer_list<BufferElement>& elements) : m_Elements(elements), m_Stride(0) {
                 CalculateOffsetsAndStride();
             }
             ~BufferLayout() = default;

@@ -1,7 +1,11 @@
 #include "Sandbox.hpp"
 
 #include "Ocean/Core/Application.hpp"
+
 #include "Ocean/Core/Primitives/Macros.hpp"
+
+#include "Ocean/Core/Window.hpp"
+#include "Renderer/Renderer.hpp"
 
 Ocean::Application* Ocean::CreateApplication() {
 	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
@@ -11,24 +15,20 @@ Ocean::Application* Ocean::CreateApplication() {
 
 
 
-Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Ocean::Application(config) {
+Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Ocean::Application(config), m_Window() {
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
 
-	// Window
-	Ocean::WindowConfig winConfig {
-		config.width,
-		config.height,
-		config.name,
-	};
-	this->m_Windows[0].Init(&winConfig);
+	this->m_Window = Ocean::Window::Create(config.width, config.height, config.name);
+	this->m_Window->Init();
 
+	Ocean::Shrimp::Renderer::Init();
 }
 
 Sandbox::~Sandbox() {
 	oprint(CONSOLE_TEXT_CYAN("Deconstructing Sandbox Application!\n"));
 
-	// Window
-	this->m_Windows[0].Shutdown();
+	Ocean::Shrimp::Renderer::Shutdown();
+	
 }
 
 

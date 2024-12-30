@@ -51,3 +51,7 @@
 #define CONSOLE_TEXT_WHITE(Text)                    ("\x1b[37m" Text "\033[0m")
 
 #define OC_UNUSED [[maybe_unused]]
+
+#define OC_NO_COPY(Type)                            Type(const Type&) = delete;\
+                                                    Type& operator = (const Type&) = delete
+

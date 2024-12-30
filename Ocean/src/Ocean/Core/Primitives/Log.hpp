@@ -19,7 +19,7 @@ namespace Ocean {
 
 		void SetCallback(PrintCallback callback);
 
-		static cstring Name() { return "OCEAN_Log_Service"; }
+		inline virtual cstring GetName() const override { return "OCEAN_Log_Service"; }
 
 	private:
 		static LogService* s_Instance;

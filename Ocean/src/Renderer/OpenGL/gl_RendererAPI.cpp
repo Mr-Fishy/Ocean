@@ -1,9 +1,10 @@
 #include "gl_RendererAPI.hpp"
 
+#include "Ocean/Core/Types/SharedPtr.hpp"
+
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Macros.hpp"
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
 #include "Renderer/VertexArray.hpp"
 #include "Renderer/IndexBuffer.hpp"
 

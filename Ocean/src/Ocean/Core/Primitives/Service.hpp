@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ocean/Core/Types/Strings.hpp"
+
 namespace Ocean {
 
 	/**
@@ -8,6 +10,8 @@ namespace Ocean {
 	class Service {
 	public:
 		virtual ~Service() = default;
+
+		virtual cstring GetName() const = 0;
 
 	};	// Service
 

@@ -2,7 +2,11 @@
 
 #include "Ocean/Core/Primitives/Log.hpp"
 
-#define GLFW_INCLUDE_VULKAN
+#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Renderer/GraphicsContext.hpp"
+
+// libs
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
@@ -44,7 +48,11 @@ namespace Ocean {
 
 	typedef GLFWwindow* WindowPtr;
 
-	void Window::Init(WindowConfig* config) {
+	Window::Window(u32 width, u32 height, cstring name) : m_Context(), p_PlatformHandle(nullptr), m_Name(name), m_Data(width, height) {
+
+	}
+
+	void Window::Init() {
 		glfwSetErrorCallback(GLFW_ErrorCallback);
 
 		if (!glfwInit()) {
@@ -54,35 +62,28 @@ namespace Ocean {
 			return;
 		}
 
-		if (!glfwVulkanSupported()) {
-			oprint("GLFW Could Not Find Vulkan!\n");
-			glfwTerminate();
-
-			return;
-		}
-
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-		m_Data.window = this;
-		m_Data.width = config->width;
-		m_Data.height = config->height;
+		this->m_Data.window = this;
 
-		p_PlatformHandle = static_cast<void*>(glfwCreateWindow(m_Data.width, m_Data.height, config->name, NULL, NULL));
+		this->p_PlatformHandle = static_cast<void*>(glfwCreateWindow(this->m_Data.width, this->m_Data.height, this->m_Name, NULL, NULL));
+		this->m_Context = Shrimp::GraphicsContext::Create(this->p_PlatformHandle);
+		this->m_Context->Init();
 
-		if (!p_PlatformHandle) {
+		if (!this->p_PlatformHandle) {
 			oprint("GLFW Window Error!\n");
 
 			return;
 		}
 
-		glfwSetWindowUserPointer(static_cast<WindowPtr>(p_PlatformHandle), &m_Data);
-		glfwSetWindowSizeCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_ResizeCallback);
-		glfwSetKeyCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_KeyCallback);
-		glfwSetCursorPosCallback(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CursorCallback);
+		glfwSetWindowUserPointer(static_cast<WindowPtr>(this->p_PlatformHandle), &m_Data);
+		glfwSetWindowSizeCallback(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_ResizeCallback);
+		glfwSetKeyCallback(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_KeyCallback);
+		glfwSetCursorPosCallback(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_CursorCallback);
 	}
 
 	void Window::Shutdown() {
-		glfwDestroyWindow(static_cast<WindowPtr>(p_PlatformHandle));
+		glfwDestroyWindow(static_cast<WindowPtr>(this->p_PlatformHandle));
 		glfwTerminate();
 	}
 
@@ -91,29 +92,33 @@ namespace Ocean {
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 		if (enabled) {
-			m_Data.windowedWidth = m_Data.width;
-			m_Data.windowedHeight = m_Data.height;
-			oprint("Setting backup size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
-			glfwSetWindowMonitor(static_cast<WindowPtr>(p_PlatformHandle), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+			this->m_Data.windowedWidth = this->m_Data.width;
+			this->m_Data.windowedHeight = this->m_Data.height;
+			oprint("Setting backup size (%i, %i)\n", this->m_Data.windowedWidth, this->m_Data.windowedHeight);
+			glfwSetWindowMonitor(static_cast<WindowPtr>(this->p_PlatformHandle), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 		}
 		else {
-			oprint("Returning to size (%i, %i)\n", m_Data.windowedWidth, m_Data.windowedHeight);
-			glfwSetWindowMonitor(static_cast<WindowPtr>(p_PlatformHandle), nullptr, (mode->width / 2) - (m_Data.windowedWidth / 2), (mode->height / 2) - (m_Data.windowedHeight / 2), m_Data.windowedWidth, m_Data.windowedHeight, mode->refreshRate);
+			oprint("Returning to size (%i, %i)\n", this->m_Data.windowedWidth, this->m_Data.windowedHeight);
+			glfwSetWindowMonitor(static_cast<WindowPtr>(this->p_PlatformHandle), nullptr, (mode->width / 2) - (this->m_Data.windowedWidth / 2), (mode->height / 2) - (this->m_Data.windowedHeight / 2), m_Data.windowedWidth, this->m_Data.windowedHeight, mode->refreshRate);
 		}
 	}
 
 	void Window::CenterMouse(b8 enabled) const {
 		if (enabled)
-			glfwSetInputMode(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		else
-			glfwSetInputMode(static_cast<WindowPtr>(p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
 	void Window::PollEvents() {
 		glfwPollEvents();
 
-		if (glfwWindowShouldClose(static_cast<WindowPtr>(p_PlatformHandle)))
-			m_RequestedExit = true;
+		if (glfwWindowShouldClose(static_cast<WindowPtr>(this->p_PlatformHandle)))
+			this->m_RequestedExit = true;
+	}
+
+	UniquePtr<Window> Window::Create(u32 width, u32 height, cstring name) {
+		return MakeUniquePtr<Window>(width, height, name);
 	}
 
 }	// Ocean
