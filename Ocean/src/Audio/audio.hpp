@@ -5,9 +5,11 @@
 namespace audio{
     class steamaudio{
         public:
-            static steamaudio* instance();
+            static steamaudio* instance(IPLuint32 steamversion,IPLSIMDLevel smidlevel,IPLAllocateFunction allocation , IPLFreeFunction freemem);
         
+
             static steamaudio* struct_pointer;
+
 
 
         private:
