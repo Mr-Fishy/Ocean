@@ -2,14 +2,23 @@
 #include <phonon.h>
 
 
-audio::steamaudio* audio::steamaudio::instance(IPLuint32 steamversion,IPLSIMDLevel smidlevel, IPLAllocateFunction allocation = nullptr, IPLFreeFunction freemem = nullptr){
+sonar::steamaudio* sonar::steamaudio::instance(IPLuint32 steamversion,IPLSIMDLevel simdlevel, IPLAllocateFunction allocation = nullptr, IPLFreeFunction freemem = nullptr){
 
-    if(audio::steamaudio::struct_pointer == nullptr){
-        struct_pointer = new steamaudio();
+    if(sonar::steamaudio::struct_pointer == nullptr){
+        struct_pointer = new steamaudio(steamversion, simdlevel, allocation, freemem);
     }
     return struct_pointer;
 
 }
-audio::steamaudio::steamaudio(){
-
+sonar::steamaudio::steamaudio(IPLuint32 steamversion,IPLSIMDLevel simdlevel,IPLAllocateFunction allocation , IPLFreeFunction freemem){
+    //initialize
+    steamaudio::context = nullptr;
+    steamaudio::settings = IPLContextSettings{};
+    //modify
+    steamaudio::settings.version =steamversion;
+    steamaudio::settings.simdLevel = simdlevel;
+    steamaudio::settings.allocateCallback = allocation;
+    steamaudio::settings.freeCallback = freemem;
+    //create
+    IPLerror error = iplContextCreate(&steamaudio::settings, steamaudio::context);
 }
