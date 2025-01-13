@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Ocean/Core/Types/SmartPtrs.hpp"
-#include "Ocean/Core/Types/Strings.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
+#include "Ocean/Types/Strings.hpp"
 
-#include "Renderer/Texture.hpp"
+#include "Ocean/Renderer/Texture.hpp"
 
 #include <map>
 

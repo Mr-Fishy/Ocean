@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Primitives/Array.hpp"
+#include "Ocean/Primitives/Array.hpp"
 
 #include "Ocean/Core/Layer/Layer.hpp"
 

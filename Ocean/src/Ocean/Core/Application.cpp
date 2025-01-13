@@ -1,10 +1,10 @@
 #include "Application.hpp"
 
-#include "Ocean/Core/Primitives/Assert.hpp"
-#include "Ocean/Core/Primitives/Log.hpp"
-#include "Ocean/Core/Primitives/Time.hpp"
+#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Log.hpp"
+#include "Ocean/Primitives/Time.hpp"
 
-#include "Renderer/Renderer.hpp"
+#include "Ocean/Renderer/Renderer.hpp"
 
 namespace Ocean {
 
@@ -45,7 +45,7 @@ namespace Ocean {
 		u32 frameCount = 0;
 
 		while (this->m_Running) {
-			Timestep t(Ocean::oTimeNow());
+			Timestep t(oTimeNow());
 			Timestep timeStep(t - this->m_LastFrameTime);
 			this->m_LastFrameTime = t;
 

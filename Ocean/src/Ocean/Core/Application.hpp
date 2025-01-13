@@ -1,15 +1,16 @@
 #pragma once
 
+#include "Ocean/Types/Bool.hpp"
+#include "Ocean/Types/Integers.hpp"
+#include "Ocean/Types/Strings.hpp"
+#include "Ocean/Types/Timestep.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
+
+#include "Ocean/Primitives/Macros.hpp"
+
 #include "Ocean/Core/Layer/LayerStack.hpp"
-#include "Ocean/Core/Types/Bool.hpp"
-#include "Ocean/Core/Types/Integers.hpp"
-#include "Ocean/Core/Types/Strings.hpp"
-#include "Ocean/Core/Types/Timestep.hpp"
-#include "Ocean/Core/Types/SmartPtrs.hpp"
 
-#include "Ocean/Core/Primitives/Macros.hpp"
-
-#include "Ocean/Core/Window.hpp"
+#include "Ocean/Platform/Window/Window.hpp"
 
 int main(int argc, char** argv);
 
@@ -74,6 +75,12 @@ namespace Ocean {
 		 */
 		void PushOverlay(Layer* layer);
 
+		/**
+		 * @brief Call to resize the Application. AKA the main window and renderer.
+		 * 
+		 * @param width The new width.
+		 * @param height The new height.
+		 */
 		void OnResize(u16 width, u16 height);
 
 		/**
@@ -148,6 +155,6 @@ namespace Ocean {
 	 * 
 	 * @return Application* 
 	 */
-	Application* CreateApplication();
+	Application* CreateApplication(int argc, char** argv);
 
 }	// Ocean

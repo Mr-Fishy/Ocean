@@ -8,32 +8,36 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Root Files
 file(GLOB Ocean_ROOT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/*.hpp)
 
+file(GLOB Ocean_PRIMI_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Primitives/*.hpp)
+file(GLOB Ocean_PRIMI_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Primitives/*.cpp)
+file(GLOB Ocean_TYPES_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Types/*.hpp)
+file(GLOB Ocean_TYPES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Types/*.cpp)
+
 # Core Files
 file(GLOB Ocean_CORE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.hpp)
 file(GLOB Ocean_CORE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.cpp)
 
-file(GLOB Ocean_PRIMI_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Primitives/*.hpp)
-file(GLOB Ocean_PRIMI_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Primitives/*.cpp)
-file(GLOB Ocean_TYPES_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Types/*.hpp)
-file(GLOB Ocean_TYPES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Types/*.cpp)
 file(GLOB Ocean_INPUT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.hpp)
 file(GLOB Ocean_INPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.cpp)
 file(GLOB Ocean_LAYER_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layer/*.hpp)
 file(GLOB Ocean_LAYER_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layer/*.cpp)
 
 # Platform Files
-file(GLOB Ocean_PLAT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.hpp)
-file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/*.cpp)
+file(GLOB Ocean_PLAT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.hpp)
+file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.cpp)
+
+file(GLOB Ocean_WIND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Window/*.hpp)
+file(GLOB Ocean_WIND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Window/*.cpp)
 
 # Renderer Files
-file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.hpp)
-file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
+file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.hpp)
+file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.cpp)
 
-file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/OpenGL/*.hpp)
-file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/OpenGL/*.cpp)
+file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
+file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
 
-file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Vulkan/*.hpp)
-file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Vulkan/*.cpp)
+file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
+file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
 
 # Vendor Files (Non-Libraries)
 ## TLSF
@@ -68,6 +72,8 @@ source_group("Layer Sources" FILES ${Ocean_LAYER_SOURCE})
 
 source_group("Platform Headers" FILES ${Ocean_PLAT_HEADER})
 source_group("Platform Sources" FILES ${Ocean_PLAT_SOURCE})
+source_group("Window Headers" FILES ${Ocean_WIND_HEADER})
+source_group("Window Sources" FILES ${Ocean_WIND_SOURCE})
 
 source_group("Renderer Headers" FILES ${Ocean_REND_HEADER})
 source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
@@ -93,13 +99,14 @@ add_library(
 
     ${Ocean_ROOT_HEADER}
 
-    ${Ocean_CORE_HEADER}  ${Ocean_CORE_SOURCE}
-    ${Ocean_PRIMI_HEADER} ${Ocean_PRIMI_SOURCE}
-    ${Ocean_TYPES_HEADER} ${Ocean_TYPES_SOURCE}
-    ${Ocean_INPUT_HEADER} ${Ocean_INPUT_SOURCE}
-    ${Ocean_LAYER_HEADER} ${Ocean_LAYER_SOURCE}
+    ${Ocean_CORE_HEADER}    ${Ocean_CORE_SOURCE}
+    ${Ocean_PRIMI_HEADER}   ${Ocean_PRIMI_SOURCE}
+    ${Ocean_TYPES_HEADER}   ${Ocean_TYPES_SOURCE}
+    ${Ocean_INPUT_HEADER}   ${Ocean_INPUT_SOURCE}
+    ${Ocean_LAYER_HEADER}   ${Ocean_LAYER_SOURCE}
 
-    ${Ocean_PLAT_HEADER}  ${Ocean_PLAT_SOURCE}
+    ${Ocean_PLAT_HEADER}    ${Ocean_PLAT_SOURCE}
+    ${Ocean_WIND_HEADER}    ${Ocean_WIND_SOURCE}
 
     ${Ocean_REND_HEADER}    ${Ocean_REND_SOURCE}
     ${Ocean_GL_REND_HEADER} ${Ocean_GL_REND_SOURCE}

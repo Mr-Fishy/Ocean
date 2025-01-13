@@ -1,10 +1,8 @@
 #include "ResourceManager.hpp"
 
-#include "Ocean/Core/Types/SmartPtrs.hpp"
-
-#include "Renderer/Shader.hpp"
-#include "Renderer/Texture.hpp"
-#include "Renderer/Font.hpp"
+#include "Ocean/Renderer/Shader.hpp"
+#include "Ocean/Renderer/Texture.hpp"
+#include "Ocean/Renderer/Font.hpp"
 
 // std
 #include <iostream>

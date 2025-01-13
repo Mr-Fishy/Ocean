@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Ocean/Core/Types/CompilerDefines.hpp"
-#include "Ocean/Core/Types/Strings.hpp"
-#include "Ocean/Core/Types/Timestep.hpp"
+#include "Ocean/Types/Bool.hpp"
+#include "Ocean/Types/Strings.hpp"
+#include "Ocean/Types/Timestep.hpp"
+
+#include "Ocean/Primitives/Macros.hpp"
 
 namespace Ocean {
 

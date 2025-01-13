@@ -158,6 +158,8 @@ message(STATUS)
 
 set(
     OCEAN_COMPILE_FLAGS
+
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=1
     -Wall
     -Wextra
     -Wold-style-cast

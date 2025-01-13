@@ -2,9 +2,7 @@
 
 #include "Ocean/Core/Application.hpp"
 
-#include "Ocean/Core/Primitives/Macros.hpp"
-
-Ocean::Application* Ocean::CreateApplication() {
+Ocean::Application* Ocean::CreateApplication(int argc, char** argv) {
 	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
 
 	return new Sandbox(config);
