@@ -1,5 +1,7 @@
 #include "audio.hpp"
 
+#include "Ocean/Core/Primitives/Assert.hpp"
+
 #include <phonon.h>
 
 
@@ -23,17 +25,17 @@ sonar::steamaudio::steamaudio(IPLuint32 steamversion,IPLSIMDLevel simdlevel,IPLA
     //create
     IPLerror error = iplContextCreate(&steamaudio::settings, steamaudio::context);
     switch(error){
+
         case IPL_STATUS_SUCCESS:
-        
+        std::cout<<"Success";
         break;
         case IPL_STATUS_FAILURE:
-
-        break;
         case IPL_STATUS_INITIALIZATION:
-
-        break;
         case IPL_STATUS_OUTOFMEMORY:
-
-        break;
+        default:
+            std::cout<<"Unknown error occured, throwing exception";
+        OASSERTM(false, "Error has occured");    
     }
+    std::cout<<std::endl;
+
 }
