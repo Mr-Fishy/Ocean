@@ -13,6 +13,7 @@ sonar::steamaudio* sonar::steamaudio::instance(IPLuint32 steamversion,IPLSIMDLev
     return struct_pointer;
 
 }
+
 sonar::steamaudio::steamaudio(IPLuint32 steamversion,IPLSIMDLevel simdlevel,IPLAllocateFunction allocation , IPLFreeFunction freemem){
     //initialize
     steamaudio::context = nullptr;

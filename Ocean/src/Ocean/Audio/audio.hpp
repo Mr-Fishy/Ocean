@@ -22,8 +22,8 @@ namespace sonar{
 
 
             //Do not implement
-            steamaudio(const steamaudio&);
-            steamaudio& operator=(const steamaudio&);
+            steamaudio(const steamaudio&) = delete;
+            steamaudio& operator=(const steamaudio&) = delete;
 
     };
 };
