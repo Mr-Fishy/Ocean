@@ -1,6 +1,7 @@
 #pragma once
 
 #include <phonon.h>
+#include <iostream>
 
 namespace sonar{
     class steamaudio{

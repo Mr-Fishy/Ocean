@@ -30,6 +30,10 @@ file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/*.cpp)
 file(GLOB Ocean_RENCOMP_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.hpp)
 file(GLOB Ocean_RENCOMP_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Components/*.cpp)
 
+#Audio Files
+file(GLOB Ocean_AUD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)
+file(GLOB Ocean_AUD_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.cpp)
+
 # Vendor Files (Non-Libraries)
 ## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
@@ -37,6 +41,8 @@ file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 
 ## Steam Audio
 file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
+
+
 
 # Group all of the files per their source for IDE / Editor
 
@@ -61,6 +67,9 @@ source_group("Renderer Sources" FILES ${Ocean_REND_SOURCE})
 source_group("Renderer Component Headers" FILES ${Ocean_RENCOMP_HEADER})
 source_group("Renderer Component Sources" FILES ${Ocean_RENCOMP_SOURCE})
 
+source_group("Main Audio headers" FILES ${Ocean_AUD_HEADER})
+source_group("Main Audio Sources" FILES ${Ocean_AUD_SOURCE})
+
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
 
@@ -80,6 +89,9 @@ add_library(
 
     ${Ocean_REND_HEADER} ${Ocean_REND_SOURCE}
     ${Ocean_RENCOMP_HEADER} ${Ocean_RENCOMP_SOURCE}
+    
+    ${Ocean_AUD_HEADER} ${Ocean_AUD_SOURCE}
+
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
     ${steamaudio_HEADER}
