@@ -142,7 +142,11 @@ vkcube
 
 ## Install Steps (Linux)
 
-TODO
+### GLFW Requirements
+
+```bash
+sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
+```
 
 ## Visual Studio Code Setup
 

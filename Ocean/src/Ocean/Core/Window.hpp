@@ -2,18 +2,15 @@
 
 #include "Ocean/Core/Types/Bool.hpp"
 #include "Ocean/Core/Types/FloatingPoints.hpp"
-#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Ocean/Core/Types/Integers.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 
 #include "Ocean/Core/Primitives/Service.hpp"
 
+#include "Renderer/GraphicsContext.hpp"
+
 namespace Ocean {
-
-	namespace Shrimp {
-		
-		class GraphicsContext;
-
-	}	// Shrimp
 
 	class Window;
 
@@ -65,10 +62,8 @@ namespace Ocean {
 		 */
 		void CenterMouse(b8 enabled) const;
 
-		/**
-		 * @brief Polls the queued window events.
-		 */
-		void PollEvents();
+		
+		void OnUpdate();
 
 		/**
 		 * @return The window width in screen coordinates.
@@ -102,9 +97,22 @@ namespace Ocean {
 		 */
 		void ResizeHandled() { this->m_Data.resized = false; }
 
+		/**
+		 * @brief Gets the name of the window.
+		 * 
+		 * @return cstring
+		 */
 		virtual cstring GetName() const { return this->m_Name; }
 
-		static UniquePtr<Window> Create(u32 width, u32 height, cstring name);
+		/**
+		 * @brief Creates a Window object.
+		 * 
+		 * @param width The window width.
+		 * @param height The window height.
+		 * @param name The window name.
+		 * @return Scope<Window> 
+		 */
+		static Scope<Window> Create(u32 width, u32 height, cstring name);
 
 	private:
 		Window(Window&) = delete;
@@ -112,7 +120,7 @@ namespace Ocean {
 
 		/* --- */
 
-		UniquePtr<Shrimp::GraphicsContext> m_Context;
+		Scope<Shrimp::GraphicsContext> m_Context;
 		void* p_PlatformHandle;
 
 		cstring m_Name;

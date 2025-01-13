@@ -5,6 +5,7 @@
 // std
 #include <cstring>
 #include <vector>
+#include <array>
 
 
 namespace Ocean {

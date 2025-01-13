@@ -1,7 +1,9 @@
 #include "gl_VertexArray.hpp"
 
+#include "Ocean/Core/Types/SmartPtrs.hpp"
+
 #include "Ocean/Core/Primitives/Assert.hpp"
-#include "Ocean/Core/Types/SharedPtr.hpp"
+
 #include "Renderer/IndexBuffer.hpp"
 
 // libs
@@ -20,6 +22,8 @@ namespace Ocean {
                 case ShaderDataType::Int3:     return GL_INT;
                 case ShaderDataType::Int4:     return GL_INT;
 
+                case ShaderDataType::Bool:     return GL_BOOL;
+                
                 case ShaderDataType::Float:    return GL_FLOAT;
                 case ShaderDataType::Float2:   return GL_FLOAT;
                 case ShaderDataType::Float3:   return GL_FLOAT;
@@ -27,8 +31,6 @@ namespace Ocean {
 
                 case ShaderDataType::Mat3:     return GL_FLOAT;
                 case ShaderDataType::Mat4:     return GL_FLOAT;
-                
-                case ShaderDataType::Bool:     return GL_BOOL;
             }
 
             OASSERTM(false, "Unkown ShaderDataType!");
@@ -37,7 +39,7 @@ namespace Ocean {
 
 
 
-        glVertexArray::glVertexArray() {
+        glVertexArray::glVertexArray() : m_RendererID(0), m_VertexBufferIndex(0), m_VertexBuffers(), m_IndexBuffer() {
             glCreateVertexArrays(1, &this->m_RendererID);
         }
 
@@ -53,7 +55,7 @@ namespace Ocean {
             glBindVertexArray(0);
         }
 
-        void glVertexArray::AddVertexBuffer(const SharedPtr<VertexBuffer>& buffer) {
+        void glVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer) {
             OASSERTM(buffer->GetLayout().GetElements().size(), "VertexBuffer Has No Layout!");
 
             glBindVertexArray(this->m_RendererID);
@@ -62,10 +64,6 @@ namespace Ocean {
             const auto& layout = buffer->GetLayout();
             for (const auto& element : layout) {
                 switch (element.type) {
-
-                    case None:
-                        break;
-
                     case Int:
                     case Int2:
                     case Int3:
@@ -126,6 +124,7 @@ namespace Ocean {
                         break;
                     }
 
+                    case None:
                     default:
                         OASSERTM(false, "Unkown ShaderDataType!");
                         break;
@@ -135,7 +134,7 @@ namespace Ocean {
             this->m_VertexBuffers.push_back(buffer);
         }
 
-        void glVertexArray::SetIndexBuffer(const SharedPtr<IndexBuffer>& buffer) {
+        void glVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer) {
             glBindVertexArray(this->m_RendererID);
             buffer->Bind();
 

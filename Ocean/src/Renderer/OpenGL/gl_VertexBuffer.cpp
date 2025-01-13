@@ -9,12 +9,14 @@ namespace Ocean {
 
         glVertexBuffer::glVertexBuffer(u32 size) {
             glCreateBuffers(1, &this->m_RendererID);
+
             glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
             glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
         }
 
         glVertexBuffer::glVertexBuffer(f32* vertices, u32 size) {
             glCreateBuffers(1, &this->m_RendererID);
+            
             glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
             glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
         }

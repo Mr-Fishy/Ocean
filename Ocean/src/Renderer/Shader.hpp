@@ -2,7 +2,7 @@
 
 #include "Ocean/Core/Types/FloatingPoints.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 
 // libs
@@ -30,7 +30,7 @@ namespace Ocean {
             virtual void SetMat4f(cstring name, const glm::mat4& value) const = 0;
             virtual void SetMat3f(cstring name, const glm::mat3& value) const = 0;
 
-            static SharedPtr<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            static Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
 
         };  // Shader
 

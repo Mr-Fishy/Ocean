@@ -9,13 +9,13 @@ namespace Ocean {
 
     namespace Shrimp {
 
-        SharedPtr<VertexBuffer> VertexBuffer::Create(u32 size) {
+        Ref<VertexBuffer> VertexBuffer::Create(u32 size) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
                 case RendererAPI::OpenGL:
-                    return MakeSharedPtr<glVertexBuffer>(size);
+                    return MakeRef<glVertexBuffer>(size);
 
                 case RendererAPI::Vulkan:
                     break;
@@ -25,13 +25,13 @@ namespace Ocean {
             return nullptr;
         }
 
-        SharedPtr<VertexBuffer> VertexBuffer::Create(float* vertices, u32 size) {
+        Ref<VertexBuffer> VertexBuffer::Create(float* vertices, u32 size) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
                 case RendererAPI::OpenGL:
-                    return MakeSharedPtr<glVertexBuffer>(vertices, size);
+                    return MakeRef<glVertexBuffer>(vertices, size);
 
                 case RendererAPI::Vulkan:
                     break;

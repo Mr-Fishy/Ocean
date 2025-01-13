@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Renderer/RendererAPI.hpp"
 
@@ -10,9 +10,6 @@ namespace Ocean {
     
     class glRendererAPI : public RendererAPI {
     public:
-        glRendererAPI();
-        virtual ~glRendererAPI();
-
         virtual void Init() override final;
 
         virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
@@ -20,7 +17,7 @@ namespace Ocean {
         virtual void SetClearColor(const glm::vec4& color) override final;
         virtual void Clear() override final;
 
-        virtual void DrawIndexed(const SharedPtr<VertexArray>& array, u32 indexCount) override final;
+        virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) override final;
 
     };  // RendererAPI
 

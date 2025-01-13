@@ -10,17 +10,17 @@
 #include <cstring>
 
 /** @brief Records statistics for heap allocations. */
-// #define HEAP_ALLOCATOR_STATS
+#define HEAP_ALLOCATOR_STATS
 
 namespace Ocean {
 
 	// Walker Methods
 
 	#ifdef HEAP_ALLOCATOR_STATS
-
 		static void ExitWalker(void* ptr, sizet size, i32 used, void* user) {
-			if (used)
+			if (used) {
 				oprint("Found active allocation %p, %llu\n", ptr, size);
+			}
 		}
 
 	#endif
@@ -62,7 +62,7 @@ namespace Ocean {
 
 	#ifdef HEAP_ALLOCATOR_STATS
 
-		static MemoryStats s_Stats{ 0, 0, 0 };
+		static MemoryStats s_Stats{ 0, 0, 0, 0 };
 
 	#endif
 

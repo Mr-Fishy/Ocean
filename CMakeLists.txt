@@ -7,8 +7,9 @@ if(CCACHE_FOUND)
 endif()
 
 option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
+option(Ocean_DOCS "Generate Ocean Engine documentation target." ON)
 
-project(OceanEngine)
+project("Ocean Engine")
 
 # Finds the system it is on. for fun and debugging if needed
 string(TIMESTAMP time)
@@ -42,19 +43,24 @@ endif ()
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
+if (NOT OPENGL_FOUND)
+    message(FATAL_ERROR "OpenGL NOT Found.")
+else()
+    message(STATUS "OpenGL Libraries Found.")
+endif ()
+
 ### Vulkan ###
 set(Vulkan_FOUND False)
 find_package(Vulkan REQUIRED)
 
 if (DEFINED ${VULKAN_SDK_PATH})
-    message(STATUS "VULKAN SDK PATH IS DEFINED")
     set(Vulkan_FOUND True)
 endif()
 
 if (NOT Vulkan_FOUND)
-    message(FATAL_ERROR " Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
+    message(FATAL_ERROR "Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
 else()
-    message(STATUS "Using Vulkan library at: ${Vulkan_LIBRARIES}")
+    message(STATUS "Vulkan Libraries Found.")
 endif()
 
 ### Shaders ###
@@ -116,18 +122,18 @@ set(STB_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/stb")
 ### Projects ###
 message(STATUS)
 message(STATUS "Passing off to Bob the builder")
-string(TIMESTAMP time)
-message(STATUS "GLFW Starting (${time})...")
 message(STATUS)
 
 # GLFW
+string(TIMESTAMP time "%M:%S")
+message(STATUS "GLFW Starting (${time})...")
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
-string(TIMESTAMP time)
 message(STATUS)
 
 
-message(STATUS "GLM Starting (${time})...")
 # GLM
+string(TIMESTAMP time "%M:%S")
+message(STATUS "GLM Starting (${time})...")
 if (BUILD_SHARED_LIBS)
     set(GLM_BUILD_LIBRARY ON)
 else()
@@ -136,19 +142,18 @@ endif()
 set(GLM_ENABLE_CXX_17 ON)
 set(GLM_BUILD_TESTS OFF)
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
-string(TIMESTAMP time)
 message(STATUS)
 
+# Steam Audio
+string(TIMESTAMP time "%M:%S")
 message(STATUS "Steam Audio Starting (${time})...")
-# Steam Audio
 add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
-string(TIMESTAMP time)
 message(STATUS)
 
+# Vulkan Memory Allocator
+string(TIMESTAMP time "%M:%S")
 message(STATUS "Vulkan Memory Allocator Starting (${time})...")
-# Steam Audio
 add_subdirectory(Ocean/vendor/vma EXCLUDE_FROM_ALL)
-string(TIMESTAMP time)
 message(STATUS)
 
 set(
@@ -164,16 +169,25 @@ set(
     -pedantic
 )
 
-string(TIMESTAMP time)
+string(TIMESTAMP time "%M:%S")
 message(STATUS "Ocean Starting (${time})...")
 message(STATUS)
 add_subdirectory(Ocean)
 
-string(TIMESTAMP time)
+if (Ocean_DOCS)
+    
+    string(TIMESTAMP time "%M:%S")
+    add_subdirectory(docs)
+    message(STATUS "Doxygen Setup Started (${time})...")
+    message(STATUS)
+
+endif (Ocean_DOCS)
+
+string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")
 message(STATUS)
 add_subdirectory(Sandbox)
 
-string(TIMESTAMP time)
+string(TIMESTAMP time "%H:%M:%S")
 message(STATUS "All required steps Completed, EOF for ${PROJECT_NAME} at time: ${time}\n")
 message(STATUS "Clever little rats. I will not forget what you have done here today.")

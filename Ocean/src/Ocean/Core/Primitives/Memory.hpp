@@ -6,7 +6,6 @@
 #include "Ocean/Core/Primitives/Service.hpp"
 #include "Ocean/Core/Primitives/Macros.hpp"
 #include "Ocean/Core/Primitives/Log.hpp"
-#include <cstddef>
 
 // Define this for detailed logs of where allocations and frees are completed (only when using alloc / free macros)
 // #define DETAILED_ALLOCATIONS 1
@@ -227,6 +226,20 @@ namespace Ocean {
 	#define oSystemAllocator                     Ocean::MemoryService::Instance().SystemAllocator()
 	#define oScratchAllocator                    Ocean::MemoryService::Instance().ScratchAllocator()
 
+#define OC_MEMORY_REPORTING 1
+
+#ifdef OC_MEMORY_REPORTING
+
+	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Allocation Made!"))
+	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Mapped Allocation Made!"))
+	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type)))); oprintret(OCEAN_FUNCTIONLINE("Type Allocation Made!"))
+
+	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment)); oprintret(OCEAN_FUNCTIONLINE("Aligned Allocation Made!"))
+
+	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer)); oprintret(OCEAN_FUNCTIONLINE("Memory Freed!"))
+
+#else
+
 	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1))
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1))
 	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type))))
@@ -234,5 +247,7 @@ namespace Ocean {
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment))
 
 	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer))
+
+#endif
 
 }	// Ocean

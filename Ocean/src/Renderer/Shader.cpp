@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Ocean/Core/Primitives/Assert.hpp"
 
@@ -11,13 +11,13 @@ namespace Ocean {
 
     namespace Shrimp {
 
-        SharedPtr<Shader> Shader::Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource) {
+        Ref<Shader> Shader::Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
                 case RendererAPI::OpenGL:
-                    return MakeSharedPtr<glShader>(vertexSource, fragmentSource, geometrySource);
+                    return MakeRef<glShader>(vertexSource, fragmentSource, geometrySource);
 
                 case RendererAPI::Vulkan:
                     break;

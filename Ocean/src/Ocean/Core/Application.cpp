@@ -2,37 +2,28 @@
 
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Log.hpp"
-#include "Ocean/Core/Primitives/Macros.hpp"
-#include "Ocean/Core/Primitives/ServiceManager.hpp"
 #include "Ocean/Core/Primitives/Time.hpp"
-#include "Ocean/Core/Primitives/Memory.hpp"
 
 #include "Renderer/Renderer.hpp"
 
 namespace Ocean {
 
-	Application::Application(OC_UNUSED const ApplicationConfig& config) : p_ServiceManager(nullptr), m_Running(false) {
+	#define FixedTimestep 0.2f
+
+	Application::Application(OC_UNUSED const ApplicationConfig& config) : m_Window(), m_LayerStack(), m_LastFrameTime(0.0f), m_Accumulator(0.0f), m_Running(false) {
 		OASSERTM(!
 		
 		s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		MemoryService::Instance().Init(nullptr);
+		this->m_Window = Window::Create(config.width, config.height, config.name);
+		this->m_Window->Init();
 
-		oTimeServiceInit();
-
-		p_ServiceManager.SetPtr(&ServiceManager::Instance());
-		p_ServiceManager->Init();
+		Shrimp::Renderer::Init();
 	}
 
 	Application::~Application() {
 		Shrimp::Renderer::Shutdown();
-
-		Ocean::ServiceManager::Shutdown();
-
-		Ocean::oTimeServiceShutdown();
-
-		Ocean::MemoryService::Shutdown();
 	}
 
 	void Application::Close() {
@@ -42,39 +33,25 @@ namespace Ocean {
 	void Application::Run() {
 	#ifdef OC_DEBUG
 
-		TestApp();
+		TestRuntime();
 
 	#endif
 
 		this->m_Running = true;
-		// TODO: Application error reporting.
-		if (!MainLoop())
-			oprint("Application Runtime Error: (ERROR)");
-	}
 
-	void Application::TestApp() {
-
-	}
-
-	b8 Application::MainLoop() {
-		Timestep currentTime(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
-		Timestep accumulator(0.0f);
-
-		Timestep dt(0.02f);
-
-		u32 accumulatorCounter = 0;
+		// Temporary
 		Timestep time(0.0f);
+		u32 accumulatorCounter = 0;
 		u32 frameCount = 0;
 
-		// TODO: Remove lifetime dependency on the main window as an application can run without a window.
 		while (this->m_Running) {
-			Timestep t(Ocean::oTimeRealiSec(Ocean::oTimeNow()));
-			Timestep frameTime(t - currentTime);
-			currentTime = t;
+			Timestep t(Ocean::oTimeNow());
+			Timestep timeStep(t - this->m_LastFrameTime);
+			this->m_LastFrameTime = t;
 
-			accumulator += frameTime;
-			time += frameTime;
-			
+			this->m_Accumulator += timeStep;
+			time += timeStep;
+
 			if (time.GetSeconds() >= 5.0f ) {
 				time -= 5.0f;
 				oprint("Frames per 5 seconds: %i (%f fps)\n", frameCount, frameCount / 5.0f);
@@ -82,51 +59,59 @@ namespace Ocean {
 				frameCount = accumulatorCounter = 0;
 			}
 
-			// if (!this->m_Windows[0]->Minimized()) {
+			// if (!this->m_Window->Minimized()) {
 			// 	// p_Renderer->BeginFrame();
 			// }
 
 			FrameBegin();
 
-			// this->m_Windows[0]->PollEvents();
-
-			// if (this->m_Windows[0]->Resized()) {
-			// 	OnResize(this->m_Windows[0]->Width(), this->m_Windows[0]->Height());
-
-			// 	this->m_Windows[0]->ResizeHandled();
-			// }
-
-			// Fixed Update
-			while (accumulator.GetSeconds() >= dt.GetSeconds()) {
+			while (this->m_Accumulator.GetSeconds() >= FixedTimestep) {
 				// TODO: Interpolation (For Physics Engine and Renderer)
-				FixedUpdate(dt);
+				FixedUpdate(FixedTimestep);
 
 				accumulatorCounter++;
 
-				accumulator -= dt;
+				this->m_Accumulator -= FixedTimestep;
 			}
 
-			// Variable Update
-			VariableUpdate(frameTime);
+			VariableUpdate(timeStep);
 
-			// if (!this->m_Windows[0]->Minimized()) {
-			// 	// TODO: Interpolation
-			// 	Render(f32());
+			if (!this->m_Window->Minimized()) {
+				// TODO: Interpolation
+				Render(f32());
+			}
+			// p_Renderer->EndFrame();
 
-			// 	// p_Renderer->EndFrame();
-			// }
-
-			// Prepare for the next frame if needed.
 			FrameEnd();
 
-			frameCount++;
-		}
+			this->m_Window->OnUpdate();
 
-		return true;
+			frameCount++;
+
+			if (this->m_Window->RequestedExit())
+				Close();
+		}
 	}
 
-	void Application::Render(OC_UNUSED f32 interpolation) {
+	void Application::TestRuntime() {
 
+	}
+
+	void Application::FixedUpdate(OC_UNUSED Timestep delta) {
+
+	}
+	void Application::VariableUpdate(OC_UNUSED Timestep delta) {
+
+	}
+	
+	void Application::FrameBegin() {
+		
+	}
+	void Application::Render(OC_UNUSED f32 interpolation) {
+		
+	}
+	void Application::FrameEnd() {
+		
 	}
 
 	void Application::OnResize(u16 width, u16 height) {

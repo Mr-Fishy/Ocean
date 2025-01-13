@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Core/Primitives/Time.hpp"
 #include "Ocean/Core/Types/FloatingPoints.hpp"
 
 /* 
@@ -10,6 +11,7 @@
 class Timestep {
 public:
 	Timestep(f32 time = 0.0f) : m_Time(time) { }
+	Timestep(Ocean::Time time = 0) : m_Time(Ocean::oTimeRealiSec(time)) { }
 
 	f32 GetSeconds() const { return m_Time; }
 	f32 GetMilliseconds() const { return m_Time * 1000.0f; }

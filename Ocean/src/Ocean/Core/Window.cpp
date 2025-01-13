@@ -1,9 +1,11 @@
 #include "Window.hpp"
 
+#include "Ocean/Core/Application.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
+
 #include "Ocean/Core/Primitives/Log.hpp"
 
-#include "Ocean/Core/Types/UniquePtr.hpp"
-#include "Renderer/GraphicsContext.hpp"
+#include "Renderer/RendererAPI.hpp"
 
 // libs
 #define GLFW_INCLUDE_NONE
@@ -40,7 +42,7 @@ namespace Ocean {
 			data->window->CenterMouse(data->centeredCursor = !data->centeredCursor);
 	}
 
-	static void GLFW_CursorCallback(GLFWwindow* window, f64 xpos, f64 ypos) {
+	static void GLFW_CursorCallback(OC_UNUSED GLFWwindow* window, OC_UNUSED f64 xpos, OC_UNUSED f64 ypos) {
 		// oprint("\t> Window Cursor-Callback!\n");
 	}
 
@@ -62,19 +64,27 @@ namespace Ocean {
 			return;
 		}
 
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		#ifdef OC_DEBUG
+
+		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL)
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
+		#endif
+
+		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::Vulkan)
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		this->m_Data.window = this;
 
 		this->p_PlatformHandle = static_cast<void*>(glfwCreateWindow(this->m_Data.width, this->m_Data.height, this->m_Name, NULL, NULL));
-		this->m_Context = Shrimp::GraphicsContext::Create(this->p_PlatformHandle);
-		this->m_Context->Init();
-
 		if (!this->p_PlatformHandle) {
 			oprint("GLFW Window Error!\n");
 
 			return;
 		}
+
+		this->m_Context = Shrimp::GraphicsContext::Create(this->p_PlatformHandle);
+		this->m_Context->Init();
 
 		glfwSetWindowUserPointer(static_cast<WindowPtr>(this->p_PlatformHandle), &m_Data);
 		glfwSetWindowSizeCallback(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_ResizeCallback);
@@ -110,15 +120,21 @@ namespace Ocean {
 			glfwSetInputMode(static_cast<WindowPtr>(this->p_PlatformHandle), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	void Window::PollEvents() {
+	void Window::OnUpdate() {
 		glfwPollEvents();
+
+		if (Resized()) {
+			Application::Get()->OnResize(this->m_Data.width, this->m_Data.height);
+
+			ResizeHandled();
+		}
 
 		if (glfwWindowShouldClose(static_cast<WindowPtr>(this->p_PlatformHandle)))
 			this->m_RequestedExit = true;
 	}
 
-	UniquePtr<Window> Window::Create(u32 width, u32 height, cstring name) {
-		return MakeUniquePtr<Window>(width, height, name);
+	Scope<Window> Window::Create(u32 width, u32 height, cstring name) {
+		return MakeScope<Window>(width, height, name);
 	}
 
 }	// Ocean

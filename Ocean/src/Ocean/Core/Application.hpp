@@ -1,18 +1,19 @@
 #pragma once
 
+#include "Ocean/Core/Layer/LayerStack.hpp"
 #include "Ocean/Core/Types/Bool.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 #include "Ocean/Core/Types/Timestep.hpp"
-#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Ocean/Core/Primitives/Macros.hpp"
 
-int main(/* int argc, char** argv */);
+#include "Ocean/Core/Window.hpp"
+
+int main(int argc, char** argv);
 
 namespace Ocean {
-
-	class ServiceManager;
 
 	/**
 	 * @brief The configuration of the application at startup.
@@ -21,13 +22,21 @@ namespace Ocean {
 
 		cstring name = nullptr; /** @brief The name of the application. */
 
-		u32 width  = 900; /** @brief The width of the application window. */
-		u32 height = 600; /** @brief The height of the application window. */
+		u32 width  = 900; /** @brief The starting width of the application window. */
+		u32 height = 600; /** @brief The starting height of the application window. */
 
-		b8 fullscreen = false; /** @brief If the application is fullscreen. */
+		b8 fullscreen = false; /** @brief If the application is fullscreen or not at startup. */
 
 		// TODO: Service Enabling / Disabling (i.e. ability to disable audio if not needed).
 
+		/**
+		 * @brief Construct a new ApplicationConfig with the given parameters.
+		 * 
+		 * @param name The name of the Application.
+		 * @param w The initial width of the Application.
+		 * @param h The initial height of the Application.
+		 * @param fullscreen Set's the Application fullscreen at startup. (OPTIONAL)
+		 */
 		ApplicationConfig(cstring name, u32 w, u32 h, b8 fullscreen = false) : name(name), width(w), height(h), fullscreen(fullscreen) { }
 
 	};	// ApplicationConfig
@@ -37,6 +46,11 @@ namespace Ocean {
 	 */
 	class Application {
 	public:
+		/**
+		 * @brief Construct a new Application object.
+		 * 
+		 * @param config The ApplicationConfig to use when starting the application.
+		 */
 		Application(const ApplicationConfig& config);
 		virtual ~Application();
 
@@ -45,50 +59,95 @@ namespace Ocean {
 		 */
 		void Close();
 
+		// void OnEvent(Event& e);
+
+		/**
+		 * @brief Pushes a layer onto the application's LayerStack.
+		 * 
+		 * @param layer The Layer to push.
+		 */
+		void PushLayer(Layer* layer);
+		/**
+		 * @brief Pushes a overlay onto the application's LayerStack. AKA it will be drawn over any layers.
+		 * 
+		 * @param layer The Layer to push.
+		 */
+		void PushOverlay(Layer* layer);
+
+		void OnResize(u16 width, u16 height);
+
+		/**
+		 * @brief Get's the Application instance.
+		 * 
+		 * @return Application* 
+		 */
+		inline static Application* Get() { return s_Instance; }
+
 	protected:
-		friend int ::main(/* int argc, char** argv */);
+		friend int ::main(int argc, char** argv);
 
 		/* --- */
 
 		/**
-		 * @brief Runs the primary runtime of the application.
+		 * @brief The primary runtime of the application.
 		 */
 		void Run();
 
 		/**
-		 * @brief Run's any unit tests if available.
+		 * @brief Run's any runtime tests if available.
 		 */
-		void TestApp();
+		void TestRuntime();
 
 		/**
-		 * @brief The runtime loop of the application.
+		 * @brief Update function for fixed timestep processes. AKA physics or state-machines.
 		 * 
-		 * @return b8 True if successful runtime. False otherwise.
+		 * @param delta The time since the last update, expected to be consistent by ~0.001 second.
 		 */
-		b8 MainLoop();
-
-		virtual void FixedUpdate(Timestep delta) = 0;
-		virtual void VariableUpdate(Timestep delta) = 0;
+		void FixedUpdate(Timestep delta);
+		/**
+		 * @brief Update function for variable timestep processes. AKA layer and runtime updates.
+		 * 
+		 * @param delta The time since the last update.
+		 */
+		void VariableUpdate(Timestep delta);
 		
+		/**
+		 * @brief Runs at the beginning of each frame.
+		 */
+		void FrameBegin();
+		/**
+		 * @brief Runs after VariableUpdate is completed (at least while single threaded).
+		 * 
+		 * @param interpolation The interpolation since the last frame.
+		 */
 		void Render(f32 interpolation);
-
-		virtual void FrameBegin() = 0;
-		virtual void FrameEnd() = 0;
-
-		void OnResize(u16 width, u16 height);
+		/**
+		 * @brief Runs at the end of each frame.
+		 */
+		void FrameEnd();
 
 		/* --- */
 
-		inline static Application* s_Instance = nullptr;
+		inline static Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
+		Scope<Window> m_Window; /** @brief The main window of the application. */
 
-		UniquePtr<ServiceManager> p_ServiceManager;
+		LayerStack m_LayerStack; /** @brief The LayerStack of the application. */
 
-		b8 m_Running;
+		Timestep m_LastFrameTime; /** @brief A Timestep of the last frame's runtime. */
+		Timestep m_Accumulator; /** @brief A Timestep accumulating time until above the fixed timestep threshold. */
+
+		b8 m_Running; /** @brief A b8 to record if the application is in runtime or not. */
 
 	private:
 		OC_NO_COPY(Application);
-	};
 
+	};	// Application
+
+	/**
+	 * @brief Create an Application object defined by the user.
+	 * 
+	 * @return Application* 
+	 */
 	Application* CreateApplication();
 
 }	// Ocean

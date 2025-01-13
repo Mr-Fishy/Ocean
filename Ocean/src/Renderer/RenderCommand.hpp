@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Types/Integers.hpp"
-#include "Ocean/Core/Types/SharedPtr.hpp"
-#include "Ocean/Core/Types/UniquePtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Renderer/RendererAPI.hpp"
 #include "Renderer/VertexArray.hpp"
@@ -17,6 +16,9 @@ namespace Ocean {
         class RenderCommand {
         public:
             inline static void Init() {
+                if (!s_RendererAPI.get())
+                    s_RendererAPI = RendererAPI::Create();
+
                 s_RendererAPI->Init();
             }
 
@@ -31,12 +33,12 @@ namespace Ocean {
                 s_RendererAPI->Clear();
             }
 
-            inline static void DrawIndexed(const SharedPtr<VertexArray>& array, u32 count = 0) {
+            inline static void DrawIndexed(const Ref<VertexArray>& array, u32 count = 0) {
                 s_RendererAPI->DrawIndexed(array, count);
             }
 
         private:
-            inline static UniquePtr<RendererAPI> s_RendererAPI = RendererAPI::Create();
+            inline static Scope<RendererAPI> s_RendererAPI;
 
         };  // RenderCommand
 

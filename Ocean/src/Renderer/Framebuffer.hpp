@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 #include "Ocean/Core/Types/Bool.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
 
@@ -74,7 +74,7 @@ namespace Ocean {
 
             virtual const FramebufferSpecification& GetSpecification() const = 0;
 
-            static SharedPtr<Framebuffer> Create(const FramebufferSpecification& spec);
+            static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 
         };  // Framebuffer
 

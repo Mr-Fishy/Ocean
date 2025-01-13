@@ -1,13 +1,15 @@
 #include "ResourceManager.hpp"
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
-
-#include "Ocean/Core/Primitives/File.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Renderer/Font.hpp"
 
+// std
+#include <iostream>
+
+// libs
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -19,27 +21,27 @@ namespace Ocean {
 
 
 
-    SharedPtr<Shrimp::Shader>& ResourceManager::LoadShader(cstring path, cstring name) {
+    Ref<Shrimp::Shader>& ResourceManager::LoadShader(cstring path, cstring name) {
         return (Instance().m_Shaders[name] = Instance().LoadShaderFile(path));
     }
 
-    SharedPtr<Shrimp::Shader>& ResourceManager::GetShader(cstring name) {
+    Ref<Shrimp::Shader>& ResourceManager::GetShader(cstring name) {
         return Instance().m_Shaders[name];
     }
 
-    SharedPtr<Shrimp::Texture2D>& ResourceManager::LoadTexture(cstring path, cstring name) {
+    Ref<Shrimp::Texture2D>& ResourceManager::LoadTexture(cstring path, cstring name) {
         return (Instance().m_Textures[name] = Instance().LoadTextureFile(path));
     }
 
-    SharedPtr<Shrimp::Texture2D>& ResourceManager::GetTexture(cstring name) {
+    Ref<Shrimp::Texture2D>& ResourceManager::GetTexture(cstring name) {
         return Instance().m_Textures[name];
     }
 
-    SharedPtr<Shrimp::Font>& ResourceManager::LoadFont(cstring path, cstring name) {
+    Ref<Shrimp::Font>& ResourceManager::LoadFont(cstring path, cstring name) {
         return (Instance().m_Fonts[name] = Instance().LoadFontFile(path));
     }
 
-    SharedPtr<Shrimp::Font>& ResourceManager::GetFont(cstring name) {
+    Ref<Shrimp::Font>& ResourceManager::GetFont(cstring name) {
         return Instance().m_Fonts[name];
     }
 
@@ -62,19 +64,71 @@ namespace Ocean {
         return *(s_Instance = new ResourceManager);
     }
 
-    SharedPtr<Shrimp::Shader> ResourceManager::LoadShaderFile(cstring path) {
-        File in(path);
+    enum ShaderType {
+        VERTEX   = 0,
+        FRAGMENT = 1,
+        GEOMETRY = 2,
+    };
 
-        return Shrimp::Shader::Create(in.GetToKey("~f", "~v").c_str(), in.GetToKey("~g", "~f").c_str(), in.GetToKey("~e", "~g").c_str());    
+    Ref<Shrimp::Shader> ResourceManager::LoadShaderFile(cstring path) {
+        FILE* fp = fopen(path, "r");
+
+        if (fp == NULL) {
+            std::cerr << "Failed To Open File! (" << path << ")" << std::endl;
+        }
+
+        string vertexCode;
+        string fragmentCode;
+        string geometryCode;
+        char buffer[256];
+        ShaderType type;
+
+        // Parse The Shader File Into Its Components
+        while (std::fgets(buffer, 256, fp) != NULL) {
+            if (buffer[0] == '~') {
+                switch (buffer[1]) {
+                    case 'v':
+                        type = VERTEX;
+                        break;
+                    case 'f':
+                        type = FRAGMENT;
+                        break;
+                    case 'g':
+                        type = GEOMETRY;
+                        break;
+                }
+
+                continue;
+            }
+
+            switch (type) {
+                case VERTEX:
+                    vertexCode.append(buffer);
+                    break;
+                case FRAGMENT:
+                    fragmentCode.append(buffer);
+                    break;
+                case GEOMETRY:
+                    geometryCode.append(buffer);
+                    break;
+            }
+        }
+
+        fclose(fp);
+
+        if (geometryCode.empty())
+            return Shrimp::Shader::Create(vertexCode.c_str(), fragmentCode.c_str());
+
+        return Shrimp::Shader::Create(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
     }
 
-    SharedPtr<Shrimp::Texture2D> ResourceManager::LoadTextureFile(cstring path) {
+    Ref<Shrimp::Texture2D> ResourceManager::LoadTextureFile(cstring path) {
         i32 width, height, channels;
 
         stbi_set_flip_vertically_on_load(1);
         stbi_uc* data = stbi_load(path, &width, &height, &channels, 0);
 
-        SharedPtr<Shrimp::Texture2D> texture = Shrimp::Texture2D::Create(width, height);
+        Ref<Shrimp::Texture2D> texture = Shrimp::Texture2D::Create(width, height);
         texture->SetFormat(static_cast<Shrimp::TextureFormat>(channels));
         texture->SetData(data, width * height * channels);
 
@@ -83,7 +137,7 @@ namespace Ocean {
         return texture;
     }
 
-    SharedPtr<Shrimp::Font> ResourceManager::LoadFontFile(cstring path) {
+    Ref<Shrimp::Font> ResourceManager::LoadFontFile(cstring path) {
         
     }
 

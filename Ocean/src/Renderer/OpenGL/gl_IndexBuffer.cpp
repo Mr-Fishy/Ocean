@@ -7,7 +7,7 @@ namespace Ocean {
 
     namespace Shrimp {
     
-        glIndexBuffer::glIndexBuffer(u32* indices, u32 count) : m_Count(count) {
+        glIndexBuffer::glIndexBuffer(u32* indices, u32 count) : m_RendererID(0), m_Count(count) {
             glCreateBuffers(1, &this->m_RendererID);
 
             glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);

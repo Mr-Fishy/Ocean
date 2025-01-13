@@ -5,9 +5,8 @@
 #include "Ocean/Core/Types/Integers.hpp"
 
 // libs
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 #include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 namespace Ocean {
 
@@ -28,9 +27,9 @@ namespace Ocean {
             OASSERTM(status, "Failed to initialize Glad!");
 
             oprint("OpenGL Info\n");
-            oprint("\tVendor: %s", glGetString(GL_VENDOR));
-            oprint("\tRenderer: %s", glGetString(GL_RENDERER));
-            oprint("\tVersion: %s", glGetString(GL_VERSION));
+            oprint("\tVendor: %s\n", glGetString(GL_VENDOR));
+            oprint("\tRenderer: %s\n", glGetString(GL_RENDERER));
+            oprint("\tVersion: %s\n", glGetString(GL_VERSION));
         }
         
         void glGraphicsContext::SwapBuffers() {

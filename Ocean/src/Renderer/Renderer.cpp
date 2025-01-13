@@ -12,13 +12,16 @@ namespace Ocean {
     namespace Shrimp {
 
         void Renderer::Init() {
+            if (!s_SceneData.get())
+                s_SceneData = MakeScope<SceneData>();
+
             RenderCommand::Init();
             
-            // Renderer2D::Init();
+            Renderer2D::Init();
         }
 
         void Renderer::Shutdown() {
-            // Renderer2D::Shutdown();
+            Renderer2D::Shutdown();
         }
 
         void Renderer::BeginScene(Camera& camera) {
@@ -29,7 +32,7 @@ namespace Ocean {
 
         }
 
-        void Renderer::Submit(const SharedPtr<Shader>& shader, const SharedPtr<VertexArray>& array, glm::mat4 transform) {
+        void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& array, glm::mat4 transform) {
             shader->Bind();
             shader->SetMat4f("u_ViewProjection", s_SceneData->viewProjectionMatrix);
             shader->SetMat4f("u_Transform", transform);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 #include "Ocean/Core/Types/Integers.hpp"
 
 namespace Ocean {
@@ -16,7 +16,7 @@ namespace Ocean {
 
             virtual u32 GetCount() const = 0;
 
-            static SharedPtr<IndexBuffer> Create(u32* indices, u32 count);
+            static Ref<IndexBuffer> Create(u32* indices, u32 count);
 
         };  // IndexBuffer
 

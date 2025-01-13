@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ocean/Core/Types/Integers.hpp"
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 namespace Ocean {
 
@@ -46,7 +46,7 @@ namespace Ocean {
         public:
             virtual ~Texture2D() = default;
 
-            static SharedPtr<Texture2D> Create(u32 width, u32 height);
+            static Ref<Texture2D> Create(u32 width, u32 height);
 
         };  // Texture2D
 

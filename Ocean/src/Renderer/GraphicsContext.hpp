@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ocean/Core/Types/SmartPtrs.hpp"
+
 namespace Ocean {
 
     namespace Shrimp {
@@ -12,7 +14,7 @@ namespace Ocean {
             
             virtual void SwapBuffers() = 0;
 
-            static GraphicsContext* Create(void* window);
+            static Scope<GraphicsContext> Create(void* window);
 
         };  // GraphicsContext
 

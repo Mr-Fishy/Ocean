@@ -1,12 +1,12 @@
 #include "gl_RendererAPI.hpp"
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/CompilerDefines.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Macros.hpp"
 
 #include "Renderer/VertexArray.hpp"
-#include "Renderer/IndexBuffer.hpp"
 
 // libs
 #include <glad/gl.h>
@@ -24,45 +24,38 @@ namespace Ocean {
         ) {
             switch (severity) {
                 case GL_DEBUG_SEVERITY_HIGH:
-                    oprint(CONSOLE_TEXT_RED("%s"), message);
+                    oprint(CONSOLE_TEXT_RED("\n%s\n"), message);
+                    OASSERT(false);
                     return;
 
                 case GL_DEBUG_SEVERITY_MEDIUM:
-                    oprint(CONSOLE_TEXT_RED("%s"), message);
+                    oprint(CONSOLE_TEXT_RED("\n%s\n"), message);
                     return;
 
                 case GL_DEBUG_SEVERITY_LOW:
-                    oprint(CONSOLE_TEXT_YELLOW("%s"), message);
+                    oprint(CONSOLE_TEXT_YELLOW("\n%s\n"), message);
                     return;
 
                 case GL_DEBUG_SEVERITY_NOTIFICATION:
-                    oprint(CONSOLE_TEXT_GREEN("%s"), message);
+                    oprint(CONSOLE_TEXT_GREEN("\n%s\n"), message);
                     return;
             }
 
             OASSERTM(false, "Unkown OpenGL Message Severity Level!");
         }
 
-
-    
-        glRendererAPI::glRendererAPI() {
-
-        }
-
-        glRendererAPI::~glRendererAPI() {
-
-        }
+        
 
         void glRendererAPI::Init() {
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         #ifdef OC_DEBUG
 
             glDebugMessageCallback(glMessageCallback, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
         #endif
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             glEnable(GL_DEPTH_TEST);
         }
@@ -79,7 +72,7 @@ namespace Ocean {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void glRendererAPI::DrawIndexed(const SharedPtr<VertexArray>& array, u32 indexCount) {
+        void glRendererAPI::DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) {
             u32 count = indexCount ? indexCount : array->GetIndexBuffer()->GetCount();
 
             glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);

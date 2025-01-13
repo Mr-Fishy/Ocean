@@ -1,10 +1,13 @@
 #pragma once
 
-#include "Ocean/Core/Types/SharedPtr.hpp"
+#include "Ocean/Core/Types/Bool.hpp"
+#include "Ocean/Core/Types/SmartPtrs.hpp"
 #include "Ocean/Core/Types/Strings.hpp"
 
 #include "Ocean/Core/Primitives/Assert.hpp"
 #include "Ocean/Core/Primitives/Array.hpp"
+
+// std
 #include <initializer_list>
 
 namespace Ocean {
@@ -142,8 +145,8 @@ namespace Ocean {
             virtual const BufferLayout& GetLayout() const = 0;
             virtual void SetLayout(const BufferLayout& layout) = 0;
 
-            static SharedPtr<VertexBuffer> Create(u32 size);
-            static SharedPtr<VertexBuffer> Create(float* vertices, u32 size);
+            static Ref<VertexBuffer> Create(u32 size);
+            static Ref<VertexBuffer> Create(float* vertices, u32 size);
 
         };  // VertexBuffer
 

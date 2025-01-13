@@ -9,13 +9,13 @@ namespace Ocean {
 
     namespace Shrimp {
 
-        SharedPtr<VertexArray> VertexArray::Create() {
+        Ref<VertexArray> VertexArray::Create() {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
                 case RendererAPI::OpenGL:
-                    return MakeSharedPtr<glVertexArray>();
+                    return MakeRef<glVertexArray>();
 
                 case RendererAPI::Vulkan:
                 break;
