@@ -8,6 +8,9 @@
 
 namespace Ocean {
 
+    /**
+     * @brief A layer to be rendered in the Application.
+     */
     class Layer {
     public:
         /**

@@ -15,4 +15,10 @@
 // #include "Ocean/Core/Input/Input.hpp"
 
 #include "Ocean/Core/Application.hpp"
-#include "Ocean/Platform/Window/Window.hpp"
+#include "Ocean/Core/Layer/Layer.hpp"
+
+#include "Ocean/Platform/Window.hpp"
+
+#include "Ocean/Renderer/Renderer.hpp"
+#include "Ocean/Renderer/Renderer2D.hpp"
+#include "Ocean/Renderer/RenderCommand.hpp"

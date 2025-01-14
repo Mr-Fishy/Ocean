@@ -1,6 +1,17 @@
-#include "Sandbox.hpp"
+#include "Sandbox2D.hpp"
 
-#include "Ocean/Core/Application.hpp"
+#include <Ocean/Ocean.hpp>
+
+#include <Ocean/Core/EntryPoint.hpp>
+
+class Sandbox : public Ocean::Application {
+public:
+	Sandbox(const Ocean::ApplicationConfig& config);
+	~Sandbox();
+
+};	// Sandbox
+
+
 
 Ocean::Application* Ocean::CreateApplication(int argc, char** argv) {
 	Ocean::ApplicationConfig config("Ocean Sandbox", 1200, 800);
@@ -12,6 +23,8 @@ Ocean::Application* Ocean::CreateApplication(int argc, char** argv) {
 
 Sandbox::Sandbox(const Ocean::ApplicationConfig& config) : Ocean::Application(config) {
 	oprint(CONSOLE_TEXT_CYAN("Constructing Sandbox Application!\n"));
+
+	PushLayer(new Sandbox2D);
 }
 
 Sandbox::~Sandbox() {

@@ -9,42 +9,38 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    void Renderer::Init() {
+        if (!s_SceneData.get())
+            s_SceneData = MakeScope<SceneData>();
 
-        void Renderer::Init() {
-            if (!s_SceneData.get())
-                s_SceneData = MakeScope<SceneData>();
+        RenderCommand::Init();
+        
+        Renderer2D::Init();
+    }
 
-            RenderCommand::Init();
-            
-            Renderer2D::Init();
-        }
+    void Renderer::Shutdown() {
+        Renderer2D::Shutdown();
+    }
 
-        void Renderer::Shutdown() {
-            Renderer2D::Shutdown();
-        }
+    void Renderer::BeginScene(Camera& camera) {
+        s_SceneData->viewProjectionMatrix = camera.GetViewProjectionMatrix();
+    }
 
-        void Renderer::BeginScene(Camera& camera) {
-            s_SceneData->viewProjectionMatrix = camera.GetViewProjectionMatrix();
-        }
+    void Renderer::EndScene() {
 
-        void Renderer::EndScene() {
+    }
 
-        }
+    void Renderer::Submit(const Ref<Shrimp::Shader>& shader, const Ref<Shrimp::VertexArray>& array, glm::mat4 transform) {
+        shader->Bind();
+        shader->SetMat4f("u_ViewProjection", s_SceneData->viewProjectionMatrix);
+        shader->SetMat4f("u_Transform", transform);
 
-        void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& array, glm::mat4 transform) {
-            shader->Bind();
-            shader->SetMat4f("u_ViewProjection", s_SceneData->viewProjectionMatrix);
-            shader->SetMat4f("u_Transform", transform);
+        array->Bind();
+        RenderCommand::DrawIndexed(array);
+    }
 
-            array->Bind();
-            RenderCommand::DrawIndexed(array);
-        }
-
-        void Renderer::OnWindowResize(u32 width, u32 height) {
-            RenderCommand::SetViewport(0, 0, width, height);
-        }
-
-    }   // Shrimp
+    void Renderer::OnWindowResize(u32 width, u32 height) {
+        RenderCommand::SetViewport(0, 0, width, height);
+    }
 
 }   // Ocean

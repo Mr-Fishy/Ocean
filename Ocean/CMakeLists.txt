@@ -26,8 +26,8 @@ file(GLOB Ocean_LAYER_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layer/*.
 file(GLOB Ocean_PLAT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.hpp)
 file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.cpp)
 
-file(GLOB Ocean_WIND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Window/*.hpp)
-file(GLOB Ocean_WIND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Window/*.cpp)
+# file(GLOB Ocean_WIND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Windows/*.hpp)
+# file(GLOB Ocean_WIND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Windows/*.cpp)
 
 # Renderer Files
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.hpp)

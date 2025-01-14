@@ -10,6 +10,7 @@ if (DOXYGEN_FOUND)
     endforeach()
     set(Ocean_DOXYGEN_OUTPUT "${PROJECT_SOURCE_DIR}/bin/docs")
 
+    cmake_policy(SET CMP0135 NEW)
     include(FetchContent)
     FetchContent_Declare(
         doxygen-awesome-css

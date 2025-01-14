@@ -132,6 +132,8 @@ namespace Ocean {
 
 		if (glfwWindowShouldClose(static_cast<WindowPtr>(this->p_PlatformHandle)))
 			this->m_RequestedExit = true;
+
+		this->m_Context->SwapBuffers();
 	}
 
 	Scope<Window> Window::Create(u32 width, u32 height, cstring name) {

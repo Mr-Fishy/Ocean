@@ -19,15 +19,25 @@ namespace Ocean {
 		this->m_Window = Window::Create(config.width, config.height, config.name);
 		this->m_Window->Init();
 
-		Shrimp::Renderer::Init();
+		Renderer::Init();
 	}
 
 	Application::~Application() {
-		Shrimp::Renderer::Shutdown();
+		Renderer::Shutdown();
 	}
 
 	void Application::Close() {
 		this->m_Running = false;
+	}
+
+	void Application::PushLayer(Layer* layer) {
+		this->m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* layer) {
+		this->m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	void Application::Run() {
@@ -74,9 +84,9 @@ namespace Ocean {
 				this->m_Accumulator -= FixedTimestep;
 			}
 
-			VariableUpdate(timeStep);
-
 			if (!this->m_Window->Minimized()) {
+				VariableUpdate(timeStep);
+
 				// TODO: Interpolation
 				Render(f32());
 			}
@@ -101,7 +111,8 @@ namespace Ocean {
 
 	}
 	void Application::VariableUpdate(OC_UNUSED Timestep delta) {
-
+		for (Layer* layer : this->m_LayerStack)
+			layer->OnUpdate(delta);
 	}
 	
 	void Application::FrameBegin() {
@@ -115,7 +126,7 @@ namespace Ocean {
 	}
 
 	void Application::OnResize(u16 width, u16 height) {
-		Shrimp::Renderer::OnWindowResize(width, height);
+		Renderer::OnWindowResize(width, height);
 	}
 
 }	// Ocean

@@ -4,7 +4,7 @@
 
 /** @brief 64 bit unsigned integer. */
 typedef unsigned long long u64;
-typedef std::size_t sizet;
+typedef size_t sizet;
 
 static const u64 u64_max = 0xffffffffffffffffUL;
 

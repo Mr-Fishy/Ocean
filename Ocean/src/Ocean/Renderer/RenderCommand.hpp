@@ -11,37 +11,30 @@
 
 namespace Ocean {
 
-    namespace Shrimp {    
+    class RenderCommand {
+    public:
+        inline static void Init() {
+            s_RendererAPI->Init();
+        }
 
-        class RenderCommand {
-        public:
-            inline static void Init() {
-                if (!s_RendererAPI.get())
-                    s_RendererAPI = RendererAPI::Create();
+        inline static void SetViewport(u32 x, u32 y, u32 w, u32 h) {
+            s_RendererAPI->SetViewport(x, y, w, h);
+        }
+        inline static void SetClearColor(const glm::vec4& color) {
+            s_RendererAPI->SetClearColor(color);
+        }
 
-                s_RendererAPI->Init();
-            }
+        inline static void Clear() {
+            s_RendererAPI->Clear();
+        }
 
-            inline static void SetViewport(u32 x, u32 y, u32 w, u32 h) {
-                s_RendererAPI->SetViewport(x, y, w, h);
-            }
-            inline static void SetClearColor(const glm::vec4& color) {
-                s_RendererAPI->SetClearColor(color);
-            }
+        inline static void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
+            s_RendererAPI->DrawIndexed(array, count);
+        }
 
-            inline static void Clear() {
-                s_RendererAPI->Clear();
-            }
+    private:
+        inline static Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create();
 
-            inline static void DrawIndexed(const Ref<VertexArray>& array, u32 count = 0) {
-                s_RendererAPI->DrawIndexed(array, count);
-            }
-
-        private:
-            inline static Scope<RendererAPI> s_RendererAPI;
-
-        };  // RenderCommand
-
-    }   // Shrimp
+    };  // RenderCommand
 
 }   // Ocean

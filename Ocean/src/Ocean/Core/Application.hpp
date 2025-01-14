@@ -10,7 +10,7 @@
 
 #include "Ocean/Core/Layer/LayerStack.hpp"
 
-#include "Ocean/Platform/Window/Window.hpp"
+#include "Ocean/Platform/Window.hpp"
 
 int main(int argc, char** argv);
 
