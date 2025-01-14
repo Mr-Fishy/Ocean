@@ -39,6 +39,10 @@ file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Op
 file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
 file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
 
+#Audio Files
+file(GLOB Ocean_AUD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)
+file(GLOB Ocean_AUD_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.cpp)
+
 # Vendor Files (Non-Libraries)
 ## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
@@ -46,6 +50,7 @@ file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
 
 ## Steam Audio
 file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
+
 
 # GLAD Source Files
 file(GLOB_RECURSE glad_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include/*.h)
@@ -83,6 +88,9 @@ source_group("OpenGL Renderer Sources" FILES ${Ocean_GL_REND_SOURCE})
 
 source_group("Vulkan Renderer Headers" FILES ${Ocean_VK_REND_HEADER})
 source_group("Vulkan Renderer Sources" FILES ${Ocean_VK_REND_SOURCE})
+
+source_group("Main Audio headers" FILES ${Ocean_AUD_HEADER})
+source_group("Main Audio Sources" FILES ${Ocean_AUD_SOURCE})
 
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
