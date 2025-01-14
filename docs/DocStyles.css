@@ -1,0 +1,14 @@
+/* 
+ * The amazing Doxygen styles come from the repo below, 
+ * there are also some guides to do color edits which may be nice in the future.
+ *
+ * https://github.com/jothepro/doxygen-awesome-css
+ */
+
+html {
+    /* override light-mode variables here */
+}
+
+html.dark-mode {
+    /* define dark-mode variable overrides here if you DO use doxygen-awesome-darkmode-toggle.js */
+}
