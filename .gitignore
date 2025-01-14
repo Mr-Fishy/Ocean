@@ -9,11 +9,7 @@
 .cache
 
 # Files
-**.sln
-**.vcxproj
-**.vcxproj.user
-**.vcxproj.filters
-**.csproj
+*.bkp
 
 # Ocean Generated Files
 
