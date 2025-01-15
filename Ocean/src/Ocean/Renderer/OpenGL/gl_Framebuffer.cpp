@@ -102,7 +102,7 @@ namespace Ocean {
 
         #define MAX_FRAMEBUFFER_SIZE 8192
 
-        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_Specification(spec), m_DepthAttachment(0) {
+        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_RendererID(0), m_Specification(spec), m_ColorAttachmentSpecs(), m_DepthAttachmentSpec(), m_ColorAttachments(), m_DepthAttachment(0) {
             for (auto& textureSpec : this->m_Specification.attachments.attachments) {
                 if (!IsDepthFormat(textureSpec.textureFormat))
                     this->m_ColorAttachmentSpecs.emplace_back(textureSpec);

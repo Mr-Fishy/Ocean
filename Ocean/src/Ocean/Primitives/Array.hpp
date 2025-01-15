@@ -6,9 +6,10 @@
 #include <vector>
 #include <array>
 
-
 template <class T>
 using DynamicArray = std::vector<T>;
 
 template <class T, sizet S>
 using FixedArray = std::array<T, S>;
+
+// TODO: Replace DynamicArray & FixedArray with local implementations.

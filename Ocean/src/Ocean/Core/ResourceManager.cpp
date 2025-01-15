@@ -20,33 +20,33 @@ namespace Ocean {
 
 
     Ref<Shrimp::Shader>& ResourceManager::LoadShader(cstring path, cstring name) {
-        return (Instance().m_Shaders[name] = Instance().LoadShaderFile(path));
+        return (Instance()->m_Shaders[name] = Instance()->LoadShaderFile(path));
     }
 
     Ref<Shrimp::Shader>& ResourceManager::GetShader(cstring name) {
-        return Instance().m_Shaders[name];
+        return Instance()->m_Shaders[name];
     }
 
     Ref<Shrimp::Texture2D>& ResourceManager::LoadTexture(cstring path, cstring name) {
-        return (Instance().m_Textures[name] = Instance().LoadTextureFile(path));
+        return (Instance()->m_Textures[name] = Instance()->LoadTextureFile(path));
     }
 
     Ref<Shrimp::Texture2D>& ResourceManager::GetTexture(cstring name) {
-        return Instance().m_Textures[name];
+        return Instance()->m_Textures[name];
     }
 
     Ref<Shrimp::Font>& ResourceManager::LoadFont(cstring path, cstring name) {
-        return (Instance().m_Fonts[name] = Instance().LoadFontFile(path));
+        return (Instance()->m_Fonts[name] = Instance()->LoadFontFile(path));
     }
 
     Ref<Shrimp::Font>& ResourceManager::GetFont(cstring name) {
-        return Instance().m_Fonts[name];
+        return Instance()->m_Fonts[name];
     }
 
     void ResourceManager::Clear() {
-        Instance().m_Shaders.clear();
-        Instance().m_Textures.clear();
-        Instance().m_Fonts.clear();
+        Instance()->m_Shaders.clear();
+        Instance()->m_Textures.clear();
+        Instance()->m_Fonts.clear();
     }
 
 
@@ -55,11 +55,8 @@ namespace Ocean {
 
     }
 
-    ResourceManager& ResourceManager::Instance() {
-        if (s_Instance != nullptr)
-            return *s_Instance;
-
-        return *(s_Instance = new ResourceManager);
+    ResourceManager* ResourceManager::Instance() {
+        return s_Instance.get();
     }
 
     enum ShaderType {

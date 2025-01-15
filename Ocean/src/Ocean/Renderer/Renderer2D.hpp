@@ -1,5 +1,15 @@
 #pragma once
 
+/**
+ * @file Renderer2D.hpp
+ * @author Evan F.
+ * @brief The Ocean Renderer2D header file.
+ * @date 01-14-2025
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -13,14 +23,33 @@ namespace Ocean {
 
     class Camera;
 
+    /**
+     * @brief A class of static functions to interact with Ocean's 2D renderer.
+     */
     class Renderer2D {
     public:
+        /**
+         * @brief Initializes the 2D renderer for use.
+         */
         static void Init();
+        /**
+         * @brief Cleans up the 2D renderer to shutdown.
+         */
         static void Shutdown();
 
+        /**
+         * @brief Begins a 2D scene with the given Camera.
+         * 
+         * @param camera The Camera to use for rendering in the viewport.
+         */
         static void BeginScene(const Camera& camera);
-        // TODO: Editor Camera
+        /**
+         * @brief Ends the 2D scene and Flush's the renderer.
+         */
         static void EndScene();
+        /**
+         * @brief Draw's all of the indexed quads on the 2D renderer.
+         */
         static void Flush();
 
         static void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);

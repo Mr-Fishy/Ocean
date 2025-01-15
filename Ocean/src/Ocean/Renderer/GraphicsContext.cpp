@@ -13,16 +13,16 @@ namespace Ocean {
 
     namespace Shrimp {
     
-        Scope<GraphicsContext> GraphicsContext::Create(void* window) {
+        Scope<GraphicsContext> GraphicsContext::Create(void* windowHandle) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
                 case Ocean::Shrimp::RendererAPI::API::OpenGL:
-                    return MakeScope<glGraphicsContext>(static_cast<GLFWwindow*>(window));
+                    return MakeScope<glGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
 
                 case Ocean::Shrimp::RendererAPI::API::Vulkan:
-                    return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(window));
+                    return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
                 }
 
             OASSERTM(false, "Unkown Rendering API!");

@@ -1,12 +1,13 @@
 #include "gl_Texture.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Renderer/Texture.hpp"
 
 namespace Ocean {
 
     namespace Shrimp {
 
-        glTexture2D::glTexture2D(u32 width, u32 height) {
+        glTexture2D::glTexture2D(u32 width, u32 height) : Texture2D(width, height), m_RendererID(0), m_InternalFormat(), m_DataFormat() {
             this->m_Width = width;
             this->m_Height = height;
 

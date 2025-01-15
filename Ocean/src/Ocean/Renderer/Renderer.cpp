@@ -10,9 +10,6 @@
 namespace Ocean {
 
     void Renderer::Init() {
-        if (!s_SceneData.get())
-            s_SceneData = MakeScope<SceneData>();
-
         RenderCommand::Init();
         
         Renderer2D::Init();

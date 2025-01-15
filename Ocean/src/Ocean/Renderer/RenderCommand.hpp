@@ -1,5 +1,15 @@
 #pragma once
 
+/**
+ * @file RenderCommand.hpp
+ * @author Evan F.
+ * @brief The Ocean RenderCommand header file.
+ * @date 01-14-2025
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
@@ -11,29 +21,59 @@
 
 namespace Ocean {
 
+    /**
+     * @brief A class of static functions to interact with the RendererAPI from Ocean.
+     */
     class RenderCommand {
     public:
+        /**
+         * @brief Initializes the RendererAPI.
+         */
         inline static void Init() {
             s_RendererAPI->Init();
         }
 
+        /**
+         * @brief Set the viewport origin and size with the given data.
+         * 
+         * @param x The x-position of the viewport.
+         * @param y The y-position of the viewport.
+         * @param w The width of the viewport.
+         * @param h The height of the viewport.
+         */
         inline static void SetViewport(u32 x, u32 y, u32 w, u32 h) {
             s_RendererAPI->SetViewport(x, y, w, h);
         }
+        /**
+         * @brief Set the clear color of the viewport.
+         * 
+         * @details AKA the background color of the window.
+         * 
+         * @param color The color to use.
+         */
         inline static void SetClearColor(const glm::vec4& color) {
             s_RendererAPI->SetClearColor(color);
         }
 
+        /**
+         * @brief Clears the viewport of previously drawn data.
+         */
         inline static void Clear() {
             s_RendererAPI->Clear();
         }
 
+        /**
+         * @brief Draw the index data from the given VertexArray.
+         * 
+         * @param array The VertexArray to draw from.
+         * @param count The number of indices to draw. (OPTIONAL)
+         */
         inline static void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
             s_RendererAPI->DrawIndexed(array, count);
         }
 
     private:
-        inline static Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create();
+        inline static Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
 
     };  // RenderCommand
 
