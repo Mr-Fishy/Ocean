@@ -22,3 +22,5 @@
 #include "Ocean/Renderer/Renderer.hpp"
 #include "Ocean/Renderer/Renderer2D.hpp"
 #include "Ocean/Renderer/RenderCommand.hpp"
+
+#include "Ocean/Renderer/Camera/Camera.hpp"

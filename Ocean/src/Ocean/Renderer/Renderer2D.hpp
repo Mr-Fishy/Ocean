@@ -48,7 +48,7 @@ namespace Ocean {
          */
         static void EndScene();
         /**
-         * @brief Draw's all of the indexed quads on the 2D renderer.
+         * @brief Draw's all of the indexed quads in the Renderer2D.
          */
         static void Flush();
 
@@ -61,20 +61,47 @@ namespace Ocean {
         static void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
         static void DrawQuad(const glm::mat4& transform, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
         
+        /**
+         * @brief A struct to hold the stats of the Renderer2D.
+         */
         struct Statistics {
-            u32 drawCalls = 0;
-            u32 quadCount = 0;
+            u32 drawCalls = 0; /** @brief The number of draw calls made in a frame. */
+            u32 quadCount = 0; /** @brief The number of quads that were drawn in a frame. */
 
+            /**
+             * @brief Get the number of vertices that were drawn in a frame.
+             * 
+             * @return u32 
+             */
             inline u32 GetVertexCount() const { return this->quadCount * 4; }
+            /**
+             * @brief Get the number of indices that were drawn in a frame.
+             * 
+             * @return u32 
+             */
             inline u32 GetIndexCount() const { return this->quadCount * 6; }
 
         };  // Statistics
 
+        /**
+         * @brief Reset the Statistics. Primarily used in a new frame.
+         */
         static void ResetStats();
+        /**
+         * @brief Get the Statistics from the Renderer2D.
+         * 
+         * @return Statistics 
+         */
         static Statistics GetStats();
 
     private:
+        /**
+         * @brief Starts a batch of quad's to render.
+         */
         static void StartBatch();
+        /**
+         * @brief Flushes the Renderer2D and starts the next batch.
+         */
         static void NextBatch();
 
     };  // Renderer2D

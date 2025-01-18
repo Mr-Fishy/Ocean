@@ -1,5 +1,6 @@
 #include "Renderer2D.hpp"
 
+#include "Camera/Camera.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -9,14 +10,14 @@
 
 #include "Ocean/Core/ResourceManager.hpp"
 
-#include "Ocean/Scene/Camera.hpp"
-
 #include "Ocean/Renderer/IndexBuffer.hpp"
 #include "Ocean/Renderer/RenderCommand.hpp"
 #include "Ocean/Renderer/Shader.hpp"
 #include "Ocean/Renderer/Texture.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 #include "Ocean/Renderer/VertexBuffer.hpp"
+
+#include "Ocean/Renderer/Camera/Camera.hpp"
 
 // libs
 #include <glm/ext/matrix_transform.hpp>
@@ -139,9 +140,6 @@ namespace Ocean {
     void Renderer2D::BeginScene(const Camera& camera) {
         s_Data.textureShader->Bind();
         s_Data.textureShader->SetMat4f("u_ViewProjection", camera.GetViewProjectionMatrix());
-
-        s_Data.quadIndexCount = 0;
-        s_Data.textureSlotIndex = 1;
 
         StartBatch();
     }

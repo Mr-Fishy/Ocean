@@ -33,6 +33,9 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.cpp
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.cpp)
 
+file(GLOB Ocean_CA_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Camera/*.hpp)
+file(GLOB Ocean_CA_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Camera/*.cpp)
+
 file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
 file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
 
@@ -117,6 +120,7 @@ add_library(
     ${Ocean_WIND_HEADER}    ${Ocean_WIND_SOURCE}
 
     ${Ocean_REND_HEADER}    ${Ocean_REND_SOURCE}
+    ${Ocean_CA_REND_HEADER} ${Ocean_CA_REND_SOURCE}
     ${Ocean_GL_REND_HEADER} ${Ocean_GL_REND_SOURCE}
     ${Ocean_VK_REND_HEADER} ${Ocean_VK_REND_SOURCE}
 

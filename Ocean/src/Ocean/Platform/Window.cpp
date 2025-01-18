@@ -72,7 +72,12 @@ namespace Ocean {
 
 		#endif
 
-		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::Vulkan)
+		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL) {
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		}
+		else if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::Vulkan)
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		this->m_Data.window = this;

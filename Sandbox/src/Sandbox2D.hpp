@@ -15,6 +15,6 @@ public:
 	// virtual void OnEvent(Ocean::Event& e) override;
 
 private:
-    
+    Ocean::OrthoCamera m_Camera;
 
 };  // Sandbox2D
