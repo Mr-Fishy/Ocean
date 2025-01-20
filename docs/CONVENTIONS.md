@@ -57,7 +57,7 @@ public:
 private:
     char* p_Data; /** @brief Pointer to X data. */
 
-    int m_Length; /** @brief The length of @ref(p_Data). */
+    int m_Length; /** @brief The length of p_Data. */
 
 };  // Foo
 ```

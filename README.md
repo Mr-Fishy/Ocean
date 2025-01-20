@@ -6,7 +6,7 @@ TODO
 
 TODO
 
-## [Installation Setup](./INSTALL.md)
+## [Installation Setup](./docs/INSTALL.md)
 
 ## Building Ocean
 

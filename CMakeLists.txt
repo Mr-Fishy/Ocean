@@ -8,6 +8,7 @@ endif()
 
 option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
 option(Ocean_DOCS "Generate Ocean Engine documentation target." ON)
+option(Ocean_DLL "Build Ocean as a dynamic library." ON)
 
 project("Ocean Engine")
 
@@ -95,14 +96,21 @@ add_custom_target(
 )
 
 ### Library Type ###
-option(BUILD_SHARED_LIBS "Building with shared libraries..." OFF)
 
 ### Output ###
-if (BUILD_SHARED_LIBS)
+if (Ocean_DLL)
+    message(STATUS "Configuring Ocean as a Dynamic Library.")
+
+    set(BUILD_SHARED_LIBS ON)
+
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
 else()
+    message(STATUS "Configuring Ocean as a Static Library.")
+
+    set(BUILD_SHARED_LIBS OFF)
+
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
@@ -117,6 +125,7 @@ set(TLSF_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/tlsf")
 set(STEAM_AUDIO_DIRECTORY  "${PROJECT_SOURCE_DIR}/Ocean/vendor/steamaudio/include")
 set(GLAD_DIRECTORY         "${PROJECT_SOURCE_DIR}/Ocean/vendor/glad/include")
 set(STB_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/stb")
+set(CR_DIRECTORY          "${PROJECT_SOURCE_DIR}/Ocean/vendor/cr")
 
 
 ### Projects ###

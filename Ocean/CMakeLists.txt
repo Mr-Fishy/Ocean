@@ -62,6 +62,9 @@ file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/*.c)
 # STB
 file(GLOB stb_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/*.h)
 
+# CR
+file(GLOB cr_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cr/*.h)
+
 # Group all of the files per their source for IDE / Editor
 
 source_group("Root Header" FILES ${Ocean_ROOT_HEADER})
@@ -128,6 +131,7 @@ add_library(
     ${glad_HEADER} ${glad_SOURCE}
     ${steamaudio_HEADER}
     ${stb_HEADER}
+    ${cr_HEADER}
 )
 
 target_include_directories(
@@ -142,6 +146,7 @@ target_include_directories(
     PRIVATE ${GLAD_DIRECTORY}
     PRIVATE ${TLSF_DIRECTORY}
     PRIVATE ${STB_DIRECTORY}
+    PRIVATE ${CR_DIRECTORY}
     PUBLIC  ${GLM_DIRECTORY}
 
     PRIVATE ${OpenGL_INCLUDE_DIRS}
@@ -158,6 +163,15 @@ target_link_libraries(
     PRIVATE ${Vulkan_LIBRARIES}
 
     PUBLIC glm::glm-header-only
+)
+
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES
+
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+
+    PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Ocean.hpp
 )
 
 target_compile_options(

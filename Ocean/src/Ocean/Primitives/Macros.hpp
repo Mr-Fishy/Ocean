@@ -11,34 +11,12 @@
  */
 
 /** @brief Marks a function parameter as possibly unused. Useful for silencing warnings between OC_DEBUG and OC_RELEASE builds. */
-#define OC_UNUSED [[gnu::unused]]
+#define OC_UNUSED [[maybe_unused]]
 
-#ifdef OC_DLL
+#define OC_NO_DISCARD [[nodiscard]]
 
-	#ifdef _MSC_VER
-
-		#define OC_API __declspec(dllexport)
-
-	#else
-
-		#define OC_API __attribute((visibility("default")))
-
-	#endif
-
-#else
-
-	#ifdef _MSC_VER
-
-		#define OC_API __declspec(dllimport)
-
-	#else
-
-		#define OC_API
-
-	#endif
-
-#endif
-
+#define OC_NO_EXCEPT               noexcept
+#define OC_NO_EXCEPT_E(expression) noexcept(expression)
 
 /** @brief Get the size of an array. */
 #define ArraySize(array) (sizeof(array) / sizeof((array)[0]))
