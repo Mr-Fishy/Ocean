@@ -6,6 +6,8 @@
 #include "Ocean/Primitives/Service.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Primitives/Log.hpp"
+#include <cstddef>
+#include <cstdint>
 
 // Define this for detailed logs of where allocations and frees are completed (only when using alloc / free macros)
 // #define DETAILED_ALLOCATIONS 1
@@ -16,39 +18,27 @@
 
 // Memory Methods
 
-/**
-	* @brief Copy memory from a source to a destination.
-	* @param dst - The destination pointer.
-	* @param src - The source pointer.
-	* @param size - The size of the data.
-	*/
-void mem_copy(void* dst, void* src, sizet size);
+uintptr_t oAlignmentOffset(sizet alignOf, const void* const ptr);
 
-/**
-	* @brief Calculate the aligned memory size.
-	* @param size 
-	* @param alignment 
-	* @return 
-	*/
-sizet mem_align(sizet size, sizet alignment);
+uintptr_t oAlignmentAdjustment(sizet alignOf, const void* const ptr);
 
 // Memory Structs
 
 /**
-	* @brief 
-	*/
+ * @brief It holds stats about memory allocations in the lifetime.
+ */
 struct MemoryStats {
 
-	sizet AllocatedBytes;
-	sizet FreedBytes;
+	sizet allocatedBytes;
+	sizet freedBytes;
 
-	u32 AllocationCount;
-	u32 FreeCount;
+	u32 allocationCount;
+	u32 freeCount;
 
 	sizet Add(sizet a) {
 		if (a) {
-			AllocatedBytes += a;
-			AllocationCount++;
+			this->allocatedBytes += a;
+			this->allocationCount++;
 		}
 
 		return a;
@@ -56,8 +46,8 @@ struct MemoryStats {
 
 	sizet Remove(sizet a) {
 		if (a) {
-			FreedBytes += a;
-			FreeCount++;
+			this->freedBytes += a;
+			this->freeCount++;
 		}
 
 		return a;
@@ -68,71 +58,137 @@ struct MemoryStats {
 // Memory Allocators
 
 /**
-	* @brief The base class of a memory allocator.
-	*/
+ * @brief The base class of a memory allocator.
+ */
 class Allocator {
 public:
 	virtual ~Allocator() = default;
 
-	virtual void* Allocate(sizet size) = 0;
-	virtual void* Allocate(sizet size, sizet alignment) = 0;
+	/**
+	 * @brief Allocates memory of the given size and alignment.
+	 * 
+	 * @param size The size in bytes to allocate.
+	 * @param alignment The alignment of the allocation.
+	 * @return void* 
+	 */
+	virtual void* Allocate(sizet size, sizet alignment = alignof(max_align_t)) = 0;
 
+	/**
+	 * @brief Deallocates memory at the given pointer.
+	 * 
+	 * @param ptr The pointer to the memory to deallocate.
+	 */
 	virtual void Deallocate(void* ptr) = 0;
 
 };	// Allocator
 
+/**
+ * @brief The heap allocator allocates memory in as requested blocks.
+ */
 class HeapAllocator : public Allocator {
 public:
 	~HeapAllocator() override;
 
+	/**
+	 * @brief Initializes the HeapAllocator to store a maximum of the given size.
+	 * 
+	 * @param size The amount of memory to store in bytes.
+	 */
 	void Init(sizet size);
+	/**
+	 * @brief Clears all of the memory and shuts down the HeapAllocator.
+	 */
 	void Shutdown();
 
-	virtual void* Allocate(sizet size) override;
+	/**
+	 * @copydoc Allocator::Allocate()
+	 */
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
+	/**
+	 * @brief Allocator::Deallocate() 
+	 */
 	virtual void Deallocate(void* ptr) override;
 
 private:
-	void* p_Handle = nullptr;
-	void* p_Memory = nullptr;
+	void* p_Handle = nullptr; /** @brief The tlsf handle for the memory pool. */
+	void* p_Memory = nullptr; /** @brief The base memory pointer of the heap. */
 
-	sizet m_TotalSize = 0;
-	sizet m_AllocatedSize = 0;
+	sizet m_TotalSize = 0; /** @brief The total size of the heap. */
+	sizet m_AllocatedSize = 0; /** @brief The amount of memory that is allocated in the heap. */
 
 };	// HeapAllocator
 
+/**
+ * @brief An allocator that treats the memory as a stack, that can be pushed to and popped from.
+ */
 class StackAllocator : public Allocator {
 public:
+	/**
+	 * @brief Initializes the StackAllocator to store a maximum of the given size.
+	 * 
+	 * @param size The amount of memory to store in bytes.
+	 */
 	void Init(sizet size);
+	/**
+	 * @brief Clears all of the memory and shuts down the StackAllocator.
+	 */
 	void Shutdown();
 
-	virtual void* Allocate(sizet size) override;
+	/**
+	 * @copydoc Allocator::Allocate()
+	 */
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
+	/**
+	 * @brief Allocator::Deallocate() 
+	 */
 	virtual void Deallocate(void* ptr) override;
 
+	/**
+	 * @brief Get the marker of the stack.
+	 * 
+	 * @return sizet
+	 */
 	sizet GetMarker() const;
+	/**
+	 * @brief 
+	 * 
+	 * @param marker 
+	 */
 	void FreeMarker(sizet marker);
 
 	void Clear();
 
 private:
-	u8* p_Memory = nullptr;
+	u8* p_Memory = nullptr; /** @brief The base memory pointer of the allocator. */
 
-	sizet m_TotalSize = 0;
-	sizet m_AllocatedSize = 0;
+	sizet m_TotalSize = 0; /** @brief The total size of the allocator. */
+	sizet m_AllocatedSize = 0; /** @brief The amount of memory that is allocated in the allocator. */
 
 };	// StackAllocator
 
 class DoubleStackAllocator : public Allocator {
 public:
+	/**
+	 * @brief Initializes the DoubleStackAllocator to store a maximum of the given size.
+	 * 
+	 * @param size The amount of memory to store in bytes.
+	 */
 	void Init(sizet size);
+	/**
+	 * @brief Clears all of the memory and shuts down the DoubleStackAllocator.
+	 */
 	void Shutdown();
 
-	virtual void* Allocate(sizet size) override;
+	/**
+	 * @copydoc Allocator::Allocate()
+	 */
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
+	/**
+	 * @brief Allocator::Deallocate() 
+	 */
 	virtual void Deallocate(void* ptr) override;
 
 	void* AllocateTop(sizet size, sizet alignment);
@@ -151,9 +207,9 @@ public:
 	void ClearBottom();
 
 private:
-	u8* p_Memory = nullptr;
+	u8* p_Memory = nullptr; /** @brief The base memory pointer of the allocator. */
 
-	sizet m_TotalSize = 0;
+	sizet m_TotalSize = 0; /** @brief The total size of the allocator. */
 	sizet m_Top = 0;
 	sizet m_Bottom = 0;
 
@@ -161,44 +217,74 @@ private:
 
 class LinearAllocator : public Allocator {
 public:
+	/**
+	 * @brief Initializes the LinearAllocator to store a maximum of the given size.
+	 * 
+	 * @param size The amount of memory to store in bytes.
+	 */
 	void Init(sizet size);
+	/**
+	 * @brief Clears all of the memory and shuts down the LinearAllocator.
+	 */
 	void Shutdown();
 
-	virtual void* Allocate(sizet size) override;
+	/**
+	 * @copydoc Allocator::Allocate()
+	 */
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
+	/**
+	 * @brief Allocator::Deallocate() 
+	 */
 	virtual void Deallocate(void* ptr) override;
 
+	/**
+	 * @brief Clear's the allocator's memory.
+	 */
 	void Clear();
 
 private:
-	u8* p_Memory = nullptr;
+	u8* p_Memory = nullptr; /** @brief The base memory pointer of the allocator. */
 
-	sizet m_TotalSize = 0;
-	sizet m_AllocatedSize = 0;
+	sizet m_TotalSize = 0; /** @brief The total size of the allocator. */
+	sizet m_AllocatedSize = 0; /** @brief The amount of memory that is allocated in the allocator. */
 
 };	// LinearAllocator
 
+/**
+ * @brief Allocates memory using classic C-style malloc and free.
+ */
 class MallocAllocator : public Allocator {
 public:
-	virtual void* Allocate(sizet size) override;
+	/**
+	 * @copydoc Allocator::Allocate()
+	 */
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
+	/**
+	 * @brief Allocator::Deallocate() 
+	 */
 	virtual void Deallocate(void* ptr) override;
 
 };	// MallocAllocator
 
 // Memory Service
 
+/**
+ * @brief A struct that can be used to configure the MemoryService outside of defaults.
+ */
 struct MemoryServiceConfig {
 
-	sizet MaxDynamicSize = omega(16); // Default size of 16MB of dynamic memory.
+	sizet MaxDynamicSize = omega(16); /** @brief Default size of 16MB of dynamic memory. */
 
 };	// MemoryServiceConfig
 
+/**
+ * @brief The primary service to interact with to get memory in Ocean.
+ */
 class MemoryService : public Service {
 public:
-	MemoryService() : m_ScratchAllocator(), m_SystemAllocator() { }
+	MemoryService() : m_ScratchAllocator(), m_SystemAllocator(), m_MallocAllocator() { }
 	~MemoryService() = default;
 
 	static MemoryService& Instance();
@@ -206,8 +292,9 @@ public:
 	void Init(MemoryServiceConfig* config = nullptr);
 	static void Shutdown();
 
-	Allocator* ScratchAllocator() { return &m_ScratchAllocator; }
-	Allocator* SystemAllocator()  { return &m_SystemAllocator; }
+	Allocator* ScratchAllocator()   { return &m_ScratchAllocator; }
+	Allocator* SystemAllocator()    { return &m_SystemAllocator; }
+	Allocator* UnmanagedAllocator() { return &m_MallocAllocator; }
 
 	inline virtual cstring GetName() const override { return "OCEAN_Memory_Service"; }
 
@@ -216,13 +303,13 @@ private:
 
 	LinearAllocator m_ScratchAllocator;
 	HeapAllocator   m_SystemAllocator;
+	MallocAllocator m_MallocAllocator;
 
 };	// MemoryService
 
-// Macro Helpers
-
 #define oSystemAllocator                     MemoryService::Instance().SystemAllocator()
 #define oScratchAllocator                    MemoryService::Instance().ScratchAllocator()
+#define oUnmanagedAllocator                  MemoryService::Instance().UnmanagedAllocator()
 
 #define OC_MEMORY_REPORTING 1
 
