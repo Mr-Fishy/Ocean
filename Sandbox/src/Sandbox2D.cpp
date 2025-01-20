@@ -21,8 +21,10 @@ void Sandbox2D::OnUpdate(Timestep ts) {
 
     Ocean::Renderer2D::BeginScene(this->m_Camera);
 
-    Ocean::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 100.0f, 100.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
-    Ocean::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+    Ocean::Renderer2D::DrawQuad({ 50.0f, 50.0f }, { 100.0f, 100.0f }, { 0.0f, 1.0f, 0.0f, 0.5f });
+    Ocean::Renderer2D::DrawQuad({ 100.0f, 100.0f }, { 100.0f, 100.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+
+    Ocean::Renderer2D::DrawQuad({ 420.0f, 200.0f }, { 300.0f, 69.0f }, { 0.2f, 0.0f, 1.0f, 1.0f });
 
     Ocean::Renderer2D::EndScene();
 }
