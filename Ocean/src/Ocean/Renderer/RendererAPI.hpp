@@ -10,6 +10,7 @@
  * 
  */
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
@@ -64,17 +65,17 @@ namespace Ocean {
              * 
              * @return API
              */
-            static API GetAPI() { return s_API; }
+            OC_STATIC API GetAPI() { return s_API; }
 
             /**
              * @brief Create's a new RendererAPI instance.
              * 
              * @return Scope<RendererAPI> 
              */
-            static Scope<RendererAPI> Create();
+            OC_STATIC Scope<RendererAPI> Create();
 
         private:
-            static inline API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
+            OC_STATIC_INLINE API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
 
         };  // RendererAPI
 

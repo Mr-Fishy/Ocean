@@ -10,22 +10,17 @@
 
 namespace Ocean {
 
-	static constexpr u32 k_StringBufferSize = 1024 * 1024;
-	static char LogBuffer[k_StringBufferSize];
+	OC_STATIC constexpr u32 k_StringBufferSize = 1024 * 1024;
+	OC_STATIC char LogBuffer[k_StringBufferSize];
 
-	static void OutputConsole(char* logBuffer) {
+	OC_STATIC void OutputConsole(char* logBuffer) {
 		printf("%s", logBuffer);
 	}
 
 
 
-	LogService* LogService::s_Instance = nullptr;
-	
 	LogService& LogService::Instance() {
-		if (s_Instance == nullptr)
-			s_Instance = new LogService();
-
-		return *s_Instance;
+		return *m_Instance.get();
 	}
 
 	void LogService::PrintFormat(cstring format, ...) const {

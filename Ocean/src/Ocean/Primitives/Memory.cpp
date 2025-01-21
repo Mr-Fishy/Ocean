@@ -3,15 +3,12 @@
 #include "Ocean/Primitives/Assert.hpp"
 
 // libs
-#include <cstdint>
 #include <tlsf.h>
 
 // std
 #include <stdlib.h>
+#include <cstdint>
 #include <cstring>
-
-/** @brief Records statistics for heap allocations. */
-#define HEAP_ALLOCATOR_STATS
 
 // Memory Methods
 
@@ -38,7 +35,7 @@ uintptr_t oAlignmentAdjustment(sizet alignOf, const void* const ptr) {
 
 // Walker Methods
 
-#ifdef HEAP_ALLOCATOR_STATS
+#ifdef OC_DETAILED_ALLOCATIONS
 	static void ExitWalker(void* ptr, sizet size, i32 used, OC_UNUSED void* user) {
 		if (used) {
 			oprint("Found active allocation %p, %llu\n", ptr, size);
@@ -49,7 +46,7 @@ uintptr_t oAlignmentAdjustment(sizet alignOf, const void* const ptr) {
 
 // Heap Allocator
 
-#ifdef HEAP_ALLOCATOR_STATS
+#ifdef OC_DETAILED_ALLOCATIONS
 
 	static MemoryStats s_Stats{ 0, 0, 0, 0 };
 
@@ -66,7 +63,7 @@ void HeapAllocator::Init(sizet size) {
 }
 
 void HeapAllocator::Shutdown() {
-#ifdef HEAP_ALLOCATOR_STATS
+#ifdef OC_DETAILED_ALLOCATIONS
 	if (s_Stats.allocatedBytes != s_Stats.freedBytes)
 		oprint(CONSOLE_TEXT_RED("Allocations still present. Check your code!\n"));
 
@@ -89,7 +86,7 @@ void HeapAllocator::Shutdown() {
 }
 
 void* HeapAllocator::Allocate(sizet size, OC_UNUSED sizet alignment) {
-#ifdef HEAP_ALLOCATOR_STATS
+#ifdef OC_DETAILED_ALLOCATIONS
 
 	void* allocatedMemory = alignment == 1 ? tlsf_malloc(this->p_Handle, size) : tlsf_memalign(this->p_Handle, alignment, size);
 	this->m_AllocatedSize += s_Stats.Add(tlsf_block_size(allocatedMemory));
@@ -104,7 +101,7 @@ void* HeapAllocator::Allocate(sizet size, OC_UNUSED sizet alignment) {
 }
 
 void HeapAllocator::Deallocate(void* ptr) {
-#ifdef HEAP_ALLOCATOR_STATS
+#ifdef OC_DETAILED_ALLOCATIONS
 
 	this->m_AllocatedSize -= s_Stats.Remove(tlsf_block_size(ptr));
 
@@ -197,6 +194,12 @@ void* DoubleStackAllocator::AllocateTop(sizet size, sizet alignment) {
 		return nullptr;
 	}
 
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Add(size);
+
+#endif
+
 	this->m_Top = newStart;
 	return this->p_Memory + newStart;
 }
@@ -212,6 +215,12 @@ void* DoubleStackAllocator::AllocateBottom(sizet size, sizet alignment) {
 		return nullptr;
 	}
 
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Add(size);
+
+#endif
+
 	this->m_Bottom = newSize;
 	return this->p_Memory + newStart;
 }
@@ -221,6 +230,12 @@ void DoubleStackAllocator::DeallocateTop(sizet size) {
 		this->m_Top = this->m_TotalSize;
 	else
 		this->m_Top += size;
+
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Remove(size);
+
+#endif
 }
 
 void DoubleStackAllocator::DeallocateBottom(sizet size) {
@@ -228,6 +243,12 @@ void DoubleStackAllocator::DeallocateBottom(sizet size) {
 		this->m_Bottom = 0;
 	else
 		this->m_Bottom -= size;
+
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Remove(size);
+
+#endif
 }
 
 sizet DoubleStackAllocator::GetTopMarker() const {
@@ -282,6 +303,12 @@ void* LinearAllocator::Allocate(sizet size, sizet alignment) {
 		return nullptr;
 	}
 
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Add(size);
+
+#endif
+
 	this->m_AllocatedSize = newSize;
 	return this->p_Memory + newStart;
 }
@@ -292,16 +319,36 @@ void LinearAllocator::Deallocate(OC_UNUSED void* ptr) {
 }
 
 void LinearAllocator::Clear() {
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	s_Stats.Remove(this->m_AllocatedSize);
+
+#endif
+
 	this->m_AllocatedSize = 0;
 }
 
 // Malloc Allocator
 
 void* MallocAllocator::Allocate(sizet size, OC_UNUSED sizet alignment) {
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	// Since we can't track the amount of memory freed, don't add to the allocation amount (at least not yet).
+	s_Stats.Add(0);
+
+#endif
+
 	return malloc(size);
 }
 
 void MallocAllocator::Deallocate(void* ptr) {
+#ifdef OC_DETAILED_ALLOCATIONS
+
+	// Since we can't track the amount of memory freed, don't add to the deallocation amount (at least not yet).
+	s_Stats.Remove(0);
+
+#endif
+
 	free(ptr);
 }
 

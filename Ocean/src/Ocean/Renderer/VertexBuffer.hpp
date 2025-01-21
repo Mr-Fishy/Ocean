@@ -10,6 +10,7 @@
  * 
  */
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
@@ -65,7 +66,7 @@ namespace Ocean {
          * @param type The type of data to get the size of.
          * @return u8
          */
-        inline static u8 ShaderDataTypeSize(ShaderDataType type) {
+        OC_STATIC_INLINE u8 ShaderDataTypeSize(ShaderDataType type) {
             switch (type) {
                 case ShaderDataType::None:     break;
 
@@ -168,27 +169,27 @@ namespace Ocean {
              * 
              * @return u32 
              */
-            inline u32 GetStride() const { return this->m_Stride; }
+            OC_INLINE u32 GetStride() const { return this->m_Stride; }
 
             /**
              * @brief Get the list of BufferElements in the layout.
              * 
              * @return const DynamicArray<BufferElement>& 
              */
-            inline const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
+            OC_INLINE const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
 
-            std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
-            std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::Iterator begin() { return m_Elements.begin(); }
+            OC_INLINE DynamicArray<BufferElement>::ConstIterator begin() const { return m_Elements.begin(); }
 
-            std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
-            std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::Iterator end() { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::ConstIterator end() const { return m_Elements.end(); }
 
         private:
             /**
              * @brief Calculates the element offsets and stride of the layout.
              * 
              */
-            inline void CalculateOffsetsAndStride() {
+            OC_INLINE void CalculateOffsetsAndStride() {
                 u32 offset = 0;
                 this->m_Stride = 0;
 
@@ -254,7 +255,7 @@ namespace Ocean {
              * @param size The size of the VertexBuffer.
              * @return Ref<VertexBuffer> 
              */
-            static Ref<VertexBuffer> Create(u32 size);
+            OC_STATIC Ref<VertexBuffer> Create(u32 size);
             /**
              * @brief Create's a VertexBuffer with the given vertices.
              * 
@@ -262,7 +263,7 @@ namespace Ocean {
              * @param size The size of the vertices array.
              * @return Ref<VertexBuffer> 
              */
-            static Ref<VertexBuffer> Create(float* vertices, u32 size);
+            OC_STATIC Ref<VertexBuffer> Create(float* vertices, u32 size);
 
         };  // VertexBuffer
 

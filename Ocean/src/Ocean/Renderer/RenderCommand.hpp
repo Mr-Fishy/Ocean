@@ -13,6 +13,8 @@
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 #include "Ocean/Renderer/RendererAPI.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 
@@ -29,7 +31,7 @@ namespace Ocean {
         /**
          * @brief Initializes the RendererAPI.
          */
-        inline static void Init() {
+        OC_STATIC_INLINE void Init() {
             s_RendererAPI->Init();
         }
 
@@ -41,7 +43,7 @@ namespace Ocean {
          * @param w The width of the viewport.
          * @param h The height of the viewport.
          */
-        inline static void SetViewport(u32 x, u32 y, u32 w, u32 h) {
+        OC_STATIC_INLINE void SetViewport(u32 x, u32 y, u32 w, u32 h) {
             s_RendererAPI->SetViewport(x, y, w, h);
         }
         /**
@@ -51,14 +53,14 @@ namespace Ocean {
          * 
          * @param color The color to use.
          */
-        inline static void SetClearColor(const glm::vec4& color) {
+        OC_STATIC_INLINE void SetClearColor(const glm::vec4& color) {
             s_RendererAPI->SetClearColor(color);
         }
 
         /**
          * @brief Clears the viewport of previously drawn data.
          */
-        inline static void Clear() {
+        OC_STATIC_INLINE void Clear() {
             s_RendererAPI->Clear();
         }
 
@@ -68,12 +70,12 @@ namespace Ocean {
          * @param array The VertexArray to draw from.
          * @param count The number of indices to draw. (OPTIONAL)
          */
-        inline static void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
+        OC_STATIC_INLINE void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
             s_RendererAPI->DrawIndexed(array, count);
         }
 
     private:
-        inline static Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
+        OC_STATIC_INLINE Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
 
     };  // RenderCommand
 

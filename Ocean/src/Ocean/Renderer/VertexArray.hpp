@@ -68,7 +68,7 @@ namespace Ocean {
              * 
              * @return Ref<VertexArray> 
              */
-            static Ref<VertexArray> Create();
+            OC_STATIC Ref<VertexArray> Create();
 
         };  // VertexArray
 

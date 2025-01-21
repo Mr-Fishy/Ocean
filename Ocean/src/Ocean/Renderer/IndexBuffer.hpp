@@ -13,6 +13,8 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Integers.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 namespace Ocean {
 
     namespace Shrimp {
@@ -47,7 +49,7 @@ namespace Ocean {
              * @param count The number of indices.
              * @return Ref<IndexBuffer> 
              */
-            static Ref<IndexBuffer> Create(u32* indices, u32 count);
+            OC_STATIC Ref<IndexBuffer> Create(u32* indices, u32 count);
 
         };  // IndexBuffer
 

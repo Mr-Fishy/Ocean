@@ -10,6 +10,7 @@
  * 
  */
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -106,7 +107,7 @@ namespace Ocean {
              * @param geometrySource The source of the geometry shader. (OPTIONAL)
              * @return Ref<Shader> 
              */
-            static Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            OC_STATIC Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
 
         };  // Shader
 
