@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Primitives/Service.hpp"
 
 namespace Ocean {
@@ -13,16 +15,16 @@ namespace Ocean {
 		LogService() = default;
 		virtual ~LogService() = default;
 
-		static LogService& Instance();
+		OC_STATIC LogService& Instance();
 
 		void PrintFormat(cstring format, ...) const;
 
 		void SetCallback(PrintCallback callback);
 
-		inline virtual cstring GetName() const override { return "OCEAN_Log_Service"; }
+		OC_INLINE virtual cstring GetName() const override { return "OCEAN_Log_Service"; }
 
 	private:
-		static LogService* s_Instance;
+		OC_STATIC_INLINE Scope<LogService> m_Instance = MakeScope<LogService>();
 
 		PrintCallback m_PrintCallback = nullptr;
 

@@ -22,12 +22,12 @@ namespace Ocean {
         virtual ~Layer() = default;
 
         /** @brief Occurs when the layer is attached to a LayerStack. */
-        virtual void OnAttach() { }
+        OC_INLINE virtual void OnAttach() { }
         /** @brief Occurs when the layer is dettached from a LayerStack. */
-        virtual void OnDetach() { }
+        OC_INLINE virtual void OnDetach() { }
 
         /** @brief Occurs when the layer is updated by the Application. */
-        virtual void OnUpdate(OC_UNUSED Timestep ts) { }
+        OC_INLINE virtual void OnUpdate(OC_UNUSED Timestep ts) { }
 
         /** @brief Occurs when there is an event submitted to the layer. */
         // virtual void OnEvent(Event& e) { }
@@ -37,13 +37,13 @@ namespace Ocean {
          * 
          * @return b8 
          */
-        b8 IsEnabled() const { return this->m_Enabled; }
+        OC_INLINE b8 IsEnabled() const { return this->m_Enabled; }
         /**
          * @brief Sets m_Enabled to the given value.
          * 
          * @param enabled True to enable the layer, false to disable the layer.
          */
-        void SetEnabled(b8 enabled) { this->m_Enabled = enabled; }
+        OC_INLINE void SetEnabled(b8 enabled) { this->m_Enabled = enabled; }
 
     #ifdef OC_DEBUG
 
@@ -52,7 +52,7 @@ namespace Ocean {
          * 
          * @return const string&
          */
-        const string& GetName() const { return this->m_DebugName; }
+        OC_INLINE const string& GetName() const { return this->m_DebugName; }
 
     #endif
 

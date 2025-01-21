@@ -105,7 +105,7 @@ namespace Ocean {
         glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_RendererID(0), m_Specification(spec), m_ColorAttachmentSpecs(), m_DepthAttachmentSpec(), m_ColorAttachments(), m_DepthAttachment(0) {
             for (auto& textureSpec : this->m_Specification.attachments.attachments) {
                 if (!IsDepthFormat(textureSpec.textureFormat))
-                    this->m_ColorAttachmentSpecs.emplace_back(textureSpec);
+                    this->m_ColorAttachmentSpecs.EmplaceBack(textureSpec);
                 else
                     this->m_DepthAttachmentSpec = textureSpec;
             }
@@ -116,7 +116,7 @@ namespace Ocean {
         glFramebuffer::~glFramebuffer() {
             glDeleteFramebuffers(1, &this->m_RendererID);
 
-            glDeleteTextures(static_cast<GLsizei>(this->m_ColorAttachments.size()), this->m_ColorAttachments.data());
+            glDeleteTextures(static_cast<GLsizei>(this->m_ColorAttachments.Size()), this->m_ColorAttachments.Data());
             glDeleteTextures(1, &this->m_DepthAttachment);
         }
 
@@ -134,10 +134,10 @@ namespace Ocean {
             if (this->m_RendererID) {
                 glDeleteFramebuffers(1, &this->m_RendererID);
 
-                glDeleteTextures(static_cast<GLsizei>(this->m_ColorAttachments.size()), this->m_ColorAttachments.data());
+                glDeleteTextures(static_cast<GLsizei>(this->m_ColorAttachments.Size()), this->m_ColorAttachments.Data());
                 glDeleteTextures(1, &this->m_DepthAttachment);
 
-                this->m_ColorAttachments.clear();
+                this->m_ColorAttachments.Clear();
                 this->m_DepthAttachment = 0;
             }
 
@@ -146,12 +146,12 @@ namespace Ocean {
 
             b8 multisample = this->m_Specification.samples > 1;
 
-            if (!this->m_ColorAttachmentSpecs.empty()) {
-                this->m_ColorAttachments.resize(this->m_ColorAttachmentSpecs.size());
+            if (!this->m_ColorAttachmentSpecs.Empty()) {
+                this->m_ColorAttachments.Resize(this->m_ColorAttachmentSpecs.Size());
                 
-                CreateTextures(multisample, this->m_ColorAttachments.data(), static_cast<u32>(this->m_ColorAttachments.size()));
+                CreateTextures(multisample, this->m_ColorAttachments.Data(), this->m_ColorAttachments.Size());
 
-                for (u32 i = 0; i < this->m_ColorAttachments.size(); i++) {
+                for (u32 i = 0; i < this->m_ColorAttachments.Size(); i++) {
                     BindTexture(multisample, this->m_ColorAttachments[i]);
 
                     switch (this->m_ColorAttachmentSpecs[i].textureFormat) {
@@ -186,8 +186,8 @@ namespace Ocean {
                 }
             }
 
-            if (this->m_ColorAttachments.size() > 1) {
-                OASSERTM(this->m_ColorAttachments.size() <= 4, "Attempted to use more than optimal framebuffer attachment count!");
+            if (this->m_ColorAttachments.Size() > 1) {
+                OASSERTM(this->m_ColorAttachments.Size() <= 4, "Attempted to use more than optimal framebuffer attachment count!");
 
                 GLenum buffers[4] = {
                     GL_COLOR_ATTACHMENT0,
@@ -195,9 +195,9 @@ namespace Ocean {
                     GL_COLOR_ATTACHMENT2,
                     GL_COLOR_ATTACHMENT3,
                 };
-                glDrawBuffers(static_cast<GLsizei>(this->m_ColorAttachments.size()), buffers);
+                glDrawBuffers(static_cast<GLsizei>(this->m_ColorAttachments.Size()), buffers);
             }
-            else if (this->m_ColorAttachments.empty()) {
+            else if (this->m_ColorAttachments.Empty()) {
                 glDrawBuffer(GL_NONE); // Only Depth-Pass
             }
 
@@ -220,7 +220,7 @@ namespace Ocean {
         }
         
         u32 glFramebuffer::ReadPixel(u32 attachmentIndex, i32 x, i32 y) {
-            OASSERT_LENGTH(attachmentIndex, this->m_ColorAttachments.size());
+            OASSERT_LENGTH(attachmentIndex, this->m_ColorAttachments.Size());
 
             glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 
@@ -231,7 +231,7 @@ namespace Ocean {
         }
 
         void glFramebuffer::ClearAttachment(u32 attachmentIndex, i32 value) {
-            OASSERT_LENGTH(attachmentIndex, this->m_ColorAttachments.size());
+            OASSERT_LENGTH(attachmentIndex, this->m_ColorAttachments.Size());
             
             auto& spec = this->m_ColorAttachmentSpecs[attachmentIndex];
             glClearTexImage(

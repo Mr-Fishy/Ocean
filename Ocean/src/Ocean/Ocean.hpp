@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Ocean/Core/Base.hpp"
-
 #include "Ocean/Types/ValueTypes.hpp"
 #include "Ocean/Types/Strings.hpp"
 #include "Ocean/Types/Timestep.hpp"
@@ -22,3 +20,5 @@
 #include "Ocean/Renderer/Renderer.hpp"
 #include "Ocean/Renderer/Renderer2D.hpp"
 #include "Ocean/Renderer/RenderCommand.hpp"
+
+#include "Ocean/Renderer/Camera/Camera.hpp"

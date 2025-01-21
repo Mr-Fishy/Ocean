@@ -25,7 +25,7 @@ namespace Ocean {
             
             virtual u32 ReadPixel(u32 attachmentIndex, i32 x, i32 y) override final;
 
-            inline virtual u32 GetColorAttachmentID(u32 index = 0) const override final { OASSERT_LENGTH(index, this->m_ColorAttachments.size()); return this->m_ColorAttachments[index]; }
+            inline virtual u32 GetColorAttachmentID(u32 index = 0) const override final { OASSERT_LENGTH(index, this->m_ColorAttachments.Size()); return this->m_ColorAttachments[index]; }
             virtual void ClearAttachment(u32 attachmentIndex, i32 value) override final;
 
             inline virtual const FramebufferSpecification& GetSpecification() const override final { return this->m_Specification; }

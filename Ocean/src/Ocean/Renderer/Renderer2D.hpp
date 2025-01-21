@@ -10,6 +10,7 @@
  * 
  */
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -31,51 +32,78 @@ namespace Ocean {
         /**
          * @brief Initializes the 2D renderer for use.
          */
-        static void Init();
+        OC_STATIC void Init();
         /**
          * @brief Cleans up the 2D renderer to shutdown.
          */
-        static void Shutdown();
+        OC_STATIC void Shutdown();
 
         /**
          * @brief Begins a 2D scene with the given Camera.
          * 
          * @param camera The Camera to use for rendering in the viewport.
          */
-        static void BeginScene(const Camera& camera);
+        OC_STATIC void BeginScene(const Camera& camera);
         /**
          * @brief Ends the 2D scene and Flush's the renderer.
          */
-        static void EndScene();
+        OC_STATIC void EndScene();
         /**
-         * @brief Draw's all of the indexed quads on the 2D renderer.
+         * @brief Draw's all of the indexed quads in the Renderer2D.
          */
-        static void Flush();
+        OC_STATIC void Flush();
 
-        static void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
-        static void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
+        OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
+        OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
 
-        static void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-        static void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
-        static void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
-        static void DrawQuad(const glm::mat4& transform, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
+        OC_STATIC void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
+        OC_STATIC void DrawQuad(const glm::mat4& transform, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
         
+        /**
+         * @brief A struct to hold the stats of the Renderer2D.
+         */
         struct Statistics {
-            u32 drawCalls = 0;
-            u32 quadCount = 0;
+            u32 drawCalls = 0; /** @brief The number of draw calls made in a frame. */
+            u32 quadCount = 0; /** @brief The number of quads that were drawn in a frame. */
 
-            inline u32 GetVertexCount() const { return this->quadCount * 4; }
-            inline u32 GetIndexCount() const { return this->quadCount * 6; }
+            /**
+             * @brief Get the number of vertices that were drawn in a frame.
+             * 
+             * @return u32 
+             */
+            OC_INLINE u32 GetVertexCount() const { return this->quadCount * 4; }
+            /**
+             * @brief Get the number of indices that were drawn in a frame.
+             * 
+             * @return u32 
+             */
+            OC_INLINE u32 GetIndexCount() const { return this->quadCount * 6; }
 
         };  // Statistics
 
-        static void ResetStats();
-        static Statistics GetStats();
+        /**
+         * @brief Reset the Statistics. Primarily used in a new frame.
+         */
+        OC_STATIC void ResetStats();
+        /**
+         * @brief Get the Statistics from the Renderer2D.
+         * 
+         * @return Statistics 
+         */
+        OC_STATIC Statistics GetStats();
 
     private:
-        static void StartBatch();
-        static void NextBatch();
+        /**
+         * @brief Starts a batch of quad's to render.
+         */
+        OC_STATIC void StartBatch();
+        /**
+         * @brief Flushes the Renderer2D and starts the next batch.
+         */
+        OC_STATIC void NextBatch();
 
     };  // Renderer2D
 

@@ -1,15 +1,13 @@
 #include "Renderer2D.hpp"
 
+#include "Camera/Camera.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Memory.hpp"
 #include "Ocean/Primitives/Array.hpp"
 
 #include "Ocean/Core/ResourceManager.hpp"
-
-#include "Ocean/Scene/Camera.hpp"
 
 #include "Ocean/Renderer/IndexBuffer.hpp"
 #include "Ocean/Renderer/RenderCommand.hpp"
@@ -17,6 +15,8 @@
 #include "Ocean/Renderer/Texture.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 #include "Ocean/Renderer/VertexBuffer.hpp"
+
+#include "Ocean/Renderer/Camera/Camera.hpp"
 
 // libs
 #include <glm/ext/matrix_transform.hpp>
@@ -90,9 +90,9 @@ namespace Ocean {
         });
         s_Data.quadVertexArray->AddVertexBuffer(s_Data.quadVertexBuffer);
 
-        s_Data.quadVertexBufferBase = oallocat(QuadVertex, s_Data.maxVertices, oSystemAllocator);
+        s_Data.quadVertexBufferBase = new QuadVertex[s_Data.maxVertices];
 
-        u32* quadIndices = oallocat(u32, s_Data.maxIndices, oSystemAllocator);
+        u32* quadIndices = new u32[s_Data.maxIndices];
 
         u32 offset = 0;
         for (u32 i = 0; i < s_Data.maxIndices; i += 6) {
@@ -109,16 +109,15 @@ namespace Ocean {
 
         Ref<Shrimp::IndexBuffer> quadIB = Shrimp::IndexBuffer::Create(quadIndices, s_Data.maxIndices);
         s_Data.quadVertexArray->SetIndexBuffer(quadIB);
-        ofree(quadIndices, oSystemAllocator);
+        delete[] quadIndices;
 
         s_Data.colorTexture = Shrimp::Texture2D::Create(1, 1);
         u32 textureData = 0xffffffff;
         s_Data.colorTexture->SetData(&textureData, sizeof(u32));
 
         i32 samplers[s_Data.maxTextureSlots] { };
-        for (u32 i = 0; i < s_Data.maxTextureSlots; i++) {
+        for (u32 i = 0; i < s_Data.maxTextureSlots; i++)
             samplers[i] = i;
-        }
 
         s_Data.textureShader = ResourceManager::LoadShader("../../assets/Shaders/Texture.glsl", "Texture");
         s_Data.textureShader->Bind();
@@ -133,15 +132,12 @@ namespace Ocean {
     }
 
     void Renderer2D::Shutdown() {
-        ofree(s_Data.quadVertexBufferBase, oSystemAllocator);
+        delete[] s_Data.quadVertexBufferBase;
     }
 
     void Renderer2D::BeginScene(const Camera& camera) {
         s_Data.textureShader->Bind();
         s_Data.textureShader->SetMat4f("u_ViewProjection", camera.GetViewProjectionMatrix());
-
-        s_Data.quadIndexCount = 0;
-        s_Data.textureSlotIndex = 1;
 
         StartBatch();
     }
@@ -154,7 +150,7 @@ namespace Ocean {
         if (s_Data.quadIndexCount == 0)
             return;
 
-        u32 dataSize = static_cast<u32>(s_Data.quadVertexBufferPtr - s_Data.quadVertexBufferBase);
+        u32 dataSize = static_cast<u32>(reinterpret_cast<u8*>(s_Data.quadVertexBufferPtr) - reinterpret_cast<u8*>(s_Data.quadVertexBufferBase));
         s_Data.quadVertexBuffer->SetData(s_Data.quadVertexBufferBase, dataSize);
 
         for (u32 i = 0; i < s_Data.textureSlotIndex; i++)

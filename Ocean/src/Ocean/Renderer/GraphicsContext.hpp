@@ -12,6 +12,8 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 namespace Ocean {
 
     namespace Shrimp {
@@ -41,7 +43,7 @@ namespace Ocean {
              * @param windowHandle The Window platform handle.
              * @return Scope<GraphicsContext> 
              */
-            static Scope<GraphicsContext> Create(void* windowHandle);
+            OC_STATIC Scope<GraphicsContext> Create(void* windowHandle);
 
         };  // GraphicsContext
 

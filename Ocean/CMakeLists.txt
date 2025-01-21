@@ -33,6 +33,9 @@ file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.cpp
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.hpp)
 file(GLOB Ocean_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.cpp)
 
+file(GLOB Ocean_CA_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Camera/*.hpp)
+file(GLOB Ocean_CA_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Camera/*.cpp)
+
 file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
 file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
 
@@ -58,6 +61,9 @@ file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/*.c)
 
 # STB
 file(GLOB stb_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/*.h)
+
+# CR
+file(GLOB cr_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cr/*.h)
 
 # Group all of the files per their source for IDE / Editor
 
@@ -117,6 +123,7 @@ add_library(
     ${Ocean_WIND_HEADER}    ${Ocean_WIND_SOURCE}
 
     ${Ocean_REND_HEADER}    ${Ocean_REND_SOURCE}
+    ${Ocean_CA_REND_HEADER} ${Ocean_CA_REND_SOURCE}
     ${Ocean_GL_REND_HEADER} ${Ocean_GL_REND_SOURCE}
     ${Ocean_VK_REND_HEADER} ${Ocean_VK_REND_SOURCE}
 
@@ -124,6 +131,7 @@ add_library(
     ${glad_HEADER} ${glad_SOURCE}
     ${steamaudio_HEADER}
     ${stb_HEADER}
+    ${cr_HEADER}
 )
 
 target_include_directories(
@@ -138,6 +146,7 @@ target_include_directories(
     PRIVATE ${GLAD_DIRECTORY}
     PRIVATE ${TLSF_DIRECTORY}
     PRIVATE ${STB_DIRECTORY}
+    PRIVATE ${CR_DIRECTORY}
     PUBLIC  ${GLM_DIRECTORY}
 
     PRIVATE ${OpenGL_INCLUDE_DIRS}
@@ -154,6 +163,15 @@ target_link_libraries(
     PRIVATE ${Vulkan_LIBRARIES}
 
     PUBLIC glm::glm-header-only
+)
+
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES
+
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+
+    PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Ocean.hpp
 )
 
 target_compile_options(

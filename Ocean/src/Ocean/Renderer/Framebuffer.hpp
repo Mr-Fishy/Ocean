@@ -13,6 +13,8 @@
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 // std
 #include <initializer_list>
 #include <vector>
@@ -50,13 +52,13 @@ namespace Ocean {
          * @details AKA the FramebufferFormat.
          */
         struct FramebufferTextureSpec {
-            FramebufferTextureSpec() : textureFormat(FramebufferFormat::None) { }
+            OC_INLINE FramebufferTextureSpec() : textureFormat(FramebufferFormat::None) { }
             /**
              * @brief Construct a new Framebuffer Texture Spec object.
              * 
              * @param format The FramebufferFormat to set.
              */
-            FramebufferTextureSpec(FramebufferFormat format) : textureFormat(format) { }
+            OC_INLINE FramebufferTextureSpec(FramebufferFormat format) : textureFormat(format) { }
 
             FramebufferFormat textureFormat; /** @brief The format of the Framebuffer texture, represented as a FramebufferFormat. */
 
@@ -68,13 +70,13 @@ namespace Ocean {
          * @details AKA the list of FramebufferTextureSpec's.
          */
         struct FramebufferAttachmentSpec {
-            FramebufferAttachmentSpec() : attachments() { }
+            OC_INLINE FramebufferAttachmentSpec() : attachments() { }
             /**
              * @brief Construct a new Framebuffer Attachment Spec object with the given attachments.
              * 
              * @param attachments The FramebufferTextureSpec's to use as attachments.
              */
-            FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : attachments(attachments) { }
+            OC_INLINE FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : attachments(attachments) { }
 
             std::vector<FramebufferTextureSpec> attachments; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
 
@@ -84,7 +86,7 @@ namespace Ocean {
          * @brief A struct that holds all of the information required to create a Framebuffer.
          */
         struct FramebufferSpecification {
-            FramebufferSpecification() : width(0), height(0), samples(1), attachments(), swapChainTarget(false) { }
+            OC_INLINE FramebufferSpecification() : width(0), height(0), samples(1), attachments(), swapChainTarget(false) { }
 
             u32 width; /** @brief The width of the Framebuffer. */
             u32 height; /** @brief The height of the Framebuffer. */
@@ -161,7 +163,7 @@ namespace Ocean {
              * @param spec The FramebufferSpecification to use.
              * @return Ref<Framebuffer> 
              */
-            static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
+            OC_STATIC Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 
         };  // Framebuffer
 

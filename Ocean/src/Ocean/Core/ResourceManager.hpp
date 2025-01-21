@@ -3,6 +3,8 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 // std
 #include <map>
 
@@ -32,14 +34,14 @@ namespace Ocean {
          * @param name The name to reference the Shader as.
          * @return Ref<Shrimp::Shader>& 
          */
-        static Ref<Shrimp::Shader>& LoadShader(cstring path, cstring name);
+        OC_STATIC Ref<Shrimp::Shader>& LoadShader(cstring path, cstring name);
         /**
          * @brief Get the Shrimp::Shader object from m_Shaders.
          * 
          * @param name The name of the Shader.
          * @return Ref<Shrimp::Shader>& 
          */
-        static Ref<Shrimp::Shader>& GetShader(cstring name);
+        OC_STATIC Ref<Shrimp::Shader>& GetShader(cstring name);
 
         /**
          * @brief Load's a Shrimp::Texture2D from the given file and stores it with the given name.
@@ -48,14 +50,14 @@ namespace Ocean {
          * @param name The name to reference the Texture2D as.
          * @return Ref<Shrimp::Texture2D>& 
          */
-        static Ref<Shrimp::Texture2D>& LoadTexture(cstring path, cstring name);
+        OC_STATIC Ref<Shrimp::Texture2D>& LoadTexture(cstring path, cstring name);
         /**
          * @brief Get the Shrimp::Texture2D object from m_Textures.
          * 
          * @param name The name of the Texture2D.
          * @return Ref<Shrimp::Texture2D>& 
          */
-        static Ref<Shrimp::Texture2D>& GetTexture(cstring name);
+        OC_STATIC Ref<Shrimp::Texture2D>& GetTexture(cstring name);
 
         /**
          * @brief Load's a Shrimp::Font from the given file and stores it with the given name.
@@ -64,21 +66,21 @@ namespace Ocean {
          * @param name The name to reference the Font as.
          * @return Ref<Shrimp::Font>& 
          */
-        static Ref<Shrimp::Font>& LoadFont(cstring path, cstring name);
+        OC_STATIC Ref<Shrimp::Font>& LoadFont(cstring path, cstring name);
         /**
          * @brief Get the Shrimp::Font object from m_Fonts.
          * 
          * @param name The name of the Font.
          * @return Ref<Shrimp::Font>& 
          */
-        static Ref<Shrimp::Font>& GetFont(cstring name);
+        OC_STATIC Ref<Shrimp::Font>& GetFont(cstring name);
 
         // Audio Files
 
         /**
          * @brief Clears all of the loaded items.
          */
-        static void Clear();
+        OC_STATIC void Clear();
 
     private:
         /**
@@ -86,7 +88,7 @@ namespace Ocean {
          * 
          * @return ResourceManager* 
          */
-        static ResourceManager* Instance();
+        OC_STATIC ResourceManager* Instance();
 
         /**
          * @brief Internal function to load a Shrimp::Shader from the given file.
@@ -114,7 +116,7 @@ namespace Ocean {
 
         /* --- */
 
-        inline static Scope<ResourceManager> s_Instance = MakeScope<ResourceManager>(); /** @brief The ResourceManager's singleton instance. */
+        OC_STATIC_INLINE Scope<ResourceManager> s_Instance = MakeScope<ResourceManager>(); /** @brief The ResourceManager's singleton instance. */
 
         std::map<cstring, Ref<Shrimp::Shader>> m_Shaders; /** @brief The Shrimp::Shader objects stored. */
         std::map<cstring, Ref<Shrimp::Texture2D>> m_Textures; /** @brief The Shrimp::Texture2D objects stored. */

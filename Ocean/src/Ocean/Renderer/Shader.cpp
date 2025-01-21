@@ -5,6 +5,7 @@
 #include "Ocean/Primitives/Assert.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_Shader.hpp"
 
 namespace Ocean {

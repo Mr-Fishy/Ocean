@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Primitives/Memory.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/Strings.hpp"
@@ -91,7 +92,15 @@ namespace Ocean {
 		 * 
 		 * @return Application* 
 		 */
-		inline static Application* Get() { return s_Instance; }
+		OC_INLINE OC_STATIC Application* Get() { return s_Instance; }
+
+		OC_FINLINE void* operator new(sizet size) {
+			return oSystemAllocator->Allocate(size);
+		}
+
+		OC_FINLINE void operator delete(void* ptr) {
+			oSystemAllocator->Deallocate(ptr);
+		}
 
 	protected:
 		friend int ::main(int argc, char** argv);
@@ -138,7 +147,7 @@ namespace Ocean {
 
 		/* --- */
 
-		inline static Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
+		OC_STATIC_INLINE Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
 		Scope<Window> m_Window; /** @brief The main window of the application. */
 
 		LayerStack m_LayerStack; /** @brief The LayerStack of the application. */

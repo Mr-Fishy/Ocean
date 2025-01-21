@@ -13,6 +13,8 @@
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
+
 namespace Ocean {
 
     namespace Shrimp {
@@ -43,7 +45,7 @@ namespace Ocean {
          */
         class Texture {
         public:
-            Texture(u32 width, u32 height) : m_Width(width), m_Height(height) { }
+            OC_INLINE Texture(u32 width, u32 height) : m_Width(width), m_Height(height) { }
             virtual ~Texture() = default;
 
             /**
@@ -72,13 +74,13 @@ namespace Ocean {
              * 
              * @return u32 
              */
-            inline u32 GetWidth() const { return this->m_Width; }
+            OC_INLINE u32 GetWidth() const { return this->m_Width; }
             /**
              * @brief Gets the height of the texture.
              * 
              * @return u32 
              */
-            inline u32 GetHeight() const { return this->m_Height; }
+            OC_INLINE u32 GetHeight() const { return this->m_Height; }
 
             /**
              * @brief Get the ID of the texture.
@@ -102,7 +104,7 @@ namespace Ocean {
          */
         class Texture2D : public Texture {
         public:
-            Texture2D(u32 width, u32 height) : Texture(width, height) { }
+            OC_INLINE Texture2D(u32 width, u32 height) : Texture(width, height) { }
             virtual ~Texture2D() = default;
 
             /**
@@ -112,7 +114,7 @@ namespace Ocean {
              * @param height The height of the texture.
              * @return Ref<Texture2D> 
              */
-            static Ref<Texture2D> Create(u32 width, u32 height);
+            OC_STATIC Ref<Texture2D> Create(u32 width, u32 height);
 
         };  // Texture2D
 

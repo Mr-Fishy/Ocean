@@ -4,7 +4,7 @@
 #include "Ocean/Primitives/Log.hpp"
 
 /** @brief Assert given that the condition is NOT true. */
-#define OASSERT(condition) if (!(condition)) { oprint(OCEAN_FUNCTIONLINE("FALSE\n")); OCEAN_DEBUG_BREAK; }
+#define OASSERT(condition) if (!(condition)) { oprintret(OCEAN_FUNCTIONLINE("FALSE")); OCEAN_DEBUG_BREAK; }
 
 /** @brief Asserts when the index is outside the length from 0. */
 #define OASSERT_LENGTH(i, max) OASSERT((i) < (max))
