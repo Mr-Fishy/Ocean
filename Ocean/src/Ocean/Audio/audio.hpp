@@ -7,10 +7,8 @@ namespace sonar{
     class steamaudio{
         public:
             static steamaudio* instance(IPLuint32 steamversion,IPLSIMDLevel smidlevel,IPLAllocateFunction allocation , IPLFreeFunction freemem);
-        
-
-            static steamaudio* struct_pointer;
-
+                    
+            static steamaudio* getinstance();
             static IPLContext* context;
             static IPLContextSettings settings;
 
@@ -20,7 +18,7 @@ namespace sonar{
             steamaudio(IPLuint32 steamversion,IPLSIMDLevel smidlevel,IPLAllocateFunction allocation , IPLFreeFunction freemem);
             ~steamaudio();
 
-
+            static steamaudio* struct_pointer;
             //Do not implement
             steamaudio(const steamaudio&) = delete;
             steamaudio& operator=(const steamaudio&) = delete;
