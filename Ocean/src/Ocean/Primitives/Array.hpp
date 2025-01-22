@@ -7,10 +7,11 @@
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Primitives/Memory.hpp"
 
+// std
 #include <cstddef>
 #include <cstring>
-#include <array>
 #include <iterator>
+#include <array>
 
 template <class T>
 class DynamicArray {
@@ -84,31 +85,39 @@ public:
 public:
     OC_INLINE_EXPR DynamicArray() : p_Data(nullptr), m_Capacity(0), m_Size(0) { }
     OC_INLINE_EXPR DynamicArray(const DynamicArray<T>& other) : p_Data(nullptr), m_Capacity(other.m_Capacity), m_Size(other.m_Size) {
-        this->p_Data = static_cast<T*>(oSystemAllocator->Allocate(sizeof(T) * this->m_Capacity, alignof(T)));
+        this->p_Data = oallocat(T, this->m_Capacity, oSystemAllocator);
 
         std::memcpy(this->p_Data, other.p_Data, sizeof(T) * this->m_Size);
     }
     OC_INLINE_EXPR DynamicArray(const std::initializer_list<T>& list) : p_Data(nullptr), m_Capacity(list.size()), m_Size(list.size()) {
-        this->p_Data = static_cast<T*>(oSystemAllocator->Allocate(sizeof(T) * this->m_Capacity, alignof(T)));
+        this->p_Data = oallocat(T, this->m_Capacity, oSystemAllocator);
 
         for (u32 i = 0; i < this->m_Size; i++)
             this->p_Data[i] = std::move(*(list.begin() + i));
     }
     OC_INLINE ~DynamicArray() {
         if (this->m_Size != 0) {
-            oSystemAllocator->Deallocate(this->p_Data);
+            for (u32 i = 0; i < this->m_Size; i++)
+                this->p_Data[i].~T();
         }
+
+        if (this->m_Capacity != 0)
+            ofree(this->p_Data, oSystemAllocator);
     }
 
     OC_INLINE_EXPR DynamicArray<T>& operator = (const DynamicArray<T>& other) {
         if (&other != this) {
-            if (this->m_Size != 0)
-                oSystemAllocator->Deallocate(this->p_Data);
+            if (this->m_Capacity != 0) {
+                for (u32 i = 0; i < this->m_Size; i++)
+                    this->p_Data[i].~T();
+
+                ofree(this->p_Data, oSystemAllocator);
+            }
 
             this->m_Capacity = other.m_Capacity;
             this->m_Size = other.m_Size;
 
-            this->p_Data = static_cast<T*>(oSystemAllocator->Allocate(sizeof(T) * this->m_Capacity, alignof(T)));
+            this->p_Data = oallocat(T, this->m_Capacity, oSystemAllocator);
 
             std::memcpy(this->p_Data, other.p_Data, sizeof(T) * this->m_Size);
         }
@@ -120,12 +129,12 @@ public:
         if (this->m_Size >= this->m_Capacity)
             Grow(this->m_Capacity == 0 ? 1 : this->m_Capacity * 2);
 
-        this->p_Data[this->m_Size++] = value;
+        new (&this->p_Data[this->m_Size++]) T(value);
     }
     OC_INLINE_EXPR void PopBack() {
         OASSERTM(this->m_Size > 0, "Array is already empty!");
 
-        this->m_Size--;
+        this->p_Data[--this->m_Size].~T();
     }
 
     OC_INLINE_EXPR void Emplace(u32 index, T&& value) {
@@ -153,14 +162,14 @@ public:
         if (this->m_Size >= this->m_Capacity)
             Grow(this->m_Capacity == 0 ? 1 : this->m_Capacity * 2);
 
-        new(&this->p_Data[++this->m_Size]) T(std::forward<T>(value));
+        new(&this->p_Data[this->m_Size++]) T(std::forward<T>(value));
     }
     template <typename ... Args>
     OC_INLINE_EXPR void EmplaceBack(Args&& ... args) {
         if (this->m_Size >= this->m_Capacity)
             Grow(this->m_Capacity == 0 ? 1 : this->m_Capacity * 2);
 
-        new(&this->p_Data[++this->m_Size]) T(std::forward<Args>(args)...);
+        new(&this->p_Data[this->m_Size++]) T(std::forward<Args>(args)...);
     }
 
     OC_INLINE_EXPR void Erase(u32 index) {
@@ -206,11 +215,19 @@ public:
     OC_INLINE void Clear() { this->m_Size = 0; }
 
     OC_INLINE void Resize(u32 newCapacity) {
-        T* newData = static_cast<T*>(oSystemAllocator->Allocate(sizeof(T) * newCapacity, alignof(T)));
+        T* newData = oallocat(T, newCapacity, oSystemAllocator);
 
-        std::memcpy(newData, this->p_Data, sizeof(T) * (this->m_Size > newCapacity ? newCapacity : this->m_Size));
+        if (this->m_Size > newCapacity) {
+            for (u32 i = this->m_Size; i > newCapacity; i--)
+                this->p_Data[i].~T();
 
-        oSystemAllocator->Deallocate(this->p_Data);
+            this->m_Size = newCapacity;
+        }
+
+        for (u32 i = 0; i < this->m_Size; i++)
+            newData[i] = std::move(this->p_Data[i]);
+
+        ofree(this->p_Data, oSystemAllocator);
 
         this->p_Data = newData;
         this->m_Capacity = newCapacity;
@@ -218,13 +235,13 @@ public:
 
 private:
     OC_INLINE_EXPR void Grow(u32 newCapacity) {
-        T* newData = static_cast<T*>(oSystemAllocator->Allocate(sizeof(T) * newCapacity, alignof(T)));
+        T* newData = oallocat(T, newCapacity, oSystemAllocator);
 
         for (u32 i = 0; i < this->m_Size; i++)
             newData[i] = std::move(this->p_Data[i]);
 
-        oSystemAllocator->Deallocate(this->p_Data);
-        
+        ofree(this->p_Data, oSystemAllocator);
+
         this->p_Data = newData;
         this->m_Capacity = newCapacity;
     }

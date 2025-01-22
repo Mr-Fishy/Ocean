@@ -32,8 +32,6 @@ namespace Ocean {
 
 		b8 fullscreen = false; /** @brief If the application is fullscreen or not at startup. */
 
-		// TODO: Service Enabling / Disabling (i.e. ability to disable audio if not needed).
-
 		/**
 		 * @brief Construct a new ApplicationConfig with the given parameters.
 		 * 
@@ -95,11 +93,11 @@ namespace Ocean {
 		OC_INLINE OC_STATIC Application* Get() { return s_Instance; }
 
 		OC_FINLINE void* operator new(sizet size) {
-			return oSystemAllocator->Allocate(size);
+			return oalloca(size, oSystemAllocator);
 		}
 
 		OC_FINLINE void operator delete(void* ptr) {
-			oSystemAllocator->Deallocate(ptr);
+			ofree(ptr, oSystemAllocator);
 		}
 
 	protected:

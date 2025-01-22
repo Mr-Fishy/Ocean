@@ -7,8 +7,9 @@ if(CCACHE_FOUND)
 endif()
 
 option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
-option(Ocean_DOCS "Generate Ocean Engine documentation target." ON)
-option(Ocean_DLL "Build Ocean as a dynamic library." ON)
+option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
+option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
+option(Ocean_BUILD_TESTS "Build Ocean tests." ON)
 
 project("Ocean Engine")
 
@@ -98,7 +99,7 @@ add_custom_target(
 ### Library Type ###
 
 ### Output ###
-if (Ocean_DLL)
+if (Ocean_BUILD_DLL)
     message(STATUS "Configuring Ocean as a Dynamic Library.")
 
     set(BUILD_SHARED_LIBS ON)
@@ -133,6 +134,8 @@ message(STATUS)
 message(STATUS "Passing off to Bob the builder")
 message(STATUS)
 
+set(CMAKE_FOLDER "Deps")
+
 # GLFW
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLFW Starting (${time})...")
@@ -165,6 +168,8 @@ message(STATUS "Vulkan Memory Allocator Starting (${time})...")
 add_subdirectory(Ocean/vendor/vma EXCLUDE_FROM_ALL)
 message(STATUS)
 
+unset(CMAKE_FOLDER)
+
 set(
     OCEAN_COMPILE_FLAGS
 
@@ -185,14 +190,23 @@ message(STATUS "Ocean Starting (${time})...")
 message(STATUS)
 add_subdirectory(Ocean)
 
-if (Ocean_DOCS)
+if (Ocean_BUILD_DOCS)
     
     string(TIMESTAMP time "%M:%S")
-    add_subdirectory(docs)
+    add_subdirectory(Docs)
     message(STATUS "Doxygen Setup Started (${time})...")
     message(STATUS)
 
-endif (Ocean_DOCS)
+endif (Ocean_BUILD_DOCS)
+
+if (Ocean_BUILD_TESTS)
+
+    string(TIMESTAMP time "%M:%S")
+    add_subdirectory(Tests)
+    message(STATUS "Tests Starting (${time})...")
+    message(STATUS)
+
+endif (Ocean_BUILD_TESTS)
 
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")
