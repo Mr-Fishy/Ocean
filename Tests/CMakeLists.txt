@@ -1,10 +1,11 @@
 link_libraries(Ocean)
 
+set(CMAKE_FOLDER "Tests")
+
+enable_testing()
+
 add_executable(Memory ${CMAKE_CURRENT_SOURCE_DIR}/Memory.cpp)
 
+add_test(TestAll Memory)
 
-set_target_properties(
-    Memory PROPERTIES
-
-    FOLDER "Tests"
-)
+unset(CMAKE_FOLDER)

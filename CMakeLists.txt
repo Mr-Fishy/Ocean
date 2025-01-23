@@ -6,10 +6,15 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif()
 
-option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+string(COMPARE EQUAL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} Ocean_MAIN_PROJECT)
+
+option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." OFF)
+
 option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
-option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
-option(Ocean_BUILD_TESTS "Build Ocean tests." ON)
+option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." Ocean_MAIN_PROJECT)
+option(Ocean_BUILD_TESTS "Build Ocean tests." Ocean_MAIN_PROJECT)
 
 project("Ocean Engine")
 
@@ -64,37 +69,6 @@ if (NOT Vulkan_FOUND)
 else()
     message(STATUS "Vulkan Libraries Found.")
 endif()
-
-### Shaders ###
-find_program(GLSL_VALIDATOR glslangValidator HINTS
-    ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE} 
-    /usr/bin 
-    /usr/local/bin 
-    ${VULKAN_SDK_PATH}/Bin
-    ${VULKAN_SDK_PATH}/Bin32
-    $ENV{VULKAN_SDK}/Bin/ 
-    $ENV{VULKAN_SDK}/Bin32/
-)
-
-file(GLOB Ocean_GLSL_SOURCE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.frag"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer/Shaders/*.vert"
-)
-
-foreach(GLSL ${Ocean_GLSL_SOURCE})
-    get_filename_component(FILE_NAME ${GLSL} NAME)
-    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
-    add_custom_command(
-        OUTPUT ${SPIRV}
-        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
-        DEPENDS ${GLSL})
-    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-endforeach(GLSL)
-
-add_custom_target(
-    Shaders
-    DEPENDS ${SPIRV_BINARY_FILES}
-)
 
 ### Library Type ###
 
