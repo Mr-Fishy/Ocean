@@ -178,11 +178,11 @@ namespace Ocean {
              */
             OC_INLINE const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
 
-            OC_INLINE DynamicArray<BufferElement>::Iterator begin() { return m_Elements.begin(); }
-            OC_INLINE DynamicArray<BufferElement>::ConstIterator begin() const { return m_Elements.begin(); }
+            OC_INLINE DynamicArray<BufferElement>::iterator begin() { return m_Elements.begin(); }
+            OC_INLINE DynamicArray<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
 
-            OC_INLINE DynamicArray<BufferElement>::Iterator end() { return m_Elements.end(); }
-            OC_INLINE DynamicArray<BufferElement>::ConstIterator end() const { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::iterator end() { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::const_iterator end() const { return m_Elements.end(); }
 
         private:
             /**

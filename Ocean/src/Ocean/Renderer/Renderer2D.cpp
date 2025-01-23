@@ -139,8 +139,7 @@ namespace Ocean {
         s_Data.textureShader->Bind();
         s_Data.textureShader->SetMat4f("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-        StartBatch();
-    }
+        StartBatch();    }
 
     void Renderer2D::EndScene() {
         Flush();
