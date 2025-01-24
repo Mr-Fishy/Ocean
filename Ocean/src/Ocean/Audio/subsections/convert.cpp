@@ -2,7 +2,7 @@
 #include <phonon.h>
 
 
-
+//Standard input.
 sonar::convert::convert(int number_channels, int samples){
 
     buffer.numChannels = number_channels;
