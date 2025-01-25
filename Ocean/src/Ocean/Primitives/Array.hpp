@@ -3,9 +3,8 @@
 #include "Ocean/Types/Integers.hpp"
 
 // std
-#include <vector>
 #include <array>
-
+#include <vector>
 
 template <class T>
 using DynamicArray = std::vector<T>;

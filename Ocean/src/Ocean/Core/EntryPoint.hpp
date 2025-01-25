@@ -8,7 +8,7 @@
 // std
 #include <iostream>
 
-extern Ocean::Application* Ocean::CreateApplication(int argc, char** argv);
+OC_EXTERN Ocean::Application* Ocean::CreateApplication(int argc, char** argv);
 
 int main(int argc, char** argv) {
 	oTimeServiceInit();

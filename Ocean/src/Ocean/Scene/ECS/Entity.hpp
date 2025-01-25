@@ -4,7 +4,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Reef {
         
         typedef u64 ID;
     
@@ -12,12 +12,13 @@ namespace Ocean {
         public:
             Entity() = default;
             Entity(const Entity&) = default;
+            ~Entity() = default;
 
         private:
             ID m_Entity = 0;
 
         };
 
-    }   // Shrimp
+    }   // Reef
 
 }   // Ocean

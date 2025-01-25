@@ -7,14 +7,14 @@ namespace Ocean {
 
     namespace Shrimp {
 
-        glVertexBuffer::glVertexBuffer(u32 size) {
+        glVertexBuffer::glVertexBuffer(u32 size) : m_RendererID(0), m_Layout() {
             glCreateBuffers(1, &this->m_RendererID);
 
             glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
             glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
         }
 
-        glVertexBuffer::glVertexBuffer(f32* vertices, u32 size) {
+        glVertexBuffer::glVertexBuffer(f32* vertices, u32 size) : m_RendererID(0), m_Layout() {
             glCreateBuffers(1, &this->m_RendererID);
             
             glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);

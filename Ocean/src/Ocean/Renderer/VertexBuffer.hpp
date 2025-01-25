@@ -1,5 +1,16 @@
 #pragma once
 
+/**
+ * @file VertexBuffer.hpp
+ * @author Evan F.
+ * @brief The abstract VertexBuffer for Ocean.
+ * @date 01-14-2025
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
@@ -14,21 +25,48 @@ namespace Ocean {
 
     namespace Shrimp {
 
-        // TODO: Enum to String Name Macro?
+        /**
+         * @brief Enum of the types of data in a Shader.
+         */
         enum ShaderDataType {
+            /** @brief Null protection option. */
             None = 0,
 
-            Int, Int2, Int3, Int4,
+            /** @brief Single 4-byte integer. */
+            Int,
+            /** @brief Two-component vector of 4-byte integers. */
+            Int2,
+            /** @brief Three-component vector of 4-byte integers */
+            Int3,
+            /** @brief Four-component vector of 4-byte integers */
+            Int4,
 
-            Float, Float2, Float3, Float4,
+            /** @brief Single 4-byte float. */
+            Float,
+            /** @brief Two-component vector of 4-byte floats. */
+            Float2,
+            /** @brief Three-component vector of 4-byte floats */
+            Float3,
+            /** @brief Four-component vector of 4-byte floats */
+            Float4,
 
-            Mat3, Mat4,
+            /** @brief A 3x3 matrix of 4-byte floats. */
+            Mat3,
+            /** @brief A 4x4 matrix of 4-byte floats. */
+            Mat4,
 
+            /** @brief Single 1-byte boolean. */
             Bool,
 
         };  // ShaderDataType
 
-        inline static u32 ShaderDataTypeSize(ShaderDataType type) {
+        /**
+         * @brief Gets the size of the given ShaderDataType in bytes.
+         * 
+         * @param type The type of data to get the size of.
+         * @return u8
+         */
+        OC_STATIC_INLINE u8 ShaderDataTypeSize(ShaderDataType type) {
             switch (type) {
                 case ShaderDataType::None:     break;
 
@@ -54,21 +92,36 @@ namespace Ocean {
 
 
 
+        /**
+         * @brief A singular element of data to be used in a VertexBuffer.
+         */
         struct BufferElement {
-            cstring name;
+            cstring name; /** @brief The name of the element. */
 
-            ShaderDataType type;
+            ShaderDataType type; /** @brief The type of the element. */
             
-            u32 size;
-            u32 offset;
+            u32 size; /** @brief The size of the element. */
+            u32 offset; /** @brief The offset of the element. */
 
-            b8 normalized;
+            b8 normalized; /** @brief Records if the element is normalized. */
 
             BufferElement() = default;
+            /**
+             * @brief Construct a new BufferElement object.
+             * 
+             * @param type The element ShaderDataType.
+             * @param name The name of the element.
+             * @param normalized True if the element is normalized, false otherwise. (OPTIONAL)
+             */
             BufferElement(ShaderDataType type, cstring name, b8 normalized = false)
                 : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) { }
 
-            u32 GetComponentCount() const { 
+            /**
+             * @brief Get the component count of the element.
+             * 
+             * @return u8
+             */
+            u8 GetComponentCount() const { 
                 switch (this->type)
                 {
                     case ShaderDataType::None:      break;
@@ -95,26 +148,48 @@ namespace Ocean {
 
         };  // BufferElement
 
+        /**
+         * @brief A collection of BufferElement's to represent a layout.
+         */
         class BufferLayout {
         public:
-            BufferLayout() = default;
+            BufferLayout() : m_Elements(), m_Stride(0) { }
+            /**
+             * @brief Construct a new BufferLayout object with the given elements.
+             * 
+             * @param elements A list of elements for the BufferLayout.
+             */
             BufferLayout(const std::initializer_list<BufferElement>& elements) : m_Elements(elements), m_Stride(0) {
                 CalculateOffsetsAndStride();
             }
             ~BufferLayout() = default;
 
-            inline u32 GetStride() const { return this->m_Stride; }
+            /**
+             * @brief Get the stride of the BufferLayout.
+             * 
+             * @return u32 
+             */
+            OC_INLINE u32 GetStride() const { return this->m_Stride; }
 
-            inline const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
+            /**
+             * @brief Get the list of BufferElements in the layout.
+             * 
+             * @return const DynamicArray<BufferElement>& 
+             */
+            OC_INLINE const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
 
-            std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
-            std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::iterator begin() { return m_Elements.begin(); }
+            OC_INLINE DynamicArray<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
 
-            std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
-            std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::iterator end() { return m_Elements.end(); }
+            OC_INLINE DynamicArray<BufferElement>::const_iterator end() const { return m_Elements.end(); }
 
         private:
-            inline void CalculateOffsetsAndStride() {
+            /**
+             * @brief Calculates the element offsets and stride of the layout.
+             * 
+             */
+            OC_INLINE void CalculateOffsetsAndStride() {
                 u32 offset = 0;
                 this->m_Stride = 0;
 
@@ -125,28 +200,70 @@ namespace Ocean {
                 }
             }
 
-            DynamicArray<BufferElement> m_Elements;
+            DynamicArray<BufferElement> m_Elements; /** @brief The list of elements in the layout. */
 
+            /**
+             * @brief The stride of the layout.
+             * @details Stride simply means the length of the BufferLayout in memory.
+             */
             u32 m_Stride;
 
         };  // BufferLayout
 
 
 
+        /**
+         * @brief The VertexBuffer controls an array of buffer data through the renderer API.
+         */
         class VertexBuffer {
         public:
             virtual ~VertexBuffer() = default;
 
+            /**
+             * @brief Bind's the VertexBuffer to be used by commmands.
+             */
             virtual void Bind() const = 0;
+            /**
+             * @brief Unbind's the VertexBuffer from being able to be used by commands.
+             */
             virtual void Unbind() const = 0;
 
+            /**
+             * @brief Sets the VertexBuffer data given an array pointer and size.
+             * 
+             * @param data The data to copy.
+             * @param size The size of the data array.
+             */
             virtual void SetData(const void* data, u32 size) = 0;
 
+            /**
+             * @brief Get the BufferLayout of the VertexBuffer.
+             * 
+             * @return const BufferLayout& 
+             */
             virtual const BufferLayout& GetLayout() const = 0;
+            /**
+             * @brief Set the BufferLayout of the VertexBuffer.
+             * 
+             * @param layout The new BufferLayout.
+             */
             virtual void SetLayout(const BufferLayout& layout) = 0;
 
-            static Ref<VertexBuffer> Create(u32 size);
-            static Ref<VertexBuffer> Create(float* vertices, u32 size);
+            /**
+             * @brief Create's a VertexBuffer of a given size.
+             * 
+             * @param size The size of the VertexBuffer.
+             * @return Ref<VertexBuffer> 
+             */
+            OC_STATIC Ref<VertexBuffer> Create(u32 size);
+            /**
+             * @brief Create's a VertexBuffer with the given vertices.
+             * 
+             * @param vertices The array of vertex data as a pointer.
+             * @param size The size of the vertices array.
+             * @return Ref<VertexBuffer> 
+             */
+            OC_STATIC Ref<VertexBuffer> Create(float* vertices, u32 size);
 
         };  // VertexBuffer
 

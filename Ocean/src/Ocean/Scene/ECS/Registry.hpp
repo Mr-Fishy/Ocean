@@ -4,7 +4,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Reef {
     
         /*
          * The Registry is the actual list of entities and their components.
@@ -45,6 +45,6 @@ namespace Ocean {
 
         };
 
-    }   // Shrimp
+    }   // Reef
 
-}   // Shrimp
+}   // Ocean

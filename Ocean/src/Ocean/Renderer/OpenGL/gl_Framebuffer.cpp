@@ -102,7 +102,7 @@ namespace Ocean {
 
         #define MAX_FRAMEBUFFER_SIZE 8192
 
-        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_Specification(spec), m_DepthAttachment(0) {
+        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_RendererID(0), m_Specification(spec), m_ColorAttachmentSpecs(), m_DepthAttachmentSpec(), m_ColorAttachments(), m_DepthAttachment(0) {
             for (auto& textureSpec : this->m_Specification.attachments.attachments) {
                 if (!IsDepthFormat(textureSpec.textureFormat))
                     this->m_ColorAttachmentSpecs.emplace_back(textureSpec);
@@ -149,7 +149,7 @@ namespace Ocean {
             if (!this->m_ColorAttachmentSpecs.empty()) {
                 this->m_ColorAttachments.resize(this->m_ColorAttachmentSpecs.size());
                 
-                CreateTextures(multisample, this->m_ColorAttachments.data(), static_cast<u32>(this->m_ColorAttachments.size()));
+                CreateTextures(multisample, this->m_ColorAttachments.data(), this->m_ColorAttachments.size());
 
                 for (u32 i = 0; i < this->m_ColorAttachments.size(); i++) {
                     BindTexture(multisample, this->m_ColorAttachments[i]);

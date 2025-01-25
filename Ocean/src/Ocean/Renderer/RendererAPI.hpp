@@ -1,5 +1,16 @@
 #pragma once
 
+/**
+ * @file RendererAPI.hpp
+ * @author Evan F.
+ * @brief The abstract RendererAPI for Ocean.
+ * @date 01-14-2025
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
@@ -10,39 +21,63 @@ namespace Ocean {
 
     namespace Shrimp {
 
-    class VertexArray;
-    
-    class RendererAPI {
-    public:
-        enum API {
-            None = 0,
+        class VertexArray;
+        
+        /**
+         * @brief The RendererAPI controls the instance of the renderer API.
+         */
+        class RendererAPI {
+        public:
+            /**
+             * @brief An enum of available renderer API's.
+             */
+            enum API {
+                /** @brief Null protection option. */
+                None = 0,
 
-            OpenGL = 1,
-            Vulkan = 2,
+                /** @brief OpenGL renderer API. */
+                OpenGL = 1,
+                /** @brief Vulkan renderer API. */
+                Vulkan = 2,
 
-        };  // API
+            };  // API
 
-        /* --- */
+            /* --- */
 
-        virtual ~RendererAPI() = default;
+            virtual ~RendererAPI() = default;
 
-        virtual void Init() = 0;
+            /** @copydoc RenderCommand::Init() */
+            virtual void Init() = 0;
 
-        virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) = 0;
+            /** @copydoc RenderCommand::SetViewport() */
+            virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) = 0;
 
-        virtual void SetClearColor(const glm::vec4& color) = 0;
-        virtual void Clear() = 0;
+            /** @copydoc RenderCommand::SetClearColor() */
+            virtual void SetClearColor(const glm::vec4& color) = 0;
+            /** @copydoc RenderCommand::Clear() */
+            virtual void Clear() = 0;
 
-        virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount = 0) = 0;
+            /** @copydoc RenderCommand::DrawIndexed() */
+            virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount = 0) = 0;
 
-        static API GetAPI() { return s_API; }
+            /**
+             * @brief Get's the API that Ocean is set to.
+             * 
+             * @return API
+             */
+            OC_STATIC API GetAPI() { return s_API; }
 
-        static Scope<RendererAPI> Create();
+            /**
+             * @brief Create's a new RendererAPI instance.
+             * 
+             * @return Scope<RendererAPI> 
+             */
+            OC_STATIC Scope<RendererAPI> Create();
 
-    private:
-        static inline API s_API = API::OpenGL;
+        private:
+            OC_STATIC_INLINE API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
 
-    };  // RendererAPI
+        };  // RendererAPI
 
     }   // Shrimp
 

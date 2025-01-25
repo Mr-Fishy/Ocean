@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Primitives/Memory.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/Strings.hpp"
@@ -14,6 +15,9 @@
 
 int main(int argc, char** argv);
 
+/**
+ * @brief The namespace of Ocean Engine. All primary Ocean functionality is within this namespace.
+ */
 namespace Ocean {
 
 	/**
@@ -27,8 +31,6 @@ namespace Ocean {
 		u32 height = 600; /** @brief The starting height of the application window. */
 
 		b8 fullscreen = false; /** @brief If the application is fullscreen or not at startup. */
-
-		// TODO: Service Enabling / Disabling (i.e. ability to disable audio if not needed).
 
 		/**
 		 * @brief Construct a new ApplicationConfig with the given parameters.
@@ -88,7 +90,15 @@ namespace Ocean {
 		 * 
 		 * @return Application* 
 		 */
-		inline static Application* Get() { return s_Instance; }
+		OC_INLINE OC_STATIC Application* Get() { return s_Instance; }
+
+		OC_FINLINE void* operator new(sizet size) {
+			return oalloca(size, oSystemAllocator);
+		}
+
+		OC_FINLINE void operator delete(void* ptr) {
+			ofree(ptr, oSystemAllocator);
+		}
 
 	protected:
 		friend int ::main(int argc, char** argv);
@@ -135,7 +145,7 @@ namespace Ocean {
 
 		/* --- */
 
-		inline static Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
+		OC_STATIC_INLINE Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
 		Scope<Window> m_Window; /** @brief The main window of the application. */
 
 		LayerStack m_LayerStack; /** @brief The LayerStack of the application. */

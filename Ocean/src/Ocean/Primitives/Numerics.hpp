@@ -81,6 +81,8 @@ f32 get_random_value(f32 min, f32 max);
 
 
 
+sizet factorial(u8 num);
+
 
 
 
@@ -91,3 +93,7 @@ f32 get_random_value(f32 min, f32 max);
 
 constexpr f32 opi  = 3.1415926538f;
 constexpr f32 opi2 = 1.5707963267f;
+
+// f32 sinf32(f32 radians);
+// f32 cosf32(f32 radians);
+// f32 tanf32(f32 radians);

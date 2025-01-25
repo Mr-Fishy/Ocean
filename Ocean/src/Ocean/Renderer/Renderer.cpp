@@ -1,18 +1,15 @@
 #include "Renderer.hpp"
 
-#include "Ocean/Scene/Camera.hpp"
-
 #include "Ocean/Renderer/RenderCommand.hpp"
 #include "Ocean/Renderer/Shader.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 #include "Ocean/Renderer/Renderer2D.hpp"
 
+#include "Ocean/Renderer/Camera/Camera.hpp"
+
 namespace Ocean {
 
     void Renderer::Init() {
-        if (!s_SceneData.get())
-            s_SceneData = MakeScope<SceneData>();
-
         RenderCommand::Init();
         
         Renderer2D::Init();
