@@ -1,3 +1,5 @@
+#pragma once
+
 /**
  * @file NumericTests.hpp
  * @author Evan F.
@@ -17,26 +19,22 @@
 
 
 TEST_CASE("Factorials", "[Numerics]") {
-    
-    INFO("Expect 1 From \'0!\'");
+
     SECTION("Zero Case") {
-    
+
+        INFO("Expect 1 From \'0!\'");
+
         REQUIRE( factorial(0) == 1 );
     
     }
 
-    INFO("Test Within Useable Bounds");
-    SECTION("General Test") {
+    SECTION("Primary Tests") {
 
         REQUIRE( factorial(1) == 1 );
         REQUIRE( factorial(2) == 2 );
         REQUIRE( factorial(3) == 6 );
         REQUIRE( factorial(10) == 3628800 );
         REQUIRE( factorial(20) == 2432902008176640000 );
-
-        BENCHMARK("Factorial of 20") {
-            return factorial(20);
-        };
 
     }
 }

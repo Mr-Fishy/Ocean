@@ -177,6 +177,14 @@ if (Ocean_BUILD_DOCS)
 
 endif (Ocean_BUILD_DOCS)
 
+if (Ocean_BUILD_TESTS)
+
+    enable_testing()
+
+    add_subdirectory(Ocean/tests)
+
+endif (Ocean_BUILD_TESTS)
+
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")
 message(STATUS)
