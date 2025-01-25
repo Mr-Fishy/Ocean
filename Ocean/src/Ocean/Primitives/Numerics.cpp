@@ -1,4 +1,6 @@
 #include "Numerics.hpp"
+#include "Assert.hpp"
+#include "Ocean/Types/Integers.hpp"
 
 // TODO: Type casting protection (out of bounds protection)
 
@@ -120,9 +122,11 @@ f32 get_random_value(f32 min, f32 max) {
 
 
 
-u32 factorial(u32 num) {
-	u32 result = 1;
-	for (u32 i = 2; i < num; i++)
+sizet factorial(u8 num) {
+	OASSERT_LENGTH(num, 21);
+
+	sizet result = 1;
+	for (u8 i = 2; i <= num; i++)
 		result *= i;
 
 	return result;

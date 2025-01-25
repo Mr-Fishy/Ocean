@@ -223,6 +223,12 @@ if (Ocean_BUILD_TESTS)
         ${Ocean_TESTS_SRC}/OceanTests.cpp
     )
 
+    target_include_directories(
+        OceanTests
+
+        PRIVATE ${Ocean_TESTS_SRC}
+    )
+
     target_link_libraries(
         OceanTests
 
