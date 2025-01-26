@@ -41,11 +41,11 @@ namespace Ocean {
          */
         void PopOverlay(Layer* overlay);
 
-        OC_INLINE DynamicArray<Layer*>::Iterator begin() { return m_Layers.begin(); }
-        OC_INLINE DynamicArray<Layer*>::ConstIterator begin() const { return m_Layers.begin(); }
+        OC_INLINE DynamicArray<Layer*>::iterator begin() { return m_Layers.begin(); }
+        OC_INLINE DynamicArray<Layer*>::const_iterator begin() const { return m_Layers.begin(); }
 
-        OC_INLINE DynamicArray<Layer*>::Iterator end() { return m_Layers.end(); }
-        OC_INLINE DynamicArray<Layer*>::ConstIterator end() const { return m_Layers.end(); }
+        OC_INLINE DynamicArray<Layer*>::iterator end() { return m_Layers.end(); }
+        OC_INLINE DynamicArray<Layer*>::const_iterator end() const { return m_Layers.end(); }
 
     private:
         DynamicArray<Layer*> m_Layers; /** @brief An array of Layer pointers representing a layerstack. */

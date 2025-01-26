@@ -54,7 +54,7 @@ namespace Ocean {
         }
 
         void glVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer) {
-            OASSERTM(buffer->GetLayout().GetElements().Size(), "VertexBuffer Has No Layout!");
+            OASSERTM(buffer->GetLayout().GetElements().size(), "VertexBuffer Has No Layout!");
 
             glBindVertexArray(this->m_RendererID);
             buffer->Bind();
@@ -129,7 +129,7 @@ namespace Ocean {
                 }
             }
 
-            this->m_VertexBuffers.PushBack(buffer);
+            this->m_VertexBuffers.push_back(buffer);
         }
 
         void glVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer) {
