@@ -11,17 +11,17 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         Scope<GraphicsContext> GraphicsContext::Create(void* windowHandle) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
 
-                case Ocean::Shrimp::RendererAPI::API::OpenGL:
+                case Ocean::Splash::RendererAPI::API::OpenGL:
                     return MakeScope<glGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
 
-                case Ocean::Shrimp::RendererAPI::API::Vulkan:
+                case Ocean::Splash::RendererAPI::API::Vulkan:
                     return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
                 }
 
@@ -29,6 +29,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

@@ -5,7 +5,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         glVertexBuffer::glVertexBuffer(u32 size) : m_RendererID(0), m_Layout() {
             glCreateBuffers(1, &this->m_RendererID);
@@ -38,6 +38,6 @@ namespace Ocean {
             glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

@@ -2,7 +2,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         class Font {
         public:

@@ -140,24 +140,26 @@ REPEAT_BRIEF            = YES
 # the entity):The $name class, The $name widget, The $name file, is, provides,
 # specifies, contains, represents, a, an and the.
 
-ABBREVIATE_BRIEF        = "The $name class" \
-                         "The $name widget" \
-                         "The $name file" \
-                         is \
-                         provides \
-                         specifies \
-                         contains \
-                         represents \
-                         a \
-                         an \
-                         the
+# ABBREVIATE_BRIEF        = "The $name class" \
+#                          "The $name widget" \
+#                          "The $name file" \
+#                          is \
+#                          provides \
+#                          specifies \
+#                          contains \
+#                          represents \
+#                          a \
+#                          an \
+#                          the
+
+ABBREVIATE_BRIEF        = 
 
 # If the ALWAYS_DETAILED_SEC and REPEAT_BRIEF tags are both set to YES then
 # doxygen will generate a detailed section even if there is only a brief
 # description.
 # The default value is: NO.
 
-ALWAYS_DETAILED_SEC     = NO
+ALWAYS_DETAILED_SEC     = YES
 
 # If the INLINE_INHERITED_MEMB tag is set to YES, doxygen will show all
 # inherited members of a class in the documentation of that class as if those
@@ -372,7 +374,7 @@ TOC_INCLUDE_HEADINGS    = 5
 # The default value is: DOXYGEN.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-MARKDOWN_ID_STYLE       = DOXYGEN
+MARKDOWN_ID_STYLE       = GITHUB
 
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
@@ -380,7 +382,7 @@ MARKDOWN_ID_STYLE       = DOXYGEN
 # globally by setting AUTOLINK_SUPPORT to NO.
 # The default value is: YES.
 
-AUTOLINK_SUPPORT        = YES
+AUTOLINK_SUPPORT        = NO
 
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
@@ -1158,7 +1160,7 @@ FILTER_SOURCE_PATTERNS  =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE  =
+USE_MDFILE_AS_MAINPAGE  = README.md
 
 # The Fortran standard specifies that for fixed formatted Fortran code all
 # characters from position 72 are to be considered as comment. A common

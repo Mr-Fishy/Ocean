@@ -7,7 +7,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<VertexArray> VertexArray::Create() {
             switch (RendererAPI::GetAPI()) {
@@ -25,6 +25,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

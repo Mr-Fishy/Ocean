@@ -27,7 +27,7 @@ namespace Ocean {
 
     }
 
-    void Renderer::Submit(const Ref<Shrimp::Shader>& shader, const Ref<Shrimp::VertexArray>& array, glm::mat4 transform) {
+    void Renderer::Submit(const Ref<Splash::Shader>& shader, const Ref<Splash::VertexArray>& array, glm::mat4 transform) {
         shader->Bind();
         shader->SetMat4f("u_ViewProjection", s_SceneData->viewProjectionMatrix);
         shader->SetMat4f("u_Transform", transform);

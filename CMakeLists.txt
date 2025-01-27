@@ -13,33 +13,37 @@ string(COMPARE EQUAL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} Ocean_MAIN_
 option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." OFF)
 
 option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
-option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." Ocean_MAIN_PROJECT)
-option(Ocean_BUILD_TESTS "Build Ocean tests." Ocean_MAIN_PROJECT)
+option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
+option(Ocean_BUILD_TESTS "Build Ocean tests." ON)
 
 project("Ocean Engine")
 
-# Finds the system it is on. for fun and debugging if needed
-string(TIMESTAMP time)
-message(STATUS "TIME OF BUILD: ${time}")
-if(WIN32)
-    message(STATUS "System: Windows")
-elseif(APPLE)
-    message(STATUS "System: MACOS")
-elseif(UNIX)
-    message(STATUS "System: Linux/Unix")
-else()
-    message(WARNING "OS Assessment: Unknown platform. Status: Disastrous.")
-endif()
+if (Ocean_MAIN_PROJECT)
 
-# List out found info.
-message(STATUS "Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    # Finds the system it is on. for fun and debugging if needed
+    string(TIMESTAMP time)
+    message(STATUS "TIME OF BUILD: ${time}")
+    if(WIN32)
+        message(STATUS "System: Windows")
+    elseif(APPLE)
+        message(STATUS "System: MACOS")
+    elseif(UNIX)
+        message(STATUS "System: Linux/Unix")
+    else()
+        message(WARNING "OS Assessment: Unknown platform. Status: Disastrous.")
+    endif()
 
-# Tries to list the compiler, otherwise throw error.
-if(CMAKE_CXX_COMPILER)
-    message(STATUS "Compiler Located: ${CMAKE_CXX_COMPILER}")
-else()
-    message(FATAL_ERROR "Compiler Reassessment: Compiler not found. Status: Calamitous.")
-endif()
+    # List out found info.
+    message(STATUS "Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+
+    # Tries to list the compiler, otherwise throw error.
+    if(CMAKE_CXX_COMPILER)
+        message(STATUS "Compiler Located: ${CMAKE_CXX_COMPILER}")
+    else()
+        message(FATAL_ERROR "Compiler Reassessment: Compiler not found. Status: Calamitous.")
+    endif()
+
+endif (Ocean_MAIN_PROJECT)
 
 if (MSVC)
     message(STATUS)
@@ -130,6 +134,8 @@ set(GLM_BUILD_TESTS OFF)
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 message(STATUS)
 
+add_subdirectory(Ocean/vendor/glad EXCLUDE_FROM_ALL)
+
 # Steam Audio
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Steam Audio Starting (${time})...")
@@ -175,10 +181,9 @@ endif (Ocean_BUILD_DOCS)
 
 if (Ocean_BUILD_TESTS)
 
-    string(TIMESTAMP time "%M:%S")
-    add_subdirectory(Tests)
-    message(STATUS "Tests Starting (${time})...")
-    message(STATUS)
+    enable_testing()
+
+    add_subdirectory(Ocean/tests)
 
 endif (Ocean_BUILD_TESTS)
 

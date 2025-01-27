@@ -6,21 +6,21 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
-    
-    class glRendererAPI : public RendererAPI {
-    public:
-        virtual void Init() override final;
+    namespace Splash {
 
-        virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
+        class glRendererAPI : public RendererAPI {
+        public:
+            virtual void Init() override final;
 
-        virtual void SetClearColor(const glm::vec4& color) override final;
-        virtual void Clear() override final;
+            virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
 
-        virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) override final;
+            virtual void SetClearColor(const glm::vec4& color) override final;
+            virtual void Clear() override final;
 
-    };  // RendererAPI
+            virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) override final;
 
-    }   // Shrimp
+        };  // RendererAPI
+
+    }   // Splash
 
 }   // Ocean

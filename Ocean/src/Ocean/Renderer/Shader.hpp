@@ -21,7 +21,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         /**
          * @brief The Shader controls a shader through the renderer API.

@@ -8,7 +8,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glVertexArray : public VertexArray {
         public:
@@ -34,6 +34,6 @@ namespace Ocean {
 
         };  // VertexArray
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

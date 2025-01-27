@@ -7,7 +7,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<VertexBuffer> VertexBuffer::Create(u32 size) {
             switch (RendererAPI::GetAPI()) {
@@ -41,6 +41,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

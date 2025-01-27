@@ -19,27 +19,27 @@ namespace Ocean {
 
 
 
-    Ref<Shrimp::Shader>& ResourceManager::LoadShader(cstring path, cstring name) {
+    Ref<Splash::Shader>& ResourceManager::LoadShader(cstring path, cstring name) {
         return (Instance()->m_Shaders[name] = Instance()->LoadShaderFile(path));
     }
 
-    Ref<Shrimp::Shader>& ResourceManager::GetShader(cstring name) {
+    Ref<Splash::Shader>& ResourceManager::GetShader(cstring name) {
         return Instance()->m_Shaders[name];
     }
 
-    Ref<Shrimp::Texture2D>& ResourceManager::LoadTexture(cstring path, cstring name) {
+    Ref<Splash::Texture2D>& ResourceManager::LoadTexture(cstring path, cstring name) {
         return (Instance()->m_Textures[name] = Instance()->LoadTextureFile(path));
     }
 
-    Ref<Shrimp::Texture2D>& ResourceManager::GetTexture(cstring name) {
+    Ref<Splash::Texture2D>& ResourceManager::GetTexture(cstring name) {
         return Instance()->m_Textures[name];
     }
 
-    Ref<Shrimp::Font>& ResourceManager::LoadFont(cstring path, cstring name) {
+    Ref<Splash::Font>& ResourceManager::LoadFont(cstring path, cstring name) {
         return (Instance()->m_Fonts[name] = Instance()->LoadFontFile(path));
     }
 
-    Ref<Shrimp::Font>& ResourceManager::GetFont(cstring name) {
+    Ref<Splash::Font>& ResourceManager::GetFont(cstring name) {
         return Instance()->m_Fonts[name];
     }
 
@@ -65,7 +65,7 @@ namespace Ocean {
         GEOMETRY = 2,
     };
 
-    Ref<Shrimp::Shader> ResourceManager::LoadShaderFile(cstring path) {
+    Ref<Splash::Shader> ResourceManager::LoadShaderFile(cstring path) {
         FILE* fp = fopen(path, "r");
 
         if (fp == NULL) {
@@ -112,19 +112,19 @@ namespace Ocean {
         fclose(fp);
 
         if (geometryCode.empty())
-            return Shrimp::Shader::Create(vertexCode.c_str(), fragmentCode.c_str());
+            return Splash::Shader::Create(vertexCode.c_str(), fragmentCode.c_str());
 
-        return Shrimp::Shader::Create(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
+        return Splash::Shader::Create(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
     }
 
-    Ref<Shrimp::Texture2D> ResourceManager::LoadTextureFile(cstring path) {
+    Ref<Splash::Texture2D> ResourceManager::LoadTextureFile(cstring path) {
         i32 width, height, channels;
 
         stbi_set_flip_vertically_on_load(1);
         stbi_uc* data = stbi_load(path, &width, &height, &channels, 0);
 
-        Ref<Shrimp::Texture2D> texture = Shrimp::Texture2D::Create(width, height);
-        texture->SetFormat(static_cast<Shrimp::TextureFormat>(channels));
+        Ref<Splash::Texture2D> texture = Splash::Texture2D::Create(width, height);
+        texture->SetFormat(static_cast<Splash::TextureFormat>(channels));
         texture->SetData(data, width * height * channels);
 
         stbi_image_free(data);
@@ -132,7 +132,7 @@ namespace Ocean {
         return texture;
     }
 
-    Ref<Shrimp::Font> ResourceManager::LoadFontFile(cstring path) {
+    Ref<Splash::Font> ResourceManager::LoadFontFile(cstring path) {
         
     }
 

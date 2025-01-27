@@ -10,13 +10,13 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
         
         class Shader;
         class Texture2D;
         class Font;
 
-    }   // Shrimp
+    }   // Splash
 
 
     // TODO: GUIDs -> https://github.com/graeme-hill/crossguid
@@ -28,52 +28,52 @@ namespace Ocean {
         ~ResourceManager();
 
         /**
-         * @brief Load's a Shrimp::Shader from the given file and stores it with the given name.
+         * @brief Load's a Splash::Shader from the given file and stores it with the given name.
          * 
          * @param path The path to the file.
          * @param name The name to reference the Shader as.
-         * @return Ref<Shrimp::Shader>& 
+         * @return Ref<Splash::Shader>& 
          */
-        OC_STATIC Ref<Shrimp::Shader>& LoadShader(cstring path, cstring name);
+        OC_STATIC Ref<Splash::Shader>& LoadShader(cstring path, cstring name);
         /**
-         * @brief Get the Shrimp::Shader object from m_Shaders.
+         * @brief Get the Splash::Shader object from m_Shaders.
          * 
          * @param name The name of the Shader.
-         * @return Ref<Shrimp::Shader>& 
+         * @return Ref<Splash::Shader>& 
          */
-        OC_STATIC Ref<Shrimp::Shader>& GetShader(cstring name);
+        OC_STATIC Ref<Splash::Shader>& GetShader(cstring name);
 
         /**
-         * @brief Load's a Shrimp::Texture2D from the given file and stores it with the given name.
+         * @brief Load's a Splash::Texture2D from the given file and stores it with the given name.
          * 
          * @param path The path to the file.
          * @param name The name to reference the Texture2D as.
-         * @return Ref<Shrimp::Texture2D>& 
+         * @return Ref<Splash::Texture2D>& 
          */
-        OC_STATIC Ref<Shrimp::Texture2D>& LoadTexture(cstring path, cstring name);
+        OC_STATIC Ref<Splash::Texture2D>& LoadTexture(cstring path, cstring name);
         /**
-         * @brief Get the Shrimp::Texture2D object from m_Textures.
+         * @brief Get the Splash::Texture2D object from m_Textures.
          * 
          * @param name The name of the Texture2D.
-         * @return Ref<Shrimp::Texture2D>& 
+         * @return Ref<Splash::Texture2D>& 
          */
-        OC_STATIC Ref<Shrimp::Texture2D>& GetTexture(cstring name);
+        OC_STATIC Ref<Splash::Texture2D>& GetTexture(cstring name);
 
         /**
-         * @brief Load's a Shrimp::Font from the given file and stores it with the given name.
+         * @brief Load's a Splash::Font from the given file and stores it with the given name.
          * 
          * @param path The path to the file.
          * @param name The name to reference the Font as.
-         * @return Ref<Shrimp::Font>& 
+         * @return Ref<Splash::Font>& 
          */
-        OC_STATIC Ref<Shrimp::Font>& LoadFont(cstring path, cstring name);
+        OC_STATIC Ref<Splash::Font>& LoadFont(cstring path, cstring name);
         /**
-         * @brief Get the Shrimp::Font object from m_Fonts.
+         * @brief Get the Splash::Font object from m_Fonts.
          * 
          * @param name The name of the Font.
-         * @return Ref<Shrimp::Font>& 
+         * @return Ref<Splash::Font>& 
          */
-        OC_STATIC Ref<Shrimp::Font>& GetFont(cstring name);
+        OC_STATIC Ref<Splash::Font>& GetFont(cstring name);
 
         // Audio Files
 
@@ -91,36 +91,36 @@ namespace Ocean {
         OC_STATIC ResourceManager* Instance();
 
         /**
-         * @brief Internal function to load a Shrimp::Shader from the given file.
+         * @brief Internal function to load a Splash::Shader from the given file.
          * 
          * @param path The path to the file.
-         * @return Ref<Shrimp::Shader> 
+         * @return Ref<Splash::Shader> 
          */
-        Ref<Shrimp::Shader> LoadShaderFile(cstring path);
+        Ref<Splash::Shader> LoadShaderFile(cstring path);
 
         /**
-         * @brief Internal function to load a Shrimp::Texture2D from the given file.
+         * @brief Internal function to load a Splash::Texture2D from the given file.
          * 
          * @param path The path to the file.
-         * @return Ref<Shrimp::Texture2D> 
+         * @return Ref<Splash::Texture2D> 
          */
-        Ref<Shrimp::Texture2D> LoadTextureFile(cstring path);
+        Ref<Splash::Texture2D> LoadTextureFile(cstring path);
 
         /**
-         * @brief Internal function to load a Shrimp::Font from the given file.
+         * @brief Internal function to load a Splash::Font from the given file.
          * 
          * @param path The path to the file.
-         * @return Ref<Shrimp::Font> 
+         * @return Ref<Splash::Font> 
          */
-        Ref<Shrimp::Font> LoadFontFile(cstring path);
+        Ref<Splash::Font> LoadFontFile(cstring path);
 
         /* --- */
 
         OC_STATIC_INLINE Scope<ResourceManager> s_Instance = MakeScope<ResourceManager>(); /** @brief The ResourceManager's singleton instance. */
 
-        std::map<cstring, Ref<Shrimp::Shader>> m_Shaders; /** @brief The Shrimp::Shader objects stored. */
-        std::map<cstring, Ref<Shrimp::Texture2D>> m_Textures; /** @brief The Shrimp::Texture2D objects stored. */
-        std::map<cstring, Ref<Shrimp::Font>> m_Fonts; /** @brief The Shrimp::Font objects stored. */
+        std::map<cstring, Ref<Splash::Shader>> m_Shaders; /** @brief The Splash::Shader objects stored. */
+        std::map<cstring, Ref<Splash::Texture2D>> m_Textures; /** @brief The Splash::Texture2D objects stored. */
+        std::map<cstring, Ref<Splash::Font>> m_Fonts; /** @brief The Splash::Font objects stored. */
 
     };
 

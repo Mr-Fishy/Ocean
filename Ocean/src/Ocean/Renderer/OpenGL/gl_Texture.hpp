@@ -7,7 +7,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glTexture2D : public Texture2D {
         public:
@@ -33,6 +33,6 @@ namespace Ocean {
 
         };  // Texture2D
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean
