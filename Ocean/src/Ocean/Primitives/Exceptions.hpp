@@ -1,38 +1,44 @@
 #pragma once
 
+#include "Ocean/Types/Strings.hpp"
+
+// std
 #include <exception>
-#include <string>
 
 namespace Ocean{
-    enum EXCEPTIONS{
-        //Logic errors
+
+    /**
+     * @brief An enum of different error types that can occur.
+     */
+    enum Error {
+        /** @brief Logic errors */
         INVALID_ARGUMENT =0,
-        //
+        /** @brief  */
         DOMAIN_ERROR =1,
-        //Length 
+        /** @brief Length */
         LENGTH_ERROR =2,
-        //Out of range
+        /** @brief Out of range */
         OUT_OF_RANGE =3,
-        //This error specifically is to be used by threads.
+        /** @brief This error specifically is to be used by threads. */
         FUTURE_ERROR =4,
 
-        //runtime errors
+        /** @brief runtime errors */
         RANGE_ERROR =5,
-        //Overflow error
+        /** @brief Overflow error */
         OVERFLOW_ERROR =6,
-        //Underflow error
+        /** @brief Underflow error */
         UNDERFLOW_ERROR =7,
-        //Regex errors
+        /** @brief Regex errors */
         REGEX_ERROR =8,
-        //General system failure
+        /** @brief General system failure */
         SYSTEM_ERROR =9,
-        //Input output failure
+        /** @brief Input output failure */
         IOS_FAILURE =10,
-        //Filesystem failure
+        /** @brief Filesystem failure */
         FILESYSTEM_ERROR =11,
-        //unsure if this ever made it in c++, here just in case
+        /** @brief unsure if this ever made it in c++, here just in case */
         TX_EXCEPTION =12,
-        //should be thrown when typeid is nullptr of polymorphic type
+        /** @brief should be thrown when typeid is nullptr of polymorphic type */
         BAD_TYPEID =13,
         BAD_CAST =14,
         BAD_ANY_CAST =15,
@@ -44,21 +50,50 @@ namespace Ocean{
         BAD_ARRAY_NEW_LENGTH =21,
         BAD_EXCEPTION =22,
         BAD_VARIANT_ACCESS =23
-  
-    };
 
-    class OExcept : std::exception{
-        //Accepts string and cstyle string
-        explicit OExcept(const char* message) noexcept: msg(message){};
-        explicit OExcept(const std::string& message) noexcept: msg(message){};
+    };  // Error
 
-        //Just returns the message.
-        virtual char const* what() const noexcept {return msg.c_str();};
-        
-        protected:
-        const std::string msg;
+    /**
+     * @brief A exception class that describes an error when thrown.
+     */
+    class Exception : std::exception{
+    public:
+        /**
+         * @brief The information container of an Exception.
+         */
+        struct ExceptionInfo {
+            const Error error; /** @brief The type of @ref Error that the exception is. */
+            const cstring msg; /** @brief The message that describes the error. */
 
-        
-    };
+        };  // ExceptionInfo
 
-}
+    public:
+        /**
+         * @brief Construct a new Exception object.
+         * 
+         * @param error The error type of the exception.
+         * @param message 
+         */
+        explicit Exception(const Error error, cstring message) noexcept : m_Info({ error, message }) { }
+        explicit Exception(const Error error, const string& message) noexcept : m_Info({ error, message.c_str() }) { }
+
+        /**
+         * @brief Gets the message of the error.
+         * 
+         * @return cstring 
+         */
+        virtual cstring what() const noexcept override { return this->m_Info.msg; }
+
+        /**
+         * @brief Gets the error type.
+         * 
+         * @return Error 
+         */
+        Error error() const noexcept { return this->m_Info.error; }
+
+    protected:
+        ExceptionInfo m_Info; /** @brief The information of the exception. */
+
+    };  // Exception
+
+}   // Ocean
