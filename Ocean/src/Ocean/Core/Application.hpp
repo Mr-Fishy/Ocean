@@ -21,7 +21,7 @@ int main(int argc, char** argv);
 namespace Ocean {
 
 	/**
-	 * @brief The configuration of the application at startup.
+	 * @brief A struct to configure the application at startup.
 	 */
 	struct ApplicationConfig {
 
