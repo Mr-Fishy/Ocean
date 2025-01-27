@@ -32,6 +32,10 @@ void sonar::convert::deinterleave(float* inData){
 
     return;
 }
+IPLAudioBuffer* sonar::convert::get_buffer(){
+
+    return &buffer;
+}
 
 //This should be called if it needs to be used again for something else, basically when its done with its process.
 void sonar::convert::wipe(){

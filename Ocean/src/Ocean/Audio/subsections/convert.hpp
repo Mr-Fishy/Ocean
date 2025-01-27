@@ -25,6 +25,8 @@ namespace sonar{
 
             void wipe();
 
+            IPLAudioBuffer* get_buffer();
+
         private:
 
             IPLAudioBuffer buffer;

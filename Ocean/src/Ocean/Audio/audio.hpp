@@ -24,4 +24,5 @@ namespace sonar{
             steamaudio& operator=(const steamaudio&) = delete;
 
     };
+
 };
