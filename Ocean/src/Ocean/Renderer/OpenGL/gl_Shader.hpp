@@ -4,7 +4,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         class glShader : public Shader {
         private:

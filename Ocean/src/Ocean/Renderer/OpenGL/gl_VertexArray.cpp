@@ -9,7 +9,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         static GLenum ShaderTypeToGLType(ShaderDataType type) {
             switch (type) {
@@ -139,6 +139,6 @@ namespace Ocean {
             this->m_IndexBuffer = buffer;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

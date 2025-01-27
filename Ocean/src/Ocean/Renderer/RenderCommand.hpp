@@ -70,12 +70,12 @@ namespace Ocean {
          * @param array The VertexArray to draw from.
          * @param count The number of indices to draw. (OPTIONAL)
          */
-        OC_STATIC_INLINE void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
+        OC_STATIC_INLINE void DrawIndexed(const Ref<Splash::VertexArray>& array, u32 count = 0) {
             s_RendererAPI->DrawIndexed(array, count);
         }
 
     private:
-        OC_STATIC_INLINE Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
+        OC_STATIC_INLINE Scope<Splash::RendererAPI> s_RendererAPI = Splash::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
 
     };  // RenderCommand
 

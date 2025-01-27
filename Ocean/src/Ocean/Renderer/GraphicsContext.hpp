@@ -16,7 +16,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         /**
          * @brief The GraphicsContext controls the instance of the renderer's window context.
@@ -47,6 +47,6 @@ namespace Ocean {
 
         };  // GraphicsContext
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

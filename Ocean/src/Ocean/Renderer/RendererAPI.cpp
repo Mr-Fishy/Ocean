@@ -8,7 +8,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         Scope<RendererAPI> RendererAPI::Create() {
             switch (s_API) {
@@ -26,6 +26,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

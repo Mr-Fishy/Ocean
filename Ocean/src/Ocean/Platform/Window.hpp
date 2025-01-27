@@ -147,7 +147,7 @@ namespace Ocean {
 
 		/* --- */
 
-		Scope<Shrimp::GraphicsContext> m_Context; /** @brief The graphics context of the window. AKA the OpenGL context or Vulkan instance. */
+		Scope<Splash::GraphicsContext> m_Context; /** @brief The graphics context of the window. AKA the OpenGL context or Vulkan instance. */
 		void* p_PlatformHandle; /** @brief The platform handle from the underlying window library. */
 
 		cstring m_Name; /** @brief The name of the window. The name is reflected in the window title. */

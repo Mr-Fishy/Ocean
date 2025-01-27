@@ -67,17 +67,17 @@ namespace Ocean {
 
 		#ifdef OC_DEBUG
 
-		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL)
+		if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::OpenGL)
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
 		#endif
 
-		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL) {
+		if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::OpenGL) {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
-		else if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::Vulkan)
+		else if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::Vulkan)
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		this->m_Data.window = this;
@@ -89,7 +89,7 @@ namespace Ocean {
 			return;
 		}
 
-		this->m_Context = Shrimp::GraphicsContext::Create(this->p_PlatformHandle);
+		this->m_Context = Splash::GraphicsContext::Create(this->p_PlatformHandle);
 		this->m_Context->Init();
 
 		glfwSetWindowUserPointer(static_cast<WindowPtr>(this->p_PlatformHandle), &m_Data);

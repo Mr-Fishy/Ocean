@@ -14,14 +14,11 @@
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
-
-// std
-#include <initializer_list>
-#include <vector>
+#include "Ocean/Primitives/Array.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief An enum of Ocean supported Framebuffer formats.
@@ -78,7 +75,7 @@ namespace Ocean {
              */
             OC_INLINE FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : attachments(attachments) { }
 
-            std::vector<FramebufferTextureSpec> attachments; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
+            DynamicArray<FramebufferTextureSpec> attachments; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
 
         };  // FramebufferAttachmentSpec
 

@@ -8,7 +8,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         glShader::glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource) : m_RendererID() {
             u32 vertex, fragment, geometry;

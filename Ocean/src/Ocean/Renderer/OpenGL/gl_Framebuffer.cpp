@@ -13,7 +13,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         static GLenum TextureTarget(b8 multisampled) {
             return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
@@ -243,6 +243,6 @@ namespace Ocean {
             );
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

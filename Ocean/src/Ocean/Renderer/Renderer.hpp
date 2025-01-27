@@ -22,12 +22,12 @@ namespace Ocean {
 
     class Camera;
 
-    namespace Shrimp {
+    namespace Splash {
 
         class VertexArray;
         class Shader;
 
-    }   // Shrimp
+    }   // Splash
 
     /**
      * @brief The overall renderer of Ocean. 
@@ -76,7 +76,7 @@ namespace Ocean {
          * @param array The VertexArray of data to draw with.
          * @param transform The camera transform. (OPTIONAL)
          */
-        OC_STATIC void Submit(const Ref<Shrimp::Shader>& shader, const Ref<Shrimp::VertexArray>& array, glm::mat4 transform = glm::mat4(1.0f));
+        OC_STATIC void Submit(const Ref<Splash::Shader>& shader, const Ref<Splash::VertexArray>& array, glm::mat4 transform = glm::mat4(1.0f));
 
         /**
          * @brief Call for when the Window is resized.

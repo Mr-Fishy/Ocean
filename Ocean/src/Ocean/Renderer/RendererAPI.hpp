@@ -19,7 +19,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class VertexArray;
         
@@ -79,6 +79,6 @@ namespace Ocean {
 
         };  // RendererAPI
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

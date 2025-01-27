@@ -6,8 +6,8 @@ struct GLFWwindow;
 
 namespace Ocean {
 
-    namespace Shrimp {
-    
+    namespace Splash {
+
         class glGraphicsContext : public GraphicsContext {
         public:
             glGraphicsContext() = delete;
@@ -26,6 +26,6 @@ namespace Ocean {
 
         };  // GraphicsContext
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

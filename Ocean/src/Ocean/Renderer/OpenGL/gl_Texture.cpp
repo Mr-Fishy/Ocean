@@ -5,7 +5,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         glTexture2D::glTexture2D(u32 width, u32 height) : Texture2D(width, height), m_RendererID(0), m_InternalFormat(), m_DataFormat() {
             this->m_Width = width;
@@ -58,6 +58,6 @@ namespace Ocean {
             }
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

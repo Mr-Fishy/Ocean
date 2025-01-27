@@ -56,11 +56,11 @@ namespace Ocean {
         OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
         OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
 
-        OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-        OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Splash::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Splash::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
         OC_STATIC void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
-        OC_STATIC void DrawQuad(const glm::mat4& transform, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
+        OC_STATIC void DrawQuad(const glm::mat4& transform, const Ref<Splash::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
         
         /**
          * @brief A struct to hold the stats of the Renderer2D.

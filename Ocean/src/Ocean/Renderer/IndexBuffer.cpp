@@ -10,7 +10,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         Ref<IndexBuffer> IndexBuffer::Create(u32* indices, u32 count) {
             switch (RendererAPI::GetAPI()) {
@@ -28,6 +28,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

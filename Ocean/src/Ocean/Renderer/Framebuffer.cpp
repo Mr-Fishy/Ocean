@@ -9,7 +9,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec) {
             switch (RendererAPI::GetAPI()) {
@@ -27,6 +27,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

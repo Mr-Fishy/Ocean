@@ -134,6 +134,8 @@ set(GLM_BUILD_TESTS OFF)
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 message(STATUS)
 
+add_subdirectory(Ocean/vendor/glad EXCLUDE_FROM_ALL)
+
 # Steam Audio
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Steam Audio Starting (${time})...")

@@ -6,7 +6,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glVertexBuffer : public VertexBuffer {
         public:
@@ -29,6 +29,6 @@ namespace Ocean {
 
         };  // glVertexBuffer
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

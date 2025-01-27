@@ -9,7 +9,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<Texture2D> Texture2D::Create(u32 width, u32 height) {
             switch (RendererAPI::GetAPI()) {
@@ -27,6 +27,6 @@ namespace Ocean {
             return nullptr;
         }
     
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

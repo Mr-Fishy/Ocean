@@ -19,7 +19,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief The VertexArray controls an array of vertices through the renderer API.
@@ -72,6 +72,6 @@ namespace Ocean {
 
         };  // VertexArray
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

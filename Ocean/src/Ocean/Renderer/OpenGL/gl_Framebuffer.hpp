@@ -9,7 +9,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glFramebuffer : public Framebuffer {
         public:
@@ -43,6 +43,6 @@ namespace Ocean {
 
         };  // Framebuffer
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

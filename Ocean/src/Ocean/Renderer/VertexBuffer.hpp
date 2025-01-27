@@ -23,7 +23,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief Enum of the types of data in a Shader.
@@ -267,6 +267,6 @@ namespace Ocean {
 
         };  // VertexBuffer
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

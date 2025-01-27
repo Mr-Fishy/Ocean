@@ -11,7 +11,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         glGraphicsContext::glGraphicsContext(GLFWwindow* window) : p_WindowHandle(window) {
             OASSERTM(this->p_WindowHandle != nullptr, "Window Handle Is A nullptr!");
@@ -37,6 +37,6 @@ namespace Ocean {
             glfwSwapBuffers(this->p_WindowHandle);
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

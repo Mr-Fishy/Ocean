@@ -2,11 +2,9 @@
 
 [Windows](#install-steps-windows)
 
-[WSL](#install-steps-wsl-ubuntu)
-
 [Linux](#install-steps-linux)
 
-[Visual Studio Code](#visual-studio-code-setup)
+[Visual Studio Code Extensions](#recommended-visual-studio-code-extensions)
 
 ## Install Steps (Windows)
 
@@ -46,7 +44,7 @@ pacman -S mingw-w64-x86_64-ninja
 
 After ninja is installed, everything should be ready to go.
 
-## Install Steps (WSL Ubuntu)
+## Install Steps (Linux)
 
 ### Install Build Essentials (G++ / GCC)
 
@@ -140,34 +138,31 @@ vulkaninfo
 vkcube
 ```
 
-## Install Steps (Linux)
+## Dependency Setup
 
-### GLFW Requirements
+After cloning the repository, make sure to run the following Git command to make sure all of the submodules are ready.
+
+```bash
+git submodule update --init --recursive
+```
+
+### GLFW Requirements (Linux)
 
 ```bash
 sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
 ```
 
-## Visual Studio Code Setup
+## Recommended Visual Studio Code Extensions
 
-Once complete with Ubuntu package setup, run VS Code with the following command.
-
-```bash
-cd ./directory/Ocean
-code ./
-```
-
-### Visual Studio Code Extensions
-
-Depending on running in WSL or on a dedicated Linux system, the following extensions are needed or recommended for development in Ocean.
+Visual Studio Code is the primary editor used for Ocean development. The following are some extensions that are used, some required for useability.
 
 | Extension                                                                                                          | Required |
 | ------------------------------------------------------------------------------------------------------------------ | -------- |
 | [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)                                    | Yes      |
-| [clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd)                | No       |
 | [CMake Integration](https://marketplace.visualstudio.com/items?itemName=go2sh.cmake-integration-vscode)            | Yes      |
+| [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)                           | Yes      |
 | [CMake Language Support](https://marketplace.visualstudio.com/items?itemName=josetr.cmake-language-support-vscode) | No       |
-| [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)                           | No       |
 | [Shader Language Support](https://marketplace.visualstudio.com/items?itemName=slevesque.shader)                    | No       |
+| [Clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd)                | No       |
 
 Note for the clangd extension, the Microsoft C/C++ intellisense will need to be disabled to prevent conflicts.

@@ -17,7 +17,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief An enum of formats that can be used for a Texture.
@@ -118,6 +118,6 @@ namespace Ocean {
 
         };  // Texture2D
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

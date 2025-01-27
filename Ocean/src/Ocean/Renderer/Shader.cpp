@@ -10,7 +10,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<Shader> Shader::Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource) {
             switch (RendererAPI::GetAPI()) {
@@ -28,6 +28,6 @@ namespace Ocean {
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean
