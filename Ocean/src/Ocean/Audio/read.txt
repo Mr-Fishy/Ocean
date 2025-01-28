@@ -1,0 +1,6 @@
+Steps:
+Load context
+Load HRTF
+Load audio files
+Load Scene
+Load steamaudio things.

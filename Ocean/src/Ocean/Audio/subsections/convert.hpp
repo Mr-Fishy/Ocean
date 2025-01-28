@@ -7,6 +7,13 @@
 #include "Ocean/Audio/audio.hpp"
 
 namespace sonar{
+
+    struct audio_holder{
+        int channels =0;
+        int samples =0;
+        float* data = nullptr;
+    };
+
     class convert{
         public: 
 
