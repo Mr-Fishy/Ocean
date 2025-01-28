@@ -8,6 +8,7 @@ if (DOXYGEN_FOUND)
     foreach(path IN LISTS Ocean_DOXYGEN_INPUT_FILES)
         string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
     endforeach()
+    string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/CONVENTIONS.md\"")
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/INSTALL.md\"")
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_SOURCE_DIR}/README.md\"")
 
