@@ -2,11 +2,12 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
 
 #include "Ocean/Renderer/OpenGL/gl_Shader.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Shader.hpp"
 
 namespace Ocean {
 
@@ -21,10 +22,11 @@ namespace Ocean {
                     return MakeRef<glShader>(vertexSource, fragmentSource, geometrySource);
 
                 case RendererAPI::Vulkan:
-                    break;
+                    return MakeRef<vkShader>(vertexSource, fragmentSource, geometrySource);
             }
 
-            OASSERTM(false, "Unkown RendererAPI!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
 

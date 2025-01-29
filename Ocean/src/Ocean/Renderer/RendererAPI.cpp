@@ -2,9 +2,10 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/OpenGL/gl_RendererAPI.hpp"
+#include "Ocean/Renderer/Vulkan/vk_RendererAPI.hpp"
 
 namespace Ocean {
 
@@ -19,10 +20,10 @@ namespace Ocean {
                     return MakeScope<glRendererAPI>();
 
                 case Vulkan:
-                    return nullptr;
+                    return MakeScope<vkRendererAPI>();
             }
 
-            OASSERTM(false, "Unkown Rendering API!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
             return nullptr;
         }
 

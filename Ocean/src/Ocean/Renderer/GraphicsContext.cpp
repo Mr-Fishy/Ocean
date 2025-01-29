@@ -2,7 +2,7 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
 
@@ -18,14 +18,15 @@ namespace Ocean {
                 case RendererAPI::None:
                     break;
 
-                case Ocean::Splash::RendererAPI::API::OpenGL:
+                case RendererAPI::API::OpenGL:
                     return MakeScope<glGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
 
-                case Ocean::Splash::RendererAPI::API::Vulkan:
+                case RendererAPI::API::Vulkan:
                     return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
-                }
+            }
 
-            OASSERTM(false, "Unkown Rendering API!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
 

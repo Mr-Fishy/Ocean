@@ -14,7 +14,6 @@
 
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
-#define GLAD_VULKAN_IMPLEMENTATION
 #include <glad/vulkan.h>
 
 struct GLFWwindow;

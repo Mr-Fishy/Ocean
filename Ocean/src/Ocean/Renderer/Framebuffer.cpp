@@ -2,10 +2,12 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_Framebuffer.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Framebuffer.hpp"
 
 namespace Ocean {
 
@@ -15,15 +17,16 @@ namespace Ocean {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
-                
+
                 case RendererAPI::OpenGL:
                     return MakeRef<glFramebuffer>(spec);
-                
+
                 case RendererAPI::Vulkan:
-                    break;
+                    return MakeRef<vkFramebuffer>(spec);
             }
 
-            OASSERTM(false, "Unkown RendererAPI");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
 
