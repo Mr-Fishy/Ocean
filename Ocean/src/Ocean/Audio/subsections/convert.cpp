@@ -15,6 +15,7 @@ sonar::convert::convert(float* indata,int number_channel, int samples){
     buffer.numChannels = number_channel;
     buffer.numSamples = samples;
     buffer.data = &indata;
+    
 }
 
 //Modifies given pointer.
