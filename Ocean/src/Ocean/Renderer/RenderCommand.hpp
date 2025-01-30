@@ -74,6 +74,10 @@ namespace Ocean {
             s_RendererAPI->DrawIndexed(array, count);
         }
 
+        OC_STATIC_INLINE Scope<Splash::RendererAPI>& GetRenderer() {
+            return s_RendererAPI;
+        }
+
     private:
         OC_STATIC_INLINE Scope<Splash::RendererAPI> s_RendererAPI = Splash::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
 

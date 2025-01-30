@@ -3642,6 +3642,780 @@ int gladLoadVulkan( VkPhysicalDevice physical_device, GLADloadfunc load) {
 
  
 
+#ifdef GLAD_VULKAN
+
+#ifndef GLAD_LOADER_LIBRARY_C_
+#define GLAD_LOADER_LIBRARY_C_
+
+#include <stddef.h>
+#include <stdlib.h>
+
+#if GLAD_PLATFORM_WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
+
+static void* glad_get_dlopen_handle(const char *lib_names[], int length) {
+    void *handle = NULL;
+    int i;
+
+    for (i = 0; i < length; ++i) {
+#if GLAD_PLATFORM_WIN32
+  #if GLAD_PLATFORM_UWP
+        size_t buffer_size = (strlen(lib_names[i]) + 1) * sizeof(WCHAR);
+        LPWSTR buffer = (LPWSTR) malloc(buffer_size);
+        if (buffer != NULL) {
+            int ret = MultiByteToWideChar(CP_ACP, 0, lib_names[i], -1, buffer, buffer_size);
+            if (ret != 0) {
+                handle = (void*) LoadPackagedLibrary(buffer, 0);
+            }
+            free((void*) buffer);
+        }
+  #else
+        handle = (void*) LoadLibraryA(lib_names[i]);
+  #endif
+#else
+        handle = dlopen(lib_names[i], RTLD_LAZY | RTLD_LOCAL);
+#endif
+        if (handle != NULL) {
+            return handle;
+        }
+    }
+
+    return NULL;
+}
+
+static void glad_close_dlopen_handle(void* handle) {
+    if (handle != NULL) {
+#if GLAD_PLATFORM_WIN32
+        FreeLibrary((HMODULE) handle);
+#else
+        dlclose(handle);
+#endif
+    }
+}
+
+static GLADapiproc glad_dlsym_handle(void* handle, const char *name) {
+    if (handle == NULL) {
+        return NULL;
+    }
+
+#if GLAD_PLATFORM_WIN32
+    return (GLADapiproc) GetProcAddress((HMODULE) handle, name);
+#else
+    return GLAD_GNUC_EXTENSION (GLADapiproc) dlsym(handle, name);
+#endif
+}
+
+#endif /* GLAD_LOADER_LIBRARY_C_ */
+
+
+static const char* DEVICE_FUNCTIONS[] = {
+    "vkAcquireFullScreenExclusiveModeEXT",
+    "vkAcquireNextImage2KHR",
+    "vkAcquireNextImageKHR",
+    "vkAcquirePerformanceConfigurationINTEL",
+    "vkAcquireProfilingLockKHR",
+    "vkAllocateCommandBuffers",
+    "vkAllocateDescriptorSets",
+    "vkAllocateMemory",
+    "vkAntiLagUpdateAMD",
+    "vkBeginCommandBuffer",
+    "vkBindAccelerationStructureMemoryNV",
+    "vkBindBufferMemory",
+    "vkBindBufferMemory2",
+    "vkBindBufferMemory2KHR",
+    "vkBindImageMemory",
+    "vkBindImageMemory2",
+    "vkBindImageMemory2KHR",
+    "vkBindOpticalFlowSessionImageNV",
+    "vkBindVideoSessionMemoryKHR",
+    "vkBuildAccelerationStructuresKHR",
+    "vkBuildMicromapsEXT",
+    "vkCmdBeginConditionalRenderingEXT",
+    "vkCmdBeginDebugUtilsLabelEXT",
+    "vkCmdBeginQuery",
+    "vkCmdBeginQueryIndexedEXT",
+    "vkCmdBeginRenderPass",
+    "vkCmdBeginRenderPass2",
+    "vkCmdBeginRenderPass2KHR",
+    "vkCmdBeginRendering",
+    "vkCmdBeginRenderingKHR",
+    "vkCmdBeginTransformFeedbackEXT",
+    "vkCmdBeginVideoCodingKHR",
+    "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT",
+    "vkCmdBindDescriptorBufferEmbeddedSamplersEXT",
+    "vkCmdBindDescriptorBuffersEXT",
+    "vkCmdBindDescriptorSets",
+    "vkCmdBindDescriptorSets2KHR",
+    "vkCmdBindIndexBuffer",
+    "vkCmdBindIndexBuffer2KHR",
+    "vkCmdBindInvocationMaskHUAWEI",
+    "vkCmdBindPipeline",
+    "vkCmdBindPipelineShaderGroupNV",
+    "vkCmdBindShadersEXT",
+    "vkCmdBindShadingRateImageNV",
+    "vkCmdBindTransformFeedbackBuffersEXT",
+    "vkCmdBindVertexBuffers",
+    "vkCmdBindVertexBuffers2",
+    "vkCmdBindVertexBuffers2EXT",
+    "vkCmdBlitImage",
+    "vkCmdBlitImage2",
+    "vkCmdBlitImage2KHR",
+    "vkCmdBuildAccelerationStructureNV",
+    "vkCmdBuildAccelerationStructuresIndirectKHR",
+    "vkCmdBuildAccelerationStructuresKHR",
+    "vkCmdBuildMicromapsEXT",
+    "vkCmdClearAttachments",
+    "vkCmdClearColorImage",
+    "vkCmdClearDepthStencilImage",
+    "vkCmdControlVideoCodingKHR",
+    "vkCmdCopyAccelerationStructureKHR",
+    "vkCmdCopyAccelerationStructureNV",
+    "vkCmdCopyAccelerationStructureToMemoryKHR",
+    "vkCmdCopyBuffer",
+    "vkCmdCopyBuffer2",
+    "vkCmdCopyBuffer2KHR",
+    "vkCmdCopyBufferToImage",
+    "vkCmdCopyBufferToImage2",
+    "vkCmdCopyBufferToImage2KHR",
+    "vkCmdCopyImage",
+    "vkCmdCopyImage2",
+    "vkCmdCopyImage2KHR",
+    "vkCmdCopyImageToBuffer",
+    "vkCmdCopyImageToBuffer2",
+    "vkCmdCopyImageToBuffer2KHR",
+    "vkCmdCopyMemoryIndirectNV",
+    "vkCmdCopyMemoryToAccelerationStructureKHR",
+    "vkCmdCopyMemoryToImageIndirectNV",
+    "vkCmdCopyMemoryToMicromapEXT",
+    "vkCmdCopyMicromapEXT",
+    "vkCmdCopyMicromapToMemoryEXT",
+    "vkCmdCopyQueryPoolResults",
+    "vkCmdCuLaunchKernelNVX",
+    "vkCmdCudaLaunchKernelNV",
+    "vkCmdDebugMarkerBeginEXT",
+    "vkCmdDebugMarkerEndEXT",
+    "vkCmdDebugMarkerInsertEXT",
+    "vkCmdDecodeVideoKHR",
+    "vkCmdDecompressMemoryIndirectCountNV",
+    "vkCmdDecompressMemoryNV",
+    "vkCmdDispatch",
+    "vkCmdDispatchBase",
+    "vkCmdDispatchBaseKHR",
+    "vkCmdDispatchGraphAMDX",
+    "vkCmdDispatchGraphIndirectAMDX",
+    "vkCmdDispatchGraphIndirectCountAMDX",
+    "vkCmdDispatchIndirect",
+    "vkCmdDraw",
+    "vkCmdDrawClusterHUAWEI",
+    "vkCmdDrawClusterIndirectHUAWEI",
+    "vkCmdDrawIndexed",
+    "vkCmdDrawIndexedIndirect",
+    "vkCmdDrawIndexedIndirectCount",
+    "vkCmdDrawIndexedIndirectCountAMD",
+    "vkCmdDrawIndexedIndirectCountKHR",
+    "vkCmdDrawIndirect",
+    "vkCmdDrawIndirectByteCountEXT",
+    "vkCmdDrawIndirectCount",
+    "vkCmdDrawIndirectCountAMD",
+    "vkCmdDrawIndirectCountKHR",
+    "vkCmdDrawMeshTasksEXT",
+    "vkCmdDrawMeshTasksIndirectCountEXT",
+    "vkCmdDrawMeshTasksIndirectCountNV",
+    "vkCmdDrawMeshTasksIndirectEXT",
+    "vkCmdDrawMeshTasksIndirectNV",
+    "vkCmdDrawMeshTasksNV",
+    "vkCmdDrawMultiEXT",
+    "vkCmdDrawMultiIndexedEXT",
+    "vkCmdEncodeVideoKHR",
+    "vkCmdEndConditionalRenderingEXT",
+    "vkCmdEndDebugUtilsLabelEXT",
+    "vkCmdEndQuery",
+    "vkCmdEndQueryIndexedEXT",
+    "vkCmdEndRenderPass",
+    "vkCmdEndRenderPass2",
+    "vkCmdEndRenderPass2KHR",
+    "vkCmdEndRendering",
+    "vkCmdEndRenderingKHR",
+    "vkCmdEndTransformFeedbackEXT",
+    "vkCmdEndVideoCodingKHR",
+    "vkCmdExecuteCommands",
+    "vkCmdExecuteGeneratedCommandsEXT",
+    "vkCmdExecuteGeneratedCommandsNV",
+    "vkCmdFillBuffer",
+    "vkCmdInitializeGraphScratchMemoryAMDX",
+    "vkCmdInsertDebugUtilsLabelEXT",
+    "vkCmdNextSubpass",
+    "vkCmdNextSubpass2",
+    "vkCmdNextSubpass2KHR",
+    "vkCmdOpticalFlowExecuteNV",
+    "vkCmdPipelineBarrier",
+    "vkCmdPipelineBarrier2",
+    "vkCmdPipelineBarrier2KHR",
+    "vkCmdPreprocessGeneratedCommandsEXT",
+    "vkCmdPreprocessGeneratedCommandsNV",
+    "vkCmdPushConstants",
+    "vkCmdPushConstants2KHR",
+    "vkCmdPushDescriptorSet2KHR",
+    "vkCmdPushDescriptorSetKHR",
+    "vkCmdPushDescriptorSetWithTemplate2KHR",
+    "vkCmdPushDescriptorSetWithTemplateKHR",
+    "vkCmdResetEvent",
+    "vkCmdResetEvent2",
+    "vkCmdResetEvent2KHR",
+    "vkCmdResetQueryPool",
+    "vkCmdResolveImage",
+    "vkCmdResolveImage2",
+    "vkCmdResolveImage2KHR",
+    "vkCmdSetAlphaToCoverageEnableEXT",
+    "vkCmdSetAlphaToOneEnableEXT",
+    "vkCmdSetAttachmentFeedbackLoopEnableEXT",
+    "vkCmdSetBlendConstants",
+    "vkCmdSetCheckpointNV",
+    "vkCmdSetCoarseSampleOrderNV",
+    "vkCmdSetColorBlendAdvancedEXT",
+    "vkCmdSetColorBlendEnableEXT",
+    "vkCmdSetColorBlendEquationEXT",
+    "vkCmdSetColorWriteEnableEXT",
+    "vkCmdSetColorWriteMaskEXT",
+    "vkCmdSetConservativeRasterizationModeEXT",
+    "vkCmdSetCoverageModulationModeNV",
+    "vkCmdSetCoverageModulationTableEnableNV",
+    "vkCmdSetCoverageModulationTableNV",
+    "vkCmdSetCoverageReductionModeNV",
+    "vkCmdSetCoverageToColorEnableNV",
+    "vkCmdSetCoverageToColorLocationNV",
+    "vkCmdSetCullMode",
+    "vkCmdSetCullModeEXT",
+    "vkCmdSetDepthBias",
+    "vkCmdSetDepthBias2EXT",
+    "vkCmdSetDepthBiasEnable",
+    "vkCmdSetDepthBiasEnableEXT",
+    "vkCmdSetDepthBounds",
+    "vkCmdSetDepthBoundsTestEnable",
+    "vkCmdSetDepthBoundsTestEnableEXT",
+    "vkCmdSetDepthClampEnableEXT",
+    "vkCmdSetDepthClampRangeEXT",
+    "vkCmdSetDepthClipEnableEXT",
+    "vkCmdSetDepthClipNegativeOneToOneEXT",
+    "vkCmdSetDepthCompareOp",
+    "vkCmdSetDepthCompareOpEXT",
+    "vkCmdSetDepthTestEnable",
+    "vkCmdSetDepthTestEnableEXT",
+    "vkCmdSetDepthWriteEnable",
+    "vkCmdSetDepthWriteEnableEXT",
+    "vkCmdSetDescriptorBufferOffsets2EXT",
+    "vkCmdSetDescriptorBufferOffsetsEXT",
+    "vkCmdSetDeviceMask",
+    "vkCmdSetDeviceMaskKHR",
+    "vkCmdSetDiscardRectangleEXT",
+    "vkCmdSetDiscardRectangleEnableEXT",
+    "vkCmdSetDiscardRectangleModeEXT",
+    "vkCmdSetEvent",
+    "vkCmdSetEvent2",
+    "vkCmdSetEvent2KHR",
+    "vkCmdSetExclusiveScissorEnableNV",
+    "vkCmdSetExclusiveScissorNV",
+    "vkCmdSetExtraPrimitiveOverestimationSizeEXT",
+    "vkCmdSetFragmentShadingRateEnumNV",
+    "vkCmdSetFragmentShadingRateKHR",
+    "vkCmdSetFrontFace",
+    "vkCmdSetFrontFaceEXT",
+    "vkCmdSetLineRasterizationModeEXT",
+    "vkCmdSetLineStippleEXT",
+    "vkCmdSetLineStippleEnableEXT",
+    "vkCmdSetLineStippleKHR",
+    "vkCmdSetLineWidth",
+    "vkCmdSetLogicOpEXT",
+    "vkCmdSetLogicOpEnableEXT",
+    "vkCmdSetPatchControlPointsEXT",
+    "vkCmdSetPerformanceMarkerINTEL",
+    "vkCmdSetPerformanceOverrideINTEL",
+    "vkCmdSetPerformanceStreamMarkerINTEL",
+    "vkCmdSetPolygonModeEXT",
+    "vkCmdSetPrimitiveRestartEnable",
+    "vkCmdSetPrimitiveRestartEnableEXT",
+    "vkCmdSetPrimitiveTopology",
+    "vkCmdSetPrimitiveTopologyEXT",
+    "vkCmdSetProvokingVertexModeEXT",
+    "vkCmdSetRasterizationSamplesEXT",
+    "vkCmdSetRasterizationStreamEXT",
+    "vkCmdSetRasterizerDiscardEnable",
+    "vkCmdSetRasterizerDiscardEnableEXT",
+    "vkCmdSetRayTracingPipelineStackSizeKHR",
+    "vkCmdSetRenderingAttachmentLocationsKHR",
+    "vkCmdSetRenderingInputAttachmentIndicesKHR",
+    "vkCmdSetRepresentativeFragmentTestEnableNV",
+    "vkCmdSetSampleLocationsEXT",
+    "vkCmdSetSampleLocationsEnableEXT",
+    "vkCmdSetSampleMaskEXT",
+    "vkCmdSetScissor",
+    "vkCmdSetScissorWithCount",
+    "vkCmdSetScissorWithCountEXT",
+    "vkCmdSetShadingRateImageEnableNV",
+    "vkCmdSetStencilCompareMask",
+    "vkCmdSetStencilOp",
+    "vkCmdSetStencilOpEXT",
+    "vkCmdSetStencilReference",
+    "vkCmdSetStencilTestEnable",
+    "vkCmdSetStencilTestEnableEXT",
+    "vkCmdSetStencilWriteMask",
+    "vkCmdSetTessellationDomainOriginEXT",
+    "vkCmdSetVertexInputEXT",
+    "vkCmdSetViewport",
+    "vkCmdSetViewportShadingRatePaletteNV",
+    "vkCmdSetViewportSwizzleNV",
+    "vkCmdSetViewportWScalingEnableNV",
+    "vkCmdSetViewportWScalingNV",
+    "vkCmdSetViewportWithCount",
+    "vkCmdSetViewportWithCountEXT",
+    "vkCmdSubpassShadingHUAWEI",
+    "vkCmdTraceRaysIndirect2KHR",
+    "vkCmdTraceRaysIndirectKHR",
+    "vkCmdTraceRaysKHR",
+    "vkCmdTraceRaysNV",
+    "vkCmdUpdateBuffer",
+    "vkCmdUpdatePipelineIndirectBufferNV",
+    "vkCmdWaitEvents",
+    "vkCmdWaitEvents2",
+    "vkCmdWaitEvents2KHR",
+    "vkCmdWriteAccelerationStructuresPropertiesKHR",
+    "vkCmdWriteAccelerationStructuresPropertiesNV",
+    "vkCmdWriteBufferMarker2AMD",
+    "vkCmdWriteBufferMarkerAMD",
+    "vkCmdWriteMicromapsPropertiesEXT",
+    "vkCmdWriteTimestamp",
+    "vkCmdWriteTimestamp2",
+    "vkCmdWriteTimestamp2KHR",
+    "vkCompileDeferredNV",
+    "vkCopyAccelerationStructureKHR",
+    "vkCopyAccelerationStructureToMemoryKHR",
+    "vkCopyImageToImageEXT",
+    "vkCopyImageToMemoryEXT",
+    "vkCopyMemoryToAccelerationStructureKHR",
+    "vkCopyMemoryToImageEXT",
+    "vkCopyMemoryToMicromapEXT",
+    "vkCopyMicromapEXT",
+    "vkCopyMicromapToMemoryEXT",
+    "vkCreateAccelerationStructureKHR",
+    "vkCreateAccelerationStructureNV",
+    "vkCreateBuffer",
+    "vkCreateBufferCollectionFUCHSIA",
+    "vkCreateBufferView",
+    "vkCreateCommandPool",
+    "vkCreateComputePipelines",
+    "vkCreateCuFunctionNVX",
+    "vkCreateCuModuleNVX",
+    "vkCreateCudaFunctionNV",
+    "vkCreateCudaModuleNV",
+    "vkCreateDeferredOperationKHR",
+    "vkCreateDescriptorPool",
+    "vkCreateDescriptorSetLayout",
+    "vkCreateDescriptorUpdateTemplate",
+    "vkCreateDescriptorUpdateTemplateKHR",
+    "vkCreateEvent",
+    "vkCreateExecutionGraphPipelinesAMDX",
+    "vkCreateFence",
+    "vkCreateFramebuffer",
+    "vkCreateGraphicsPipelines",
+    "vkCreateImage",
+    "vkCreateImageView",
+    "vkCreateIndirectCommandsLayoutEXT",
+    "vkCreateIndirectCommandsLayoutNV",
+    "vkCreateIndirectExecutionSetEXT",
+    "vkCreateMicromapEXT",
+    "vkCreateOpticalFlowSessionNV",
+    "vkCreatePipelineBinariesKHR",
+    "vkCreatePipelineCache",
+    "vkCreatePipelineLayout",
+    "vkCreatePrivateDataSlot",
+    "vkCreatePrivateDataSlotEXT",
+    "vkCreateQueryPool",
+    "vkCreateRayTracingPipelinesKHR",
+    "vkCreateRayTracingPipelinesNV",
+    "vkCreateRenderPass",
+    "vkCreateRenderPass2",
+    "vkCreateRenderPass2KHR",
+    "vkCreateSampler",
+    "vkCreateSamplerYcbcrConversion",
+    "vkCreateSamplerYcbcrConversionKHR",
+    "vkCreateSemaphore",
+    "vkCreateShaderModule",
+    "vkCreateShadersEXT",
+    "vkCreateSharedSwapchainsKHR",
+    "vkCreateSwapchainKHR",
+    "vkCreateValidationCacheEXT",
+    "vkCreateVideoSessionKHR",
+    "vkCreateVideoSessionParametersKHR",
+    "vkDebugMarkerSetObjectNameEXT",
+    "vkDebugMarkerSetObjectTagEXT",
+    "vkDeferredOperationJoinKHR",
+    "vkDestroyAccelerationStructureKHR",
+    "vkDestroyAccelerationStructureNV",
+    "vkDestroyBuffer",
+    "vkDestroyBufferCollectionFUCHSIA",
+    "vkDestroyBufferView",
+    "vkDestroyCommandPool",
+    "vkDestroyCuFunctionNVX",
+    "vkDestroyCuModuleNVX",
+    "vkDestroyCudaFunctionNV",
+    "vkDestroyCudaModuleNV",
+    "vkDestroyDeferredOperationKHR",
+    "vkDestroyDescriptorPool",
+    "vkDestroyDescriptorSetLayout",
+    "vkDestroyDescriptorUpdateTemplate",
+    "vkDestroyDescriptorUpdateTemplateKHR",
+    "vkDestroyDevice",
+    "vkDestroyEvent",
+    "vkDestroyFence",
+    "vkDestroyFramebuffer",
+    "vkDestroyImage",
+    "vkDestroyImageView",
+    "vkDestroyIndirectCommandsLayoutEXT",
+    "vkDestroyIndirectCommandsLayoutNV",
+    "vkDestroyIndirectExecutionSetEXT",
+    "vkDestroyMicromapEXT",
+    "vkDestroyOpticalFlowSessionNV",
+    "vkDestroyPipeline",
+    "vkDestroyPipelineBinaryKHR",
+    "vkDestroyPipelineCache",
+    "vkDestroyPipelineLayout",
+    "vkDestroyPrivateDataSlot",
+    "vkDestroyPrivateDataSlotEXT",
+    "vkDestroyQueryPool",
+    "vkDestroyRenderPass",
+    "vkDestroySampler",
+    "vkDestroySamplerYcbcrConversion",
+    "vkDestroySamplerYcbcrConversionKHR",
+    "vkDestroySemaphore",
+    "vkDestroyShaderEXT",
+    "vkDestroyShaderModule",
+    "vkDestroySwapchainKHR",
+    "vkDestroyValidationCacheEXT",
+    "vkDestroyVideoSessionKHR",
+    "vkDestroyVideoSessionParametersKHR",
+    "vkDeviceWaitIdle",
+    "vkDisplayPowerControlEXT",
+    "vkEndCommandBuffer",
+    "vkExportMetalObjectsEXT",
+    "vkFlushMappedMemoryRanges",
+    "vkFreeCommandBuffers",
+    "vkFreeDescriptorSets",
+    "vkFreeMemory",
+    "vkGetAccelerationStructureBuildSizesKHR",
+    "vkGetAccelerationStructureDeviceAddressKHR",
+    "vkGetAccelerationStructureHandleNV",
+    "vkGetAccelerationStructureMemoryRequirementsNV",
+    "vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT",
+    "vkGetAndroidHardwareBufferPropertiesANDROID",
+    "vkGetBufferCollectionPropertiesFUCHSIA",
+    "vkGetBufferDeviceAddress",
+    "vkGetBufferDeviceAddressEXT",
+    "vkGetBufferDeviceAddressKHR",
+    "vkGetBufferMemoryRequirements",
+    "vkGetBufferMemoryRequirements2",
+    "vkGetBufferMemoryRequirements2KHR",
+    "vkGetBufferOpaqueCaptureAddress",
+    "vkGetBufferOpaqueCaptureAddressKHR",
+    "vkGetBufferOpaqueCaptureDescriptorDataEXT",
+    "vkGetCalibratedTimestampsEXT",
+    "vkGetCalibratedTimestampsKHR",
+    "vkGetCudaModuleCacheNV",
+    "vkGetDeferredOperationMaxConcurrencyKHR",
+    "vkGetDeferredOperationResultKHR",
+    "vkGetDescriptorEXT",
+    "vkGetDescriptorSetHostMappingVALVE",
+    "vkGetDescriptorSetLayoutBindingOffsetEXT",
+    "vkGetDescriptorSetLayoutHostMappingInfoVALVE",
+    "vkGetDescriptorSetLayoutSizeEXT",
+    "vkGetDescriptorSetLayoutSupport",
+    "vkGetDescriptorSetLayoutSupportKHR",
+    "vkGetDeviceAccelerationStructureCompatibilityKHR",
+    "vkGetDeviceBufferMemoryRequirements",
+    "vkGetDeviceBufferMemoryRequirementsKHR",
+    "vkGetDeviceFaultInfoEXT",
+    "vkGetDeviceGroupPeerMemoryFeatures",
+    "vkGetDeviceGroupPeerMemoryFeaturesKHR",
+    "vkGetDeviceGroupPresentCapabilitiesKHR",
+    "vkGetDeviceGroupSurfacePresentModes2EXT",
+    "vkGetDeviceGroupSurfacePresentModesKHR",
+    "vkGetDeviceImageMemoryRequirements",
+    "vkGetDeviceImageMemoryRequirementsKHR",
+    "vkGetDeviceImageSparseMemoryRequirements",
+    "vkGetDeviceImageSparseMemoryRequirementsKHR",
+    "vkGetDeviceImageSubresourceLayoutKHR",
+    "vkGetDeviceMemoryCommitment",
+    "vkGetDeviceMemoryOpaqueCaptureAddress",
+    "vkGetDeviceMemoryOpaqueCaptureAddressKHR",
+    "vkGetDeviceMicromapCompatibilityEXT",
+    "vkGetDeviceProcAddr",
+    "vkGetDeviceQueue",
+    "vkGetDeviceQueue2",
+    "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI",
+    "vkGetDynamicRenderingTilePropertiesQCOM",
+    "vkGetEncodedVideoSessionParametersKHR",
+    "vkGetEventStatus",
+    "vkGetExecutionGraphPipelineNodeIndexAMDX",
+    "vkGetExecutionGraphPipelineScratchSizeAMDX",
+    "vkGetFenceFdKHR",
+    "vkGetFenceStatus",
+    "vkGetFenceWin32HandleKHR",
+    "vkGetFramebufferTilePropertiesQCOM",
+    "vkGetGeneratedCommandsMemoryRequirementsEXT",
+    "vkGetGeneratedCommandsMemoryRequirementsNV",
+    "vkGetImageDrmFormatModifierPropertiesEXT",
+    "vkGetImageMemoryRequirements",
+    "vkGetImageMemoryRequirements2",
+    "vkGetImageMemoryRequirements2KHR",
+    "vkGetImageOpaqueCaptureDescriptorDataEXT",
+    "vkGetImageSparseMemoryRequirements",
+    "vkGetImageSparseMemoryRequirements2",
+    "vkGetImageSparseMemoryRequirements2KHR",
+    "vkGetImageSubresourceLayout",
+    "vkGetImageSubresourceLayout2EXT",
+    "vkGetImageSubresourceLayout2KHR",
+    "vkGetImageViewAddressNVX",
+    "vkGetImageViewHandle64NVX",
+    "vkGetImageViewHandleNVX",
+    "vkGetImageViewOpaqueCaptureDescriptorDataEXT",
+    "vkGetLatencyTimingsNV",
+    "vkGetMemoryAndroidHardwareBufferANDROID",
+    "vkGetMemoryFdKHR",
+    "vkGetMemoryFdPropertiesKHR",
+    "vkGetMemoryHostPointerPropertiesEXT",
+    "vkGetMemoryMetalHandleEXT",
+    "vkGetMemoryMetalHandlePropertiesEXT",
+    "vkGetMemoryRemoteAddressNV",
+    "vkGetMemoryWin32HandleKHR",
+    "vkGetMemoryWin32HandleNV",
+    "vkGetMemoryWin32HandlePropertiesKHR",
+    "vkGetMemoryZirconHandleFUCHSIA",
+    "vkGetMemoryZirconHandlePropertiesFUCHSIA",
+    "vkGetMicromapBuildSizesEXT",
+    "vkGetPastPresentationTimingGOOGLE",
+    "vkGetPerformanceParameterINTEL",
+    "vkGetPipelineBinaryDataKHR",
+    "vkGetPipelineCacheData",
+    "vkGetPipelineExecutableInternalRepresentationsKHR",
+    "vkGetPipelineExecutablePropertiesKHR",
+    "vkGetPipelineExecutableStatisticsKHR",
+    "vkGetPipelineIndirectDeviceAddressNV",
+    "vkGetPipelineIndirectMemoryRequirementsNV",
+    "vkGetPipelineKeyKHR",
+    "vkGetPipelinePropertiesEXT",
+    "vkGetPrivateData",
+    "vkGetPrivateDataEXT",
+    "vkGetQueryPoolResults",
+    "vkGetQueueCheckpointData2NV",
+    "vkGetQueueCheckpointDataNV",
+    "vkGetRayTracingCaptureReplayShaderGroupHandlesKHR",
+    "vkGetRayTracingShaderGroupHandlesKHR",
+    "vkGetRayTracingShaderGroupHandlesNV",
+    "vkGetRayTracingShaderGroupStackSizeKHR",
+    "vkGetRefreshCycleDurationGOOGLE",
+    "vkGetRenderAreaGranularity",
+    "vkGetRenderingAreaGranularityKHR",
+    "vkGetSamplerOpaqueCaptureDescriptorDataEXT",
+    "vkGetScreenBufferPropertiesQNX",
+    "vkGetSemaphoreCounterValue",
+    "vkGetSemaphoreCounterValueKHR",
+    "vkGetSemaphoreFdKHR",
+    "vkGetSemaphoreWin32HandleKHR",
+    "vkGetSemaphoreZirconHandleFUCHSIA",
+    "vkGetShaderBinaryDataEXT",
+    "vkGetShaderInfoAMD",
+    "vkGetShaderModuleCreateInfoIdentifierEXT",
+    "vkGetShaderModuleIdentifierEXT",
+    "vkGetSwapchainCounterEXT",
+    "vkGetSwapchainImagesKHR",
+    "vkGetSwapchainStatusKHR",
+    "vkGetValidationCacheDataEXT",
+    "vkGetVideoSessionMemoryRequirementsKHR",
+    "vkImportFenceFdKHR",
+    "vkImportFenceWin32HandleKHR",
+    "vkImportSemaphoreFdKHR",
+    "vkImportSemaphoreWin32HandleKHR",
+    "vkImportSemaphoreZirconHandleFUCHSIA",
+    "vkInitializePerformanceApiINTEL",
+    "vkInvalidateMappedMemoryRanges",
+    "vkLatencySleepNV",
+    "vkMapMemory",
+    "vkMapMemory2KHR",
+    "vkMergePipelineCaches",
+    "vkMergeValidationCachesEXT",
+    "vkQueueBeginDebugUtilsLabelEXT",
+    "vkQueueBindSparse",
+    "vkQueueEndDebugUtilsLabelEXT",
+    "vkQueueInsertDebugUtilsLabelEXT",
+    "vkQueueNotifyOutOfBandNV",
+    "vkQueuePresentKHR",
+    "vkQueueSetPerformanceConfigurationINTEL",
+    "vkQueueSubmit",
+    "vkQueueSubmit2",
+    "vkQueueSubmit2KHR",
+    "vkQueueWaitIdle",
+    "vkRegisterDeviceEventEXT",
+    "vkRegisterDisplayEventEXT",
+    "vkReleaseCapturedPipelineDataKHR",
+    "vkReleaseFullScreenExclusiveModeEXT",
+    "vkReleasePerformanceConfigurationINTEL",
+    "vkReleaseProfilingLockKHR",
+    "vkReleaseSwapchainImagesEXT",
+    "vkResetCommandBuffer",
+    "vkResetCommandPool",
+    "vkResetDescriptorPool",
+    "vkResetEvent",
+    "vkResetFences",
+    "vkResetQueryPool",
+    "vkResetQueryPoolEXT",
+    "vkSetBufferCollectionBufferConstraintsFUCHSIA",
+    "vkSetBufferCollectionImageConstraintsFUCHSIA",
+    "vkSetDebugUtilsObjectNameEXT",
+    "vkSetDebugUtilsObjectTagEXT",
+    "vkSetDeviceMemoryPriorityEXT",
+    "vkSetEvent",
+    "vkSetHdrMetadataEXT",
+    "vkSetLatencyMarkerNV",
+    "vkSetLatencySleepModeNV",
+    "vkSetLocalDimmingAMD",
+    "vkSetPrivateData",
+    "vkSetPrivateDataEXT",
+    "vkSignalSemaphore",
+    "vkSignalSemaphoreKHR",
+    "vkTransitionImageLayoutEXT",
+    "vkTrimCommandPool",
+    "vkTrimCommandPoolKHR",
+    "vkUninitializePerformanceApiINTEL",
+    "vkUnmapMemory",
+    "vkUnmapMemory2KHR",
+    "vkUpdateDescriptorSetWithTemplate",
+    "vkUpdateDescriptorSetWithTemplateKHR",
+    "vkUpdateDescriptorSets",
+    "vkUpdateIndirectExecutionSetPipelineEXT",
+    "vkUpdateIndirectExecutionSetShaderEXT",
+    "vkUpdateVideoSessionParametersKHR",
+    "vkWaitForFences",
+    "vkWaitForPresentKHR",
+    "vkWaitSemaphores",
+    "vkWaitSemaphoresKHR",
+    "vkWriteAccelerationStructuresPropertiesKHR",
+    "vkWriteMicromapsPropertiesEXT",
+};
+
+static int glad_vulkan_is_device_function(const char *name) {
+    /* Exists as a workaround for:
+     * https://github.com/KhronosGroup/Vulkan-LoaderAndValidationLayers/issues/2323
+     *
+     * `vkGetDeviceProcAddr` does not return NULL for non-device functions.
+     */
+    int i;
+    int length = sizeof(DEVICE_FUNCTIONS) / sizeof(DEVICE_FUNCTIONS[0]);
+
+    for (i=0; i < length; ++i) {
+        if (strcmp(DEVICE_FUNCTIONS[i], name) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+struct _glad_vulkan_userptr {
+    void *vk_handle;
+    VkInstance vk_instance;
+    VkDevice vk_device;
+    PFN_vkGetInstanceProcAddr get_instance_proc_addr;
+    PFN_vkGetDeviceProcAddr get_device_proc_addr;
+};
+
+static GLADapiproc glad_vulkan_get_proc(void *vuserptr, const char *name) {
+    struct _glad_vulkan_userptr userptr = *(struct _glad_vulkan_userptr*) vuserptr;
+    PFN_vkVoidFunction result = NULL;
+
+    if (userptr.vk_device != NULL && glad_vulkan_is_device_function(name)) {
+        result = userptr.get_device_proc_addr(userptr.vk_device, name);
+    }
+
+    if (result == NULL && userptr.vk_instance != NULL) {
+        result = userptr.get_instance_proc_addr(userptr.vk_instance, name);
+    }
+
+    if(result == NULL) {
+        result = (PFN_vkVoidFunction) glad_dlsym_handle(userptr.vk_handle, name);
+    }
+
+    return (GLADapiproc) result;
+}
+
+
+static void* _glad_Vulkan_loader_handle = NULL;
+
+static void* glad_vulkan_dlopen_handle(void) {
+    static const char *NAMES[] = {
+#if GLAD_PLATFORM_APPLE
+        "libvulkan.1.dylib",
+#elif GLAD_PLATFORM_WIN32
+        "vulkan-1.dll",
+        "vulkan.dll",
+#else
+        "libvulkan.so.1",
+        "libvulkan.so",
+#endif
+    };
+
+    if (_glad_Vulkan_loader_handle == NULL) {
+        _glad_Vulkan_loader_handle = glad_get_dlopen_handle(NAMES, sizeof(NAMES) / sizeof(NAMES[0]));
+    }
+
+    return _glad_Vulkan_loader_handle;
+}
+
+static struct _glad_vulkan_userptr glad_vulkan_build_userptr(void *handle, VkInstance instance, VkDevice device) {
+    struct _glad_vulkan_userptr userptr;
+    userptr.vk_handle = handle;
+    userptr.vk_instance = instance;
+    userptr.vk_device = device;
+    userptr.get_instance_proc_addr = (PFN_vkGetInstanceProcAddr) glad_dlsym_handle(handle, "vkGetInstanceProcAddr");
+    userptr.get_device_proc_addr = (PFN_vkGetDeviceProcAddr) glad_dlsym_handle(handle, "vkGetDeviceProcAddr");
+    return userptr;
+}
+
+int gladLoaderLoadVulkan( VkInstance instance, VkPhysicalDevice physical_device, VkDevice device) {
+    int version = 0;
+    void *handle = NULL;
+    int did_load = 0;
+    struct _glad_vulkan_userptr userptr;
+
+    did_load = _glad_Vulkan_loader_handle == NULL;
+    handle = glad_vulkan_dlopen_handle();
+    if (handle != NULL) {
+        userptr = glad_vulkan_build_userptr(handle, instance, device);
+
+        if (userptr.get_instance_proc_addr != NULL && userptr.get_device_proc_addr != NULL) {
+            version = gladLoadVulkanUserPtr( physical_device, glad_vulkan_get_proc, &userptr);
+        }
+
+        if (!version && did_load) {
+            gladLoaderUnloadVulkan();
+        }
+    }
+
+    return version;
+}
+
+
+
+void gladLoaderUnloadVulkan(void) {
+    if (_glad_Vulkan_loader_handle != NULL) {
+        glad_close_dlopen_handle(_glad_Vulkan_loader_handle);
+        _glad_Vulkan_loader_handle = NULL;
+    }
+}
+
+#endif /* GLAD_VULKAN */
 
 #ifdef __cplusplus
 }

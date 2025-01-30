@@ -3,9 +3,13 @@ find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
 
-    file(GLOB_RECURSE Ocean_DOXYGEN_INPUT_FILES ${CMAKE_SOURCE_DIR}/Ocean/src/*.hpp LIST_DIRECTORIES TRUE)
+    file(GLOB_RECURSE Ocean_DOXYGEN_INPUT_HEADER_FILES ${CMAKE_SOURCE_DIR}/Ocean/src/*.hpp LIST_DIRECTORIES TRUE)
+    file(GLOB_RECURSE Ocean_DOXYGEN_INPUT_SOURCE_FILES ${CMAKE_SOURCE_DIR}/Ocean/src/*.cpp LIST_DIRECTORIES TRUE)
 
-    foreach(path IN LISTS Ocean_DOXYGEN_INPUT_FILES)
+    foreach(path IN LISTS Ocean_DOXYGEN_INPUT_HEADER_FILES)
+        string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
+    endforeach()
+    foreach(path IN LISTS Ocean_DOXYGEN_INPUT_SOURCE_FILES)
         string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
     endforeach()
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/CONVENTIONS.md\"")

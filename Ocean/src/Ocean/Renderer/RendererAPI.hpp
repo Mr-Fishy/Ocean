@@ -4,15 +4,15 @@
  * @file RendererAPI.hpp
  * @author Evan F.
  * @brief The abstract RendererAPI for Ocean.
- * @date 01-14-2025
  * 
  * @copyright Copyright (c) 2025
  * 
  */
 
-#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
+
+#include "Ocean/Primitives/Macros.hpp"
 
 // libs
 #include <glm/glm.hpp>

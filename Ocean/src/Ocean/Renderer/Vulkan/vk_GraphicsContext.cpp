@@ -1,6 +1,8 @@
 #include "vk_GraphicsContext.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Renderer/RenderCommand.hpp"
+#include "Ocean/Renderer/Vulkan/vk_RendererAPI.hpp"
 
 // libs
 #define GLFW_INCLUDE_NONE
@@ -20,7 +22,9 @@ namespace Ocean {
         }
 
         void vkGraphicsContext::Init() {
+            glfwCreateWindowSurface(static_cast<vkRendererAPI*>(RenderCommand::GetRenderer().get())->GetInstance(), this->p_WindowHandle, nullptr, &this->m_Surface);
 
+            
         }
 
         void vkGraphicsContext::SwapBuffers() {

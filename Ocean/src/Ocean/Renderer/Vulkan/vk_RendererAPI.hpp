@@ -4,12 +4,12 @@
  * @file vk_RendererAPI.hpp
  * @author Evan F.
  * @brief 
- * @date 2025-01-26
  * 
  * @copyright Copyright (c) 2025
  * 
  */
 
+#include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Strings.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
@@ -26,6 +26,9 @@ namespace Ocean {
     
         class vkRendererAPI : public RendererAPI {
         public:
+            vkRendererAPI();
+            ~vkRendererAPI();
+
             virtual void Init() override final;
 
             virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
@@ -35,12 +38,26 @@ namespace Ocean {
 
             virtual void DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) override final;
 
+            VkInstance GetInstance() const { return this->m_Instance; }
+
         private:
+            b32 ValidateLayers();
+
+            /* --- */
+
             VkInstance m_Instance;
 
+        #ifdef OC_DEBUG
+
+            PFN_vkCreateDebugReportCallbackEXT m_CreateDebugCallback;
+            PFN_vkDestroyDebugReportCallbackEXT m_DestroyDebugCallback;
+            PFN_vkDebugReportMessageEXT m_MessageCallback;
+
+        #endif
+
             VkPhysicalDevice m_gpu;
-            // VkPhysicalDeviceProperties m_gpuProperties;
-            // VkPhysicalDeviceFeatures m_gpuFeatures;
+            VkPhysicalDeviceProperties m_gpuProperties;
+            VkPhysicalDeviceFeatures m_gpuFeatures;
 
             VkDevice m_Device;
             DynamicArray<cstring> m_Extensions;
