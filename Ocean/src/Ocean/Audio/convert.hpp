@@ -3,7 +3,6 @@
 
 
 #include <phonon.h>
-#include "Ocean/Ocean.hpp"
 #include "Ocean/Audio/audio.hpp"
 
 namespace sonar{
