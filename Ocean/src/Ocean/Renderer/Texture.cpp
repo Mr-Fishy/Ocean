@@ -2,10 +2,12 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_Texture.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Texture.hpp"
 
 namespace Ocean {
 
@@ -20,10 +22,11 @@ namespace Ocean {
                     return MakeRef<glTexture2D>(width, height);
 
                 case RendererAPI::Vulkan:
-                    break;
+                    return MakeRef<vkTexture2D>(width, height);
             }
 
-            OASSERTM(false, "Unkown RendererAPI!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
     

@@ -1,9 +1,13 @@
 #include "VertexBuffer.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
+
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_VertexBuffer.hpp"
+#include "Ocean/Renderer/Vulkan/vk_VertexBuffer.hpp"
 
 namespace Ocean {
 
@@ -18,10 +22,11 @@ namespace Ocean {
                     return MakeRef<glVertexBuffer>(size);
 
                 case RendererAPI::Vulkan:
-                    break;
+                    return MakeRef<vkVertexBuffer>(size);
             }
 
-            OASSERTM(false, "Unkown RendereAPI!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
 
@@ -34,10 +39,11 @@ namespace Ocean {
                     return MakeRef<glVertexBuffer>(vertices, size);
 
                 case RendererAPI::Vulkan:
-                    break;
+                    return MakeRef<vkVertexBuffer>(vertices, size);
             }
 
-            OASSERTM(false, "Unkown RendereAPI!");
+            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+
             return nullptr;
         }
 

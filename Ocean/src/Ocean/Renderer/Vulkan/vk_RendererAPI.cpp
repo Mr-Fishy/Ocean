@@ -2,55 +2,62 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 
 #include "Ocean/Renderer/VertexArray.hpp"
 
 // libs
-#include <glad/gl.h>
+#define GLAD_VULKAN_IMPLEMENTATION
+#include <glad/vulkan.h>
 
 namespace Ocean {
 
     namespace Splash {
 
-        static void glMessageCallback(
-            OC_UNUSED u32 source, OC_UNUSED u32 type, OC_UNUSED u32 id,
-            u32 severity,
-            OC_UNUSED i32 length,
-            const char* message,
-            OC_UNUSED const void* userParam
+        OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT severity,
+            OC_UNUSED VkDebugUtilsMessageTypeFlagsEXT type,
+            const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+            OC_UNUSED void* userData
         ) {
             switch (severity) {
-                case GL_DEBUG_SEVERITY_HIGH:
-                    oprint(CONSOLE_TEXT_RED("\n%s\n"), message);
-                    OASSERT(false);
-                    return;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+                    oprint(CONSOLE_TEXT_RED("\n%s\n"), callbackData->pMessage);
+                    return VK_TRUE;
 
-                case GL_DEBUG_SEVERITY_MEDIUM:
-                    oprint(CONSOLE_TEXT_RED("\n%s\n"), message);
-                    return;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+                    oprint(CONSOLE_TEXT_RED("\n%s\n"), callbackData->pMessage);
+                    return VK_TRUE;
 
-                case GL_DEBUG_SEVERITY_LOW:
-                    oprint(CONSOLE_TEXT_YELLOW("\n%s\n"), message);
-                    return;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+                    oprint(CONSOLE_TEXT_GREEN("\n%s\n"), callbackData->pMessage);
+                    return VK_TRUE;
 
-                case GL_DEBUG_SEVERITY_NOTIFICATION:
-                    oprint(CONSOLE_TEXT_GREEN("\n%s\n"), message);
-                    return;
+                case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
+                    oprint(CONSOLE_TEXT_YELLOW("\n%s\n"), callbackData->pMessage);
+                    return VK_TRUE;
+
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+                    oprint(CONSOLE_TEXT_BLUE("\n%s\n"), callbackData->pMessage);
             }
 
-            OASSERTM(false, "Unkown OpenGL Message Severity Level!");
+            return VK_FALSE;
         }
 
-        
+    // https://github.com/Dav1dde/glad/blob/glad2/example/c/vulkan_tri_glfw/vulkan_tri_glfw.c#L2082
+
+    // https://github.com/KhronosGroup/Vulkan-Samples/blob/main/samples/api/hello_triangle_1_3/hello_triangle_1_3.h
+    // https://github.com/KhronosGroup/Vulkan-Samples/blob/main/samples/api/hello_triangle_1_3/hello_triangle_1_3.cpp
 
         void vkRendererAPI::Init() {
+            int vulkanVersion = gladloaderLoadVulkan(NULL, NULL, NULL);
+
+
 
         }
 
         void vkRendererAPI::SetViewport(u32 x, u32 y, u32 w, u32 h) {
-
+            
         }
 
         void vkRendererAPI::SetClearColor(const glm::vec4& color) {
@@ -64,7 +71,6 @@ namespace Ocean {
         void vkRendererAPI::DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) {
             u32 count = indexCount ? indexCount : array->GetIndexBuffer()->GetCount();
 
-            
         }
 
     }   // Splash

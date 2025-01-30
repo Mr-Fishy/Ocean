@@ -39,8 +39,8 @@ namespace Ocean {
             VkInstance m_Instance;
 
             VkPhysicalDevice m_gpu;
-            VkPhysicalDeviceProperties m_gpuProperties;
-            VkPhysicalDeviceFeatures m_gpuFeatures;
+            // VkPhysicalDeviceProperties m_gpuProperties;
+            // VkPhysicalDeviceFeatures m_gpuFeatures;
 
             VkDevice m_Device;
             DynamicArray<cstring> m_Extensions;
