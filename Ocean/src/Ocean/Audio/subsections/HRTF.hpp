@@ -9,7 +9,7 @@ namespace sonar{
         public:
 
         explicit HRTF(int& sampling_rate_hz, int& frame_size);
-        explicit HRTF(int& sampling_rate_hz, int& frame_size, IPLHRTFType type =IPL_HRTFTYPE_DEFAULT, cstring file_path = "",const IPLuint8 *sofaData = nullptr, int sofadatasize =2);
+        explicit HRTF(int& sampling_rate_hz, int& frame_size, IPLHRTFType type =IPL_HRTFTYPE_DEFAULT, cstring file_path = "",const IPLuint8 *sofaData = nullptr, int sofadatasize =2, float volume =1, IPLHRTFNormType normalization = IPL_HRTFNORMTYPE_NONE);
         ~HRTF();
 
         static HRTF* GetInstance();

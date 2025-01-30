@@ -11,12 +11,15 @@ namespace sonar{
     class Binaural{
         public:
     
-        Binaural();
+        
         ~Binaural();
         
         static IPLBinauralEffect* effect;
-        void Initialize(IPLAudioBuffer* inbuffer, IPLAudioBuffer* outbuffer);
+        Ref<sonar::Binaural> Create(IPLAudioBuffer* inbuffer, IPLAudioBuffer* outbuffer);
         private:
+
+        Binaural();
+
 
         IPLAudioSettings* audio_settings = sonar::HRTF::audio_settings;
         IPLHRTF* hrtf = sonar::HRTF::hrtf;

@@ -3,7 +3,7 @@
 #include "Ocean/Primitives/Log.hpp"
 #include <phonon.h>
 
-sonar::HRTF::HRTF(int& sampling_rate_hz, int& frame_size, IPLHRTFType type, cstring file_path,const IPLuint8 *sofaData, int sofadatasize){
+sonar::HRTF::HRTF(int& sampling_rate_hz, int& frame_size, IPLHRTFType type, cstring file_path,const IPLuint8 *sofaData, int sofadatasize, IPLHRTFNormType){
     audio_settings->samplingRate = sampling_rate_hz;
     audio_settings->frameSize = frame_size;
 
