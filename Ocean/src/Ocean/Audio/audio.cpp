@@ -13,7 +13,6 @@ sonar::steamaudio* sonar::steamaudio::instance(IPLuint32 steamversion,IPLSIMDLev
 
     }
 
-    OASSERTM(false,"THERE ARE BUGS UNDER YOUR SKIN.");
 
     return struct_pointer;
 
