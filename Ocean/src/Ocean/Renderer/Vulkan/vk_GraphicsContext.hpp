@@ -40,8 +40,9 @@ namespace Ocean {
             VkSwapchainKHR m_Swapchain;
             DynamicArray<VkImage> m_SwapchainImages;
 
-            VkFormat m_SwapchainFormat;
-            VkExtent2D m_SwapchainExtent;
+            VkFormat m_Format;
+            VkColorSpaceKHR m_ColorSpace;
+            VkExtent2D m_Extent;
 
         };  // GraphicsContext
 

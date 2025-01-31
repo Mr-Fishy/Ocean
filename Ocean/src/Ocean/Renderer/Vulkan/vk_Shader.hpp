@@ -20,13 +20,6 @@ namespace Ocean {
     namespace Splash {
     
         class vkShader : public Shader {
-        private:
-            /** @brief The type of compile operation for either a shader program or a shader. */
-            enum CompileType {
-                PROGRAM = 0,
-                SHADER  = 1,
-            };
-
         public:
             vkShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
             virtual ~vkShader();
@@ -46,14 +39,6 @@ namespace Ocean {
             virtual void SetMat3f(cstring name, const glm::mat3& value) const override final;
 
         private:
-            /**
-             * @brief Checks for compilation erros from OpenGL.
-             * 
-             * @param object The object to check on.
-             * @param type The type of compilation operation the object is from.
-             */
-            void CheckCompileErrors(u32 object, CompileType type);
-
             VkShaderModule m_Shader;
 
         };

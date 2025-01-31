@@ -6,4 +6,4 @@
 typedef bool b8;
 
 /** @brief A 32-bit boolean. */
-typedef int b32;
+typedef unsigned int b32;

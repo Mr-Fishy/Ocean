@@ -40,6 +40,17 @@ namespace Ocean {
 
             VkInstance GetInstance() const { return this->m_Instance; }
 
+            VkPhysicalDevice GetPhysicalDevice() const { return this->m_gpu; }
+            VkDevice GetDevice() const { return this->m_Device; }
+
+            VkQueue* GetQueue() { return &this->m_Queue; }
+
+            DynamicArray<VkQueueFamilyProperties>& GetQueueProperties() { return this->m_QueueProperties; }
+            void SetGraphicsQueueIndex(u32 index) { this->m_GraphicsQueueIndex = index; }
+            void SetPresentQueueIndex(u32 index) { this->m_PresentQueueIndex = index; }
+
+            void InitDevice();
+
         private:
             b32 ValidateLayers();
 
@@ -58,6 +69,7 @@ namespace Ocean {
             VkPhysicalDevice m_gpu;
             VkPhysicalDeviceProperties m_gpuProperties;
             VkPhysicalDeviceFeatures m_gpuFeatures;
+            VkPhysicalDeviceMemoryProperties m_gpuMemory;
 
             VkDevice m_Device;
             DynamicArray<cstring> m_Extensions;
@@ -66,6 +78,7 @@ namespace Ocean {
             VkQueue m_Queue;
             DynamicArray<VkQueueFamilyProperties> m_QueueProperties;
             u32 m_GraphicsQueueIndex;
+            u32 m_PresentQueueIndex;
 
             VkCommandPool m_CommandPool;
 

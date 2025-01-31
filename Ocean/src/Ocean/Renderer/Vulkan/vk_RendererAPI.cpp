@@ -2,6 +2,8 @@
 
 #include "GLFW/glfw3.h"
 #include "Ocean/Renderer/RendererAPI.hpp"
+#include "Ocean/Types/FloatingPoints.hpp"
+#include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
 #include "Ocean/Primitives/Exceptions.hpp"
@@ -23,7 +25,7 @@ namespace Ocean {
 
     namespace Splash {
 
-        OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
+        OC_UNUSED OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT severity,
             OC_UNUSED VkDebugUtilsMessageTypeFlagsEXT type,
             const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
@@ -94,12 +96,14 @@ namespace Ocean {
             m_gpu(VK_NULL_HANDLE),
             m_gpuProperties(),
             m_gpuFeatures(),
+            m_gpuMemory(),
             m_Device(VK_NULL_HANDLE),
             m_Extensions(0),
             m_Layers(0),
             m_Queue(VK_NULL_HANDLE),
             m_QueueProperties(0),
-            m_GraphicsQueueIndex(0),
+            m_GraphicsQueueIndex(u32_max),
+            m_PresentQueueIndex(u32_max),
             m_CommandPool(VK_NULL_HANDLE) 
         {
 
@@ -139,7 +143,7 @@ namespace Ocean {
 
         #ifdef OC_DEBUG
 
-            this->m_Extensions.emplace_back(GLAD_VK_EXT_debug_report);
+            this->m_Extensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
         #endif
 
@@ -230,6 +234,8 @@ namespace Ocean {
 
             vkGetPhysicalDeviceFeatures(this->m_gpu, &this->m_gpuFeatures);
 
+            vkGetPhysicalDeviceMemoryProperties(this->m_gpu, &this->m_gpuMemory);
+
             /** @todo Add separate queue support, synchronization, and tracking for queue submitions. */
         }
 
@@ -250,16 +256,51 @@ namespace Ocean {
 
         }
 
+        void vkRendererAPI::InitDevice() {
+            f32 queuePriorities[1] = {
+                0.0f
+            };
+
+            VkDeviceQueueCreateInfo queueInfo { };
+            queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueInfo.pNext = nullptr;
+            queueInfo.queueFamilyIndex = this->m_GraphicsQueueIndex;
+            queueInfo.queueCount = 1;
+            queueInfo.pQueuePriorities = queuePriorities;
+
+            VkPhysicalDeviceFeatures features;
+            if (this->m_gpuFeatures.shaderClipDistance)
+                features.shaderClipDistance = VK_TRUE;
+
+            VkDeviceCreateInfo deviceInfo { };
+            deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+            deviceInfo.pNext = nullptr;
+            deviceInfo.queueCreateInfoCount = 1;
+            deviceInfo.pQueueCreateInfos = &queueInfo;
+            deviceInfo.enabledLayerCount = 0;
+            deviceInfo.ppEnabledLayerNames = nullptr;
+            deviceInfo.enabledExtensionCount = this->m_Extensions.size();
+            deviceInfo.ppEnabledExtensionNames = this->m_Extensions.data();
+            deviceInfo.pEnabledFeatures = &features;
+
+            if (!vkCreateDevice(this->m_gpu, &deviceInfo, nullptr, &this->m_Device))
+                throw Exception(Error::SYSTEM_ERROR, "Unable to create Vulkan device! InitDevice Failure.");
+
+            u32 gladVulkanVersion = gladLoaderLoadVulkan(this->m_Instance, this->m_gpu, this->m_Device);
+            if (!gladVulkanVersion)
+                throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with Device! gladLoad Failure.");
+        }
+
 
 
         b32 vkRendererAPI::ValidateLayers() {
             u32 layerCount = 0;
-            if (!vkEnumerateInstanceLayerProperties(&layerCount, nullptr) || layerCount == 0)
+            if (vkEnumerateInstanceLayerProperties(&layerCount, nullptr) || layerCount == 0)
                 return false; 
 
             VkLayerProperties* instanceLayers = oallocat(VkLayerProperties, layerCount, oSystemAllocator);
             
-            if (!vkEnumerateInstanceLayerProperties(&layerCount, instanceLayers))
+            if (vkEnumerateInstanceLayerProperties(&layerCount, instanceLayers))
                 return false;
 
             cstring validationLayers[] = {
@@ -281,20 +322,16 @@ namespace Ocean {
                 
                 for (cstring layer : validationLayers)
                     this->m_Layers.emplace_back(layer);
-
-                return true;
             }
             else if (vkCheckLayers(ArraySize(alternativeLayers), alternativeLayers, layerCount, instanceLayers)) {
                 this->m_Layers.resize(ArraySize(alternativeLayers));
 
                 for (cstring layer : validationLayers)
                     this->m_Layers.emplace_back(layer);
-
-                return true;
             }
 
             ofree(instanceLayers, oSystemAllocator);
-            return false;
+            return true;
         }
 
     }   // Splash
