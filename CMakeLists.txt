@@ -14,7 +14,7 @@ option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." OFF)
 
 option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
 option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
-option(Ocean_BUILD_TESTS "Build Ocean tests." ON)
+option(Ocean_BUILD_TESTS "Build Ocean tests." OFF)
 
 project("Ocean Engine")
 

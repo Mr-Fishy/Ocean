@@ -13,7 +13,7 @@
 
 #include "Ocean/Platform/Window.hpp"
 
-int main(int argc, char** argv);
+extern int main(int argc, char** argv);
 
 /**
  * @brief The namespace of Ocean Engine. All primary Ocean functionality is within this namespace.

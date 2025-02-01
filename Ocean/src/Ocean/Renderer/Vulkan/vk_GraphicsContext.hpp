@@ -21,7 +21,7 @@ struct GLFWwindow;
 namespace Ocean {
 
     namespace Splash {
-    
+
         class vkGraphicsContext : public GraphicsContext {
         public:
             vkGraphicsContext() = delete;
@@ -44,7 +44,7 @@ namespace Ocean {
             VkColorSpaceKHR m_ColorSpace;
             VkExtent2D m_Extent;
 
-        };  // GraphicsContext
+        };  // vkGraphicsContext
 
     }   // Splash
 

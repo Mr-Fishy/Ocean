@@ -1,6 +1,7 @@
 #pragma once
 
 // Ocean
+#include "Ocean/Primitives/Exceptions.hpp"
 #include "Ocean/Primitives/Memory.hpp"
 
 #include "Ocean/Core/Application.hpp"
@@ -19,7 +20,7 @@ int main(int argc, char** argv) {
 	try {
 		app->Run();
 	}
-	catch (const std::exception& e) {
+	catch (const Ocean::Exception& e) {
 		std::cerr << e.what() << std::endl;
 
 		delete app;

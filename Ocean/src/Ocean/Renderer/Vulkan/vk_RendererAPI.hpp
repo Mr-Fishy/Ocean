@@ -66,12 +66,6 @@ namespace Ocean {
 
         #endif
 
-            VkPhysicalDevice m_gpu;
-            VkPhysicalDeviceProperties m_gpuProperties;
-            VkPhysicalDeviceFeatures m_gpuFeatures;
-            VkPhysicalDeviceMemoryProperties m_gpuMemory;
-
-            VkDevice m_Device;
             DynamicArray<cstring> m_Extensions;
             DynamicArray<cstring> m_Layers;
 

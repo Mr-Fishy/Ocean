@@ -75,7 +75,7 @@ namespace Ocean {
             OC_STATIC Scope<RendererAPI> Create();
 
         private:
-            OC_STATIC_INLINE API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
+            OC_STATIC_INLINE API s_API = API::Vulkan; /** @brief The API to use for the renderer API in Ocean. */
 
         };  // RendererAPI
 
