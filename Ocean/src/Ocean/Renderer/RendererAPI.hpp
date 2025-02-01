@@ -37,13 +37,14 @@ namespace Ocean {
 
                 /** @brief OpenGL renderer API. */
                 OpenGL = 1,
+
                 /** @brief Vulkan renderer API. */
                 Vulkan = 2,
 
             };  // API
 
-            /* --- */
-
+        public:
+            RendererAPI() = default;
             virtual ~RendererAPI() = default;
 
             /** @copydoc RenderCommand::Init() */
@@ -65,7 +66,7 @@ namespace Ocean {
              * 
              * @return API
              */
-            OC_STATIC API GetAPI() { return s_API; }
+            OC_STATIC_INLINE API GetAPI() { return s_API; }
 
             /**
              * @brief Create's a new RendererAPI instance.
@@ -75,6 +76,8 @@ namespace Ocean {
             OC_STATIC Scope<RendererAPI> Create();
 
         private:
+            OC_NO_COPY(RendererAPI);
+
             OC_STATIC_INLINE API s_API = API::Vulkan; /** @brief The API to use for the renderer API in Ocean. */
 
         };  // RendererAPI

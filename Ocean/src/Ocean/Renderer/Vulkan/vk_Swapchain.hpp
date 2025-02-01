@@ -30,7 +30,7 @@ namespace Ocean {
 
             DynamicArray<SwapchainImage> m_Images;
 
-            b8 m_Valid = false;
+            b8 m_IsValid = false;
 
         };  // vkSwapchain
 

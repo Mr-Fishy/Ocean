@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file gl_GraphicsContext.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
 struct GLFWwindow;

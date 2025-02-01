@@ -4,6 +4,11 @@
 #include <memory>
 
 /**
+ * @todo Implement Ocean-specific smart pointers to avoid the Static Initialization Order Fiasco especially for singletons relying on Scope<>.
+ * Info here: https://thelinuxcode.com/demystifying-the-infamous-c-static-initialization-order-fiasco/
+ */
+
+/**
     * @brief A scope is a unique ptr. AKA it lives within the scope of usage without allowing lifetime outside of its usage.
     * 
     * @tparam T The object type.

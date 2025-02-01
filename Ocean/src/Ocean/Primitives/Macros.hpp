@@ -96,9 +96,20 @@
 
 /** @brief Macro to define the copy constructor and assignment operator as delete. */
 #define OC_NO_COPY(Type)                            Type(const Type&) = delete;\
-                                                    Type& operator = (const Type&) = delete
+                                                    Type(const Type&&) = delete;\
+                                                    Type& operator = (const Type&) = delete;\
+                                                    Type& operator = (const Type&&) = delete
 
-
+#define OC_GET_SINGLETON(Type)                      OC_STATIC_INLINE Type& Get() {\
+                                                        static Type* instance = nullptr;\
+                                                        static std::once_flag initFlag;\
+                                                    \
+                                                        std::call_once(initFlag, []() {\
+                                                            instance = new Type();\
+                                                        });\
+                                                    \
+                                                        return *instance;\
+                                                    }
 
 /** @brief Get the size of an array. */
 #define ArraySize(array) (sizeof(array) / sizeof((array)[0]))

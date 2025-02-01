@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file gl_Shader.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Renderer/Shader.hpp"
 
 namespace Ocean {

@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file gl_RendererAPI.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/SmartPtrs.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"

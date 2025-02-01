@@ -4,7 +4,6 @@
  * @file gl_IndexBuffer.hpp
  * @author Evan F.
  * @brief 
- * @date 2025-01-26
  * 
  * @copyright Copyright (c) 2025
  * 

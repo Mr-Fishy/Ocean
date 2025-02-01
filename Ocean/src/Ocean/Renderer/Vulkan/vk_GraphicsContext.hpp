@@ -10,8 +10,7 @@
  * 
  */
 
-#include "Ocean/Primitives/Array.hpp"
-
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
 #include <glad/vulkan.h>
@@ -33,16 +32,11 @@ namespace Ocean {
             virtual void SwapBuffers() override final;
 
         private:
+            OC_NO_COPY(vkGraphicsContext);
+
             GLFWwindow* p_WindowHandle;
 
             VkSurfaceKHR m_Surface;
-
-            VkSwapchainKHR m_Swapchain;
-            DynamicArray<VkImage> m_SwapchainImages;
-
-            VkFormat m_Format;
-            VkColorSpaceKHR m_ColorSpace;
-            VkExtent2D m_Extent;
 
         };  // vkGraphicsContext
 

@@ -58,6 +58,7 @@ namespace Ocean {
 	void Window::Init() {
 		glfwSetErrorCallback(GLFW_ErrorCallback);
 
+		/** @todo Make sure glfw is initialized before the renderer, as glfw gets platform information that may be required at renderer initialization. */
 		if (!glfwInit()) {
 			oprint("GLFW Init Error!\n");
 			glfwTerminate();

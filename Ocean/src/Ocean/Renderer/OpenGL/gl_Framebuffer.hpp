@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file gl_Framebuffer.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
