@@ -124,6 +124,7 @@ message(STATUS)
 # GLM
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLM Starting (${time})...")
+set(CMAKE_POLICY_DEFAULT_CMP0077 "NEW")
 if (BUILD_SHARED_LIBS)
     set(GLM_BUILD_LIBRARY ON)
 else()

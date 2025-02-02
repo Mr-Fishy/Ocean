@@ -4,13 +4,23 @@
 
 #include "Ocean/Primitives/Exceptions.hpp"
 
+#include "Ocean/Platform/WindowContext.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_RendererAPI.hpp"
 #include "Ocean/Renderer/Vulkan/vk_RendererAPI.hpp"
 
 namespace Ocean {
 
     namespace Splash {
-    
+
+        RendererAPI::RendererAPI() {
+            WindowContext::Init();
+        }
+
+        RendererAPI::~RendererAPI() {
+            WindowContext::Shutdown();
+        }
+
         Scope<RendererAPI> RendererAPI::Create() {
             switch (s_API) {
                 case None:

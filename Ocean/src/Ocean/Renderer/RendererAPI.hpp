@@ -44,8 +44,8 @@ namespace Ocean {
             };  // API
 
         public:
-            RendererAPI() = default;
-            virtual ~RendererAPI() = default;
+            RendererAPI();
+            virtual ~RendererAPI();
 
             /** @copydoc RenderCommand::Init() */
             virtual void Init() = 0;

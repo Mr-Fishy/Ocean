@@ -3,7 +3,7 @@
 /**
  * @file gl_Framebuffer.hpp
  * @author Evan F.
- * @brief 
+ * @brief The implementation of an OpenGL Framebuffer.
  * 
  * @copyright Copyright (c) 2025
  * 

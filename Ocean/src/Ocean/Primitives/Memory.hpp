@@ -24,13 +24,13 @@
 #define omega(size) (size * 1024 * 1024)
 #define ogiga(size) (size * 1024 * 1024 * 1024)
 
-// Memory Methods
+
 
 uintptr_t oAlignmentOffset(sizet alignOf, const void* const ptr);
 
 uintptr_t oAlignmentAdjustment(sizet alignOf, const void* const ptr);
 
-// Memory Structs
+
 
 /**
  * @brief A struct that holds stats about memory allocations in the lifetime.
@@ -75,7 +75,7 @@ struct MemoryStats {
 
 };	// MemoryStats
 
-// Memory Allocators
+
 
 /**
  * @brief The base class of a memory allocator.
@@ -101,6 +101,8 @@ public:
 	virtual void Deallocate(void* ptr) = 0;
 
 };	// Allocator
+
+
 
 /**
  * @brief The heap allocator allocates memory in as requested blocks.
@@ -138,6 +140,8 @@ private:
 	sizet m_AllocatedSize = 0; /** @brief The amount of memory that is allocated in the heap. */
 
 };	// HeapAllocator
+
+
 
 /**
  * @brief An allocator that treats the memory as a stack, that can be pushed to and popped from.
@@ -188,6 +192,8 @@ private:
 
 };	// StackAllocator
 
+
+
 class DoubleStackAllocator : public Allocator {
 public:
 	/**
@@ -235,6 +241,8 @@ private:
 
 };	// DoubleStackAllocator
 
+
+
 class LinearAllocator : public Allocator {
 public:
 	/**
@@ -271,6 +279,8 @@ private:
 
 };	// LinearAllocator
 
+
+
 /**
  * @brief Allocates memory using classic C-style malloc and free.
  */
@@ -288,7 +298,7 @@ public:
 
 };	// MallocAllocator
 
-// Memory Service
+
 
 /**
  * @brief A struct that can be used to configure the MemoryService outside of defaults.
@@ -337,6 +347,8 @@ private:
 	MallocAllocator m_MallocAllocator; /** @brief The unmanaged allocator that uses malloc and free. */
 
 };	// MemoryService
+
+/** @todo STL compliant allocator that routes to Ocean allocators. Example code at: https://howardhinnant.github.io/allocator_boilerplate.html */
 
 #define oSystemAllocator                     MemoryService::Instance().SystemAllocator()
 #define oUnmanagedAllocator                  MemoryService::Instance().UnmanagedAllocator()

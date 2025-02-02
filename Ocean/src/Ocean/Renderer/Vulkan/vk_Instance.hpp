@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Ocean/Types/SmartPtrs.hpp"
+#include "Ocean/Types/Strings.hpp"
+
 #include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Device.hpp"
-#include "Ocean/Types/Bool.hpp"
 
 // std
 #include <mutex>
@@ -23,16 +25,28 @@ namespace Ocean {
 
             OC_GET_SINGLETON(vkInstance);
 
+            OC_INLINE VkInstance Instance() const { return this->m_Instance; }
+
         private:
             VkInstance m_Instance;
 
         #ifdef OC_DEBUG
 
-            VkDebugUtilsMessengerEXT m_DebugCallback;
+            PFN_vkCreateDebugReportCallbackEXT m_CreateCallback;
+            PFN_vkDestroyDebugReportCallbackEXT m_DestroyCallback;
+            PFN_vkDebugReportMessageEXT m_ReportMessage;
+
+            VkDebugReportCallbackEXT m_DebugCallback;
 
         #endif
 
-            DynamicArray<vkDevice> m_Devices;
+            DynamicArray<cstring> m_Extensions;
+            DynamicArray<cstring> m_Layers;
+
+            DynamicArray<Ref<vkDevice>> m_Devices;
+
+        private:
+            void GetDevices();
 
         };  // vkInstance
 

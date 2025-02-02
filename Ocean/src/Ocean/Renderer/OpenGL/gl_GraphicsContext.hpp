@@ -3,7 +3,7 @@
 /**
  * @file gl_GraphicsContext.hpp
  * @author Evan F.
- * @brief 
+ * @brief The implementation of an OpenGL GraphicsContext.
  * 
  * @copyright Copyright (c) 2025
  * 

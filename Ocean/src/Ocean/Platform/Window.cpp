@@ -14,10 +14,6 @@
 
 namespace Ocean {
 
-	static void GLFW_ErrorCallback(i32 error, cstring description) {
-		oprint("GLWF Error (%i): %s\n", error, description);
-	}
-
 	// TODO: Event calls and input handling
 
 	typedef WindowData* WindowDataPtr;
@@ -56,16 +52,6 @@ namespace Ocean {
 	}
 
 	void Window::Init() {
-		glfwSetErrorCallback(GLFW_ErrorCallback);
-
-		/** @todo Make sure glfw is initialized before the renderer, as glfw gets platform information that may be required at renderer initialization. */
-		if (!glfwInit()) {
-			oprint("GLFW Init Error!\n");
-			glfwTerminate();
-
-			return;
-		}
-
 		#ifdef OC_DEBUG
 
 		if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::OpenGL)
@@ -101,7 +87,6 @@ namespace Ocean {
 
 	void Window::Shutdown() {
 		glfwDestroyWindow(static_cast<WindowPtr>(this->p_PlatformHandle));
-		glfwTerminate();
 	}
 
 	void Window::SetFullscreen(b8 enabled) {
