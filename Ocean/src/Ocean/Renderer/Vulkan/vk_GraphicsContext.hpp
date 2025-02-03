@@ -11,8 +11,12 @@
  */
 
 #include "Ocean/Primitives/Macros.hpp"
+
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
+#include "Ocean/Renderer/Vulkan/vk_Swapchain.hpp"
+
+// libs
 #include <glad/vulkan.h>
 
 struct GLFWwindow;
@@ -37,6 +41,8 @@ namespace Ocean {
             GLFWwindow* p_WindowHandle;
 
             VkSurfaceKHR m_Surface;
+
+            Ref<vkSwapchain> m_Swapchain;
 
         };  // vkGraphicsContext
 

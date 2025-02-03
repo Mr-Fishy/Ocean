@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file vk_Swapchain.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/Bool.hpp"
 
 #include "Ocean/Primitives/Array.hpp"
@@ -20,12 +29,18 @@ namespace Ocean {
             };  // SwapchainImage
 
         public:
-
+            vkSwapchain(VkSurfaceKHR surface);
+            ~vkSwapchain();
 
         private:
             VkSwapchainKHR m_Swapchain;
 
-            VkSurfaceFormatKHR m_Format;
+            VkQueue m_Queue;
+            u32 m_GraphicsQueueIndex;
+            u32 m_PresentQueueIndex;
+
+            VkFormat m_Format;
+            VkColorSpaceKHR m_ColorSpace;
             VkExtent2D m_Extent;
 
             DynamicArray<SwapchainImage> m_Images;

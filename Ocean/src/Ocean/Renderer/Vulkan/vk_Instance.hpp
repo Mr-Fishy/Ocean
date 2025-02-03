@@ -27,6 +27,13 @@ namespace Ocean {
 
             OC_INLINE VkInstance Instance() const { return this->m_Instance; }
 
+            OC_INLINE const Ref<vkDevice>& Device() { return this->m_Devices[0]; }
+
+            const DynamicArray<cstring>& Extensions() { return this->m_Extensions; }
+
+        private:
+            void GetDevices();
+
         private:
             VkInstance m_Instance;
 
@@ -44,9 +51,6 @@ namespace Ocean {
             DynamicArray<cstring> m_Layers;
 
             DynamicArray<Ref<vkDevice>> m_Devices;
-
-        private:
-            void GetDevices();
 
         };  // vkInstance
 

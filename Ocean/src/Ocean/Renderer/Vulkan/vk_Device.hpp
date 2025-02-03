@@ -29,6 +29,8 @@ namespace Ocean {
             OC_INLINE VkPhysicalDevice GetPhysical() const { return this->m_gpu; }
             OC_INLINE VkDevice GetLogical() const { return this->m_Device; }
 
+            void InitLogicalDevice(VkDeviceQueueCreateInfo& queueInfo);
+
             i32 GetDeviceScore();
 
         private:
@@ -43,10 +45,6 @@ namespace Ocean {
             VkPhysicalDeviceMemoryProperties m_gpuMemory;
 
             VkDevice m_Device;
-
-            VkQueue m_Queue;
-            u32 m_GraphicsQueueIndex;
-            u32 m_PresentQueueIndex;
 
         };  // vkDevice
 
