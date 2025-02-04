@@ -1,6 +1,5 @@
 #include "vk_Instance.hpp"
 
-#include "Ocean/Renderer/Vulkan/vk_Device.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -12,6 +11,7 @@
 #include "Ocean/Primitives/Log.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Device.hpp"
 
 // std
 #include <cstring>
@@ -26,9 +26,9 @@ namespace Ocean {
     namespace Splash {
 
         OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
-            VkFlags msgFlags, VkDebugReportObjectTypeEXT objType,
-            u64 srcObject, sizet location,i32 msgCode,
-            cstring pLayerPrefix, cstring pMsg, void* pUserData
+            VkFlags msgFlags, OC_UNUSED VkDebugReportObjectTypeEXT objType,
+            OC_UNUSED u64 srcObject, OC_UNUSED sizet location,i32 msgCode,
+            cstring pLayerPrefix, cstring pMsg, OC_UNUSED void* pUserData
         ) {
             switch (msgFlags) {
                 case VK_DEBUG_REPORT_ERROR_BIT_EXT:
@@ -48,6 +48,9 @@ namespace Ocean {
         vkInstance::vkInstance() :
             m_Instance(VK_NULL_HANDLE),
         #ifdef OC_DEBUG
+            m_CreateCallback(VK_NULL_HANDLE),
+            m_DestroyCallback(VK_NULL_HANDLE),
+            m_ReportMessage(VK_NULL_HANDLE),
             m_DebugCallback(VK_NULL_HANDLE),
         #endif
             m_Extensions(0),
@@ -79,7 +82,7 @@ namespace Ocean {
             for (u32 i = 0; i < extensionCount; i++)
                 this->m_Extensions.emplace_back(glfwExtensions[i]);
 
-            // hasDebugCapabilites remains outside of an #ifdef as it may still be usefull to know if there is debug extensions available during release.
+            // hasDebugCapabilites should remain outside of an #ifdef as it may still be usefull to know if there is debug extensions available during release.
             //
             b8 hasDebugCapabilities = false;
 
@@ -259,16 +262,16 @@ namespace Ocean {
 
             for (const VkPhysicalDevice& gpu : physicalDevices) {
                 if (!gladLoaderLoadVulkan(this->m_Instance, gpu, nullptr))
-                    throw Exception(Error::SYSTEM_ERROR, "");
+                    throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with a gpu! gladLoad Failure.");
 
                 Ref<vkDevice> device = MakeRef<vkDevice>(gpu);
 
-                if (device->GetDeviceScore() > 0)
+                if (device->GetDeviceScore(this->m_Extensions) > 0)
                     this->m_Devices.emplace_back(device);
             }
 
             for (u32 i = 1; i < this->m_Devices.size(); i++) {
-                if (this->m_Devices[i]->GetDeviceScore() > this->m_Devices[i - 1]->GetDeviceScore())
+                if (this->m_Devices[i]->GetDeviceScore(this->m_Extensions) > this->m_Devices[i - 1]->GetDeviceScore(this->m_Extensions))
                     std::swap(this->m_Devices[i], this->m_Devices[i - 1]);
             }
         }

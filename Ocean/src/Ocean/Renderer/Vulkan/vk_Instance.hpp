@@ -35,6 +35,9 @@ namespace Ocean {
             void GetDevices();
 
         private:
+            OC_NO_COPY(vkInstance);
+
+        private:
             VkInstance m_Instance;
 
         #ifdef OC_DEBUG

@@ -65,7 +65,7 @@ namespace Ocean {
                 throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with logical device! gladLoad Failure.");
         }
 
-        i32 vkDevice::GetDeviceScore() {
+        i32 vkDevice::GetDeviceScore(const DynamicArray<cstring>& extensions) {
             i32 score = 0;
 
             if (this->m_gpuProperties.apiVersion < VK_API_VERSION_1_3)
@@ -78,6 +78,10 @@ namespace Ocean {
 
             if (this->m_gpuProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
                 score += 10;
+
+            for (const cstring& ext : extensions) {
+                
+            }
 
             oprint("Vulkan Device Info\n");
             oprint("\tRenderer: %s\n", this->m_gpuProperties.deviceName);

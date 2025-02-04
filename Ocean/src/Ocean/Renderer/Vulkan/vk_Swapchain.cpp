@@ -83,7 +83,7 @@ namespace Ocean {
             };
 
             vkInstance::Get().Device()->InitLogicalDevice(queueInfo);
-
+return;
             vkGetDeviceQueue(vkInstance::Get().Device()->GetLogical(), this->m_GraphicsQueueIndex, 0, &this->m_Queue);
 
             // Get the list of formats that are supported by the surface.
