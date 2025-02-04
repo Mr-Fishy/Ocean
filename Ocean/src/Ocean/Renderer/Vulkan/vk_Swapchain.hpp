@@ -12,6 +12,7 @@
 #include "Ocean/Types/Bool.hpp"
 
 #include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/Macros.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -31,6 +32,9 @@ namespace Ocean {
         public:
             vkSwapchain(VkSurfaceKHR surface);
             ~vkSwapchain();
+
+            OC_INLINE u32 GraphicsQueueIndex() const { return this->m_GraphicsQueueIndex; }
+            OC_INLINE u32 PresentQueueIndex() const { return this->m_PresentQueueIndex; }
 
         private:
             VkSwapchainKHR m_Swapchain;

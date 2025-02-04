@@ -1,10 +1,10 @@
 #include "vk_Device.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Log.hpp"
 #include "Ocean/Primitives/Exceptions.hpp"
+#include "Ocean/Primitives/Array.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
@@ -21,6 +21,7 @@ namespace Ocean {
             m_gpuFeatures(0),
             m_gpuProperties(),
             m_gpuMemory(),
+            m_Extensions(0),
             m_Device(VK_NULL_HANDLE)
         {
             vkGetPhysicalDeviceFeatureBits(this->m_gpu, &this->m_gpuFeatures);
@@ -39,9 +40,7 @@ namespace Ocean {
             if (this->m_gpuFeatures & VkPhysicalDeviceFeatureBits::ShaderClipDistance)
                 features.shaderClipDistance = VK_TRUE;
 
-            const DynamicArray<cstring>& extensions = vkInstance::Get().Extensions();
-
-            for (const cstring ext : extensions)
+            for (const cstring ext : this->m_Extensions)
                 oprint("Requested Extension: %s\n", ext);
 
             VkDeviceCreateInfo deviceInfo {
@@ -52,8 +51,8 @@ namespace Ocean {
                 &queueInfo,
                 0,
                 nullptr,
-                static_cast<u32>(extensions.size()),
-                extensions.data(),
+                static_cast<u32>(this->m_Extensions.size()),
+                this->m_Extensions.data(),
                 &features
             };
 
@@ -65,7 +64,7 @@ namespace Ocean {
                 throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with logical device! gladLoad Failure.");
         }
 
-        i32 vkDevice::GetDeviceScore(const DynamicArray<cstring>& extensions) {
+        i32 vkDevice::GetDeviceScore() {
             i32 score = 0;
 
             if (this->m_gpuProperties.apiVersion < VK_API_VERSION_1_3)
@@ -79,9 +78,12 @@ namespace Ocean {
             if (this->m_gpuProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
                 score += 10;
 
-            for (const cstring& ext : extensions) {
-                
-            }
+            u32 extensionCount;
+            vkCheck(
+                vkEnumerateDeviceExtensionProperties(this->m_gpu, nullptr, &extensionCount, nullptr)
+            );
+
+            score += extensionCount;
 
             oprint("Vulkan Device Info\n");
             oprint("\tRenderer: %s\n", this->m_gpuProperties.deviceName);

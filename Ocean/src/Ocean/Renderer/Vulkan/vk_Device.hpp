@@ -31,9 +31,11 @@ namespace Ocean {
             OC_INLINE VkPhysicalDevice GetPhysical() const { return this->m_gpu; }
             OC_INLINE VkDevice GetLogical() const { return this->m_Device; }
 
+            OC_INLINE void AddDeviceExtension(cstring extension) { this->m_Extensions.emplace_back(extension); }
+
             void InitLogicalDevice(VkDeviceQueueCreateInfo& queueInfo);
 
-            i32 GetDeviceScore(const DynamicArray<cstring>& extensions);
+            i32 GetDeviceScore();
 
         private:
             OC_NO_COPY(vkDevice);
@@ -45,6 +47,8 @@ namespace Ocean {
             u64 m_gpuFeatures;
             VkPhysicalDeviceProperties m_gpuProperties;
             VkPhysicalDeviceMemoryProperties m_gpuMemory;
+
+            DynamicArray<cstring> m_Extensions;
 
             VkDevice m_Device;
 

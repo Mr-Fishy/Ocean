@@ -19,26 +19,70 @@
 
 // libs
 #include <glad/vulkan.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 namespace Ocean {
 
     namespace Splash {
 
-        OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
-            VkFlags msgFlags, OC_UNUSED VkDebugReportObjectTypeEXT objType,
-            OC_UNUSED u64 srcObject, OC_UNUSED sizet location,i32 msgCode,
-            cstring pLayerPrefix, cstring pMsg, OC_UNUSED void* pUserData
+        //
+        // Debug callback code adapted from https://stackoverflow.com/questions/75573117/vkgetinstanceprocaddrinstance-vkcreatedebugutilsmessengerext-returns-null
+        //
+
+        VkResult CreateDebugUtilsMessengerExt(
+            VkInstance instance,
+            const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+            const VkAllocationCallbacks* pAllocator,
+            VkDebugUtilsMessengerEXT* pDebugMessenger
         ) {
-            switch (msgFlags) {
-                case VK_DEBUG_REPORT_ERROR_BIT_EXT:
-                    oprintret(CONSOLE_TEXT_RED("Vulkan Error: [%s] Code %d : %s"), pLayerPrefix, msgCode, pMsg);
+            auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
+            
+            if (func)
+                return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+            else
+                return VK_ERROR_EXTENSION_NOT_PRESENT;
+        }
+
+        void DestroyDebutUtilsMessengerExt(
+            VkInstance instance,
+            VkDebugUtilsMessengerEXT debugMessenger,
+            const VkAllocationCallbacks* pAllocator
+        ) {
+            auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+
+            if (func)
+                func(instance, debugMessenger, pAllocator);
+        }
+
+        OC_STATIC VKAPI_ATTR b32 VKAPI_CALL vkMessageCallback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+            OC_UNUSED VkDebugUtilsMessageTypeFlagsEXT messageType,
+            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+            OC_UNUSED void* pUserData
+        ) {
+            switch (messageSeverity) {
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+                    oprint("Vulkan DIAGNOSTIC:\t %s\n", pCallbackData->pMessage);
                     return VK_TRUE;
 
-                case VK_DEBUG_REPORT_WARNING_BIT_EXT:
-                    oprintret(CONSOLE_TEXT_RED("Vulkan Error: [%s] Code %d : %s"), pLayerPrefix, msgCode, pMsg);
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+                    oprint(CONSOLE_TEXT_CYAN("Vulkan INFO:\t %s\n"), pCallbackData->pMessage);
                     return VK_TRUE;
+
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+                    oprint(CONSOLE_TEXT_YELLOW("Vulkan WARNING:\t %s\n"), pCallbackData->pMessage);
+                    return VK_TRUE;
+
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+                    oprint(CONSOLE_TEXT_RED("Vulkan ERROR:\t %s\n"), pCallbackData->pMessage);
+                    return VK_TRUE;
+
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
+                    break;
             }
+
+            oprint(CONSOLE_TEXT_RED("UNKOWN Vulkan Message!\n"));
 
             return VK_FALSE;
         }
@@ -47,12 +91,6 @@ namespace Ocean {
 
         vkInstance::vkInstance() :
             m_Instance(VK_NULL_HANDLE),
-        #ifdef OC_DEBUG
-            m_CreateCallback(VK_NULL_HANDLE),
-            m_DestroyCallback(VK_NULL_HANDLE),
-            m_ReportMessage(VK_NULL_HANDLE),
-            m_DebugCallback(VK_NULL_HANDLE),
-        #endif
             m_Extensions(0),
             m_Layers(0),
             m_Devices(0)
@@ -63,46 +101,8 @@ namespace Ocean {
             if (!gladVersion)
                 throw Exception(Error::SYSTEM_ERROR, "Unable to load Vulkan symbols! gladLoad Failure.");
 
-            // Collect all of the extensions required for the Vulkan instance, aka platform and debugging support.
+            // ================================ VALIDATION LAYERS ================================
             //
-            u32 extensionCount;
-            vkCheck(
-                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr)
-            );
-
-            DynamicArray<VkExtensionProperties> availableExtensions(extensionCount);
-            vkCheck(
-                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data())
-            );
-
-            // extensionCount is re-used for required extensionCount rather than available extensionCount
-            //
-            cstring* glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
-
-            for (u32 i = 0; i < extensionCount; i++)
-                this->m_Extensions.emplace_back(glfwExtensions[i]);
-
-            // hasDebugCapabilites should remain outside of an #ifdef as it may still be usefull to know if there is debug extensions available during release.
-            //
-            b8 hasDebugCapabilities = false;
-
-            /** @todo Add release vs debug define to use in functionality for debug support if user requested during release. */
-
-            for (const VkExtensionProperties& extension : availableExtensions) {
-                if (std::strncmp(extension.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, strlen(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) == 0) {
-                    hasDebugCapabilities = true;
-
-                    break;
-                }
-            }
-
-            if (hasDebugCapabilities) {
-                this->m_Extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-                extensionCount++;
-            }
-            else
-                oprint(CONSOLE_TEXT_YELLOW("%s is not available...Disabling debug utils messenger."), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-
             // Collect all of the validation layers required for the Vulkan instance, aka debug layers and Vulkan checks.
             //
             u32 layerCount;
@@ -134,7 +134,7 @@ namespace Ocean {
                 }
 
                 // If it did not find all of the requestedValidationLayers,
-                // then get all of the available requestedValidationLayers_Alt-ernatives.
+                // then get all of the available requestedValidationLayers_Alt's.
                 // 
                 // If all of the requestedValidationLayers were found, then they will be added to m_Layers.
                 //
@@ -169,8 +169,55 @@ namespace Ocean {
                 }
             }
 
+            // ================================ EXTENSIONS ================================
+            //
+            // Collect all of the extensions required for the Vulkan instance, aka platform and debugging support.
+            //
+            u32 extensionCount;
+            vkCheck(
+                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr)
+            );
+
+            DynamicArray<VkExtensionProperties> availableExtensions(extensionCount);
+            vkCheck(
+                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data())
+            );
+
+            for (const VkExtensionProperties& extension : availableExtensions)
+                oprint(CONSOLE_TEXT_MAGENTA("Available Extension: %s\n"), extension.extensionName);
+
+            // extensionCount is re-used for required extensionCount rather than available extensionCount
+            //
+            cstring* glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+
+            for (u32 i = 0; i < extensionCount; i++)
+                this->m_Extensions.emplace_back(glfwExtensions[i]);
+
+            // hasDebugCapabilites should remain outside of an #ifdef as it may still be usefull to know if there is debug extensions available during release.
+            //
+            b8 hasDebugCapabilities = false;
+
+            /** @todo Add release vs debug define to use in functionality for debug support if user requested during release. */
+
+            for (const VkExtensionProperties& extension : availableExtensions) {
+                if (std::strncmp(extension.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, strlen(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) == 0) {
+                    hasDebugCapabilities = true;
+
+                    break;
+                }
+            }
+
+            if (hasDebugCapabilities && GLAD_VK_EXT_debug_report) {
+                this->m_Extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                extensionCount++;
+            }
+            else
+                oprint(CONSOLE_TEXT_YELLOW("%s is not available...Disabling debug utils messenger."), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
             /** @todo Make pApplicationName, applicationVersion, pEngineName, and engineVersion defined variable dependent. */
 
+            // ================================ INSTANCE CREATION ================================
+            //
             VkApplicationInfo appInfo {
                 VK_STRUCTURE_TYPE_APPLICATION_INFO,
                 nullptr,
@@ -181,8 +228,14 @@ namespace Ocean {
                 "Ocean Engine",
                 VK_MAKE_VERSION(1, 0, 0),
 
-                VK_MAKE_VERSION(1, 3, 0)
+                VK_API_VERSION_1_3
             };
+
+            for (const cstring& layer : this->m_Layers)
+                oprint(CONSOLE_TEXT_CYAN("Enabling Layer: %s\n"), layer);
+
+            for (const cstring& ext : this->m_Extensions)
+                oprint(CONSOLE_TEXT_CYAN("Enabling Extension: %s\n"), ext);
 
             VkInstanceCreateInfo instanceInfo {
                 VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
@@ -191,17 +244,43 @@ namespace Ocean {
 
                 &appInfo,
 
-                layerCount,
-                this->m_Layers.data(),
+                0,
+                nullptr,
 
                 extensionCount,
                 this->m_Extensions.data()
             };
 
+            // ================================ DEBUG INFO ================================
+            //
+            VkDebugUtilsMessengerCreateInfoEXT messengerInfo { };
+            if (hasDebugCapabilities) {
+                instanceInfo.enabledLayerCount = layerCount;
+                instanceInfo.ppEnabledLayerNames = this->m_Layers.data();
+
+                messengerInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+
+                messengerInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+                                                VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                                                VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+                messengerInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                                            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                                            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+                messengerInfo.pfnUserCallback = vkMessageCallback;
+
+                instanceInfo.pNext = &messengerInfo;
+            }
+
+            // ================================ INSTANCE CREATION ================================
+            //
             vkCheck(
                 vkCreateInstance(&instanceInfo, nullptr, &this->m_Instance)
             );
 
+            // ================================ DEVICE CREATION ================================
+            //
             GetDevices();
 
             // Load's all of the related Vulkan symbols given the instance and the physical device selected.
@@ -210,34 +289,11 @@ namespace Ocean {
             if (!gladVersion)
                 throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with physical device!");
 
-            // Setup Vulkan's debug callbacks given that it hasDebugCapabilities.
-            //
-            if (hasDebugCapabilities && false) { /** @todo FIX. */
-                this->m_CreateCallback = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(this->m_Instance, "vkCreateDebugReportCallbackEXT"));
-                this->m_DestroyCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(this->m_Instance, "vkDestroyDebugReportCallbackEXT"));
-
-                if (!this->m_CreateCallback)
-                    throw Exception(Error::SYSTEM_ERROR, "Unable to find vkCreateDebugReportCallbackEXT. vkGetProcAddr Failure.");
-                if (!this->m_DestroyCallback)
-                    throw Exception(Error::SYSTEM_ERROR, "Unable to find vkDestroyDebugReportCallbackEXT. vkGetProcAddr Failure.");
-
-                this->m_ReportMessage = reinterpret_cast<PFN_vkDebugReportMessageEXT>(vkGetInstanceProcAddr(this->m_Instance, "vkDebugReportMessageEXT"));
-
-                if (!this->m_ReportMessage)
-                    throw Exception(Error::SYSTEM_ERROR, "Unable to find vkDebugReportMessageEXT. vkGetProcAddr Failure.");
-
-                VkDebugReportCallbackCreateInfoEXT messengerCreateInfo {
-                    VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
-                    nullptr,
-                    VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT,
-                    vkMessageCallback,
-                    nullptr
-                };
-
-                vkCheck(
-                    this->m_CreateCallback(this->m_Instance, &messengerCreateInfo, nullptr, &this->m_DebugCallback)
-                );
+            if (GLAD_VK_KHR_swapchain) {
+                this->m_Devices[0]->AddDeviceExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
             }
+            else
+                throw Exception(Error::SYSTEM_ERROR, "Failed to find extension: " VK_KHR_SWAPCHAIN_EXTENSION_NAME ". vkCreateInstance Failure.");
         }
 
         vkInstance::~vkInstance() {
@@ -266,12 +322,12 @@ namespace Ocean {
 
                 Ref<vkDevice> device = MakeRef<vkDevice>(gpu);
 
-                if (device->GetDeviceScore(this->m_Extensions) > 0)
+                if (device->GetDeviceScore() > 0)
                     this->m_Devices.emplace_back(device);
             }
 
             for (u32 i = 1; i < this->m_Devices.size(); i++) {
-                if (this->m_Devices[i]->GetDeviceScore(this->m_Extensions) > this->m_Devices[i - 1]->GetDeviceScore(this->m_Extensions))
+                if (this->m_Devices[i]->GetDeviceScore() > this->m_Devices[i - 1]->GetDeviceScore())
                     std::swap(this->m_Devices[i], this->m_Devices[i - 1]);
             }
         }

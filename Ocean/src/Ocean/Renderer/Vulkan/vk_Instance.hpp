@@ -7,6 +7,7 @@
 #include "Ocean/Primitives/Macros.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Device.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Swapchain.hpp"
 
 // std
 #include <mutex>
@@ -31,6 +32,10 @@ namespace Ocean {
 
             const DynamicArray<cstring>& Extensions() { return this->m_Extensions; }
 
+            OC_INLINE void InitSwapchain(VkSurfaceKHR surface) { this->m_Swapchain = MakeRef<vkSwapchain>(surface); };
+
+            OC_INLINE const Ref<vkSwapchain>& Swapchain() { return this->m_Swapchain; }
+
         private:
             void GetDevices();
 
@@ -40,20 +45,12 @@ namespace Ocean {
         private:
             VkInstance m_Instance;
 
-        #ifdef OC_DEBUG
-
-            PFN_vkCreateDebugReportCallbackEXT m_CreateCallback;
-            PFN_vkDestroyDebugReportCallbackEXT m_DestroyCallback;
-            PFN_vkDebugReportMessageEXT m_ReportMessage;
-
-            VkDebugReportCallbackEXT m_DebugCallback;
-
-        #endif
-
             DynamicArray<cstring> m_Extensions;
             DynamicArray<cstring> m_Layers;
 
             DynamicArray<Ref<vkDevice>> m_Devices;
+
+            Ref<vkSwapchain> m_Swapchain;
 
         };  // vkInstance
 

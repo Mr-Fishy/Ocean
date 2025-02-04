@@ -17,7 +17,11 @@ namespace Ocean {
 
         vkSwapchain::vkSwapchain(VkSurfaceKHR surface) :
             m_Swapchain(VK_NULL_HANDLE),
+            m_Queue(VK_NULL_HANDLE),
+            m_GraphicsQueueIndex(0),
+            m_PresentQueueIndex(0),
             m_Format(),
+            m_ColorSpace(),
             m_Extent(),
             m_Images(0),
             m_IsValid(false)
@@ -83,7 +87,7 @@ namespace Ocean {
             };
 
             vkInstance::Get().Device()->InitLogicalDevice(queueInfo);
-return;
+
             vkGetDeviceQueue(vkInstance::Get().Device()->GetLogical(), this->m_GraphicsQueueIndex, 0, &this->m_Queue);
 
             // Get the list of formats that are supported by the surface.

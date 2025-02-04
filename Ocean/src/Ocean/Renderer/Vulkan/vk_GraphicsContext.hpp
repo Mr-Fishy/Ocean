@@ -42,8 +42,6 @@ namespace Ocean {
 
             VkSurfaceKHR m_Surface;
 
-            Ref<vkSwapchain> m_Swapchain;
-
         };  // vkGraphicsContext
 
     }   // Splash

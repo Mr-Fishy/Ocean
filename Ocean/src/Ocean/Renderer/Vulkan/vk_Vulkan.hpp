@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
@@ -75,6 +76,142 @@ namespace Ocean {
         };  // vkPhysicalDeviceFeatureBits
 
         OC_UNUSED void vkGetPhysicalDeviceFeatureBits(VkPhysicalDevice physicalDevice, u64* pFeatures);
+
+        // struct VkPhsycalDevicePropertiesCompressed {
+        //     u32 apiVersion;
+        //     u32 driverVersion;
+        //     u32 vendorID;
+        //     u32 deviceID;
+
+        //     VkPhysicalDeviceType deviceType;
+
+        //     u8 deviceName[VK_MAX_PHYSICAL_DEVICE_NAME_SIZE];
+        //     u8 pipelineCacheUUID[VK_UUID_SIZE];
+
+        //     struct VkPhysicalDeviceLimitsCompressed {
+        //         u16 maxImageDimension1D;
+        //         u16 maxImageDimension2D;
+        //         // maxImageDimension3D
+        //         u16 maxImageDimensionCube;
+        //         u16 maxImageArrayLayers;
+        //         // maxTexelBufferElements
+        //         u32 maxUniformBufferRange;
+        //         // maxStorageBufferRange
+        //         // maxPushConstantsSize
+        //         // maxMemoryAllocationCount
+        //         // maxSamplerAllocationCount
+        //         u16 bufferImageGranularity;
+        //         // sparseAddressSpaceSize
+        //         // maxBoundDescriptorSets
+        //         u8 maxPerStageDescriptorSamplers;
+        //         u8 maxPerStageDescriptorUniformBuffers;
+        //         u8 maxPerStageDescriptorStorageBuffers;
+        //         u8 maxPerStageDescriptorSampledImages;
+        //         u8 maxPerStageDescriptorStorageImages;
+        //         // maxPerStageDescriptorInputAttachments
+        //         u8 maxPerStageResources;
+        //         u16 maxDescriptorSetSamplers;
+        //         u8 maxDescriptorSetUniformBuffers;
+        //         // maxDescriptorSetUniformBuffersDynamic
+        //         u8 maxDescriptorSetStorageBuffers;
+        //         // maxDescriptorSetStorageBuffersDynamic
+        //         u16 maxDescriptorSetSampledImages;
+        //         u8 maxDescriptorSetStorageImages;
+        //         // maxDescriptorSetInputAttachments
+        //         // maxVertexInputAttributes
+        //         // maxVertexInputBindings
+        //         // maxVertexInputAttributeOffset
+        //         // maxVertexInputBindingStride
+        //         // maxVertexOutputComponents
+        //         // maxTessellationGenerationLevel
+        //         // maxTessellationPatchSize
+        //         // maxTessellationControlPerVertexInputComponents
+        //         // maxTessellationControlPerVertexOutputComponents
+        //         // maxTessellationControlPerPatchOutputComponents
+        //         // maxTessellationControlTotalOutputComponents
+        //         // maxTessellationEvaluationInputComponents
+        //         // maxTessellationEvaluationOutputComponents
+        //         // maxGeometryShaderInvocations
+        //         // maxGeometryInputComponents
+        //         // maxGeometryOutputComponents
+        //         // maxGeometryOutputVertices
+        //         // maxGeometryTotalOutputComponents
+        //         // maxFragmentInputComponents
+        //         // maxFragmentOutputAttachments
+        //         // maxFragmentDualSrcAttachments
+        //         u8 maxFragmentCombinedOutputResources;
+        //         // maxComputeSharedMemorySize
+        //         // maxComputeWorkGroupCount
+        //         u16 maxComputeWorkGroupInvocations;
+        //         u16 maxComputeWorkGroupSize[3];
+        //         // subPixelPrecisionBits
+        //         u8 subTexelPrecisionBits;
+        //         u8 mipmapPrecisionBits;
+        //         // maxDrawIndexedIndexValue
+        //         // maxDrawIndirectCount
+        //         u8 maxSamplerLodBias;
+        //         // maxSamplerAnisotropy
+        //         // maxViewports
+        //         // maxViewportDimensions
+        //         // viewportBoundsRange
+        //         // viewportSubPixelBits
+        //         // minMemoryMapAlignment
+        //         // minTexelBufferOffsetAlignment
+        //         // minUniformBufferOffsetAlignment
+        //         // minStorageBufferOffsetAlignment
+        //         // minTexelOffset
+        //         // maxTexelOffset
+        //         // minTexelGatherOffset
+        //         // maxTexelGatherOffset
+        //         // minInterpolationOffset
+        //         // maxInterpolationOffset
+        //         // subPixelInterpolationOffsetBits
+        //         // maxFramebufferWidth
+        //         // maxFramebufferHeight
+        //         // maxFramebufferLayers
+        //         // framebufferColorSampleCounts
+        //         // framebufferDepthSampleCounts
+        //         // framebufferStencilSampleCounts
+        //         // framebufferNoAttachmentsSampleCounts
+        //         // maxColorAttachments
+        //         // sampledImageColorSampleCounts
+        //         // sampledImageIntegerSampleCounts
+        //         // sampledImageDepthSampleCounts
+        //         // sampledImageStencilSampleCounts
+        //         // storageImageSampleCounts
+        //         // maxSampleMaskWords
+        //         // timestampComputeAndGraphics
+        //         // timestampPeriod
+        //         // maxClipDistances
+        //         // maxCullDistances
+        //         // maxCombinedClipAndCullDistances
+        //         // discreteQueuePriorities
+        //         // pointSizeRange
+        //         // lineWidthRange
+        //         f32 pointSizeGranularity;
+        //         // lineWidthGranularity
+        //         // strictLines
+        //         // standardSampleLocations
+        //         // optimalBufferCopyOffsetAlignment
+        //         // optimalBufferCopyRowPitchAlignment
+        //         // nonCoherentAtomSize
+
+        //     };  // VkPhysicalDeviceLimitsCompressed
+
+        //     VkPhysicalDeviceLimitsCompressed limits;
+
+        //     struct VkPhysicalDeviceSparsePropertiesCompressed {
+
+
+        //     };  // VkPhysicalDeviceSparsePropertiesCompressed
+
+        //     VkPhysicalDeviceSparsePropertiesCompressed sparseProperties;
+
+        // };  // VkPhsycalDevicePropertiesCompressed
+
+        // struct VkPhysicalDeviceMemoryProperties {
+
+        // };  // VkPhysicalDeviceMemoryProperties
 
     }   // Splash
 

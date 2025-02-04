@@ -14,8 +14,6 @@
 
 #include "Ocean/Renderer/RendererAPI.hpp"
 
-#include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
-
 // libs
 #include <glad/vulkan.h>
 
@@ -39,6 +37,10 @@ namespace Ocean {
 
         private:
             OC_NO_COPY(vkRendererAPI);
+
+            VkCommandPool m_CommandPool;
+
+            VkCommandBuffer m_DrawBuffer;
 
         };  // RendererAPI
 

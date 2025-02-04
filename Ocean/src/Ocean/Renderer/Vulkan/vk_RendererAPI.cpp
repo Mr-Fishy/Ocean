@@ -1,12 +1,12 @@
 #include "vk_RendererAPI.hpp"
 
-#include "Ocean/Primitives/Log.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 
+#include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 
 // std
@@ -33,7 +33,28 @@ namespace Ocean {
         }
 
         void vkRendererAPI::Init() {
-            
+            const VkCommandPoolCreateInfo poolInfo {
+                VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+                nullptr,
+                VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+                vkInstance::Get().Swapchain()->GraphicsQueueIndex()
+            };
+
+            vkCheck(
+                vkCreateCommandPool(vkInstance::Get().Device()->GetLogical(), &poolInfo, nullptr, &this->m_CommandPool)
+            );
+
+            const VkCommandBufferAllocateInfo cmdInfo {
+                VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                nullptr,
+                this->m_CommandPool,
+                VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                1
+            };
+
+            vkCheck(
+                vkAllocateCommandBuffers(vkInstance::Get().Device()->GetLogical(), &cmdInfo, &this->m_DrawBuffer)
+            );
         }
 
         void vkRendererAPI::SetViewport(u32 x, u32 y, u32 w, u32 h) {
@@ -49,7 +70,7 @@ namespace Ocean {
         }
 
         void vkRendererAPI::DrawIndexed(const Ref<VertexArray>& array, u32 indexCount) {
-            u32 count = indexCount ? indexCount : array->GetIndexBuffer()->GetCount();
+            // u32 count = indexCount ? indexCount : array->GetIndexBuffer()->GetCount();
 
         }
 
