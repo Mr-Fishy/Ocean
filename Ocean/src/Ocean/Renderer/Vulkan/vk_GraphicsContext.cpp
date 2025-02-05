@@ -14,8 +14,7 @@ namespace Ocean {
     namespace Splash {
     
         vkGraphicsContext::vkGraphicsContext(GLFWwindow* window) :
-            p_WindowHandle(window),
-            m_Surface(VK_NULL_HANDLE)
+            p_WindowHandle(window)
         {
             OASSERTM(this->p_WindowHandle != nullptr, "Window Handle Is A nullptr!");
         }
@@ -25,9 +24,10 @@ namespace Ocean {
         }
 
         void vkGraphicsContext::Init() {
-            glfwCreateWindowSurface(vkInstance::Get().Instance(), this->p_WindowHandle, nullptr, &this->m_Surface);
+            VkSurfaceKHR surface;
+            glfwCreateWindowSurface(vkInstance::Get().Instance(), this->p_WindowHandle, nullptr, &surface);
 
-            vkInstance::Get().InitSwapchain(this->m_Surface);
+            vkInstance::Get().InitSwapchain(surface);
         }
 
         void vkGraphicsContext::SwapBuffers() {

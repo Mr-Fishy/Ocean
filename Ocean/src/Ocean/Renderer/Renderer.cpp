@@ -17,6 +17,8 @@ namespace Ocean {
 
     void Renderer::Shutdown() {
         Renderer2D::Shutdown();
+
+        RenderCommand::Shutdown();
     }
 
     void Renderer::BeginScene(Camera& camera) {

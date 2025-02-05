@@ -37,6 +37,10 @@ namespace Ocean {
             OC_INLINE u32 PresentQueueIndex() const { return this->m_PresentQueueIndex; }
 
         private:
+            void CreateSwapchain();
+
+        private:
+            VkSurfaceKHR m_Surface;
             VkSwapchainKHR m_Swapchain;
 
             VkQueue m_Queue;
@@ -48,8 +52,6 @@ namespace Ocean {
             VkExtent2D m_Extent;
 
             DynamicArray<SwapchainImage> m_Images;
-
-            b8 m_IsValid = false;
 
         };  // vkSwapchain
 

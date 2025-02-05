@@ -20,6 +20,7 @@ namespace Ocean {
         class glRendererAPI : public RendererAPI {
         public:
             virtual void Init() override final;
+            virtual void Shutdown() override final;
 
             virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
 

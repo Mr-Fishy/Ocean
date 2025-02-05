@@ -20,13 +20,17 @@
 namespace Ocean {
 
     namespace Splash {
-    
+
+        /**
+         * @brief The Vulkan implementation of the RendererAPI.
+         */
         class vkRendererAPI : public RendererAPI {
         public:
             vkRendererAPI();
             virtual ~vkRendererAPI();
 
             virtual void Init() override final;
+            virtual void Shutdown() override final;
 
             virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) override final;
 
@@ -37,10 +41,6 @@ namespace Ocean {
 
         private:
             OC_NO_COPY(vkRendererAPI);
-
-            VkCommandPool m_CommandPool;
-
-            VkCommandBuffer m_DrawBuffer;
 
         };  // RendererAPI
 

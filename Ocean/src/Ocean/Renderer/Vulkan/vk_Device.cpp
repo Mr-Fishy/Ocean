@@ -1,5 +1,6 @@
 #include "vk_Device.hpp"
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Log.hpp"
@@ -41,7 +42,7 @@ namespace Ocean {
                 features.shaderClipDistance = VK_TRUE;
 
             for (const cstring ext : this->m_Extensions)
-                oprint("Requested Extension: %s\n", ext);
+                oprint(CONSOLE_TEXT_MAGENTA("Enabling Extension: %s\n"), ext);
 
             VkDeviceCreateInfo deviceInfo {
                 VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,

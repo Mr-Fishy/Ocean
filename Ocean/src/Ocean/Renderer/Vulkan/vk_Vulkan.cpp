@@ -10,7 +10,7 @@ namespace Ocean {
         void vkCheck(VkResult result) {
             switch (result) {
                 case VK_SUCCESS:
-                    oprint(CONSOLE_TEXT_GREEN("VK_SUCCESS\n"));
+                    // oprint(CONSOLE_TEXT_GREEN("VK_SUCCESS\n"));
                     break;
 
                 case VK_NOT_READY:

@@ -21,6 +21,8 @@ namespace Ocean {
 
     namespace Splash {
 
+        /** @todo Create a vkDescriptorSetLayout to translate the BufferLayout. */
+
         class vkVertexBuffer : public VertexBuffer {
         public:
             vkVertexBuffer(u32 size);

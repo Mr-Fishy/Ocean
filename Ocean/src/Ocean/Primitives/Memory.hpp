@@ -353,7 +353,7 @@ private:
 #define oSystemAllocator                     MemoryService::Instance().SystemAllocator()
 #define oUnmanagedAllocator                  MemoryService::Instance().UnmanagedAllocator()
 
-#ifdef OC_DETAILED_ALLOCATIONS
+#if OC_DETAILED_ALLOCATIONS && OC_VERBOSE
 
 	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Allocation Made!"))
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Mapped Allocation Made!"))

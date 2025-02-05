@@ -59,6 +59,10 @@ namespace Ocean {
             glEnable(GL_DEPTH_TEST);
         }
 
+        void glRendererAPI::Shutdown() {
+            
+        }
+
         void glRendererAPI::SetViewport(u32 x, u32 y, u32 w, u32 h) {
             glViewport(x, y, w, h);
         }

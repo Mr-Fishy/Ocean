@@ -14,8 +14,6 @@
 
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
-#include "Ocean/Renderer/Vulkan/vk_Swapchain.hpp"
-
 // libs
 #include <glad/vulkan.h>
 
@@ -39,8 +37,6 @@ namespace Ocean {
             OC_NO_COPY(vkGraphicsContext);
 
             GLFWwindow* p_WindowHandle;
-
-            VkSurfaceKHR m_Surface;
 
         };  // vkGraphicsContext
 

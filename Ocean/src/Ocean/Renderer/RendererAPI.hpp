@@ -50,6 +50,9 @@ namespace Ocean {
             /** @copydoc RenderCommand::Init() */
             virtual void Init() = 0;
 
+            /** @copydoc RenderCommand::Shutdown() */
+            virtual void Shutdown() = 0;
+
             /** @copydoc RenderCommand::SetViewport() */
             virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) = 0;
 

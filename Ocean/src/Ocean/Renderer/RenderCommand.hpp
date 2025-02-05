@@ -29,10 +29,16 @@ namespace Ocean {
     class RenderCommand {
     public:
         /**
-         * @brief Initializes the RendererAPI.
+         * @brief Initializes the RendererAPI after construction.
          */
         OC_STATIC_INLINE void Init() {
             s_RendererAPI->Init();
+        }
+        /**
+         * @brief Shut's down the RendererAPI before deconstruction.
+         */
+        OC_STATIC_INLINE void Shutdown() {
+            s_RendererAPI->Shutdown();
         }
 
         /**

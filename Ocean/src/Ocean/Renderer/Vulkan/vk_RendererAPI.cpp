@@ -6,7 +6,6 @@
 #include "Ocean/Renderer/RendererAPI.hpp"
 #include "Ocean/Renderer/VertexArray.hpp"
 
-#include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 
 // std
@@ -29,32 +28,15 @@ namespace Ocean {
         }
 
         vkRendererAPI::~vkRendererAPI() {
-
+            
         }
 
         void vkRendererAPI::Init() {
-            const VkCommandPoolCreateInfo poolInfo {
-                VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                nullptr,
-                VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-                vkInstance::Get().Swapchain()->GraphicsQueueIndex()
-            };
+            vkInstance::Get().Prepare();
+        }
 
-            vkCheck(
-                vkCreateCommandPool(vkInstance::Get().Device()->GetLogical(), &poolInfo, nullptr, &this->m_CommandPool)
-            );
-
-            const VkCommandBufferAllocateInfo cmdInfo {
-                VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-                nullptr,
-                this->m_CommandPool,
-                VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-                1
-            };
-
-            vkCheck(
-                vkAllocateCommandBuffers(vkInstance::Get().Device()->GetLogical(), &cmdInfo, &this->m_DrawBuffer)
-            );
+        void vkRendererAPI::Shutdown() {
+            vkInstance::Get().Cleanup();
         }
 
         void vkRendererAPI::SetViewport(u32 x, u32 y, u32 w, u32 h) {

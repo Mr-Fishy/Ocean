@@ -12,6 +12,7 @@
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Device.hpp"
+#include "vk_Command.hpp"
 
 // std
 #include <cstring>
@@ -63,7 +64,7 @@ namespace Ocean {
         ) {
             switch (messageSeverity) {
                 case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                    oprint("Vulkan DIAGNOSTIC:\t %s\n", pCallbackData->pMessage);
+                    // oprint("Vulkan DIAGNOSTIC:\t %s\n", pCallbackData->pMessage);
                     return VK_TRUE;
 
                 case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
@@ -183,9 +184,6 @@ namespace Ocean {
                 vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data())
             );
 
-            for (const VkExtensionProperties& extension : availableExtensions)
-                oprint(CONSOLE_TEXT_MAGENTA("Available Extension: %s\n"), extension.extensionName);
-
             // extensionCount is re-used for required extensionCount rather than available extensionCount
             //
             cstring* glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
@@ -298,6 +296,18 @@ namespace Ocean {
 
         vkInstance::~vkInstance() {
             
+        }
+
+        void vkInstance::Prepare() {
+            this->m_CommandPool = MakeScope<vkCommandPool>(this->m_Swapchain->GraphicsQueueIndex());
+
+            this->m_CommandPool->CreateBuffer("DrawCmd", true);
+
+
+        }
+
+        void vkInstance::Cleanup() {
+            this->m_CommandPool.reset();
         }
 
 
