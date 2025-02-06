@@ -5,7 +5,7 @@ file(GLOB_RECURSE glad_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 file(GLOB glad_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
 add_library(
-    ${PROJECT_NAME} STATIC
+    ${PROJECT_NAME}
 
     ${glad_HEADER} ${glad_SOURCE}
 )

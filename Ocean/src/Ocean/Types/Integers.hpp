@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 
 /** @brief 64 bit unsigned integer. */
 typedef unsigned long long u64;

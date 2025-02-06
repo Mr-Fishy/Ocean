@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ocean/Platform/PlatformBase.hpp"
+
 #include <signal.h>
 
 /**
@@ -23,8 +25,18 @@
 /** @brief Inline descriptor. */
 #define OC_INLINE                                inline
 
-/** @brief Force inline descriptor. MSVC implementation. */
-#define OC_FINLINE                               __forceinline
+#ifdef OC_PLATFORM_WINDOWS
+
+    /** @brief Force inline descriptor. MSVC implementation. */
+    #define OC_FINLINE                               __forceinline
+
+#elif defined(OC_PLATFORM_LINUX)
+
+    /** @brief Force inline descriptor. Linux implementation. */
+    #define OC_FINLINE                               __attribute__((always_inline))
+
+#endif
+
 
 #define OC_INLINE_EXPR                           inline constexpr
 
