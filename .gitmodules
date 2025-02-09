@@ -21,3 +21,6 @@
 	path = Ocean/vendor/vma
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 	branch = v3.1.0
+[submodule "Ocean/vendor/glad"]
+	path = Ocean/vendor/glad
+	url = https://github.com/Mr-Fishy/glad
