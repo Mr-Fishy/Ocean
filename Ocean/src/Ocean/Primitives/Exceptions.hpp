@@ -10,48 +10,54 @@ namespace Ocean{
     /**
      * @brief An enum of different error types that can occur.
      */
-    enum Error {
+    typedef enum Error {
         /** @brief Logic errors */
-        INVALID_ARGUMENT =0,
+        INVALID_ARGUMENT = 0,
         /** @brief  */
-        DOMAIN_ERROR =1,
+        DOMAIN_ERROR,
         /** @brief Length */
-        LENGTH_ERROR =2,
+        LENGTH_ERROR,
         /** @brief Out of range */
-        OUT_OF_RANGE =3,
+        OUT_OF_RANGE,
         /** @brief This error specifically is to be used by threads. */
-        FUTURE_ERROR =4,
+        FUTURE_ERROR,
 
         /** @brief runtime errors */
-        RANGE_ERROR =5,
+        RANGE_ERROR,
         /** @brief Overflow error */
-        OVERFLOW_ERROR =6,
+        OVERFLOW_ERROR,
         /** @brief Underflow error */
-        UNDERFLOW_ERROR =7,
+        UNDERFLOW_ERROR,
         /** @brief Regex errors */
-        REGEX_ERROR =8,
+        REGEX_ERROR,
         /** @brief General system failure */
-        SYSTEM_ERROR =9,
+        SYSTEM_ERROR,
         /** @brief Input output failure */
-        IOS_FAILURE =10,
+        IOS_FAILURE,
         /** @brief Filesystem failure */
-        FILESYSTEM_ERROR =11,
+        FILESYSTEM_ERROR,
         /** @brief unsure if this ever made it in c++, here just in case */
-        TX_EXCEPTION =12,
+        TX_EXCEPTION,
         /** @brief should be thrown when typeid is nullptr of polymorphic type */
-        BAD_TYPEID =13,
-        BAD_CAST =14,
-        BAD_ANY_CAST =15,
-        BAD_OPTIONAL_ACCESS =16,
-        BAD_EXCPECTED_ACCESS =17,
-        BAD_WEAK_PTR =18,
-        BAD_FUNCTION_CALL =19,
-        BAD_ALLOC =20,
-        BAD_ARRAY_NEW_LENGTH =21,
-        BAD_EXCEPTION =22,
-        BAD_VARIANT_ACCESS =23
+        BAD_TYPEID,
+        BAD_CAST,
+        BAD_ANY_CAST,
+        BAD_OPTIONAL_ACCESS,
+        BAD_EXCPECTED_ACCESS,
+        BAD_WEAK_PTR,
+        BAD_FUNCTION_CALL,
+        BAD_ALLOC,
+        BAD_ARRAY_NEW_LENGTH,
+        BAD_EXCEPTION,
+        BAD_VARIANT_ACCESS,
 
-    };  // Error
+        // Ocean Specific Errors
+
+        // Window / Platform Errors
+
+        BAD_PLATFORM,
+
+    } Error;
 
     /**
      * @brief A exception class that describes an error when thrown.
@@ -75,7 +81,7 @@ namespace Ocean{
          * @param message 
          */
         explicit Exception(const Error error, cstring message) noexcept : m_Info({ error, message }) { }
-        explicit Exception(const Error error, const string& message) noexcept : m_Info({ error, message.c_str() }) { }
+        // explicit Exception(const Error error, const string& message) noexcept : m_Info({ error, message.c_str() }) { }
 
         /**
          * @brief Gets the message of the error.

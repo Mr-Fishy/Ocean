@@ -27,6 +27,12 @@ namespace Ocean {
          * @brief The Shader controls a shader through the renderer API.
          */
         class Shader {
+        private:
+            class ShaderCompiler {
+
+
+            };  // ShaderCompiler
+
         public:
             virtual ~Shader() = default;
 

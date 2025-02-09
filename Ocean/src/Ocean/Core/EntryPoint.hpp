@@ -7,6 +7,7 @@
 #include "Ocean/Core/Application.hpp"
 
 // std
+#include <exception>
 #include <iostream>
 
 OC_EXTERN Ocean::Application* Ocean::CreateApplication(int argc, char** argv);
@@ -21,13 +22,10 @@ int main(int argc, char** argv) {
 		app->Run();
 	}
 	catch (const Ocean::Exception& e) {
-		std::cerr << e.what() << std::endl;
-
-		delete app;
-
-		MemoryService::Shutdown();
-		oTimeServiceInit();
-		return EXIT_FAILURE;
+		std::cerr << "Ocean Exception: " << e.what() << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Exception: " << e.what() << std::endl;
 	}
 
 	delete app;

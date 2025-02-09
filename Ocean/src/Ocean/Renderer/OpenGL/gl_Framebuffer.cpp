@@ -65,20 +65,6 @@ namespace Ocean {
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
         }
 
-        static b8 IsDepthFormat(FramebufferFormat format) {
-            switch (format) {
-                case FramebufferFormat::None:                
-                case FramebufferFormat::RGBA8:                
-                case FramebufferFormat::Red_Int:
-                    break;
-                
-                case FramebufferFormat::Depth24_Stencil8:
-                    return true;
-            }
-
-            return false;
-        }
-
         static GLenum OceanFramebufferTextureFormatToGL(FramebufferFormat format) {
             switch (format) {
                 case FramebufferFormat::None:
@@ -102,14 +88,12 @@ namespace Ocean {
 
         #define MAX_FRAMEBUFFER_SIZE 8192
 
-        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) : m_RendererID(0), m_Specification(spec), m_ColorAttachmentSpecs(), m_DepthAttachmentSpec(), m_ColorAttachments(), m_DepthAttachment(0) {
-            for (auto& textureSpec : this->m_Specification.attachments.attachments) {
-                if (!IsDepthFormat(textureSpec.textureFormat))
-                    this->m_ColorAttachmentSpecs.emplace_back(textureSpec);
-                else
-                    this->m_DepthAttachmentSpec = textureSpec;
-            }
-
+        glFramebuffer::glFramebuffer(const FramebufferSpecification& spec) :
+            Framebuffer(spec),
+            m_RendererID(0),
+            m_ColorAttachments(),
+            m_DepthAttachment()
+        {
             Invalidate();
         }
 
@@ -131,6 +115,8 @@ namespace Ocean {
         }
 
         void glFramebuffer::Invalidate() {
+            // ============================== DELETE OLD FRAMEBUFFER ==============================
+            //
             if (this->m_RendererID) {
                 glDeleteFramebuffers(1, &this->m_RendererID);
 
@@ -141,6 +127,8 @@ namespace Ocean {
                 this->m_DepthAttachment = 0;
             }
 
+            // ============================== CREATE NEW FRAMEBUFFER ==============================
+            //
             glCreateFramebuffers(1, &this->m_RendererID);
             glBindFramebuffer(GL_FRAMEBUFFER, this->m_RendererID);
 
@@ -148,7 +136,7 @@ namespace Ocean {
 
             if (!this->m_ColorAttachmentSpecs.empty()) {
                 this->m_ColorAttachments.resize(this->m_ColorAttachmentSpecs.size());
-                
+
                 CreateTextures(multisample, this->m_ColorAttachments.data(), this->m_ColorAttachments.size());
 
                 for (u32 i = 0; i < this->m_ColorAttachments.size(); i++) {

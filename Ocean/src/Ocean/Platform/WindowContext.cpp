@@ -1,5 +1,6 @@
 #include "WindowContext.hpp"
 
+#include "Ocean/Primitives/Exceptions.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Log.hpp"
@@ -30,6 +31,26 @@ namespace Ocean {
 
     void WindowContext::Shutdown() {
         glfwTerminate();
+    }
+
+    WindowContext::PlatformID WindowContext::GetPlatformID() {
+        switch (glfwGetPlatform()) {
+            case GLFW_PLATFORM_WIN32:
+                return WindowContext::PlatformID::WINDOWS;
+
+            case GLFW_PLATFORM_X11:
+                return WindowContext::PlatformID::LINUX_X11;
+
+            case GLFW_PLATFORM_WAYLAND:
+                return WindowContext::PlatformID::LINUX_WAYLAND;
+
+            case GLFW_PLATFORM_COCOA:
+                return WindowContext::PlatformID::MACOS_COCOA;
+        }
+
+        throw Exception(Error::BAD_PLATFORM, "Could not find a supported window platform!");
+
+        return WindowContext::PlatformID::NONE;
     }
 
 }   // Ocean

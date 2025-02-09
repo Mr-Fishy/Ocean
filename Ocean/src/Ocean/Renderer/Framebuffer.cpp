@@ -13,6 +13,19 @@ namespace Ocean {
 
     namespace Splash {
 
+        Framebuffer::Framebuffer(const FramebufferSpecification& spec) :
+            m_Specification(spec),
+            m_ColorAttachmentSpecs(),
+            m_DepthAttachmentSpec()
+        {
+            for (auto& textureSpec : this->m_Specification.attachments.specs) {
+                if (!IsDepthFormat(textureSpec.textureFormat))
+                    this->m_ColorAttachmentSpecs.emplace_back(textureSpec);
+                else
+                    this->m_DepthAttachmentSpec = textureSpec;
+            }
+        }
+
         Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:

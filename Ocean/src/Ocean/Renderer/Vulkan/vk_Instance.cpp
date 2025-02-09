@@ -16,6 +16,7 @@
 
 // std
 #include <cstring>
+#include <stdexcept>
 #include <utility>
 
 // libs
@@ -96,8 +97,6 @@ namespace Ocean {
             m_Layers(0),
             m_Devices(0)
         {
-            oprint("Initializing Vulkan Instance!\n");
-
             i32 gladVersion = gladLoaderLoadVulkan(nullptr, nullptr, nullptr);
             if (!gladVersion)
                 throw Exception(Error::SYSTEM_ERROR, "Unable to load Vulkan symbols! gladLoad Failure.");

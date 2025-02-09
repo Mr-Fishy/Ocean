@@ -69,7 +69,7 @@ namespace Ocean {
 				frameCount = accumulatorCounter = 0;
 			}
 
-			// if (!this->m_Window->Minimized()) {
+			// if (!this->m_Window->IsMinimized()) {
 			// 	// p_Renderer->BeginFrame();
 			// }
 
@@ -84,7 +84,7 @@ namespace Ocean {
 				this->m_Accumulator -= FixedTimestep;
 			}
 
-			if (!this->m_Window->Minimized()) {
+			if (!this->m_Window->IsMinimized()) {
 				VariableUpdate(timeStep);
 
 				// TODO: Interpolation
@@ -98,7 +98,7 @@ namespace Ocean {
 
 			frameCount++;
 
-			if (this->m_Window->RequestedExit())
+			if (this->m_Window->HasRequestedExit())
 				Close();
 		}
 	}

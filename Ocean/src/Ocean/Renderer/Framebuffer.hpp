@@ -67,15 +67,15 @@ namespace Ocean {
          * @details AKA the list of FramebufferTextureSpec's.
          */
         struct FramebufferAttachmentSpec {
-            OC_INLINE FramebufferAttachmentSpec() : attachments() { }
+            OC_INLINE FramebufferAttachmentSpec() : specs() { }
             /**
              * @brief Construct a new Framebuffer Attachment Spec object with the given attachments.
              * 
-             * @param attachments The FramebufferTextureSpec's to use as attachments.
+             * @param specs The FramebufferTextureSpec's to use as attachment specifications.
              */
-            OC_INLINE FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachments) : attachments(attachments) { }
+            OC_INLINE FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> specs) : specs(specs) { }
 
-            DynamicArray<FramebufferTextureSpec> attachments; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
+            DynamicArray<FramebufferTextureSpec> specs; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
 
         };  // FramebufferAttachmentSpec
 
@@ -103,6 +103,7 @@ namespace Ocean {
          */
         class Framebuffer {
         public:
+            Framebuffer(const FramebufferSpecification& spec);
             virtual ~Framebuffer() = default;
 
             /**
@@ -113,6 +114,11 @@ namespace Ocean {
              * @brief Unbind's the Framebuffer to not be available for use by commands.
              */
             virtual void Unbind() = 0;
+
+            /**
+             * @brief Marks the Framebuffer as invalid and recreates the Framebuffer.
+             */
+            virtual void Invalidate() = 0;
 
             /**
              * @brief Resize the Framebuffer to the new width and height.
@@ -152,7 +158,7 @@ namespace Ocean {
              * 
              * @return const FramebufferSpecification& 
              */
-            virtual const FramebufferSpecification& GetSpecification() const = 0;
+            const FramebufferSpecification& GetSpecification() const { return this->m_Specification; }
 
             /**
              * @brief Create a new Framebuffer with the given FramebufferSpecification.
@@ -161,6 +167,27 @@ namespace Ocean {
              * @return Ref<Framebuffer> 
              */
             OC_STATIC Ref<Framebuffer> Create(const FramebufferSpecification& spec);
+
+        protected:
+            OC_INLINE b8 IsDepthFormat(FramebufferFormat format) {
+                switch (format) {
+                    case FramebufferFormat::None:                
+                    case FramebufferFormat::RGBA8:                
+                    case FramebufferFormat::Red_Int:
+                        break;
+                    
+                    case FramebufferFormat::Depth24_Stencil8:
+                        return true;
+                }
+
+                return false;
+            }
+
+        protected:
+            FramebufferSpecification m_Specification;
+
+            DynamicArray<FramebufferTextureSpec> m_ColorAttachmentSpecs;
+            FramebufferTextureSpec m_DepthAttachmentSpec;
 
         };  // Framebuffer
 

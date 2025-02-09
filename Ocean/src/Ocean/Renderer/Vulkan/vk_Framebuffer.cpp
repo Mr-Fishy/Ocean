@@ -1,11 +1,21 @@
 #include "vk_Framebuffer.hpp"
 
+#include "Ocean/Renderer/Framebuffer.hpp"
+
+// libs
+#include <glad/vulkan.h>
+
 namespace Ocean {
 
     namespace Splash {
 
-        vkFramebuffer::vkFramebuffer(const FramebufferSpecification& spec) {
-            
+        vkFramebuffer::vkFramebuffer(const FramebufferSpecification& spec) :
+            Framebuffer(spec),
+            m_Framebuffer(VK_NULL_HANDLE),
+            m_ColorAttachments(0),
+            m_DepthAttachment()
+        {
+            Invalidate();
         }
 
         vkFramebuffer::~vkFramebuffer() {
@@ -21,6 +31,12 @@ namespace Ocean {
         }
 
         void vkFramebuffer::Invalidate() {
+            // ============================== DELETE OLD FRAMEBUFFER ==============================
+            //
+
+
+            // ============================== CREATE NEW FRAMEBUFFER ==============================
+            //
             
         }
 

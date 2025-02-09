@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
@@ -56,7 +57,7 @@ namespace Ocean {
 		/**
 		 * @brief Construct a new Window object with default values.
 		 */
-		Window() : m_Context(), p_PlatformHandle(nullptr), m_Name("Ocean Window"), m_Data() { }
+		OC_INLINE Window() : m_Context(), p_PlatformHandle(nullptr), m_Name("Ocean Window"), m_Data() { }
 		/**
 		 * @brief Construct a new Window object using a given width, height, and name.
 		 * 
@@ -95,41 +96,43 @@ namespace Ocean {
 		/**
 		 * @return The window width in screen coordinates.
 		 */
-		u32 Width() const { return this->m_Data.width; }
+		OC_INLINE u32 Width() const { return this->m_Data.width; }
 		/**
 		 * @return The window height in screen coordinates.
 		 */
-		u32 Height() const { return this->m_Data.height; }
+		OC_INLINE u32 Height() const { return this->m_Data.height; }
 		/**
 		 * @return The window handle from glfw.
 		 */
-		void* Handle() const { return this->p_PlatformHandle; }
+		OC_INLINE void* Handle() const { return this->p_PlatformHandle; }
 
 		/**
 		 * @return True if there is a requested exit, False otherwise.
 		 */
-		b8 RequestedExit() const { return this->m_RequestedExit; }
+		OC_INLINE b8 HasRequestedExit() const { return this->m_RequestedExit; }
 
 		/**
 		 * @return True if the window is minimized, False otherwise.
 		 */
-		b8 Minimized() const { return this->m_Minimized; }
+		OC_INLINE b8 IsMinimized() const { return this->m_Minimized; }
 
 		/**
 		 * @return True if the window has been resized, False otherwise.
 		 */
-		b8 Resized() const { return this->m_Data.resized; }
+		OC_INLINE b8 IsResized() const { return this->m_Data.resized; }
 		/**
 		 * @brief Tells the window that the resize has been handled.
 		 */
-		void ResizeHandled() { this->m_Data.resized = false; }
+		OC_INLINE void SetResizeAsHandled() { this->m_Data.resized = false; }
 
 		/**
 		 * @brief Gets the name of the window.
 		 * 
 		 * @return cstring
 		 */
-		virtual cstring GetName() const { return this->m_Name; }
+		OC_INLINE cstring GetWindowName() const { return this->m_Name; }
+
+		/** @todo Add Window Config & Window Mode Support (e.g. Fullscreen / Fullscreen Borderless) */
 
 		/**
 		 * @brief Creates a Window object.
@@ -142,11 +145,9 @@ namespace Ocean {
 		static Scope<Window> Create(u32 width, u32 height, cstring name);
 
 	private:
-		Window(Window&) = delete;
-		Window operator = (Window&) = delete;
+		OC_NO_COPY(Window);
 
-		/* --- */
-
+	private:
 		Scope<Splash::GraphicsContext> m_Context; /** @brief The graphics context of the window. AKA the OpenGL context or Vulkan instance. */
 		void* p_PlatformHandle; /** @brief The platform handle from the underlying window library. */
 

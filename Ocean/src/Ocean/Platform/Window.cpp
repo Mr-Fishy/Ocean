@@ -115,10 +115,10 @@ namespace Ocean {
 	void Window::OnUpdate() {
 		glfwPollEvents();
 
-		if (Resized()) {
+		if (IsResized()) {
 			Application::Get()->OnResize(this->m_Data.width, this->m_Data.height);
 
-			ResizeHandled();
+			SetResizeAsHandled();
 		}
 
 		if (glfwWindowShouldClose(static_cast<WindowPtr>(this->p_PlatformHandle)))
