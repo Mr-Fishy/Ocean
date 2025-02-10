@@ -6,7 +6,9 @@
 
 namespace sonar{
     //classes with no definitions.
+    
     class HRTF;
+
     class Binaural;
 
     struct global_audio_context{
