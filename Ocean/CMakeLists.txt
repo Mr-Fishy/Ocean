@@ -144,7 +144,6 @@ target_link_libraries(
     PRIVATE glfw
     PRIVATE glad
     PRIVATE SteamAudio
-    PRIVATE GPUOpen::VulkanMemoryAllocator
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE ${Vulkan_LIBRARIES}
 

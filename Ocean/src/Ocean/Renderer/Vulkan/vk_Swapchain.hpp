@@ -34,6 +34,8 @@ namespace Ocean {
             OC_INLINE u32 GraphicsQueueIndex() const { return this->m_GraphicsQueueIndex; }
             OC_INLINE u32 PresentQueueIndex() const { return this->m_PresentQueueIndex; }
 
+            OC_INLINE const VkExtent2D& Extent() const { return this->m_Extent; }
+
         private:
             void CreateSwapchain();
 

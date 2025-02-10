@@ -1,11 +1,29 @@
 #include "vk_Shader.hpp"
 
+#include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
+
+// libs
+#include <glad/vulkan.h>
+
 namespace Ocean {
 
     namespace Splash {
 
-        vkShader::vkShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource) : m_Shader() {
-            
+        vkShader::vkShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource) :
+            m_Module(VK_NULL_HANDLE)
+        {
+            VkShaderModuleCreateInfo shaderInfo {
+                VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+                nullptr,
+                0,
+                vertexSource.size(),
+                reinterpret_cast<const u32*>(vertexSource.data())
+            };
+
+            vkCheck(
+                vkCreateShaderModule(vkInstance::Get().Device()->GetLogical(), &shaderInfo, nullptr, &this->m_Module)
+            );
         }
 
         vkShader::~vkShader() {

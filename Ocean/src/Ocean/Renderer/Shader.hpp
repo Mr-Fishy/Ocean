@@ -10,6 +10,7 @@
  * 
  */
 
+#include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
@@ -28,10 +29,14 @@ namespace Ocean {
          */
         class Shader {
         private:
-            class ShaderCompiler {
+            /** @todo Runtime shader compilation using shaderc and spirv-cross or valid alternative. */
+            /**
+             * @brief The Compiler will enable runtime compilation and caching of shader files for the current API.
+             */
+            class Compiler {
+                // OC_STATIC DynamicArray<u8> CompileToSpirv(const DynamicArray<u8>& source);
 
-
-            };  // ShaderCompiler
+            };  // Compiler
 
         public:
             virtual ~Shader() = default;
@@ -113,7 +118,8 @@ namespace Ocean {
              * @param geometrySource The source of the geometry shader. (OPTIONAL)
              * @return Ref<Shader> 
              */
-            OC_STATIC Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            // OC_STATIC Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            OC_STATIC Ref<Shader> Create(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource = { });
 
         };  // Shader
 

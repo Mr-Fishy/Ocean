@@ -24,7 +24,7 @@ namespace Ocean {
             };
 
         public:
-            glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            glShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource = { });
             virtual ~glShader();
 
             virtual void Bind() const override final;

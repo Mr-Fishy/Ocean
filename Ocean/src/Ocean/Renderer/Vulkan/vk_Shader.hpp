@@ -21,7 +21,7 @@ namespace Ocean {
     
         class vkShader : public Shader {
         public:
-            vkShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            vkShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource = { });
             virtual ~vkShader();
 
             virtual void Bind() const override final;
@@ -39,7 +39,7 @@ namespace Ocean {
             virtual void SetMat3f(cstring name, const glm::mat3& value) const override final;
 
         private:
-            VkShaderModule m_Shader;
+            VkShaderModule m_Module;
 
         };
 

@@ -13,7 +13,7 @@ namespace Ocean {
 
     namespace Splash {
 
-        Ref<Shader> Shader::Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource) {
+        Ref<Shader> Shader::Create(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
                     break;
