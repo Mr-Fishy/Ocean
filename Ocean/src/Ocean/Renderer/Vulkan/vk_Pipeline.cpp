@@ -1,4 +1,5 @@
 #include "vk_Pipeline.hpp"
+
 #include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
@@ -168,6 +169,8 @@ namespace Ocean {
                 }
             };
 
+            // ============================== PIPELINE LAYOUT ==============================
+            //
             VkPipelineLayoutCreateInfo pipelineLayoutInfo {
                 VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
                 nullptr,
@@ -182,7 +185,19 @@ namespace Ocean {
                 vkCreatePipelineLayout(vkInstance::Get().Device()->GetLogical(), &pipelineLayoutInfo, nullptr, &this->m_Layout)
             );
 
+            // ============================== SHADER MODULES ==============================
+            //
+            DynamicArray<VkShaderModule> shaderModules;
+
             
+
+            // ============================== PIPELINE INFO ==============================
+            //
+            VkGraphicsPipelineCreateInfo pipelineInfo {
+                VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+                nullptr,
+                0
+            };
         }
 
     } // namespace Splash
