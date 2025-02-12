@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Scene/ECS/Entity.hpp"
+#include "Ocean/ECS/Entity.hpp"
 
 namespace Ocean {
 
