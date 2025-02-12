@@ -20,3 +20,6 @@
 [submodule "Ocean/vendor/glad"]
 	path = Ocean/vendor/glad
 	url = https://github.com/Mr-Fishy/glad
+[submodule "Ocean/vendor/flecs"]
+	path = Ocean/vendor/flecs
+	url = https://github.com/SanderMertens/flecs
