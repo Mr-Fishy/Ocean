@@ -13,6 +13,8 @@ namespace Ocean {
         vkShader::vkShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource) :
             m_Module(VK_NULL_HANDLE)
         {
+            // ============================== VERTEX SHADER ==============================
+            //
             VkShaderModuleCreateInfo shaderInfo {
                 VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 nullptr,

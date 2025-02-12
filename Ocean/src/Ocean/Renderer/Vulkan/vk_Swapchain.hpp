@@ -36,6 +36,8 @@ namespace Ocean {
 
             OC_INLINE const VkExtent2D& Extent() const { return this->m_Extent; }
 
+            OC_INLINE VkFormat Format() const { return this->m_Format; }
+
         private:
             void CreateSwapchain();
 

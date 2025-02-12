@@ -8,10 +8,13 @@
  * @copyright Copyright (c) 2025
  * 
  */
+ 
+#include "Ocean/Types/Strings.hpp"
 
 #include "Ocean/Primitives/HashMap.hpp"
 #include "Ocean/Primitives/Macros.hpp"
-#include "Ocean/Types/Strings.hpp"
+
+#include "Ocean/Renderer/Vulkan/vk_RenderPass.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -19,13 +22,6 @@
 namespace Ocean {
 
     namespace Splash {
-
-        class vkRenderPass {
-        public:
-            vkRenderPass();
-            ~vkRenderPass();
-
-        };  // vkRenderPass
     
         class vkPipeline {
         public:
