@@ -6,10 +6,12 @@ namespace sonar{
 
     class Binaural{
 
-        Binaural();
+        Binaural(Ref<sonar::HRTF> hrtf,IPLfloat32 spatialblend = 1, IPLVector3 direction = IPLVector3{0,0,0});
         ~Binaural();
+            
 
         private:
-            global_audio_context* context = nullptr;
+           IPLVector3 direction{0,0,0};
+
     };
 }

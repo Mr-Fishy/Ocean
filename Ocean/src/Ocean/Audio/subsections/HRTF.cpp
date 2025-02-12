@@ -17,6 +17,7 @@ namespace sonar{
         if(sonar::audioerror(error)){
             std::cerr<<"WARNING HRTF CREATION FAILURE"<<std::endl;
         }
+
     }
 
     //sets the audionormalization type.
@@ -27,13 +28,7 @@ namespace sonar{
     //sets volume
     void HRTF::volume(float volume){
         //some clamping
-        if(volume>1){
-            vol =1;
-        }else if(volume<0){
-            vol = 0;
-        }else{
-            this->vol = volume;
-        }
+        this->vol = volume;
 
     }
 
@@ -50,6 +45,8 @@ namespace sonar{
         this->hrtfsetting.type = IPL_HRTFTYPE_DEFAULT;
         //custom file things.
         this->hrtfsetting.sofaFileName = nullptr;
+        this->hrtfsetting.sofaData = nullptr;
+        this->hrtfsetting.sofaDataSize = 0;
 
     }
 }
