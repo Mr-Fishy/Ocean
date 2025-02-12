@@ -7,10 +7,8 @@ namespace sonar{
     //A struct for configuration, might change later
     struct HRTFconfig{
         HRTFconfig();
-        void audioconfig(IPLint32 samplingrateHZ =44100, IPLint32 frameSize = 1024);
-
+       
         //types
-        float volume =1.0f;
         IPLAudioSettings audiosetting{};
         IPLHRTFSettings hrtfsetting{};
 
@@ -33,6 +31,8 @@ namespace sonar{
             //gets the name
             const char* get_name() const {return name;}
 
+            IPLAudioSettings* get_audiosettings();
+
             void normalization(IPLHRTFNormType type);
             //global_audio_context* context = nullptr;
             private:
@@ -40,8 +40,8 @@ namespace sonar{
                 const char* name = nullptr;
                 IPLHRTF hrtf = nullptr;
                 //structs
-                IPLHRTFSettings hrtfsettings;
-                IPLAudioSettings audiosettings;
+                IPLHRTFSettings* hrtfsettings;
+                IPLAudioSettings* audiosettings;
                 //other
                 float vol = 0;
     
