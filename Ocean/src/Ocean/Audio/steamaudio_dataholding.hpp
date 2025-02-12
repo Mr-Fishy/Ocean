@@ -1,4 +1,5 @@
 #pragma once
+#include "Ocean/Primitives/Exceptions.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "audio.hpp"
 #include <phonon.h>
@@ -17,6 +18,29 @@ namespace sonar{
         std::unordered_map<const char*, Ref<sonar::Binaural>> binaural;
         
     };
+    //if there is error checking within the audio system, use this.
+    static bool audioerror(IPLerror error){
+        //if it errors return true
+        switch(error){
+            case IPL_STATUS_FAILURE:
+                Ocean::Exception(Ocean::SYSTEM_ERROR,"General failure");
+                return true;
+                break;
+            case IPL_STATUS_OUTOFMEMORY:
+                Ocean::Exception(Ocean::SYSTEM_ERROR,"Out of memory");
+                return true;
+                break;
+            case IPL_STATUS_INITIALIZATION:
+                Ocean::Exception(Ocean::SYSTEM_ERROR,"Could not initialize external dependency");
+                return true;
+                break;
+
+                
+            default:
+                return false;
+        }
+        return true;
+    }
 
     
 }
