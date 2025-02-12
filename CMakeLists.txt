@@ -185,6 +185,12 @@ message(STATUS "Steam Audio Starting (${time})...")
 add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 message(STATUS)
 
+#Flecs ECS
+string(TIMESTAMP time "%M:%S")
+message(STATUS "Flecs Starting (${time})...")
+add_subdirectory(Ocean/vendor/flecs EXCLUDE_FROM_ALL)
+message(STATUS)
+
 unset(CMAKE_FOLDER)
 
 set(

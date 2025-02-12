@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Ocean/Core/Types/Integers.hpp"
+#include "Ocean/Types/Integers.hpp"
+#include "Ocean/Primitives/Array.hpp"
 
 namespace Ocean {
 
     namespace Reef {
-        
-        typedef u64 ID;
+
+       typedef u64 entityID;
     
         class Entity {
         public:
@@ -15,7 +16,7 @@ namespace Ocean {
             ~Entity() = default;
 
         private:
-            ID m_Entity = 0;
+            entityID m_Entity = 0;
 
         };
 

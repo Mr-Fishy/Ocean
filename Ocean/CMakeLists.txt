@@ -144,6 +144,7 @@ target_link_libraries(
     PRIVATE glfw
     PRIVATE glad
     PRIVATE SteamAudio
+    PRIVATE flecs::flecs_static
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE ${Vulkan_LIBRARIES}
 
