@@ -1,52 +1,50 @@
 #pragma once
 #include <phonon.h>
 #include "../steamaudio_dataholding.hpp"
+
 namespace sonar{
+
+    //A struct for configuration, might change later
+    struct HRTFconfig{
+        HRTFconfig();
+       
+        //types
+        IPLAudioSettings audiosetting{};
+        IPLHRTFSettings hrtfsetting{};
+
+    };
+
     
     class HRTF{
         public:
-            HRTF(std::string name, int samplingrate = 44100, int buffersize = 1024, float volume = 1.0f);
+            HRTF(std::string name, sonar::HRTFconfig& config);
             virtual ~HRTF();
 
-            virtual void volume();
-            virtual void normalization(IPLHRTFNormType type);
-
-        protected:
+            //volume adjustment
+            void volume(float volume);
             
+            //gets the bolume
+            float get_volume() const {return vol;}
+            
+            //gets the pointer ref to the HRTF.
+            IPLHRTF get_ptr()const {return hrtf;}
+            //gets the name
+            const char* get_name() const {return name;}
+
+            IPLAudioSettings* get_audiosettings();
+
+            void normalization(IPLHRTFNormType type);
             //global_audio_context* context = nullptr;
-
-        private:
-            IPLAudioSettings audiosettings;
+            private:
+                //pointers
+                const char* name = nullptr;
+                IPLHRTF hrtf = nullptr;
+                //structs
+                IPLHRTFSettings* hrtfsettings;
+                IPLAudioSettings* audiosettings;
+                //other
+                float vol = 0;
+    
     };
-    class basicHRTF: public HRTF{
-        basicHRTF();
-        ~basicHRTF();
-        void volume() override;
-        void normalization(IPLHRTFNormType type) override;
-
-        private:
-        
-        IPLAudioSettings audiosettings;
-        float vol = 0;
-        
-
-    };
-    class customHRTF: public HRTF{
-        customHRTF();
-        ~customHRTF();
-        void volume() override;
-        void normalization(IPLHRTFNormType type) override;
-        
-        private:
-        
-        IPLAudioSettings audiosettings;
-        float vol = 0;
-
-    };
-
-
-    /*CREATE TWO CHILDREN CLASSES
-    ONE FOR THE BASE STUFF, ONE FOR THE CUSTOM STUFF
-    USE INHERITANCE, MAKE SURE TO DELETE THIS BEFORE PUSHING FUTURE ME YOU DUMB APE
-    THE MAIN CLASS SHOULD HAVE ALL OF THE VIRTUAL THINGS*/
+    
 }

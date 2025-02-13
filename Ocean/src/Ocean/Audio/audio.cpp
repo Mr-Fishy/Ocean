@@ -1,7 +1,9 @@
 #include "audio.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
+#include "steamaudio_dataholding.hpp"
 
+#include <cstdlib>
 #include <phonon.h>
 
 
@@ -41,24 +43,9 @@ sonar::steamaudio::steamaudio(IPLuint32 steamversion,IPLSIMDLevel simdlevel,IPLA
     //create
     IPLerror error = iplContextCreate(&steamaudio::settings, steamaudio::context);
 
-    switch(error){
-
-        case IPL_STATUS_SUCCESS:
-
-        std::cout<<"Success";
-
-        break;
-
-        case IPL_STATUS_FAILURE:
-        case IPL_STATUS_INITIALIZATION:
-        case IPL_STATUS_OUTOFMEMORY:
-
-        default:
-
-            std::cout<<"Unknown error occured, throwing exception";
-
-        OASSERTM(false, "Error has occured");    
-        
+    //This should just break everything, as the audio system does not exist anymore.
+    if(audioerror(error)){
+        exit(EXIT_FAILURE);
     }
     std::cout<<std::endl;
 

@@ -3,13 +3,19 @@
 #include "../steamaudio_dataholding.hpp"
 
 namespace sonar{
-
+    //per new spacialized sound source.
     class Binaural{
-
-        Binaural();
+        public:
+        Binaural(Ref<sonar::HRTF> hrtf);
         ~Binaural();
+        //gets the pointer for the class
+        void start(IPLBinauralEffectParams* params);
+
+        IPLBinauralEffect get_ptr(){return effect;}
 
         private:
-            global_audio_context* context = nullptr;
+            IPLBinauralEffect effect  =nullptr;
+            IPLVector3 direction{0,0,0};
+
     };
 }
