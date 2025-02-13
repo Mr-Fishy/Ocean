@@ -40,7 +40,7 @@ namespace Ocean {
             /**
              * @brief Get the singleton object of vkInstance.
              */
-            OC_GET_SINGLETON(vkInstance);
+            OC_SINGLETON(vkInstance);
 
             /**
              * @brief Prepares Vulkan for rendering after instance construction.

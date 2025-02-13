@@ -1,7 +1,6 @@
 #include "vk_GraphicsContext.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
-
+#include "Ocean/Renderer/GraphicsContext.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 
 // libs
@@ -14,9 +13,9 @@ namespace Ocean {
     namespace Splash {
     
         vkGraphicsContext::vkGraphicsContext(GLFWwindow* window) :
-            p_WindowHandle(window)
+            GraphicsContext(window)
         {
-            OASSERTM(this->p_WindowHandle != nullptr, "Window Handle Is A nullptr!");
+
         }
 
         vkGraphicsContext::~vkGraphicsContext() {

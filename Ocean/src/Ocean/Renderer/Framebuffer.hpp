@@ -103,6 +103,11 @@ namespace Ocean {
          */
         class Framebuffer {
         public:
+            /**
+             * @brief Construct a new Framebuffer object with the given specification.
+             * 
+             * @param spec The FramebufferSpecification to use.
+             */
             Framebuffer(const FramebufferSpecification& spec);
             virtual ~Framebuffer() = default;
 

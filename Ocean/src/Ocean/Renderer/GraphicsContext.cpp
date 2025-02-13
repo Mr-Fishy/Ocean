@@ -13,6 +13,13 @@ namespace Ocean {
 
     namespace Splash {
     
+        GraphicsContext::GraphicsContext(GLFWwindow* window) :
+            p_WindowHandle(window)
+        {
+            if (!this->p_WindowHandle)
+                throw Exception(Error::BAD_WINDOW_HANDLE, "");
+        }
+
         Scope<GraphicsContext> GraphicsContext::Create(void* windowHandle) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:

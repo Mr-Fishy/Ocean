@@ -12,18 +12,6 @@ namespace Ocean {
 
     namespace Splash {
 
-        vkRenderPass::vkRenderPass() {
-        
-            
-        
-        }
-
-        vkRenderPass::~vkRenderPass() {
-        
-            
-        
-        }
-
         vkPipeline::vkPipeline() :
             m_Pipeline(VK_NULL_HANDLE),
             m_Layout(VK_NULL_HANDLE),

@@ -55,7 +55,10 @@ namespace Ocean{
 
         // Window / Platform Errors
 
+        /** @brief Occurs when the platform cannot be properly determined. */
         BAD_PLATFORM,
+        /** @brief Occurs when the window handle is not valid. */
+        BAD_WINDOW_HANDLE,
 
     } Error;
 

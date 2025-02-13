@@ -23,6 +23,9 @@
 
 namespace Ocean {
 
+    /**
+     * @brief A vertex to define per each corner of a quad.
+     */
     struct QuadVertex {
         glm::vec3 position;
         glm::vec4 color;
@@ -36,6 +39,9 @@ namespace Ocean {
 
     };  // QuadVertex
 
+    /**
+     * @brief The lifetime data of the 2D renderer.
+     */
     struct RendererData {
         RendererData() : quadVertexArray(), quadVertexBuffer(), textureShader(), colorTexture(), textureSlots(), stats() { }
         RendererData(const RendererData&) = delete;

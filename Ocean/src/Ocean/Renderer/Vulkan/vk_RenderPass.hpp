@@ -29,6 +29,7 @@ namespace Ocean {
         private:
             class vkAttachment {
             public:
+                vkAttachment() = default;
                 vkAttachment(AttachmentType type);
                 ~vkAttachment();
 

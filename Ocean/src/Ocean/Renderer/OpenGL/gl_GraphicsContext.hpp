@@ -9,6 +9,8 @@
  * 
  */
 
+#include "Ocean/Primitives/Macros.hpp"
+
 #include "Ocean/Renderer/GraphicsContext.hpp"
 
 struct GLFWwindow;
@@ -17,21 +19,24 @@ namespace Ocean {
 
     namespace Splash {
 
+        /**
+         * @brief An OpenGL implemented GraphicsContext.
+         */
         class glGraphicsContext : public GraphicsContext {
         public:
             glGraphicsContext() = delete;
+            /** @copydoc GraphicsContext::GraphicsContext(GLFWwindow*) */
             glGraphicsContext(GLFWwindow* window);
-            glGraphicsContext(const glGraphicsContext&) = delete;
-            virtual ~glGraphicsContext();
+            ~glGraphicsContext();
 
-            glGraphicsContext& operator = (const glGraphicsContext&) = delete;
-
+            /** @copydoc GraphicsContext::Init() */
             virtual void Init() override final;
             
+            /** @copydoc GraphicsContext::SwapBuffers() */
             virtual void SwapBuffers() override final;
 
         private:
-            GLFWwindow* p_WindowHandle;
+            OC_NO_COPY(glGraphicsContext);
 
         };  // GraphicsContext
 

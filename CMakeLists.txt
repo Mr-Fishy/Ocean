@@ -186,7 +186,19 @@ add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 message(STATUS)
 
 # GLSLang
-
+string(TIMESTAMP time "%M:%S")
+message(STATUS "glslang Starting (${time})...")
+option(ENABLE_SPVREMAPPER OFF)
+option(ENABLE_GLSLANG_BINARIES OFF)
+set(ENABLE_HLSL ON)
+option(ENABLE_OPT OFF)
+option(BUILD_TESTING OFF)
+option(BUILD_EXTERNAL OFF)
+if(IOS)
+    option(ENABLE_PCH OFF)
+endif ()
+add_subdirectory(Ocean/vendor/glslang EXCLUDE_FROM_ALL)
+message(STATUS)
 unset(CMAKE_FOLDER)
 
 set(

@@ -34,7 +34,7 @@ namespace Ocean {
              * @brief The Compiler will enable runtime compilation and caching of shader files for the current API.
              */
             class Compiler {
-                // OC_STATIC DynamicArray<u8> CompileToSpirv(const DynamicArray<u8>& source);
+                OC_STATIC DynamicArray<u32> CompileToSpirv(const DynamicArray<u8>& source);
 
             };  // Compiler
 
