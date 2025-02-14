@@ -1,5 +1,6 @@
 #include "vk_Shader.hpp"
 
+#include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 
@@ -10,17 +11,21 @@ namespace Ocean {
 
     namespace Splash {
 
-        vkShader::vkShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource) :
+        vkShader::vkShader(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource) :
             m_Module(VK_NULL_HANDLE)
         {
+            // ============================== COMPILE TO SPIRV ==============================
+            //
+            DynamicArray<u32> vertex = Compiler::CompileToSpirv(vertexSource, Compiler::ShaderStage::VERTEX_SHADER);
+
             // ============================== VERTEX SHADER ==============================
             //
             VkShaderModuleCreateInfo shaderInfo {
                 VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 nullptr,
                 0,
-                vertexSource.size(),
-                reinterpret_cast<const u32*>(vertexSource.data())
+                vertex.size(),
+                vertex.data()
             };
 
             vkCheck(

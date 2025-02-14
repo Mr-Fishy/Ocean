@@ -73,10 +73,10 @@ namespace Ocean {
             std::cerr << "Failed To Open File! (" << path << ")" << std::endl;
         }
 
-        DynamicArray<i8> vertexCode;
-        DynamicArray<i8> fragmentCode;
-        DynamicArray<i8> geometryCode;
-        i8 buffer[256];
+        string vertexCode;
+        string fragmentCode;
+        string geometryCode;
+        char buffer[256];
         ShaderType type;
 
         // Parse The Shader File Into Its Components
@@ -99,13 +99,13 @@ namespace Ocean {
 
             switch (type) {
                 case VERTEX:
-                    vertexCode.emplace_back(*buffer);
+                    vertexCode.append(buffer);
                     break;
                 case FRAGMENT:
-                    fragmentCode.emplace_back(*buffer);
+                    fragmentCode.append(buffer);
                     break;
                 case GEOMETRY:
-                    geometryCode.emplace_back(*buffer);
+                    geometryCode.append(buffer);
                     break;
             }
         }
@@ -113,9 +113,9 @@ namespace Ocean {
         fclose(fp);
 
         if (geometryCode.empty())
-            return Splash::Shader::Create(vertexCode, fragmentCode);
+            return Splash::Shader::Create(vertexCode.c_str(), fragmentCode.c_str());
 
-        return Splash::Shader::Create(vertexCode, fragmentCode, geometryCode);
+        return Splash::Shader::Create(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
     }
 
     Ref<Splash::Texture2D> ResourceManager::LoadTextureFile(cstring path) {

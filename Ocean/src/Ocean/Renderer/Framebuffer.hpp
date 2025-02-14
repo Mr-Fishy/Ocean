@@ -189,10 +189,10 @@ namespace Ocean {
             }
 
         protected:
-            FramebufferSpecification m_Specification;
+            FramebufferSpecification m_Specification; /** @brief The top-level FramebufferSpecification. */
 
-            DynamicArray<FramebufferTextureSpec> m_ColorAttachmentSpecs;
-            FramebufferTextureSpec m_DepthAttachmentSpec;
+            DynamicArray<FramebufferTextureSpec> m_ColorAttachmentSpecs; /** @brief The top-level color attachment texture specifications. */
+            FramebufferTextureSpec m_DepthAttachmentSpec; /** @brief The top-level depth attachment texture specification. */
 
         };  // Framebuffer
 

@@ -11,6 +11,7 @@
  */
 
 #include "Ocean/Renderer/Shader.hpp"
+#include "Ocean/Types/Strings.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -21,7 +22,7 @@ namespace Ocean {
     
         class vkShader : public Shader {
         public:
-            vkShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource = { });
+            vkShader(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource = nullptr);
             virtual ~vkShader();
 
             virtual void Bind() const override final;

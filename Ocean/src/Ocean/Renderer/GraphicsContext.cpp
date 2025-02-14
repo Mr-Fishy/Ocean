@@ -32,7 +32,7 @@ namespace Ocean {
                     return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
             }
 
-            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+            throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");
 
             return nullptr;
         }

@@ -128,7 +128,6 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
     )
 
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-    message(STATUS "Will compile shader ${GLSL} to ${SPIRV}")
 
 endforeach(GLSL)
 
@@ -197,7 +196,7 @@ string(TIMESTAMP time "%M:%S")
 message(STATUS "glslang Starting (${time})...")
 option(ENABLE_SPVREMAPPER OFF)
 option(ENABLE_GLSLANG_BINARIES OFF)
-set(ENABLE_HLSL ON)
+set(ENABLE_HLSL OFF)
 option(ENABLE_OPT OFF)
 option(BUILD_TESTING OFF)
 option(BUILD_EXTERNAL OFF)
