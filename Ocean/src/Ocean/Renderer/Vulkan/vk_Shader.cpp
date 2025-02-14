@@ -3,6 +3,7 @@
 #include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
+#include "Ocean/Types/Integers.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -18,13 +19,15 @@ namespace Ocean {
             //
             DynamicArray<u32> vertex = Compiler::CompileToSpirv(vertexSource, Compiler::ShaderStage::VERTEX_SHADER);
 
+            DynamicArray<u32> fragment = Compiler::CompileToSpirv(fragmentSource, Compiler::ShaderStage::FRAGMENT_SHADER);
+
             // ============================== VERTEX SHADER ==============================
             //
             VkShaderModuleCreateInfo shaderInfo {
                 VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 nullptr,
                 0,
-                vertex.size(),
+                vertex.size() * sizeof(u32),
                 vertex.data()
             };
 

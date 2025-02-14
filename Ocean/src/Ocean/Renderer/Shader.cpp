@@ -1,6 +1,7 @@
 #include "Shader.hpp"
 
 #include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
@@ -161,6 +162,8 @@ namespace Ocean {
             if (s_Initialized)
                 Init();
 
+            oprint(CONSOLE_TEXT_BLUE("Compiling Shader to SPIRV: \n%s\n"), source);
+
             const EShLanguage internalStage = ShaderStageToEShLanguage(stage);
 
             glslang::TShader shader(internalStage);
@@ -172,21 +175,21 @@ namespace Ocean {
             shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_3);
             shader.setEnvTarget(glslang::EshTargetSpv, glslang::EShTargetSpv_1_0);
 
-            shader.parse(
+            if (shader.parse(
                 &DefaultTBuiltInResource,
                 100,
                 false,
                 EShMsgDefault
-            );
-
-            oprint("glslang Parsing Shader: %s\n", shader.getInfoLog());
+            )) {
+                oprint(CONSOLE_TEXT_YELLOW("glslang Parsing Shader: %s\n"), shader.getInfoLog());
+            }
 
             glslang::TProgram program;
 
             program.addShader(&shader);
             program.link(EShMsgDefault);
 
-            oprint("glslang Linking Program: %s\n", program.getInfoLog());
+            oprint(CONSOLE_TEXT_YELLOW("glslang Linking Program: %s\n"), program.getInfoLog());
 
             glslang::TIntermediate* intermediate = program.getIntermediate(internalStage);
 
