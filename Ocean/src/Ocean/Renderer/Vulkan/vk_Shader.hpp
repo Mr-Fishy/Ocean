@@ -40,7 +40,8 @@ namespace Ocean {
             virtual void SetMat3f(cstring name, const glm::mat3& value) const override final;
 
         private:
-            VkShaderModule m_Module;
+            VkShaderModule m_Vert;
+            VkShaderModule m_Frag;
 
         };
 
