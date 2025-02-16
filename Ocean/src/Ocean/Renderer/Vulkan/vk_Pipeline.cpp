@@ -1,9 +1,12 @@
 #include "vk_Pipeline.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
-#include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
-#include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
+
+#include "Ocean/Primitives/Array.hpp"
+
+#include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -72,7 +75,7 @@ namespace Ocean {
 
             // ============================== VERTEX INPUT ==============================
             //
-            VkPipelineVertexInputStateCreateInfo vertexInput {
+            VkPipelineVertexInputStateCreateInfo vertexInputState {
                 VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO,
                 nullptr,
                 0,
@@ -110,7 +113,7 @@ namespace Ocean {
 
             // ============================== MULTISAMPLING ==============================
             //
-            VkPipelineMultisampleStateCreateInfo multisampling {
+            VkPipelineMultisampleStateCreateInfo multisamplingState {
                 VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
                 nullptr,
                 0,
@@ -170,20 +173,60 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreatePipelineLayout(vkInstance::Get().Device()->GetLogical(), &pipelineLayoutInfo, nullptr, &this->m_Layout)
+                vkCreatePipelineLayout(vkInstance::Get().Device()->Logical(), &pipelineLayoutInfo, nullptr, &this->m_Layout)
             );
 
             // ============================== SHADER MODULES ==============================
             //
-            DynamicArray<VkShaderModule> shaderModules;
+            VkShaderModule vertShader = this->m_Shader->Vert();
+            VkShaderModule fragShader = this->m_Shader->Frag();
 
-            
+            VkPipelineShaderStageCreateInfo vertShaderInfo {
+                VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                nullptr,
+                0,
+                VK_SHADER_STAGE_VERTEX_BIT,
+                vertShader,
+                "main",
+                nullptr
+            };
+
+            VkPipelineShaderStageCreateInfo fragShaderInfo {
+                VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                nullptr,
+                0,
+                VK_SHADER_STAGE_FRAGMENT_BIT,
+                fragShader,
+                "main",
+                nullptr
+            };
+
+            VkPipelineShaderStageCreateInfo shaderStageInfos[] = {
+                vertShaderInfo,
+                fragShaderInfo,
+            };
 
             // ============================== PIPELINE INFO ==============================
             //
             VkGraphicsPipelineCreateInfo pipelineInfo {
                 VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
                 nullptr,
+                0,
+                ArraySize(shaderStageInfos),
+                shaderStageInfos,
+                &vertexInputState,
+                &inputAssemblyState,
+                nullptr,
+                &viewportState,
+                &rasterizationState,
+                &multisamplingState,
+                nullptr,
+                &colorBlendState,
+                &dynamicState,
+                this->m_Layout,
+                this->m_RenderPasses[0].RenderPass(),
+                0,
+                VK_NULL_HANDLE,
                 0
             };
         }

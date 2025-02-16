@@ -28,14 +28,14 @@ namespace Ocean {
             m_Images(0)
         {
             u32 queueCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(vkInstance::Get().Device()->GetPhysical(), &queueCount, nullptr);
+            vkGetPhysicalDeviceQueueFamilyProperties(vkInstance::Get().Device()->Physical(), &queueCount, nullptr);
 
             VkQueueFamilyProperties* queueProperties = oallocat(VkQueueFamilyProperties, queueCount, oSystemAllocator);
-            vkGetPhysicalDeviceQueueFamilyProperties(vkInstance::Get().Device()->GetPhysical(), &queueCount, queueProperties);
+            vkGetPhysicalDeviceQueueFamilyProperties(vkInstance::Get().Device()->Physical(), &queueCount, queueProperties);
 
             b32* supportsPresentation = oallocat(b32, queueCount, oSystemAllocator);
             for (u32 i = 0; i < queueCount; i++)
-                vkGetPhysicalDeviceSurfaceSupportKHR(vkInstance::Get().Device()->GetPhysical(), i, surface, &supportsPresentation[i]);
+                vkGetPhysicalDeviceSurfaceSupportKHR(vkInstance::Get().Device()->Physical(), i, surface, &supportsPresentation[i]);
 
             // Search for a graphics and presentation queue in the array of queue families,
             // ideally find one that supports both.
@@ -89,18 +89,18 @@ namespace Ocean {
 
             vkInstance::Get().Device()->InitLogicalDevice(queueInfo);
 
-            vkGetDeviceQueue(vkInstance::Get().Device()->GetLogical(), this->m_GraphicsQueueIndex, 0, &this->m_Queue);
+            vkGetDeviceQueue(vkInstance::Get().Device()->Logical(), this->m_GraphicsQueueIndex, 0, &this->m_Queue);
 
             // Get the list of formats that are supported by the surface.
             //
             u32 formatCount;
             vkCheck(
-                vkGetPhysicalDeviceSurfaceFormatsKHR(vkInstance::Get().Device()->GetPhysical(), surface, &formatCount, nullptr)
+                vkGetPhysicalDeviceSurfaceFormatsKHR(vkInstance::Get().Device()->Physical(), surface, &formatCount, nullptr)
             );
 
             VkSurfaceFormatKHR* surfaceFormats = oallocat(VkSurfaceFormatKHR, formatCount, oSystemAllocator);
             vkCheck(
-                vkGetPhysicalDeviceSurfaceFormatsKHR(vkInstance::Get().Device()->GetPhysical(), surface, &formatCount, surfaceFormats)
+                vkGetPhysicalDeviceSurfaceFormatsKHR(vkInstance::Get().Device()->Physical(), surface, &formatCount, surfaceFormats)
             );
 
             // If the supported formats include just one entry of VK_FORMAT_UNDEFINED, the surface has no preferred format.
@@ -137,7 +137,7 @@ namespace Ocean {
             //
             VkSurfaceCapabilitiesKHR surfaceCapabilities;
             vkCheck(
-                vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkInstance::Get().Device()->GetPhysical(), this->m_Surface, &surfaceCapabilities)
+                vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkInstance::Get().Device()->Physical(), this->m_Surface, &surfaceCapabilities)
             );
 
             // If the surface size is undefined, the size is set to the size of the images requested,
@@ -199,7 +199,7 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreateSwapchainKHR(vkInstance::Get().Device()->GetLogical(), &swapchainInfo, nullptr, &this->m_Swapchain)
+                vkCreateSwapchainKHR(vkInstance::Get().Device()->Logical(), &swapchainInfo, nullptr, &this->m_Swapchain)
             );
 
             // ================================ CLEANUP OLD SWAPCHAIN ================================
@@ -209,7 +209,7 @@ namespace Ocean {
             // Note: Destroying the swapchain also cleans up all of its associated images once they are out of use.
             //
             if (oldSwapchain != VK_NULL_HANDLE)
-                vkDestroySwapchainKHR(vkInstance::Get().Device()->GetLogical(), oldSwapchain, nullptr);
+                vkDestroySwapchainKHR(vkInstance::Get().Device()->Logical(), oldSwapchain, nullptr);
 
             // ================================ RECREATE SWAPCHAIN IMAGES ================================
             //
@@ -217,12 +217,12 @@ namespace Ocean {
             //
             u32 swapchainImageCount;
             vkCheck(
-                vkGetSwapchainImagesKHR(vkInstance::Get().Device()->GetLogical(), this->m_Swapchain, &swapchainImageCount, nullptr)
+                vkGetSwapchainImagesKHR(vkInstance::Get().Device()->Logical(), this->m_Swapchain, &swapchainImageCount, nullptr)
             );
 
             VkImage* swapchainImages = oallocat(VkImage, swapchainImageCount, oSystemAllocator);
             vkCheck(
-                vkGetSwapchainImagesKHR(vkInstance::Get().Device()->GetLogical(), this->m_Swapchain, &swapchainImageCount, swapchainImages)
+                vkGetSwapchainImagesKHR(vkInstance::Get().Device()->Logical(), this->m_Swapchain, &swapchainImageCount, swapchainImages)
             );
 
             // Reserve so that if there is more images than the last it will grow ahead of time.
@@ -255,7 +255,7 @@ namespace Ocean {
                 };
 
                 vkCheck(
-                    vkCreateImageView(vkInstance::Get().Device()->GetLogical(), &colorViewInfo, nullptr, &this->m_Images[i].view)
+                    vkCreateImageView(vkInstance::Get().Device()->Logical(), &colorViewInfo, nullptr, &this->m_Images[i].view)
                 );
             }
 

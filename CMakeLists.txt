@@ -159,6 +159,7 @@ set(CMAKE_FOLDER "Deps")
 # GLFW
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLFW Starting (${time})...")
+set(GLFW_BUILD_WAYLAND OFF) # NOTE: This may be required for MacOS
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
 message(STATUS)
 

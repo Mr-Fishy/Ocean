@@ -51,6 +51,8 @@ namespace Ocean {
             OC_INLINE vkAttachment& GetAttachment(u32 index) { return this->m_Attachments[index]; }
             OC_INLINE void RemoveAttachment(u32 index) { this->m_Attachments.erase(this->m_Attachments.begin() + index); }
 
+            OC_INLINE VkRenderPass RenderPass() const { return this->m_Pass; }
+
             void Invalidate();
 
         private:

@@ -28,12 +28,12 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkAllocateCommandBuffers(vkInstance::Get().Device()->GetLogical(), &bufferInfo, &this->m_Buffer)
+                vkAllocateCommandBuffers(vkInstance::Get().Device()->Logical(), &bufferInfo, &this->m_Buffer)
             );
         }
 
         vkCommandPool::vkCommandBuffer::~vkCommandBuffer() {
-            vkFreeCommandBuffers(vkInstance::Get().Device()->GetLogical(), this->m_ParentPool, 1, &this->m_Buffer);
+            vkFreeCommandBuffers(vkInstance::Get().Device()->Logical(), this->m_ParentPool, 1, &this->m_Buffer);
         }
 
 
@@ -51,14 +51,14 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreateCommandPool(vkInstance::Get().Device()->GetLogical(), &poolInfo, nullptr, &this->m_Pool)
+                vkCreateCommandPool(vkInstance::Get().Device()->Logical(), &poolInfo, nullptr, &this->m_Pool)
             );
         }
 
         vkCommandPool::~vkCommandPool() {
             this->m_Buffers.clear();
 
-            vkDestroyCommandPool(vkInstance::Get().Device()->GetLogical(), this->m_Pool, nullptr);
+            vkDestroyCommandPool(vkInstance::Get().Device()->Logical(), this->m_Pool, nullptr);
         }
 
         void vkCommandPool::CreateBuffer(cstring name, b8 primary) {

@@ -1,9 +1,11 @@
 #include "vk_Shader.hpp"
 
+#include "Ocean/Types/Integers.hpp"
+
 #include "Ocean/Primitives/Array.hpp"
+
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
-#include "Ocean/Types/Integers.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -40,7 +42,7 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreateShaderModule(vkInstance::Get().Device()->GetLogical(), &vertInfo, nullptr, &this->m_Vert)
+                vkCreateShaderModule(vkInstance::Get().Device()->Logical(), &vertInfo, nullptr, &this->m_Vert)
             );
 
             // ============================== FRAGMENT SHADER ==============================
@@ -57,7 +59,7 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreateShaderModule(vkInstance::Get().Device()->GetLogical(), &fragInfo, nullptr, &this->m_Frag)
+                vkCreateShaderModule(vkInstance::Get().Device()->Logical(), &fragInfo, nullptr, &this->m_Frag)
             );
         }
 

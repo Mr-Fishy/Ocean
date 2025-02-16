@@ -305,7 +305,7 @@ namespace Ocean {
 
             // Load's all of the related Vulkan symbols given the instance and the physical device selected.
             //
-            gladVersion = gladLoaderLoadVulkan(this->m_Instance, this->m_Devices[0]->GetPhysical(), nullptr);
+            gladVersion = gladLoaderLoadVulkan(this->m_Instance, this->m_Devices[0]->Physical(), nullptr);
             if (!gladVersion)
                 throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with physical device!");
 
