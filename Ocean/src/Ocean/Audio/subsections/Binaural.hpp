@@ -6,7 +6,7 @@ namespace sonar{
     //per new spacialized sound source.
     class Binaural{
         public:
-        Binaural(Ref<sonar::HRTF> hrtf);
+        Binaural(std::string hrtfname);
         ~Binaural();
         //gets the pointer for the class
         void start(IPLBinauralEffectParams* params);
