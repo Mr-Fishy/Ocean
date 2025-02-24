@@ -17,7 +17,7 @@
 
 #include "Ocean/Renderer/Vulkan/vk_Device.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Swapchain.hpp"
-#include "vk_Command.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Command.hpp"
 
 // std
 #include <mutex>
@@ -71,17 +71,11 @@ namespace Ocean {
              */
             OC_INLINE const DynamicArray<cstring>& Extensions() { return this->m_Extensions; }
             /**
-             * @brief Initializes the swapchain with the given window surface.
-             * 
-             * @param surface The VkSurfaceKHR given by the window platform.
-             */
-            OC_INLINE void InitSwapchain(VkSurfaceKHR surface) { this->m_Swapchain = MakeRef<vkSwapchain>(surface); };
-            /**
              * @brief Get's a Ref to the vkSwapchain.
              * 
              * @return const Ref<vkSwapchain>
              */
-            OC_INLINE const Ref<vkSwapchain> Swapchain() { return this->m_Swapchain; }
+            OC_INLINE Ref<vkSwapchain> Swapchain() { return this->m_Swapchain; }
 
         private:
             /**

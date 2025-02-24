@@ -94,7 +94,9 @@ namespace Ocean {
             m_Instance(VK_NULL_HANDLE),
             m_Extensions(0),
             m_Layers(0),
-            m_Devices(0)
+            m_Devices(0),
+            m_Swapchain(),
+            m_CommandPool()
         {
             i32 gladVersion = gladLoaderLoadVulkan(nullptr, nullptr, nullptr);
             if (!gladVersion)
@@ -311,9 +313,8 @@ namespace Ocean {
 
             // Ensure that the swapchain extension is available for presentation as it is required by Ocean.
             //
-            if (GLAD_VK_KHR_swapchain) {
+            if (GLAD_VK_KHR_swapchain)
                 this->m_Devices[0]->AddDeviceExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-            }
             else
                 throw Exception(Error::SYSTEM_ERROR, "Failed to find extension: " VK_KHR_SWAPCHAIN_EXTENSION_NAME ". vkCreateInstance Failure.");
         }
@@ -337,6 +338,8 @@ namespace Ocean {
 
 
         void vkInstance::GetDevices() {
+            /** @todo Clear duplicate devices (Linux). */
+
             u32 gpuCount;
             vkCheck(
                 vkEnumeratePhysicalDevices(this->m_Instance, &gpuCount, nullptr)

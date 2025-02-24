@@ -11,7 +11,7 @@ namespace Ocean {
 
         vkFramebuffer::vkFramebuffer(const FramebufferSpecification& spec) :
             Framebuffer(spec),
-            m_Framebuffer(VK_NULL_HANDLE),
+            m_Framebuffer(0),
             m_ColorAttachments(0),
             m_DepthAttachment()
         {

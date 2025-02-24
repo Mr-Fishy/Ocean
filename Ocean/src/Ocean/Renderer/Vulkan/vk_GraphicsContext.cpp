@@ -2,6 +2,8 @@
 
 #include "Ocean/Renderer/GraphicsContext.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
+#include "Ocean/Renderer/Vulkan/vk_Swapchain.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -26,7 +28,7 @@ namespace Ocean {
             VkSurfaceKHR surface;
             glfwCreateWindowSurface(vkInstance::Get().Instance(), this->p_WindowHandle, nullptr, &surface);
 
-            vkInstance::Get().InitSwapchain(surface);
+            vkInstance::Get().Swapchain() = MakeRef<vkSwapchain>(surface);
         }
 
         void vkGraphicsContext::SwapBuffers() {

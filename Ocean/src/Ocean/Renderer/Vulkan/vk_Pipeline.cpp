@@ -18,7 +18,8 @@ namespace Ocean {
         vkPipeline::vkPipeline() :
             m_Pipeline(VK_NULL_HANDLE),
             m_Layout(VK_NULL_HANDLE),
-            m_RenderPasses(0)
+            m_RenderPasses(0),
+            m_Shader()
         {
             
         }
@@ -229,6 +230,10 @@ namespace Ocean {
                 VK_NULL_HANDLE,
                 0
             };
+
+            vkCheck(
+                vkCreateGraphicsPipelines(vkInstance::Get().Device()->Logical(), nullptr, 1, &pipelineInfo, nullptr, &this->m_Pipeline)
+            );
         }
 
     } // namespace Splash

@@ -65,7 +65,7 @@ namespace Ocean {
             if (this->m_Buffers.find(name) != this->m_Buffers.end())
                 throw Exception(Error::INVALID_ARGUMENT, "Attempting to create a buffer that already exists! vkCommandPool::CreateBuffer.");
 
-            this->m_Buffers[name] = MakeRef<vkCommandBuffer>(this->m_Pool, primary);
+            this->m_Buffers.emplace(name, this->m_Pool, primary);
         }
 
         void vkCommandPool::DestroyBuffer(cstring name) {

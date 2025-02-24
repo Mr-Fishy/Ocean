@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
@@ -11,7 +10,7 @@
 namespace Ocean {
 
     namespace Splash {
-    
+
         OC_UNUSED void vkCheck(VkResult result);
 
         enum VkPhysicalDeviceFeatureBits : u64 {
