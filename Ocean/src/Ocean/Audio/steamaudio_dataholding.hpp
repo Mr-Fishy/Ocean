@@ -15,14 +15,10 @@ namespace sonar{
     struct global_audio_context{
         static sonar::steamaudio* audio;
         //in case i need to keep track of this stuff.
-<<<<<<< HEAD
-        static std::unordered_map<const char*, Ref<IPLAudioBuffer>> buffers;
-=======
         std::unordered_map<const char*, Ref<IPLAudioBuffer>> inbuffers;
         std::unordered_map<const char*, Ref<IPLAudioBuffer>> outbuffer;
         
         std::unordered_map<const char*, Ref<IPLAudioBuffer>> tmpbuff;
->>>>>>> 525e3080987d2bc03c9c031e3cd0d4a56c1d0294
 
 
         static std::unordered_map<const char*, Ref<sonar::HRTF>> hrtfs;
