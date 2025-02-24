@@ -6,7 +6,6 @@
 
 namespace sonar{
     HRTF::HRTF(std::string name, sonar::HRTFconfig& config){
-        this->name = name.c_str();
         //copy them.
         *(this->audiosettings) = config.audiosetting;
         *(this->hrtfsettings) = config.hrtfsetting;
@@ -19,6 +18,7 @@ namespace sonar{
 
     }
 
+    
     //sets the audionormalization type.
     void HRTF::normalization(IPLHRTFNormType type){
         this->hrtfsettings->normType = type;

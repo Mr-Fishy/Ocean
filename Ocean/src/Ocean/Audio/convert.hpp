@@ -4,15 +4,22 @@
 
 #include <phonon.h>
 #include "Ocean/Audio/audio.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
 #include "audio.hpp"
+#include "steamaudio_dataholding.hpp"
 
 namespace sonar{
+    struct convert{
 
-    //DOES NOT DEALLOC BUFFERS.
-    static IPLAudioBuffer* allocatebuffer(int channels =2, int samples =512){
-        IPLAudioBuffer* buffer;
-        iplAudioBufferAllocate(*sonar::steamaudio::context, channels, samples, buffer);
-        return buffer;
-    }
+    //For temp buffers, must be not interleaved.
+    static void allocatebuffer(std::string name,IPLAudioBuffer &buff);
 
+    //this is for incoming, adds to the map
+    static void deinterleave(std::string name, float* indata, int channels, int samples);
+    static void deinterleave(std::string name, float* indata, IPLAudioBuffer* buff);
+
+    //this is for outgoing, gets from the map.
+    static void interleave(std::string name, float* outdata);
+
+    };
 }
