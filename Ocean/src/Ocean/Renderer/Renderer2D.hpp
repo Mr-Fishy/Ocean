@@ -53,7 +53,15 @@ namespace Ocean {
          */
         OC_STATIC void Flush();
 
+        /**
+         * @brief Draw's a colored quad on the screen given the specified position and size.
+         * 
+         * @param pos The position of the quad.
+         * @param size The size of the quad.
+         * @param color The color of the quad in rgba. (0.0f - 1.0f scale).
+         */
         OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
+        /** @copydoc DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color) */
         OC_STATIC void DrawQuad(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color);
 
         OC_STATIC void DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Splash::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
@@ -61,7 +69,7 @@ namespace Ocean {
 
         OC_STATIC void DrawQuad(const glm::mat4& transform, const glm::vec4 color, i32 entityID = -1);
         OC_STATIC void DrawQuad(const glm::mat4& transform, const Ref<Splash::Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), i32 entityID = -1);
-        
+
         /**
          * @brief A struct to hold the stats of the Renderer2D.
          */

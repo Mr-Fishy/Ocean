@@ -27,14 +27,19 @@ namespace Ocean {
      * @brief A vertex to define per each corner of a quad.
      */
     struct QuadVertex {
+        /** @brief The 3d position of the vertex. */
         glm::vec3 position;
+        /** @brief The rgba color of the vertex. (0.0f - 1.0f scale). */
         glm::vec4 color;
+        /** @brief The texture coordinate of the vertex. */
         glm::vec2 texCoord;
 
+        /** @brief The texture index of the vertex. */
         f32 texIndex;
+        /** @brief The texture tiling factor of the vertex. */
         f32 tilingFactor;
 
-        // Editor Specific
+        /** @brief The parent entity's ID. */
         i32 entityID;
 
     };  // QuadVertex
@@ -49,17 +54,26 @@ namespace Ocean {
 
         RendererData& operator = (const RendererData&) = delete;
 
+        /** @brief The maximum quads allowed per batch. */
         static constexpr u32 maxQuads = 20000;
+        /** @brief The maximum vertices per batch. */
         static constexpr u32 maxVertices = maxQuads * 4;
+        /** @brief The maximum indices per batch. */
         static constexpr u32 maxIndices = maxQuads * 6;
+        /** @brief The maximum texture slots to be active. */
         static constexpr u32 maxTextureSlots = 32;
 
+        /** @brief The renderer's VertexArray. */
         Ref<Splash::VertexArray> quadVertexArray;
+        /** @brief The renderer's VertexBuffer. */
         Ref<Splash::VertexBuffer> quadVertexBuffer;
 
+        /** @brief The renderer's Shader. */
         Ref<Splash::Shader> textureShader;
+        /** @brief The renderer's color texture. Aka a white texture to be recolored per data. */
         Ref<Splash::Texture2D> colorTexture;
 
+        /** @brief The current renderer's index count. */
         u32 quadIndexCount = 0;
         QuadVertex* quadVertexBufferBase = nullptr;
         QuadVertex* quadVertexBufferPtr = nullptr;
