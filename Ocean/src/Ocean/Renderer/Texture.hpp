@@ -45,6 +45,12 @@ namespace Ocean {
          */
         class Texture {
         public:
+            /**
+             * @brief Constructs a new Texture object.
+             * 
+             * @param width The width of the texture.
+             * @param height The height of the texture.
+             */
             OC_INLINE Texture(u32 width, u32 height) : m_Width(width), m_Height(height) { }
             virtual ~Texture() = default;
 

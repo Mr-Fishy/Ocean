@@ -33,6 +33,7 @@ namespace Ocean {
             */
             class vkCommandBuffer {
             public:
+                vkCommandBuffer();
                 /**
                 * @brief Constructs a new vkCommandBuffer object.
                 * 
@@ -40,7 +41,14 @@ namespace Ocean {
                 * @param primary 
                 */
                 vkCommandBuffer(VkCommandPool pool, b8 primary);
+                vkCommandBuffer(const vkCommandBuffer& other);
                 ~vkCommandBuffer();
+
+                b8 operator == (const vkCommandBuffer& other) const;
+                b8 operator != (const vkCommandBuffer& other) const;
+
+            private:
+                const vkCommandBuffer& operator = (const vkCommandBuffer&) = delete;
 
             private:
                 const VkCommandPool m_ParentPool; /** @brief The Vulkan command pool that this buffer is owned by. */
@@ -53,37 +61,36 @@ namespace Ocean {
             /**
              * @brief Constructs a new vkCommandPool object.
              * 
-             * @param queueIndex 
+             * @param queueIndex The queue family index for the command pool.
              */
             vkCommandPool(u32 queueIndex);
             ~vkCommandPool();
 
             /**
-             * @brief Create a Buffer object
+             * @brief Create a vkCommandBuffer within the command pool.
              * 
-             * @param name 
-             * @param queueIndex 
-             * @param primary 
+             * @param name The name of the buffer. E.g. "primary3D".
+             * @param primary Whether the command buffer is a primary buffer or not.
              */
             void CreateBuffer(cstring name, b8 primary);
             /**
-             * @brief 
+             * @brief Destroy's a vkCommandBuffer within the command pool.
              * 
-             * @param name 
+             * @param name The name of the buffer to destroy.
              */
             void DestroyBuffer(cstring name);
 
             /**
-             * @brief 
+             * @brief Get's the Vulkan command pool.
              * 
              * @return VkCommandPool 
              */
             OC_INLINE VkCommandPool Pool() const { return this->m_Pool; }
             /**
-             * @brief 
+             * @brief Get's the vkCommandBuffer from the command pool.
              * 
-             * @param name 
-             * @return const Ref<vkCommandBuffer> 
+             * @param name The name of the command buffer to get.
+             * @return const vkCommandBuffer&
              */
             OC_INLINE const vkCommandBuffer& Buffer(cstring name) { return this->m_Buffers[name]; }
 

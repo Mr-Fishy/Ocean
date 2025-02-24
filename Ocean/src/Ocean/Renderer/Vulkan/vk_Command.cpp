@@ -1,6 +1,5 @@
 #include "vk_Command.hpp"
 
-#include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
 #include "Ocean/Primitives/Exceptions.hpp"
@@ -30,6 +29,24 @@ namespace Ocean {
             vkCheck(
                 vkAllocateCommandBuffers(vkInstance::Get().Device()->Logical(), &bufferInfo, &this->m_Buffer)
             );
+        }
+
+        vkCommandPool::vkCommandBuffer::vkCommandBuffer() :
+            m_ParentPool(VK_NULL_HANDLE),
+            m_Buffer(VK_NULL_HANDLE)
+        { }
+
+        vkCommandPool::vkCommandBuffer::vkCommandBuffer(const vkCommandBuffer& other) :
+            m_ParentPool(other.m_ParentPool),
+            m_Buffer(other.m_Buffer)
+        { }
+
+        b8 vkCommandPool::vkCommandBuffer::operator==(const vkCommandBuffer &other) const {
+            return m_ParentPool == other.m_ParentPool && m_Buffer == other.m_Buffer;
+        }
+
+        b8 vkCommandPool::vkCommandBuffer::operator!=(const vkCommandBuffer &other) const {
+            return !(*this == other);
         }
 
         vkCommandPool::vkCommandBuffer::~vkCommandBuffer() {
@@ -65,7 +82,7 @@ namespace Ocean {
             if (this->m_Buffers.find(name) != this->m_Buffers.end())
                 throw Exception(Error::INVALID_ARGUMENT, "Attempting to create a buffer that already exists! vkCommandPool::CreateBuffer.");
 
-            this->m_Buffers.emplace(name, this->m_Pool, primary);
+            this->m_Buffers.try_emplace(name, this->m_Pool, primary);
         }
 
         void vkCommandPool::DestroyBuffer(cstring name) {
