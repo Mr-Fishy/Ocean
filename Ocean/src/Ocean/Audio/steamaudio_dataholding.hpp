@@ -1,5 +1,6 @@
 #pragma once
 #include "Ocean/Primitives/Exceptions.hpp"
+#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "audio.hpp"
 #include <phonon.h>
@@ -15,10 +16,11 @@ namespace sonar{
     struct global_audio_context{
         static sonar::steamaudio* audio;
         //in case i need to keep track of this stuff.
-        std::unordered_map<const char*, Ref<IPLAudioBuffer>> inbuffers;
-        std::unordered_map<const char*, Ref<IPLAudioBuffer>> outbuffer;
+        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> buffers;
+        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> inbuffers;
+        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> outbuffer;
         
-        std::unordered_map<const char*, Ref<IPLAudioBuffer>> tmpbuff;
+        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> tmpbuff;
 
 
         static std::unordered_map<const char*, Ref<sonar::HRTF>> hrtfs;
