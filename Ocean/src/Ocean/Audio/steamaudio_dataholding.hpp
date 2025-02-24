@@ -20,7 +20,7 @@ namespace sonar{
         OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> inbuffers;
         OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> outbuffer;
         
-        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> tmpbuff;
+        OC_STATIC_INLINE std::unordered_map<const char*, Ref<IPLAudioBuffer>> tmpbuffer;
 
 
         static std::unordered_map<const char*, Ref<sonar::HRTF>> hrtfs;
