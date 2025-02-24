@@ -28,8 +28,8 @@ namespace Ocean {
             vkDevice(VkPhysicalDevice gpu);
             ~vkDevice();
 
-            OC_INLINE VkPhysicalDevice GetPhysical() const { return this->m_gpu; }
-            OC_INLINE VkDevice GetLogical() const { return this->m_Device; }
+            OC_INLINE VkPhysicalDevice Physical() const { return this->m_gpu; }
+            OC_INLINE VkDevice Logical() const { return this->m_Device; }
 
             OC_INLINE void AddDeviceExtension(cstring extension) { this->m_Extensions.emplace_back(extension); }
 

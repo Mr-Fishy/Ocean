@@ -10,12 +10,14 @@
  * 
  */
 
-#include "Ocean/Primitives/Array.hpp"
-#include "Ocean/Primitives/Macros.hpp"
+#include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
+
+#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/Macros.hpp"
 
 // libs
 #include <glm/glm.hpp>
@@ -28,13 +30,29 @@ namespace Ocean {
          * @brief The Shader controls a shader through the renderer API.
          */
         class Shader {
-        private:
+        public:
             /** @todo Runtime shader compilation using shaderc and spirv-cross or valid alternative. */
             /**
              * @brief The Compiler will enable runtime compilation and caching of shader files for the current API.
              */
             class Compiler {
-                // OC_STATIC DynamicArray<u8> CompileToSpirv(const DynamicArray<u8>& source);
+            public:
+                typedef enum ShaderStage {
+                    VERTEX_SHADER,
+                    FRAGMENT_SHADER,
+                    GEOMETRY_SHADER,
+
+                } ShaderStage;
+
+            public:
+                OC_STATIC DynamicArray<u32> CompileToSpirv(const cstring source, ShaderStage stage);
+
+            private:
+                OC_STATIC void Init();
+                OC_STATIC void Shutdown();
+
+            private:
+                OC_STATIC_INLINE b8 s_Initialized = false;
 
             };  // Compiler
 
@@ -119,7 +137,7 @@ namespace Ocean {
              * @return Ref<Shader> 
              */
             // OC_STATIC Ref<Shader> Create(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
-            OC_STATIC Ref<Shader> Create(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource = { });
+            OC_STATIC Ref<Shader> Create(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource = nullptr);
 
         };  // Shader
 

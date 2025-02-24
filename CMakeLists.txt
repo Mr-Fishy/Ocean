@@ -128,7 +128,6 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
     )
 
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-    message(STATUS "Will compile shader ${GLSL} to ${SPIRV}")
 
 endforeach(GLSL)
 
@@ -160,6 +159,7 @@ set(CMAKE_FOLDER "Deps")
 # GLFW
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLFW Starting (${time})...")
+set(GLFW_BUILD_WAYLAND OFF) # NOTE: This may be required for MacOS
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
 message(STATUS)
 
@@ -193,8 +193,19 @@ add_subdirectory(Ocean/vendor/flecs EXCLUDE_FROM_ALL)
 message(STATUS)
 
 # GLSLang
-
-
+string(TIMESTAMP time "%M:%S")
+message(STATUS "glslang Starting (${time})...")
+option(ENABLE_SPVREMAPPER OFF)
+option(ENABLE_GLSLANG_BINARIES OFF)
+set(ENABLE_HLSL OFF)
+option(ENABLE_OPT OFF)
+option(BUILD_TESTING OFF)
+option(BUILD_EXTERNAL OFF)
+if(IOS)
+    option(ENABLE_PCH OFF)
+endif ()
+add_subdirectory(Ocean/vendor/glslang EXCLUDE_FROM_ALL)
+message(STATUS)
 unset(CMAKE_FOLDER)
 
 set(

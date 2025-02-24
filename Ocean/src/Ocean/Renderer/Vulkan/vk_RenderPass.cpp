@@ -95,7 +95,7 @@ namespace Ocean {
             };
 
             vkCheck(
-                vkCreateRenderPass(vkInstance::Get().Device()->GetLogical(), &renderPassInfo, nullptr, &this->m_Pass)
+                vkCreateRenderPass(vkInstance::Get().Device()->Logical(), &renderPassInfo, nullptr, &this->m_Pass)
             );
         }
 

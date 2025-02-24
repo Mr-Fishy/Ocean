@@ -13,6 +13,13 @@ namespace Ocean {
 
     namespace Splash {
     
+        GraphicsContext::GraphicsContext(GLFWwindow* window) :
+            p_WindowHandle(window)
+        {
+            if (!this->p_WindowHandle)
+                throw Exception(Error::BAD_WINDOW_HANDLE, "");
+        }
+
         Scope<GraphicsContext> GraphicsContext::Create(void* windowHandle) {
             switch (RendererAPI::GetAPI()) {
                 case RendererAPI::None:
@@ -25,7 +32,7 @@ namespace Ocean {
                     return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
             }
 
-            throw Exception(Error::BAD_FUNCTION_CALL, "Your not supposed to be here.");
+            throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");
 
             return nullptr;
         }

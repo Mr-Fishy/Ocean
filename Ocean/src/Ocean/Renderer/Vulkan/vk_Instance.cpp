@@ -16,7 +16,6 @@
 
 // std
 #include <cstring>
-#include <stdexcept>
 #include <utility>
 
 // libs
@@ -95,7 +94,9 @@ namespace Ocean {
             m_Instance(VK_NULL_HANDLE),
             m_Extensions(0),
             m_Layers(0),
-            m_Devices(0)
+            m_Devices(0),
+            m_Swapchain(),
+            m_CommandPool()
         {
             i32 gladVersion = gladLoaderLoadVulkan(nullptr, nullptr, nullptr);
             if (!gladVersion)
@@ -103,22 +104,31 @@ namespace Ocean {
 
             // ================================ VALIDATION LAYERS ================================
             //
-            // Collect all of the validation layers required for the Vulkan instance, aka debug layers and Vulkan checks.
+            // Collect all of the validation layers required for the Vulkan instance.
+            // A layer is for enabling Vulkan debugging and runtime checks.
             //
+            // The layer count is recieved from the Vulkan API as it enumerates over the available instance layers.
+            // 
             u32 layerCount;
             vkCheck(
                 vkEnumerateInstanceLayerProperties(&layerCount, nullptr)
             );
 
+            // If there are validation layers available, enumerate over them again to gather their information.
+            //
             if (layerCount > 0) {
                 DynamicArray<VkLayerProperties> availableValidationLayers(layerCount);
                 vkCheck(
                     vkEnumerateInstanceLayerProperties(&layerCount, availableValidationLayers.data())
                 );
 
+                // The requestedValidationLayers are the prefered validation layers to enable Vulkan debugging.
+                //
                 cstring requestedValidationLayers[] = {
                     "VK_LAYER_KHRONOS_validation"
                 };
+                // Record the requestedValidationLayers size into layerCount.
+                //
                 layerCount = ArraySize(requestedValidationLayers);
 
                 // Checks if the system's Vulkan driver supports the requestedValidationLayers.
@@ -135,8 +145,6 @@ namespace Ocean {
 
                 // If it did not find all of the requestedValidationLayers,
                 // then get all of the available requestedValidationLayers_Alt's.
-                // 
-                // If all of the requestedValidationLayers were found, then they will be added to m_Layers.
                 //
                 if (layerCount != foundLayers) {
                     cstring requestedValidationLayers_Alt[] = {
@@ -163,6 +171,8 @@ namespace Ocean {
                     //
                     layerCount = this->m_Layers.size();
                 }
+                // If all of the requestedValidationLayers were found, then they will be added to m_Layers.
+                //
                 else {
                     for (const cstring& layerName : requestedValidationLayers)
                         this->m_Layers.emplace_back(layerName);
@@ -171,13 +181,18 @@ namespace Ocean {
 
             // ================================ EXTENSIONS ================================
             //
-            // Collect all of the extensions required for the Vulkan instance, aka platform and debugging support.
+            // Collect all of the extensions required for the Vulkan instance.
+            // Debugging must also be supported by the Vulkan extensions to be able to have error reporting. 
             //
+            // extensionCount functions similarly to layerCount previously.
+            // 
             u32 extensionCount;
             vkCheck(
                 vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr)
             );
 
+            // Record the extension data into an array that also records the number of extensions.
+            //
             DynamicArray<VkExtensionProperties> availableExtensions(extensionCount);
             vkCheck(
                 vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data())
@@ -196,6 +211,8 @@ namespace Ocean {
 
             /** @todo Add release vs debug define to use in functionality for debug support if user requested during release. */
 
+            // Check the extensions to determine if debugging capabilities are available.
+            //
             for (const VkExtensionProperties& extension : availableExtensions) {
                 if (std::strncmp(extension.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, strlen(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) == 0) {
                     hasDebugCapabilities = true;
@@ -204,6 +221,8 @@ namespace Ocean {
                 }
             }
 
+            // If Vulkan hasDebugCapabilites, and Glad was able to load the function pointers, then the debugging extension can be used.
+            //
             if (hasDebugCapabilities && GLAD_VK_EXT_debug_report) {
                 this->m_Extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                 extensionCount++;
@@ -214,6 +233,8 @@ namespace Ocean {
             /** @todo Make pApplicationName, applicationVersion, pEngineName, and engineVersion defined variable dependent. */
 
             // ================================ INSTANCE CREATION ================================
+            //
+            // The appInfo is the information about the application using Vulkan. Primarily for the Vulkan driver to enable persistant optimizations.
             //
             VkApplicationInfo appInfo {
                 VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -234,6 +255,8 @@ namespace Ocean {
             for (const cstring& ext : this->m_Extensions)
                 oprint(CONSOLE_TEXT_CYAN("Enabling Extension: %s\n"), ext);
 
+            // The instanceInfo collects the information to create a Vulkan instance, such as the validation layers and extensions to request from the driver.
+            // 
             VkInstanceCreateInfo instanceInfo {
                 VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                 nullptr,
@@ -241,14 +264,16 @@ namespace Ocean {
 
                 &appInfo,
 
-                0,
-                nullptr,
+                layerCount,
+                this->m_Layers.data(),
 
                 extensionCount,
                 this->m_Extensions.data()
             };
 
             // ================================ DEBUG INFO ================================
+            //
+            // The Vulkan debugger needs information of what error levels to report, and what messenger to call when an error occurs.
             //
             VkDebugUtilsMessengerCreateInfoEXT messengerInfo { };
             if (hasDebugCapabilities) {
@@ -282,13 +307,14 @@ namespace Ocean {
 
             // Load's all of the related Vulkan symbols given the instance and the physical device selected.
             //
-            gladVersion = gladLoaderLoadVulkan(this->m_Instance, this->m_Devices[0]->GetPhysical(), nullptr);
+            gladVersion = gladLoaderLoadVulkan(this->m_Instance, this->m_Devices[0]->Physical(), nullptr);
             if (!gladVersion)
                 throw Exception(Error::SYSTEM_ERROR, "Unable to reload Vulkan symbols with physical device!");
 
-            if (GLAD_VK_KHR_swapchain) {
+            // Ensure that the swapchain extension is available for presentation as it is required by Ocean.
+            //
+            if (GLAD_VK_KHR_swapchain)
                 this->m_Devices[0]->AddDeviceExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-            }
             else
                 throw Exception(Error::SYSTEM_ERROR, "Failed to find extension: " VK_KHR_SWAPCHAIN_EXTENSION_NAME ". vkCreateInstance Failure.");
         }
@@ -312,6 +338,8 @@ namespace Ocean {
 
 
         void vkInstance::GetDevices() {
+            /** @todo Clear duplicate devices (Linux). */
+
             u32 gpuCount;
             vkCheck(
                 vkEnumeratePhysicalDevices(this->m_Instance, &gpuCount, nullptr)

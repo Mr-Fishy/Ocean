@@ -52,7 +52,7 @@ namespace Ocean {
             virtual void ClearAttachment(u32 attachmentIndex, i32 value) override final;
 
         private:
-            VkFramebuffer m_Framebuffer;
+            DynamicArray<VkFramebuffer> m_Framebuffer; /** @brief The list of available framebuffers. @details This should be the same size (count) as the vkSwapchain images. */
             VkSampler m_Sampler;
 
             VkRenderPass m_RenderPass;

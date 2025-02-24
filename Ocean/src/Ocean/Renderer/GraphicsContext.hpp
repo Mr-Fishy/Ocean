@@ -14,6 +14,8 @@
 
 #include "Ocean/Primitives/Macros.hpp"
 
+struct GLFWwindow;
+
 namespace Ocean {
 
     namespace Splash {
@@ -23,6 +25,12 @@ namespace Ocean {
          */
         class GraphicsContext {
         public:
+            /**
+             * @brief Construct a new graphics context for the given window.
+             * 
+             * @param window The window to attach the graphics context to.
+             */
+            GraphicsContext(GLFWwindow* window);
             virtual ~GraphicsContext() = default;
 
             /**
@@ -44,6 +52,12 @@ namespace Ocean {
              * @return Scope<GraphicsContext> 
              */
             OC_STATIC Scope<GraphicsContext> Create(void* windowHandle);
+
+        private:
+            OC_NO_COPY(GraphicsContext);
+
+        protected:
+            GLFWwindow* p_WindowHandle;
 
         };  // GraphicsContext
 

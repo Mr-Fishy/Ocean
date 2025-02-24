@@ -128,7 +128,7 @@ public:
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
 	/**
-	 * @brief Allocator::Deallocate() 
+	 * @copydoc Allocator::Deallocate() 
 	 */
 	virtual void Deallocate(void* ptr) override;
 
@@ -165,7 +165,7 @@ public:
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
 	/**
-	 * @brief Allocator::Deallocate() 
+	 * @copydoc Allocator::Deallocate() 
 	 */
 	virtual void Deallocate(void* ptr) override;
 
@@ -176,12 +176,15 @@ public:
 	 */
 	sizet GetMarker() const;
 	/**
-	 * @brief 
+	 * @brief Free's the 
 	 * 
 	 * @param marker 
 	 */
 	void FreeMarker(sizet marker);
 
+	/**
+	 * @brief Clear's the memory and reset's the marker.
+	 */
 	void Clear();
 
 private:
@@ -194,6 +197,9 @@ private:
 
 
 
+/**
+ * @brief An allocator that treats the memory as a double sided stack, that can be pushed and popped from both ends.
+ */
 class DoubleStackAllocator : public Allocator {
 public:
 	/**
@@ -213,36 +219,91 @@ public:
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
 	/**
-	 * @brief Allocator::Deallocate() 
+	 * @copydoc Allocator::Deallocate() 
 	 */
 	virtual void Deallocate(void* ptr) override;
 
+	/**
+	 * @brief Allocates memory at the top of the stack.
+	 * 
+	 * @param size The size of the memory to allocate.
+	 * @param alignment The alignment of the memory.
+	 *
+	 * @return void* 
+	 */
 	void* AllocateTop(sizet size, sizet alignment);
+	/**
+	 * @brief Allocates memory at the bottom of the stack.
+	 * 
+	 * @param size The size of the memory to allocate.
+	 * @param alignment The alignment of the memory.
+	 *
+	 * @return void* 
+	 */
 	void* AllocateBottom(sizet size, sizet alignment);
 
+	/**
+	 * @brief Deallocates memory at the top of the stack.
+	 * 
+	 * @param size The amount of memory to deallocate.
+	 */
 	void DeallocateTop(sizet size);
+	/**
+	 * @brief Deallocates memory from the bottom of the stack.
+	 * 
+	 * @param size The amount of memory to deallocate.
+	 */
 	void DeallocateBottom(sizet size);
 
+	/**
+	 * @brief Get the marker at the top of the stack.
+	 * 
+	 * @return sizet 
+	 */
 	sizet GetTopMarker() const;
+	/**
+	 * @brief Get the marker at the bottom of the stack.
+	 * 
+	 * @return sizet 
+	 */
 	sizet GetBottomMarker() const;
 
+	/**
+	 * @brief Reset's memory from the top marker to the given marker.
+	 * 
+	 * @param marker The marker index to free to.
+	 */
 	void FreeTopMarker(sizet marker);
+	/**
+	 * @brief Reset's memory from the bottom marker to the given marker.
+	 * 
+	 * @param marker The marker index to free to.
+	 */
 	void FreeBottomMarker(sizet marker);
 
+	/**
+	 * @brief Clear's the top of the stack, i.e. reset's the top marker to the top of the stack.
+	 */
 	void ClearTop();
+	/**
+	 * @brief Clear's the bottom of the stack, i.e. reset's the bottom marker to the bottom of the stack.
+	 */
 	void ClearBottom();
 
 private:
 	u8* p_Memory = nullptr; /** @brief The base memory pointer of the allocator. */
 
 	sizet m_TotalSize = 0; /** @brief The total size of the allocator. */
-	sizet m_Top = 0;
-	sizet m_Bottom = 0;
+	sizet m_Top = 0; /** @brief The size distance from the top of the memory block. */
+	sizet m_Bottom = 0; /** @brief The size distance from the bottom of the memory block. */
 
 };	// DoubleStackAllocator
 
 
 
+/**
+ * @brief An allocator that treat's memory as an array, memory cannot be deallocate memory without clearing the array.
+ */
 class LinearAllocator : public Allocator {
 public:
 	/**
@@ -262,7 +323,7 @@ public:
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
 	/**
-	 * @brief Allocator::Deallocate() 
+	 * @copydoc Allocator::Deallocate() 
 	 */
 	virtual void Deallocate(void* ptr) override;
 
@@ -292,7 +353,7 @@ public:
 	virtual void* Allocate(sizet size, sizet alignment) override;
 
 	/**
-	 * @brief Allocator::Deallocate() 
+	 * @copydoc Allocator::Deallocate() 
 	 */
 	virtual void Deallocate(void* ptr) override;
 
@@ -335,13 +396,28 @@ public:
 	 */
 	static void Shutdown();
 
+	/**
+	 * @brief Get's the system allocator of Ocean. I.e. the allocator used internally.
+	 * 
+	 * @return Allocator* 
+	 */
 	Allocator* SystemAllocator()    { return &m_SystemAllocator; }
+	/**
+	 * @brief Get's the system allocator of the System. Which is unmanaged by Ocean.
+	 * 
+	 * @return Allocator* 
+	 */
 	Allocator* UnmanagedAllocator() { return &m_MallocAllocator; }
 
+	/**
+	 * @brief Get's the name of the MemoryService.
+	 * 
+	 * @return cstring 
+	 */
 	inline virtual cstring GetName() const override { return "OCEAN_Memory_Service"; }
 
 private:
-	static inline MemoryService* s_Instance =  nullptr;
+	static inline MemoryService* s_Instance =  nullptr; /** @brief The MemoryService instance pointer. */
 
 	HeapAllocator   m_SystemAllocator; /** @brief The HeapAllocator for Ocean's core allocations. */
 	MallocAllocator m_MallocAllocator; /** @brief The unmanaged allocator that uses malloc and free. */
@@ -350,27 +426,39 @@ private:
 
 /** @todo STL compliant allocator that routes to Ocean allocators. Example code at: https://howardhinnant.github.io/allocator_boilerplate.html */
 
+/** @brief Macro to get the system allocator from the MemoryService. */
 #define oSystemAllocator                     MemoryService::Instance().SystemAllocator()
+/** @brief Macro to get the unmanaged allocator from the MemoryService. */
 #define oUnmanagedAllocator                  MemoryService::Instance().UnmanagedAllocator()
 
 #if OC_DETAILED_ALLOCATIONS && OC_VERBOSE
 
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator. (VERBOSE implementation). @returns void* */
 	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Allocation Made!"))
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator. (VERBOSE implementation). @returns u8* */
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1)); oprintret(OCEAN_FUNCTIONLINE("Mapped Allocation Made!"))
+	/** @brief Macro to allocate an array of memory of the given type and count from the given allocator. (VERBOSE implementation). @returns type* */
 	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type)))); oprintret(OCEAN_FUNCTIONLINE("Type Allocation Made!"))
 
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator with the given alignment. (VERBOSE implementation). @returns void* */
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment)); oprintret(OCEAN_FUNCTIONLINE("Aligned Allocation Made!"))
 
+	/** @brief Macro to deallocate a chunk of memory from the given allocator with the given pointer. (VERBOSE implementation). */
 	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer)); oprintret(OCEAN_FUNCTIONLINE("Memory Freed!"))
 
 #else
 
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator. @returns void* */
 	#define oalloca(size, allocator)			 ((allocator)->Allocate(size, 1))
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator. @returns u8* */
 	#define oallocam(size, allocator)			 (static_cast<u8*>((allocator)->Allocate(size, 1))
+	/** @brief Macro to allocate an array of memory of the given type and count from the given allocator. @returns type* */
 	#define oallocat(type, count, allocator)	 (static_cast<type*>((allocator)->Allocate(sizeof(type) * count, alignof(type))))
 
+	/** @brief Macro to allocate a chunk of memory of the given size from the given allocator with the given alignment. @returns void* */
 	#define oallocaa(size, allocator, alignment) ((allocator)->Allocate(size, alignment))
 
+	/** @brief Macro to deallocate a chunk of memory from the given allocator with the given pointer. */
 	#define ofree(pointer, allocator)			 ((allocator)->Deallocate(pointer))
 
 #endif

@@ -25,7 +25,6 @@ namespace Ocean {
 
         class vkGraphicsContext : public GraphicsContext {
         public:
-            vkGraphicsContext() = delete;
             vkGraphicsContext(GLFWwindow* window);
             virtual ~vkGraphicsContext();
 
@@ -35,8 +34,6 @@ namespace Ocean {
 
         private:
             OC_NO_COPY(vkGraphicsContext);
-
-            GLFWwindow* p_WindowHandle;
 
         };  // vkGraphicsContext
 

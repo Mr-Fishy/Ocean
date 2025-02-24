@@ -11,7 +11,6 @@
 
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
-#include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
@@ -86,14 +85,14 @@ namespace Ocean {
              * @param name 
              * @return const Ref<vkCommandBuffer> 
              */
-            OC_INLINE const Ref<vkCommandBuffer> Buffer(cstring name) { return this->m_Buffers[name]; }
+            OC_INLINE const vkCommandBuffer& Buffer(cstring name) { return this->m_Buffers[name]; }
 
         private:
             VkCommandPool m_Pool; /** @brief The Vulkan command pool. */
 
             u32 m_QueueIndex; /** @brief The queue family index that the command pool is assigned to. */
 
-            UnorderedMap<cstring, Ref<vkCommandBuffer>> m_Buffers; /** @brief The list of vkCommandBuffer's that are stored by name. */
+            UnorderedMap<cstring, vkCommandBuffer> m_Buffers; /** @brief The list of vkCommandBuffer's that are stored by name. */
 
         };  // vkCommandPool
 

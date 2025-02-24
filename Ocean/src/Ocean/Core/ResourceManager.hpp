@@ -19,9 +19,12 @@ namespace Ocean {
     }   // Splash
 
 
-    // TODO: GUIDs -> https://github.com/graeme-hill/crossguid
+    /** @todo GUIDs -> https://github.com/graeme-hill/crossguid */
 
 
+    /**
+     * @brief A simple manager to load and clear resources.
+     */
     class ResourceManager {
     public:
         ResourceManager();
@@ -114,7 +117,7 @@ namespace Ocean {
          */
         Ref<Splash::Font> LoadFontFile(cstring path);
 
-        /* --- */
+    private:
 
         OC_STATIC_INLINE Scope<ResourceManager> s_Instance = MakeScope<ResourceManager>(); /** @brief The ResourceManager's singleton instance. */
 

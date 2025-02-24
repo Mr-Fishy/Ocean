@@ -18,11 +18,6 @@ namespace Ocean {
 
     namespace Splash {
 
-        // https://github.com/Dav1dde/glad/blob/glad2/example/c/vulkan_tri_glfw/vulkan_tri_glfw.c#L2082
-
-        // https://github.com/KhronosGroup/Vulkan-Samples/blob/main/samples/api/hello_triangle_1_3/hello_triangle_1_3.h
-        // https://github.com/KhronosGroup/Vulkan-Samples/blob/main/samples/api/hello_triangle_1_3/hello_triangle_1_3.cpp
-
         vkRendererAPI::vkRendererAPI() : RendererAPI() {
             vkInstance::Get();
         }

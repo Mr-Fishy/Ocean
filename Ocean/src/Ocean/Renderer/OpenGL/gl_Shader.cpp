@@ -10,15 +10,14 @@ namespace Ocean {
 
     namespace Splash {
     
-        glShader::glShader(const DynamicArray<i8>& vertexSource, const DynamicArray<i8>& fragmentSource, const DynamicArray<i8>& geometrySource) :
+        glShader::glShader(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource) :
             m_RendererID()
         {
             u32 vertex, fragment, geometry;
 
             // Vertex Shader
             vertex = glCreateShader(GL_VERTEX_SHADER);
-            // const GLchar *const*
-            glShaderSource(vertex, 1, &vertexSource.begin().base(), NULL);
+            glShaderSource(vertex, 1, &vertexSource, NULL);
             glCompileShader(vertex);
 
             CheckCompileErrors(vertex, SHADER);
@@ -26,16 +25,16 @@ namespace Ocean {
             // Fragment Shader
             fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
-            glShaderSource(fragment, 1, &fragmentSource.begin().base(), NULL);
+            glShaderSource(fragment, 1, &fragmentSource, NULL);
             glCompileShader(fragment);
 
             CheckCompileErrors(fragment, SHADER);
 
             // Geometry Shader If Given
-            if (!geometrySource.empty()) {
+            if (!geometrySource) {
                 geometry = glCreateShader(GL_GEOMETRY_SHADER);
 
-                glShaderSource(geometry, 1, &geometrySource.begin().base(), NULL);
+                glShaderSource(geometry, 1, &geometrySource, NULL);
                 glCompileShader(geometry);
 
                 CheckCompileErrors(geometry, SHADER);
@@ -46,7 +45,7 @@ namespace Ocean {
 
             glAttachShader(this->m_RendererID, vertex);
             glAttachShader(this->m_RendererID, fragment);
-            if (!geometrySource.empty())
+            if (!geometrySource)
                 glAttachShader(this->m_RendererID, geometry);
 
             glLinkProgram(this->m_RendererID);
@@ -57,7 +56,7 @@ namespace Ocean {
             glDeleteShader(vertex);
             glDeleteShader(fragment);
 
-            if (!geometrySource.empty())
+            if (!geometrySource)
                 glDeleteShader(geometry);
         }
 
