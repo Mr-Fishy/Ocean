@@ -31,7 +31,7 @@ namespace Ocean {
             CheckCompileErrors(fragment, SHADER);
 
             // Geometry Shader If Given
-            if (!geometrySource) {
+            if (geometrySource) {
                 geometry = glCreateShader(GL_GEOMETRY_SHADER);
 
                 glShaderSource(geometry, 1, &geometrySource, NULL);
@@ -45,7 +45,7 @@ namespace Ocean {
 
             glAttachShader(this->m_RendererID, vertex);
             glAttachShader(this->m_RendererID, fragment);
-            if (!geometrySource)
+            if (geometrySource)
                 glAttachShader(this->m_RendererID, geometry);
 
             glLinkProgram(this->m_RendererID);
@@ -56,7 +56,7 @@ namespace Ocean {
             glDeleteShader(vertex);
             glDeleteShader(fragment);
 
-            if (!geometrySource)
+            if (geometrySource)
                 glDeleteShader(geometry);
         }
 

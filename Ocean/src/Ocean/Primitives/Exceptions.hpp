@@ -74,8 +74,10 @@ namespace Ocean{
          * @brief The information container of an Exception.
          */
         struct ExceptionInfo {
-            const Error error; /** @brief The type of @ref Error that the exception is. */
-            const cstring msg; /** @brief The message that describes the error. */
+            /** @brief The type of @ref Error that the exception is. */
+            const Error error;
+            /** @brief The message that describes the error. */
+            const cstring msg;
 
         };  // ExceptionInfo
 
@@ -104,7 +106,8 @@ namespace Ocean{
         Error error() const noexcept { return this->m_Info.error; }
 
     protected:
-        ExceptionInfo m_Info; /** @brief The information of the exception. */
+        /** @brief The information of the exception. */
+        ExceptionInfo m_Info;
 
     };  // Exception
 

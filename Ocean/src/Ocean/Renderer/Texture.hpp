@@ -45,6 +45,12 @@ namespace Ocean {
          */
         class Texture {
         public:
+            /**
+             * @brief Constructs a new Texture object.
+             * 
+             * @param width The width of the texture.
+             * @param height The height of the texture.
+             */
             OC_INLINE Texture(u32 width, u32 height) : m_Width(width), m_Height(height) { }
             virtual ~Texture() = default;
 
@@ -89,11 +95,14 @@ namespace Ocean {
              */
             virtual u32 GetRendererID() const = 0;
 
+            /** @brief Texture is equal operator. */
             virtual bool operator == (const Texture& other) const = 0;
 
         protected:
-            u32 m_Width; /** @brief The width of the texture. */
-            u32 m_Height; /** @brief The height of the texture. */
+            /** @brief The width of the texture. */
+            u32 m_Width;
+            /** @brief The height of the texture. */
+            u32 m_Height;
 
         };  // Texture
 
@@ -104,6 +113,7 @@ namespace Ocean {
          */
         class Texture2D : public Texture {
         public:
+            /** @copydoc Texture::Texture(u32, u32) */
             OC_INLINE Texture2D(u32 width, u32 height) : Texture(width, height) { }
             virtual ~Texture2D() = default;
 

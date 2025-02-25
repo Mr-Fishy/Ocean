@@ -33,7 +33,7 @@ namespace Ocean {
         }
 
         vkDevice::~vkDevice() {
-            
+
         }
 
         void vkDevice::InitLogicalDevice(VkDeviceQueueCreateInfo& queueInfo) {
