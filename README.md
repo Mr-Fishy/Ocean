@@ -1,6 +1,6 @@
 # Ocean Engine
 
-Welcome to Ocean Engine! In order to set up for development, follow the [Installation Setup](./docs/INSTALL.md) and be ready to go!
+Welcome to Ocean Engine! In order to set up for development, follow the [Installation Setup](./Docs/INSTALL.md) and be ready to go!
 
 ## Notes
 

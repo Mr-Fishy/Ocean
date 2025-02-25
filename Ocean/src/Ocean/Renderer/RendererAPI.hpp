@@ -81,7 +81,7 @@ namespace Ocean {
         private:
             OC_NO_COPY(RendererAPI);
 
-            OC_STATIC_INLINE API s_API = API::Vulkan; /** @brief The API to use for the renderer API in Ocean. */
+            OC_STATIC_INLINE API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
 
         };  // RendererAPI
 
