@@ -36,15 +36,15 @@ namespace sonar{
         //if it errors return true
         switch(error){
             case IPL_STATUS_FAILURE:
-                Ocean::Exception(Ocean::SYSTEM_ERROR,"General failure");
+                throw Ocean::Exception(Ocean::SYSTEM_ERROR,"General failure");
                 return true;
                 break;
             case IPL_STATUS_OUTOFMEMORY:
-                Ocean::Exception(Ocean::SYSTEM_ERROR,"Out of memory");
+                throw Ocean::Exception(Ocean::SYSTEM_ERROR,"Out of memory");
                 return true;
                 break;
             case IPL_STATUS_INITIALIZATION:
-                Ocean::Exception(Ocean::SYSTEM_ERROR,"Could not initialize external dependency");
+                throw Ocean::Exception(Ocean::SYSTEM_ERROR,"Could not initialize external dependency");
                 return true;
                 break;
 

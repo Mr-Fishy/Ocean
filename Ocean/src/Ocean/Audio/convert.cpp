@@ -10,7 +10,7 @@ void sonar::convert::allocatebuffer(std::string name, IPLAudioBuffer &buff){
 
 }
 //
-
+//places it out on the outbuffer
 void sonar::convert::deinterleave(std::string name, float* indata, int channels, int samples){
     IPLAudioBuffer* buffer = new IPLAudioBuffer;
     buffer->numChannels = channels;
@@ -20,14 +20,14 @@ void sonar::convert::deinterleave(std::string name, float* indata, int channels,
     sonar::global_audio_context::outbuffer[name.c_str()] =temp;
     iplAudioBufferDeinterleave(*sonar::steamaudio::context, indata, temp.get());
 }
-//
+//places it out on the outbuffer
 void sonar::convert::deinterleave(std::string name, float* indata, IPLAudioBuffer* buff){
     Ref temp = MakeRef<IPLAudioBuffer>(buff);
 
     sonar::global_audio_context::outbuffer[name.c_str()] = temp;
     iplAudioBufferDeinterleave(*sonar::steamaudio::context, indata, temp.get());
 }
-//
+//places it on the inbuffer
 void sonar::convert::interleave(std::string name, float* outdata){
         
     iplAudioBufferInterleave(*sonar::steamaudio::context, sonar::global_audio_context::inbuffers[name.c_str()].get(), outdata);

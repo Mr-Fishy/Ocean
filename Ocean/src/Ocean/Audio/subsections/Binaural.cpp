@@ -8,7 +8,8 @@
 sonar::Binaural::Binaural(Ref<sonar::HRTF> hrtf,Ref<IPLAudioBuffer> inbuffer){
     this->buffer = inbuffer.get();
     if(this->buffer->numChannels >2 || this->buffer->numChannels<0){
-        Ocean::Exception(Ocean::INVALID_ARGUMENT,"Must have 1 to 2 channels.");
+        //no error handling here, dont mess up.
+        throw Ocean::Exception(Ocean::INVALID_ARGUMENT,"Must have 1 to 2 channels.");
     }
     sonar::HRTF* temp = hrtf.get();
     
@@ -20,10 +21,10 @@ sonar::Binaural::Binaural(Ref<sonar::HRTF> hrtf,Ref<IPLAudioBuffer> inbuffer){
 
 void sonar::Binaural::spatialize(IPLBinauralEffectParams* params, IPLAudioBuffer* outbuffer){
     if(outbuffer->numChannels != 2){
-        Ocean::Exception(Ocean::INVALID_ARGUMENT,"Must have two channels!");
+        throw Ocean::Exception(Ocean::INVALID_ARGUMENT,"Must have two channels!");
     }
     IPLAudioEffectState state = iplBinauralEffectApply(this->effect,params,this->buffer,outbuffer);
     if(state == IPLAudioEffectState::IPL_AUDIOEFFECTSTATE_TAILREMAINING){
-        Ocean::Exception(Ocean::LENGTH_ERROR,"Given buffer, and output buffer are of different length!");
+        throw Ocean::Exception(Ocean::LENGTH_ERROR,"Given buffer, and output buffer are of different length!");
     }
 }
