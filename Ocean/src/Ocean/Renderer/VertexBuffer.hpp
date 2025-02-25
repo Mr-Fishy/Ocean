@@ -96,14 +96,19 @@ namespace Ocean {
          * @brief A singular element of data to be used in a VertexBuffer.
          */
         struct BufferElement {
-            cstring name; /** @brief The name of the element. */
+            /** @brief The name of the element. */
+            cstring name;
 
-            ShaderDataType type; /** @brief The type of the element. */
-            
-            u32 size; /** @brief The size of the element. */
-            u32 offset; /** @brief The offset of the element. */
+            /** @brief The type of the element. */
+            ShaderDataType type;
 
-            b8 normalized; /** @brief Records if the element is normalized. */
+            /** @brief The size of the element. */
+            u32 size;
+            /** @brief The offset of the element. */
+            u32 offset;
+
+            /** @brief Records if the element is normalized. */
+            b8 normalized;
 
             BufferElement() = default;
             /**
@@ -113,8 +118,13 @@ namespace Ocean {
              * @param name The name of the element.
              * @param normalized True if the element is normalized, false otherwise. (OPTIONAL)
              */
-            BufferElement(ShaderDataType type, cstring name, b8 normalized = false)
-                : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) { }
+            BufferElement(ShaderDataType type, cstring name, b8 normalized = false) :
+                name(name),
+                type(type),
+                size(ShaderDataTypeSize(type)),
+                offset(0),
+                normalized(normalized)
+            { }
 
             /**
              * @brief Get the component count of the element.
@@ -178,10 +188,30 @@ namespace Ocean {
              */
             OC_INLINE const DynamicArray<BufferElement>& GetElements() const { return this->m_Elements; }
 
+            /**
+             * @brief Get's an iterator to the begining of the array.
+             * 
+             * @return DynamicArray<BufferElement>::iterator 
+             */
             OC_INLINE DynamicArray<BufferElement>::iterator begin() { return m_Elements.begin(); }
+            /**
+             * @brief Get's a const iterator to the begining of the array.
+             * 
+             * @return DynamicArray<BufferElement>::cons_iterator 
+             */
             OC_INLINE DynamicArray<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
 
+            /**
+             * @brief Get's an iterator to the end of the array.
+             * 
+             * @return DynamicArray<BufferElement>::iterator 
+             */
             OC_INLINE DynamicArray<BufferElement>::iterator end() { return m_Elements.end(); }
+            /**
+             * @brief Get's a const iterator to the end of the array.
+             * 
+             * @return DynamicArray<BufferElement>::iterator 
+             */
             OC_INLINE DynamicArray<BufferElement>::const_iterator end() const { return m_Elements.end(); }
 
         private:

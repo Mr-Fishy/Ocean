@@ -25,23 +25,53 @@ namespace Ocean {
         class vkDevice {
         public:
             vkDevice() = default;
+            /**
+             * @brief Construct a new vkDevice object with the given GPU.
+             * 
+             * @param gpu The physical device to build the logical device with.
+             */
             vkDevice(VkPhysicalDevice gpu);
             ~vkDevice();
 
+            /**
+             * @brief Get's the Vulkan physical device handle.
+             * 
+             * @return VkPhysicalDevice 
+             */
             OC_INLINE VkPhysicalDevice Physical() const { return this->m_gpu; }
+            /**
+             * @brief Get's the Vulkan logical device handle.
+             * 
+             * @return VkDevice 
+             */
             OC_INLINE VkDevice Logical() const { return this->m_Device; }
 
+            /**
+             * @brief Add's a device extension to the logical device.
+             * @note This should only be used before initializing the logical device.
+             * 
+             * @param extension The name of the extension per the Vulkan spec.
+             */
             OC_INLINE void AddDeviceExtension(cstring extension) { this->m_Extensions.emplace_back(extension); }
 
+            /**
+             * @brief Initializes the logical Vulkan device.
+             * 
+             * @param queueInfo The queue family info to use with the device.
+             */
             void InitLogicalDevice(VkDeviceQueueCreateInfo& queueInfo);
 
+            /**
+             * @brief Get's the device score in terms of feature support and hardware capabilities.
+             * 
+             * @return i32
+             */
             i32 GetDeviceScore();
 
         private:
             OC_NO_COPY(vkDevice);
 
-            /* --- */
-
+        private:
             VkPhysicalDevice m_gpu;
             /** @todo Figure out a more compact way to store the gpuProperties and gpuMemory. */
             u64 m_gpuFeatures;
