@@ -28,8 +28,6 @@ namespace sonar{
             
             //gets the pointer ref to the HRTF.
             IPLHRTF get_ptr()const {return hrtf;}
-            //gets the name
-            const char* get_name() const {return name;}
 
             IPLAudioSettings* get_audiosettings();
 
@@ -37,7 +35,6 @@ namespace sonar{
             //global_audio_context* context = nullptr;
             private:
                 //pointers
-                const char* name = nullptr;
                 IPLHRTF hrtf = nullptr;
                 //structs
                 IPLHRTFSettings* hrtfsettings;
