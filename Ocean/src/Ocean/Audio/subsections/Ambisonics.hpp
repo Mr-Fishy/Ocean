@@ -1,5 +1,6 @@
 #pragma once
 #include <phonon.h>
+#include "HRTF.hpp"
 #include "../steamaudio_dataholding.hpp"
 
 namespace sonar{
@@ -8,12 +9,13 @@ namespace sonar{
     class Ambisonic{
         public:
         //must be given a max order.
-        Ambisonic(int n = 1);
+        Ambisonic(Ref<sonar::HRTF> hrtf,int order = 1);
+        
         ~Ambisonic();
         private:
-
+        IPLAmbisonicsEncodeEffect* effect = nullptr;
         IPLAmbisonicsEncodeEffectSettings effectsetting{};
-        
+
     };
 
 }

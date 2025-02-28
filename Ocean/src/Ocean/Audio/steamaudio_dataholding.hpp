@@ -13,6 +13,8 @@ namespace sonar{
 
     class Binaural;
 
+    class Ambisonic;
+
     struct global_audio_context{
         static sonar::steamaudio* audio;
         //in case i need to keep track of this stuff.
@@ -26,6 +28,8 @@ namespace sonar{
         static std::unordered_map<const char*, Ref<sonar::HRTF>> hrtfs;
         
         static std::unordered_map<const char*, Ref<sonar::Binaural>> binaural;
+
+        static std::unordered_map<const char*, Ref<sonar::Ambisonic>> ambisonics;
         
     };
 
