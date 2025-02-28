@@ -8,12 +8,6 @@
  */
 
 /**
- * @addtogroup Time
- *
- * @{
- */
-
-/**
  * @brief The Timestep is a class wrapper to handle an amount of time as a float.
  */
 class Timestep {
@@ -65,8 +59,6 @@ private:
 	f32 m_Time; /** @brief The amount of time, in seconds, of the Timestep. */
 
 };
-
-/** @} */
 
 inline Timestep operator + (const Timestep& lhs, const Timestep& rhs) {
 	Timestep result(lhs); result += rhs;
