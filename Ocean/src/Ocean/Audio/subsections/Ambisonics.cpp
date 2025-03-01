@@ -1,5 +1,6 @@
 #pragma once
 #include "Ambisonics.hpp"
+#include "Ocean/Primitives/Exceptions.hpp"
 #include <cmath>
 #include <phonon.h>
 
@@ -15,13 +16,18 @@ sonar::Ambisonic::Ambisonic(const char* hrtf_name, int order){
         &this->effectsetting, 
         this->enceffect);
 }
-
+//WILL ADD IT TO THE AMBISONIC
 void sonar::Ambisonic::encode(IPLVector3 vec,
-    const char* inbuffername,
-    IPLAudioBuffer outbuffer){
-        
-    IPLAudioBuffer* temp  = sonar::global_audio_context::inbuffers[inbuffername].get();
-    outbuffer.numSamples= temp->numSamples;
-    outbuffer.numChannels = pow((this->effectsetting.maxOrder+1),2);
+    Ref<IPLAudioBuffer> inbuffer,
+    IPLAudioBuffer* outbuffer)
+    {    
+    IPLAudioBuffer* temp  = inbuffer.get();
+
+    if(temp->numChannels>1){
+        Ocean::Exception(Ocean::Error::INVALID_ARGUMENT, "Must be mono channel.");
+    }
+    
+    outbuffer->numSamples= temp->numSamples;
+    outbuffer->numChannels = pow((this->effectsetting.maxOrder+1),2);
 
 }
