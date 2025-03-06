@@ -5,12 +5,19 @@
 #include "Ocean/Primitives/Time.hpp"
 
 #include "Ocean/Renderer/Renderer.hpp"
+#include <chrono>
 
 namespace Ocean {
 
 	#define FixedTimestep 0.02f
 
-	Application::Application(OC_UNUSED const ApplicationConfig& config) : m_Window(), m_LayerStack(), m_LastFrameTime(0.0f), m_Accumulator(0.0f), m_Running(false) {
+	Application::Application(OC_UNUSED const ApplicationConfig& config) :
+		m_Window(),
+		m_LayerStack(),
+		m_LastFrameTime(0.0f),
+		m_Accumulator(0.0f),
+		m_Running(false)
+	{
 		OASSERTM(!
 		
 		s_Instance, "Application already exists!");

@@ -96,7 +96,7 @@ namespace Ocean {
         /**
          * @brief Set a new projection for the camera.
          * 
-         * @copydetail OrthoCamera::OrthoCamera()
+         * @copydetail OrthoCamera::OrthoCamera(f32, f32, f32, f32, f32, f32)
          */
         void SetProjection(f32 l, f32 r, f32 b, f32 t, f32 c = -1.0f, f32 d = 1.0f);
 

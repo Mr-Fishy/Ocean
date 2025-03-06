@@ -57,11 +57,13 @@ namespace Ocean {
     #endif
 
     protected:
-        b8 m_Enabled; /** @brief Records if the layer is enabled, if not then updates are blocked. */
+        /** @brief Records if the layer is enabled, if not then updates are blocked. */
+        b8 m_Enabled;
 
     #ifdef OC_DEBUG
-        
-        string m_DebugName; /** @brief A name for use in debug builds / engine debugging. */
+
+    /** @brief A name for use in debug builds / engine debugging. */
+        string m_DebugName;
         
     #endif
 

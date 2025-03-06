@@ -1,5 +1,10 @@
-set(DOXYGEN_SKIP_DOT TRUE)
-find_package(Doxygen)
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+
+if (DEFINED Doxygen::dot)
+    set(Doxygen_HAS_DOT FALSE)
+else ()
+    set(Doxygen_HAS_DOT TRUE)
+endif ()
 
 if (DOXYGEN_FOUND)
 
@@ -9,9 +14,11 @@ if (DOXYGEN_FOUND)
     foreach(path IN LISTS Ocean_DOXYGEN_INPUT_HEADER_FILES)
         string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
     endforeach()
+
     foreach(path IN LISTS Ocean_DOXYGEN_INPUT_SOURCE_FILES)
         string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
     endforeach()
+
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/CONVENTIONS.md\"")
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/INSTALL.md\"")
     string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_SOURCE_DIR}/README.md\"")

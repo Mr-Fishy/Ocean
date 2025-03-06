@@ -7,16 +7,18 @@
 
 namespace Ocean {
 
+    /**
+     * @brief A simple FILE wrapper that adds simplistic safety and stores the file data.
+     */
     class File {
     public:
+        File();
         /**
          * @brief Construct a new File object.
          * 
          * @param source The source file to open.
          */
         File(cstring source);
-        File();
-        File(const File &) = default;
         ~File();
         
         File& operator = (const File &) = default;

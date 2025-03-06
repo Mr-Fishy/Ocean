@@ -70,7 +70,6 @@ namespace Ocean {
 
 		/**
 		 * @brief Initializes the window.
-		 * @param config - The configuration of the window using WindowConfig.
 		 */
 		void Init();
 		/**

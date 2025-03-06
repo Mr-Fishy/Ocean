@@ -190,7 +190,7 @@ add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 message(STATUS)
 
 
-#Flecs ECS
+# Flecs ECS
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Flecs Starting (${time})...")
 add_subdirectory(Ocean/vendor/flecs EXCLUDE_FROM_ALL)
@@ -211,6 +211,12 @@ endif ()
 add_subdirectory(Ocean/vendor/glslang EXCLUDE_FROM_ALL)
 message(STATUS)
 unset(CMAKE_FOLDER)
+
+if (Ocean_BUILD_TESTS)
+
+    set(CMAKE_CXX_FLAGS "-O0 --coverage")
+
+endif ()
 
 set(
     OCEAN_COMPILE_FLAGS

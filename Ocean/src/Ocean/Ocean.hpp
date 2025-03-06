@@ -6,6 +6,7 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 #include "Ocean/Types/Timestep.hpp"
+#include "Ocean/Types/Bix.hpp"
 
 #include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Primitives/Assert.hpp"
@@ -13,6 +14,7 @@
 #include "Ocean/Primitives/Memory.hpp"
 #include "Ocean/Primitives/Numerics.hpp"
 #include "Ocean/Primitives/Time.hpp"
+#include "Ocean/Primitives/Bitrix.hpp"
 
 // #include "Ocean/Core/Input/Input.hpp"
 
