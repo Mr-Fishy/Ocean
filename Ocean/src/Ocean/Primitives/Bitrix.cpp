@@ -7,6 +7,7 @@
 
 // std
 #include <cstring>
+#include <iostream>
 
 Bitrix2D::Bitrix2D() :
     m_Width(0),
@@ -36,15 +37,15 @@ Bitrix2D::Bitrix2D(u16 width, u16 height) :
 Bitrix2D::~Bitrix2D()
 {
     if (this->p_Bits != nullptr)
-        ofree(this->p_Bits, oSystemAllocator);
+        ofree(this->p_Bits, oUnmanagedAllocator);
 }
 
 void Bitrix2D::Set(u16 x, u16 y, b8 value) {
-    this->p_Bits[x][y / 8].Set(y & ~(7), value);
+    this->p_Bits[x][y / 8].Set(y & 7, value);
 }
 
-b8 Bitrix2D::Get(u16 x, u16 y) {
-    return this->p_Bits[x][y / 8][y & ~(7)];
+b8 Bitrix2D::Get(u16 x, u16 y) const {
+    return this->p_Bits[x][y / 8][y & 7];
 }
 
 void Bitrix2D::Reserve(u16 width, b8 value) {
@@ -58,9 +59,9 @@ void Bitrix2D::Reserve(u16 width, u16 height, b8 value) {
 }
 
 std::ostream& operator << (std::ostream& os, const Bitrix2D& rhs) {
-    for (u16 i = 0; i < rhs.m_RealHeight; i++) {
+    for (u16 i = 0; i < rhs.m_VirtHeight; i++) {
         for (u16 k = 0; k < rhs.m_Width; k++)
-            os << rhs.p_Bits[i][k];
+            os << rhs.Get(k, i) << " ";
 
         os << "\n";
     }
@@ -69,20 +70,21 @@ std::ostream& operator << (std::ostream& os, const Bitrix2D& rhs) {
 }
 
 void Bitrix2D::Resize(u16 width, u16 height, b8 value) {
-    Bix8** bixArray = oallocat(Bix8*, width, oSystemAllocator);
-    u16 newheight = (height & ~(7)) == 0 ? height / k_BixSize : height / k_BixSize + 1;
+    Bix8** bixArray = oallocat(Bix8*, width, oUnmanagedAllocator);
+    u16 newheight = (height & 7) == 0 ? height / k_BixSize : (height / k_BixSize) + 1;
 
     for (u16 i = 0; i < width; i++) {
-        bixArray[i] = oallocat(Bix8, newheight, oSystemAllocator);
+        bixArray[i] = oallocat(Bix8, newheight, oUnmanagedAllocator);
         bixArray[i] = new(bixArray[i]) Bix8(value);
+    }
 
-        if (i < this->m_Width && newheight >= this->m_RealHeight) {
-            for (u16 k = 0; k < this->m_RealHeight; k++)
-                bixArray[i][k] = this->p_Bits[i][k];
+    for (u16 i = 0; i < this->m_Width && i < width; i++) {
+        for (u16 k = 0; k < this->m_VirtHeight && k < height; k++) {
+            bixArray[i][k / 8].Set(k & 7, this->p_Bits[i][k / 8][k & 7]);
         }
     }
 
-    ofree(this->p_Bits, oSystemAllocator);
+    ofree(this->p_Bits, oUnmanagedAllocator);
     this->p_Bits = bixArray;
 
     this->m_Width = width;

@@ -9,8 +9,6 @@
 TEST_CASE(Bitrix2D_Default_Constructor) {
     Bitrix2D matrix;
 
-    std::cerr << "Default Constructor" << std::endl;
-
     REQUIRE(matrix.Empty());
 }
 
@@ -30,9 +28,13 @@ TEST_CASE(Bitrix2D_Constructor_with_Width_and_Height) {
 
 TEST_CASE(Bitrix2D_Set_and_Get_Methods) {
     Bitrix2D matrix(5, 5);
+
     matrix.Set(2, 2, true);
+
     REQUIRE(matrix.Get(2, 2) == true);
+
     matrix.Set(2, 2, false);
+
     REQUIRE(matrix.Get(2, 2) == false);
 }
 
@@ -65,7 +67,6 @@ TEST_CASE(Bitrix2D_Output_Stream_Operator) {
 
     std::ostringstream oss;
     oss << matrix;
-    REQUIRE(oss.str() == "");
-}
 
-// MAIN { RUN_TESTS(); }
+    REQUIRE(oss.str() == std::string("1 0 0 \n0 1 0 \n0 0 1 \n"));
+}

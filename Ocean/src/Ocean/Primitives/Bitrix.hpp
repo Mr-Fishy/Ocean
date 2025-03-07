@@ -48,7 +48,7 @@ public:
      * @param y The y-coordinate of the position.
      * @return b8 
      */
-    virtual b8 Get(u16 x, u16 y);
+    virtual b8 Get(u16 x, u16 y) const;
 
     /**
      * @brief Ensures that the matrix has enough space to fit the given edge width.
@@ -72,6 +72,9 @@ public:
      * @return b8 
      */
     b8 Empty() const { return this->m_Width == 0; }
+
+    u16 Width() const { return this->m_Width; }
+    u16 Height() const { return this->m_VirtHeight; }
 
     /**
      * @brief Outputs the Bitrix2D to the ostream in a readable string format. 

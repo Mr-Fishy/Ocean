@@ -40,21 +40,21 @@ b8 Bix8::operator != (const Bix8 &other) const {
 }
 
 b8 Bix8::operator [] (bitContainer index) const {
-    return this->m_Val & (1U << (sizeof(bitContainer) * 8 - index - 1));
+    return this->m_Val & (1U << Pos(index));
 }
 
 b8 Bix8::At(u8 index) const {
     if (index >= sizeof(bitContainer) * 8)
         throw Ocean::Exception(Ocean::Error::OUT_OF_RANGE, "Attempt to access bit out of range!");
 
-    return this->m_Val & (1 << (sizeof(bitContainer) * 8 - index - 1));
+    return this->m_Val & (1 << Pos(index));
 }
 
 void Bix8::Flip(u8 index) {
     if (index >= sizeof(bitContainer) * 8)
         throw Ocean::Exception(Ocean::Error::OUT_OF_RANGE, "Attempt to access bit out of range!");
 
-    this->m_Val ^= 1 << index;
+    this->m_Val ^= 1 << Pos(index);
 }
 
 void Bix8::Set(u8 index, b8 value) {
@@ -62,9 +62,9 @@ void Bix8::Set(u8 index, b8 value) {
         throw Ocean::Exception(Ocean::Error::OUT_OF_RANGE, "Attempt to access bit out of range!");
 
     if (!value)
-        this->m_Val &= ~(1 << index);
+        this->m_Val &= ~(1 << Pos(index));
     else
-        this->m_Val |= 1 << index;
+        this->m_Val |= 1 << Pos(index);
 }
 
 void Bix8::Mask(bitContainer mask) {

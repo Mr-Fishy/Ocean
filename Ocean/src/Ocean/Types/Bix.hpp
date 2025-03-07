@@ -95,6 +95,9 @@ public:
     friend std::ostream &operator << (std::ostream &os, const Bix8 &rhs);
 
 private:
+    u8 Pos(u8 index) const { return (sizeof(bitContainer) * 8 - index - 1); }
+
+private:
     /** @brief The internal 8-bit value. */
     bitContainer m_Val;
 
