@@ -4,6 +4,7 @@
 #include <functional>
 #include <string>
 #include <map>
+#include <iostream>
 
 class TestFactory {
 public:
@@ -23,6 +24,9 @@ private:
     
 #define REQUIRE(condition) \
     assert((condition))
+
+#define CONSOLE_OUT \
+    std::cerr
 
 #define RUN_TESTS() \
     TestFactory::Run()

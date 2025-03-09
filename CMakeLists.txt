@@ -212,12 +212,6 @@ add_subdirectory(Ocean/vendor/glslang EXCLUDE_FROM_ALL)
 message(STATUS)
 unset(CMAKE_FOLDER)
 
-if (Ocean_BUILD_TESTS)
-
-    set(CMAKE_CXX_FLAGS "-O0 --coverage")
-
-endif ()
-
 set(
     OCEAN_COMPILE_FLAGS
 
@@ -238,6 +232,14 @@ message(STATUS "Ocean Starting (${time})...")
 message(STATUS)
 add_subdirectory(Ocean)
 
+if (Ocean_BUILD_TESTS)
+
+    enable_testing()
+
+    add_subdirectory(Ocean/tests)
+
+endif (Ocean_BUILD_TESTS)
+
 if (Ocean_BUILD_DOCS)
     
     string(TIMESTAMP time "%M:%S")
@@ -246,14 +248,6 @@ if (Ocean_BUILD_DOCS)
     message(STATUS)
 
 endif (Ocean_BUILD_DOCS)
-
-if (Ocean_BUILD_TESTS)
-
-    enable_testing()
-
-    add_subdirectory(Ocean/tests)
-
-endif (Ocean_BUILD_TESTS)
 
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")

@@ -5,7 +5,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), m_Camera(0.0f, 1200.0f, 800.0f, 0.0
 }
 
 void Sandbox2D::OnAttach() {
-    Bitrix2D matrix(3);
+
 }
 
 void Sandbox2D::OnDetach() {

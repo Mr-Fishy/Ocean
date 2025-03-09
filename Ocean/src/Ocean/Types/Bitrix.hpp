@@ -18,9 +18,13 @@ private:
 
 public:
     Bitrix2D();
+    Bitrix2D(const Bitrix2D&);
+    Bitrix2D(Bitrix2D&&);
+    Bitrix2D& operator = (const Bitrix2D&);
+    Bitrix2D& operator = (Bitrix2D&&);
     /**
      * @brief Construct a new Bitrix2D object.
-     * 
+     *
      * @param width The width to use for the matrix edges.
      */
     Bitrix2D(u16 width);
@@ -30,7 +34,7 @@ public:
      * @param width The width of the matrix.
      * @param height The height of the matrix.
      */
-    explicit Bitrix2D(u16 width, u16 height);
+    Bitrix2D(u16 width, u16 height);
     virtual ~Bitrix2D();
 
     /**
@@ -76,6 +80,8 @@ public:
     u16 Width() const { return this->m_Width; }
     u16 Height() const { return this->m_VirtHeight; }
 
+    void Clear(b8 value = false);
+
     /**
      * @brief Outputs the Bitrix2D to the ostream in a readable string format. 
      * 
@@ -106,3 +112,22 @@ protected:
     Bix8** p_Bits;
 
 };  // Bitrix2D
+
+class Bitrix2DAccess {
+public:
+    Bitrix2DAccess(Bix8* column, u16 virtHeight);
+
+    BixAccess operator [] (u16 y) {
+        return this->p_Column[y / 8][y & 7];
+    }
+
+    b8 operator [] (u16 y) const {
+        return const_cast<const Bix8*>(this->p_Column)[y / 8][y & 7];
+    }
+
+private:
+    Bix8* const p_Column;
+
+    const u16 m_VirtHeight;
+
+};  // BitrixAccess

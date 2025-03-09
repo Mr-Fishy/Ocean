@@ -16,19 +16,7 @@ function(auto_add_test name)
         PRIVATE Ocean
     )
 
-    target_compile_options(
-        ${name}
-
-        PRIVATE -coverage
-    )
-
-    target_link_options(
-        ${name}
-
-        PRIVATE -coverage
-    )
-
-    add_test(NAME ${name} COMMAND ${name} --verbose)
+    add_test(NAME ${name} COMMAND ${name})
 
 endfunction()
 
@@ -44,3 +32,5 @@ endforeach()
 add_custom_target(TestAll COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 unset(CMAKE_FOLDER)
+
+message(STATUS "")
