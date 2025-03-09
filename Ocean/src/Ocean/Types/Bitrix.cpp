@@ -150,3 +150,16 @@ void Bitrix2D::Resize(u16 width, u16 height, b8 value) {
     this->m_VirtHeight = height;
     this->m_RealHeight = newheight;
 }
+
+Bitrix2DAccess Bitrix2D::operator [] (u16 x) {
+    return { this->p_Bits[x], this->m_VirtHeight };
+}
+
+const Bitrix2DAccess Bitrix2D::operator [] (u16 x) const {
+    return { this->p_Bits[x], this->m_VirtHeight };
+}
+
+Bitrix2DAccess::Bitrix2DAccess(Bix8* column, u16 virtHeight)
+    : p_Column(column),
+      m_VirtHeight(virtHeight)
+{ }

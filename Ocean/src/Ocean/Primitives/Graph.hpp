@@ -1,44 +1,88 @@
 #pragma once
 
-#include "Ocean/Types/Integers.hpp"
+#include "Ocean/Types/Bool.hpp"
 
+#include "Ocean/Primitives/Array.hpp"
+
+/**
+ * @brief The base Graph class for all implementations.
+ * 
+ * @tparam K The key type.
+ * @tparam T The data type.
+ */
 template <typename K, class T>
 class Graph {
-private:
-    struct Node {
-        T* data;
-
-        u32 firstEdge;
-
-        Node() : data(nullptr), firstEdge(u32_max) { }
-        Node(T* data) : data(data), firstEdge(u32_max) { }
-        ~Node() { delete data; }
-
-    };  // Node
-
-    struct Edge {
-        u32 src;
-        u32 dst;
-
-    };  // Edge
-
 public:
-    Graph();
-    ~Graph();
+    virtual ~Graph();
 
-    u32 AddNode(K name, T* data);
-    void RemoveNode(K name);
+    /**
+     * @brief Adds a vertex with the given data.
+     * 
+     * @param key A uniquely identifying key of the vertex.
+     * @param data The data that the vertex holds.
+     */
+    virtual void AddVertex(K key, T* data);
+    /**
+     * @brief Removes the vertex if it exists.
+     * 
+     * @param key A uniquely identifying key of the vertex.
+     * @return T*
+     */
+    virtual T* RemoveVertex(K key);
 
-    void AddEdge(K firstName, K lastName);
-    void RemoveEdge(K firstName, K lastName);
+    /**
+     * @brief Get the vertex data if it exists.
+     * 
+     * @param key A uniquely identifying key of the vertex.
+     * @return T*
+     */
+    virtual T* GetVertex(K key);
+    /**
+     * @brief Set the vertex data.
+     * 
+     * @param key A uniquely identifying key of the vertex.
+     * @param data The new data to set.
+     * @return T*
+     */
+    virtual T* SetVertex(K key, T* data);
 
-    /** @todo Emplace & Move Nodes. */
+    /**
+     * @brief Adds an edge from vertex to vertex.
+     * 
+     * @param from A uniquely identifying key of the starting vertex.
+     * @param to A uniquely identifying key of the ending vertex.
+     */
+    virtual void AddEdge(K from, K to);
+    /**
+     * @brief Removes an edge from vertex to vertex.
+     * 
+     * @param from A uniquely identifying key of the starting vertex.
+     * @param to A uniquely identifying key of the ending vertex.
+     */
+    virtual void RemoveEdge(K from, K to);
 
-    /** @todo Count Connected Edges Of Node. */
+    /**
+     * @brief Determines if the given vertex's share an edge.
+     * 
+     * @param from A uniquely identifying key of the starting vertex.
+     * @param to A uniquely identifying key of the ending vertex.
+     * @return b8
+     */
+    virtual b8 IsAdjacent(K from, K to);
 
-    /** @todo Check for cycles in the graph. */
-
-private:
-
+    /**
+     * @brief Gets the neighboring vertices as a list.
+     * 
+     * @param start A uniquely identifying key of the starting vertex.
+     * @return DynamicArray<T*> 
+     */
+    virtual DynamicArray<T*> GetNeighbors(K start);
 
 };  // Graph
+
+template <typename K, class T>
+class DirectedGraph : public Graph<K, T> {
+public:
+
+
+};  // DirectedGraph

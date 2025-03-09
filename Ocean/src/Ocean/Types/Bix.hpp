@@ -12,7 +12,7 @@
  */
 class Bix {
 public:
-    virtual ~Bix();
+    virtual ~Bix() = default;
 
     virtual b8 At(u8 index) const = 0;
     virtual void Set(u8 index, b8 value) = 0;
@@ -41,6 +41,10 @@ class BixAccess {
             this->m_Ref.Set(this->m_Index, val);
 
             return *this;
+        }
+
+        operator b8() {
+            return this->m_Ref.At(this->m_Index);
         }
 
     private:

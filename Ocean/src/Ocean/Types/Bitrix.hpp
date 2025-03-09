@@ -9,6 +9,8 @@
 // std
 #include <ostream>
 
+class Bitrix2DAccess;
+
 /**
  * @brief A bit-compressed matrix, only holding true or false at a position.
  */
@@ -53,6 +55,9 @@ public:
      * @return b8 
      */
     virtual b8 Get(u16 x, u16 y) const;
+
+    Bitrix2DAccess operator [] (u16 x);
+    const Bitrix2DAccess operator [] (u16 x) const;
 
     /**
      * @brief Ensures that the matrix has enough space to fit the given edge width.

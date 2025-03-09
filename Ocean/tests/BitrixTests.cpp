@@ -12,7 +12,7 @@ TEST_CASE(Bitrix2D_Default_Constructor) {
 }
 
 TEST_CASE(Bitrix2D_Constructor_with_Width) {
-    Bitrix2D matrix(5, false);
+    Bitrix2D matrix(5);
 
     REQUIRE(matrix.Get(0, 0) == false); // Default value should be false
     REQUIRE(matrix.Get(4, 0) == false); // Default value should be false
