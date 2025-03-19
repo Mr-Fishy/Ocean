@@ -5,7 +5,7 @@
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/FixedArray.hpp"
 
 #include "Ocean/Core/ResourceManager.hpp"
 

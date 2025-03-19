@@ -21,8 +21,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glIndexBuffer>(indices, count);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkIndexBuffer>(indices, count);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkIndexBuffer>(indices, count);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

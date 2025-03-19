@@ -21,8 +21,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glVertexBuffer>(size);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkVertexBuffer>(size);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkVertexBuffer>(size);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");
@@ -38,8 +38,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glVertexBuffer>(vertices, size);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkVertexBuffer>(vertices, size);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkVertexBuffer>(vertices, size);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

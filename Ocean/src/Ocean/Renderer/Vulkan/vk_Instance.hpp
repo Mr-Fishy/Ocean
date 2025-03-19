@@ -12,7 +12,7 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Device.hpp"
@@ -56,26 +56,26 @@ namespace Ocean {
              * 
              * @return VkInstance
              */
-            OC_INLINE VkInstance Instance() const { return this->m_Instance; }
+            inline VkInstance Instance() const { return this->m_Instance; }
             /**
              * @brief Get's a Ref to the vkDevice.
              * @details Only returns the first item in m_Devices as it is sorted to assume the first device is the best.
              * 
              * @return const Ref<vkDevice> 
              */
-            OC_INLINE const Ref<vkDevice> Device() { return this->m_Devices[0]; }
+            inline const Ref<vkDevice> Device() { return this->m_Devices[0]; }
             /**
              * @brief Get's the instance extensions by value.
              * 
              * @return const DynamicArray<cstring>& 
              */
-            OC_INLINE const DynamicArray<cstring>& Extensions() { return this->m_Extensions; }
+            inline const DynamicArray<cstring>& Extensions() { return this->m_Extensions; }
             /**
              * @brief Get's a Ref to the vkSwapchain.
              * 
              * @return const Ref<vkSwapchain>
              */
-            OC_INLINE Ref<vkSwapchain> Swapchain() { return this->m_Swapchain; }
+            inline Ref<vkSwapchain> Swapchain() { return this->m_Swapchain; }
 
         private:
             /**

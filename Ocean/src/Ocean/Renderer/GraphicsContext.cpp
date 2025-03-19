@@ -28,8 +28,8 @@ namespace Ocean {
                 case RendererAPI::API::OpenGL:
                     return MakeScope<glGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
 
-                case RendererAPI::API::Vulkan:
-                    return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
+                case RendererAPI::API::Vulkan: break;
+                    // return MakeScope<vkGraphicsContext>(static_cast<GLFWwindow*>(windowHandle));
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

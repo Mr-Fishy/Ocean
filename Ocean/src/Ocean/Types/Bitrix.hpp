@@ -14,7 +14,7 @@ class Bitrix2DAccess;
 /**
  * @brief A bit-compressed matrix, only holding true or false at a position.
  */
-class Bitrix2D {
+class  Bitrix2D {
 private:
     OC_STATIC_EXPR u8 k_BixSize = sizeof(Bix8) * 8;
 

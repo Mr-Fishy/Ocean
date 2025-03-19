@@ -9,7 +9,7 @@
  * 
  */
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 
 // libs
@@ -24,6 +24,14 @@ namespace Ocean {
             struct SwapchainImage {
                 VkImage image;
                 VkImageView view;
+
+                b8 operator == (const SwapchainImage &other) const {
+                    return this->image == other.image
+                        && this->view == other.view;
+                }
+                b8 operator != (const SwapchainImage &other) const {
+                    return !(*this == other);
+                }
 
             };  // SwapchainImage
 

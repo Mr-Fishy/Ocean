@@ -5,7 +5,6 @@
 #include "Ocean/Primitives/Time.hpp"
 
 #include "Ocean/Renderer/Renderer.hpp"
-#include <chrono>
 
 namespace Ocean {
 

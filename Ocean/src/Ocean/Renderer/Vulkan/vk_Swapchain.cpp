@@ -227,7 +227,7 @@ namespace Ocean {
 
             // Reserve so that if there is more images than the last it will grow ahead of time.
             //
-            this->m_Images.reserve(swapchainImageCount);
+            this->m_Images.Reserve(swapchainImageCount);
 
             // Create all of the image views for each image.
             //

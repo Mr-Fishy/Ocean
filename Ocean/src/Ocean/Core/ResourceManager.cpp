@@ -1,6 +1,5 @@
 #include "ResourceManager.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
 #include "Ocean/Renderer/Shader.hpp"
 #include "Ocean/Renderer/Texture.hpp"
 #include "Ocean/Renderer/Font.hpp"
@@ -73,9 +72,9 @@ namespace Ocean {
             std::cerr << "Failed To Open File! (" << path << ")" << std::endl;
         }
 
-        string vertexCode;
-        string fragmentCode;
-        string geometryCode;
+        String vertexCode;
+        String fragmentCode;
+        String geometryCode;
         char buffer[256];
         ShaderType type;
 

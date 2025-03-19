@@ -48,8 +48,6 @@ TEST_CASE(Bix8_Index_Operator) {
 TEST_CASE(Bix8_At_Method) {
     Bix8 bix(0b10101000);
 
-    CONSOLE_OUT << bix << std::endl;
-
     REQUIRE(bix.At(0) == true);
     REQUIRE(bix.At(1) == false);
     REQUIRE(bix.At(2) == true);

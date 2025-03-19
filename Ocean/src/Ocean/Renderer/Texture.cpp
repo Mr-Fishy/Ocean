@@ -21,8 +21,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glTexture2D>(width, height);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkTexture2D>(width, height);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkTexture2D>(width, height);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

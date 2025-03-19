@@ -11,8 +11,10 @@ namespace Ocean{
      * @brief An enum of different error types that can occur.
      */
     typedef enum Error {
+        /** @brief A broad runtime error. */
+        RUNTIME_ERROR,
         /** @brief Logic errors */
-        INVALID_ARGUMENT = 0,
+        INVALID_ARGUMENT,
         /** @brief  */
         DOMAIN_ERROR,
         /** @brief Length */
@@ -68,7 +70,7 @@ namespace Ocean{
     /**
      * @brief A exception class that describes an error when thrown.
      */
-    class Exception : std::exception{
+    class Exception : public std::exception {
     public:
         /**
          * @brief The information container of an Exception.
@@ -85,11 +87,16 @@ namespace Ocean{
         /**
          * @brief Construct a new Exception object.
          * 
-         * @param error The error type of the exception.
-         * @param message 
+         * @param message The error message of the exception.
          */
-        explicit Exception(const Error error, cstring message) noexcept : m_Info({ error, message }) { }
-        // explicit Exception(const Error error, const string& message) noexcept : m_Info({ error, message.c_str() }) { }
+        explicit Exception(cstring message) noexcept : m_Info({ Ocean::Error::RUNTIME_ERROR, message }) { }
+        /**
+         * @brief Construct a new Exception object.
+         * 
+         * @param error The error type of the exception.
+         * @param message The error message of the exception.
+         */
+        explicit Exception(const Ocean::Error error, cstring message) noexcept : m_Info({ error, message }) { }
 
         /**
          * @brief Gets the message of the error.
@@ -103,7 +110,7 @@ namespace Ocean{
          * 
          * @return Error 
          */
-        Error error() const noexcept { return this->m_Info.error; }
+        Ocean::Error error() const noexcept { return this->m_Info.error; }
 
     protected:
         /** @brief The information of the exception. */

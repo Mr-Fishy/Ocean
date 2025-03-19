@@ -5,7 +5,7 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 #include "Ocean/Primitives/Exceptions.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Primitives/Log.hpp"
@@ -119,7 +119,7 @@ namespace Ocean {
             if (layerCount > 0) {
                 DynamicArray<VkLayerProperties> availableValidationLayers(layerCount);
                 vkCheck(
-                    vkEnumerateInstanceLayerProperties(&layerCount, availableValidationLayers.data())
+                    vkEnumerateInstanceLayerProperties(&layerCount, availableValidationLayers.Data())
                 );
 
                 // The requestedValidationLayers are the prefered validation layers to enable Vulkan debugging.
@@ -164,18 +164,18 @@ namespace Ocean {
                     for (u32 i = 0; i < layerCount; i++) {
                         for (const VkLayerProperties& layer : availableValidationLayers)
                             if (!std::strcmp(requestedValidationLayers_Alt[i], layer.layerName))
-                                this->m_Layers.emplace_back(layer.layerName);
+                                this->m_Layers.EmplaceBack(layer.layerName);
                     }
 
                     // Set the layerCount to the resulting layers found for later use.
                     //
-                    layerCount = this->m_Layers.size();
+                    layerCount = this->m_Layers.Size();
                 }
                 // If all of the requestedValidationLayers were found, then they will be added to m_Layers.
                 //
                 else {
                     for (const cstring& layerName : requestedValidationLayers)
-                        this->m_Layers.emplace_back(layerName);
+                        this->m_Layers.EmplaceBack(layerName);
                 }
             }
 
@@ -195,7 +195,7 @@ namespace Ocean {
             //
             DynamicArray<VkExtensionProperties> availableExtensions(extensionCount);
             vkCheck(
-                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data())
+                vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.Data())
             );
 
             // extensionCount is re-used for required extensionCount rather than available extensionCount
@@ -203,7 +203,7 @@ namespace Ocean {
             cstring* glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
 
             for (u32 i = 0; i < extensionCount; i++)
-                this->m_Extensions.emplace_back(glfwExtensions[i]);
+                this->m_Extensions.EmplaceBack(glfwExtensions[i]);
 
             // hasDebugCapabilites should remain outside of an #ifdef as it may still be usefull to know if there is debug extensions available during release.
             //
@@ -224,7 +224,7 @@ namespace Ocean {
             // If Vulkan hasDebugCapabilites, and Glad was able to load the function pointers, then the debugging extension can be used.
             //
             if (hasDebugCapabilities && GLAD_VK_EXT_debug_report) {
-                this->m_Extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                this->m_Extensions.EmplaceBack(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                 extensionCount++;
             }
             else
@@ -265,10 +265,10 @@ namespace Ocean {
                 &appInfo,
 
                 layerCount,
-                this->m_Layers.data(),
+                this->m_Layers.Data(),
 
                 extensionCount,
-                this->m_Extensions.data()
+                this->m_Extensions.Data()
             };
 
             // ================================ DEBUG INFO ================================
@@ -278,7 +278,7 @@ namespace Ocean {
             VkDebugUtilsMessengerCreateInfoEXT messengerInfo { };
             if (hasDebugCapabilities) {
                 instanceInfo.enabledLayerCount = layerCount;
-                instanceInfo.ppEnabledLayerNames = this->m_Layers.data();
+                instanceInfo.ppEnabledLayerNames = this->m_Layers.Data();
 
                 messengerInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 
@@ -350,7 +350,7 @@ namespace Ocean {
 
             DynamicArray<VkPhysicalDevice> physicalDevices(gpuCount);
             vkCheck(
-            vkEnumeratePhysicalDevices(this->m_Instance, &gpuCount, physicalDevices.data())
+            vkEnumeratePhysicalDevices(this->m_Instance, &gpuCount, physicalDevices.Data())
             );
 
             for (const VkPhysicalDevice& gpu : physicalDevices) {
@@ -360,10 +360,10 @@ namespace Ocean {
                 Ref<vkDevice> device = MakeRef<vkDevice>(gpu);
 
                 if (device->GetDeviceScore() > 0)
-                    this->m_Devices.emplace_back(device);
+                    this->m_Devices.EmplaceBack(device);
             }
 
-            for (u32 i = 1; i < this->m_Devices.size(); i++) {
+            for (u32 i = 1; i < this->m_Devices.Size(); i++) {
                 if (this->m_Devices[i]->GetDeviceScore() > this->m_Devices[i - 1]->GetDeviceScore())
                     std::swap(this->m_Devices[i], this->m_Devices[i - 1]);
             }

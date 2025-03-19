@@ -13,7 +13,7 @@
 #include "Ocean/Types/Strings.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -52,7 +52,7 @@ namespace Ocean {
              * 
              * @param extension The name of the extension per the Vulkan spec.
              */
-            OC_INLINE void AddDeviceExtension(cstring extension) { this->m_Extensions.emplace_back(extension); }
+            OC_INLINE void AddDeviceExtension(cstring extension) { this->m_Extensions.EmplaceBack(extension); }
 
             /**
              * @brief Initializes the logical Vulkan device.

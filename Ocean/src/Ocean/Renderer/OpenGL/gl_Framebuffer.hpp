@@ -12,7 +12,7 @@
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/Framebuffer.hpp"
 
@@ -44,7 +44,11 @@ namespace Ocean {
             virtual u32 ReadPixel(u32 attachmentIndex, i32 x, i32 y) override final;
 
             /** @copydoc Framebuffer::GetColorAttachmentID() */
-            inline virtual u32 GetColorAttachmentID(u32 index = 0) const override final { OASSERT_LENGTH(index, this->m_ColorAttachments.size()); return this->m_ColorAttachments[index]; }
+            inline virtual u32 GetColorAttachmentID(u32 index = 0) const override final {
+                OASSERT_LENGTH(index, this->m_ColorAttachments.Size());
+
+                return this->m_ColorAttachments[index];
+            }
             /** @copydoc Framebuffer::ClearAttachment() */
             virtual void ClearAttachment(u32 attachmentIndex, i32 value) override final;
 

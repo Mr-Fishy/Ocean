@@ -25,6 +25,12 @@ private:
 #define REQUIRE(condition) \
     assert((condition))
 
+#define REQUIRE_THROW_AS(operation, exception) \
+    try { \
+        operation; \
+    } \
+    catch (const exception& e) { }
+
 #define CONSOLE_OUT \
     std::cerr
 

@@ -29,8 +29,8 @@ namespace Ocean {
                 case OpenGL:
                     return MakeScope<glRendererAPI>();
 
-                case Vulkan:
-                    return MakeScope<vkRendererAPI>();
+                case Vulkan: break;
+                    // return MakeScope<vkRendererAPI>();
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

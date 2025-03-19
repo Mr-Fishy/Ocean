@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
@@ -193,7 +193,7 @@ namespace Ocean {
 
             glslang::TIntermediate* intermediate = program.getIntermediate(internalStage);
 
-            DynamicArray<u32> spirv;
+            std::vector<u32> spirv;
             glslang::GlslangToSpv(*intermediate, spirv);
 
             return spirv;
@@ -217,8 +217,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glShader>(vertexSource, fragmentSource, geometrySource);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkShader>(vertexSource, fragmentSource, geometrySource);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkShader>(vertexSource, fragmentSource, geometrySource);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

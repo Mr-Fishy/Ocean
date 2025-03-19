@@ -39,8 +39,8 @@ file(GLOB Ocean_CA_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Ca
 file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
 file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
 
-file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
-file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
+# file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
+# file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
 
 #Audio Files
 file(GLOB Ocean_AUD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)

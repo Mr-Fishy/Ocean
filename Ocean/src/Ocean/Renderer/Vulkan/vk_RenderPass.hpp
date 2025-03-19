@@ -9,8 +9,7 @@
  * 
  */
 
-#include "Ocean/Primitives/Array.hpp"
-#include "Ocean/Primitives/Macros.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 // libs
 #include <glad/vulkan.h>
@@ -33,8 +32,19 @@ namespace Ocean {
                 vkAttachment(AttachmentType type);
                 ~vkAttachment();
 
-                OC_INLINE const VkAttachmentDescription& Description() const { return this->m_Description; }
-                OC_INLINE const VkAttachmentReference& Reference() const { return this->m_Reference; }
+                inline const VkAttachmentDescription& Description() const { return this->m_Description; }
+                inline const VkAttachmentReference& Reference() const { return this->m_Reference; }
+
+                b8 operator == (const vkAttachment &other) const {
+                    return this->m_Description.format == other.m_Description.format
+                        && this->m_Description.initialLayout == other.m_Description.initialLayout
+                        && this->m_Description.finalLayout == other.m_Description.finalLayout
+                        && this->m_Reference.attachment == other.m_Reference.attachment
+                        && this->m_Reference.layout == other.m_Reference.layout;
+                }
+                b8 operator != (const vkAttachment &other) const {
+                    return !(*this == other);
+                }
 
             private:
                 VkAttachmentDescription m_Description;
@@ -47,13 +57,21 @@ namespace Ocean {
             vkRenderPass();
             ~vkRenderPass();
 
-            OC_INLINE void AddAttachment(AttachmentType type) { this->m_Attachments.emplace_back(type); }
-            OC_INLINE vkAttachment& GetAttachment(u32 index) { return this->m_Attachments[index]; }
-            OC_INLINE void RemoveAttachment(u32 index) { this->m_Attachments.erase(this->m_Attachments.begin() + index); }
+            inline void AddAttachment(AttachmentType type) { this->m_Attachments.EmplaceBack(type); }
+            inline vkAttachment& GetAttachment(u32 index) { return this->m_Attachments[index]; }
+            inline void RemoveAttachment(u32 index) { this->m_Attachments.Erase(index); }
 
-            OC_INLINE VkRenderPass RenderPass() const { return this->m_Pass; }
+            inline VkRenderPass RenderPass() const { return this->m_Pass; }
 
             void Invalidate();
+
+            b8 operator == (const vkRenderPass& other) const {
+                return this->m_Pass == other.m_Pass
+                    && this->m_Attachments == other.m_Attachments;
+            }
+            b8 operator != (const vkRenderPass& other) const {
+                return !(*this == other);
+            }
 
         private:
             VkRenderPass m_Pass;
