@@ -27,7 +27,7 @@ T oClamp(const T& v, const T& a, const T& b)   { return v < a ? a : (v > b ? b :
 
 
 template <typename To, typename From>
-To oSafe_cast(From a) {
+To oSafeCast(From a) {
 	To result = static_cast<To>(a);
 
 	From check = static_cast<From>(result);

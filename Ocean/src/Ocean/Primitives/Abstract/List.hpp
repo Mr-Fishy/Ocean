@@ -12,6 +12,8 @@
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 
+#include "Ocean/Primitives/Abstract/Container.hpp"
+
 // std
 #include <utility>
 
@@ -21,11 +23,8 @@
  * @tparam T The data type.
  */
 template <class T>
-class List {
+class List : public Container {
 public:
-    virtual ~List();
-
-    /** @brief Construct a new List. */
     inline List() :
         m_Size(0)
     { }
@@ -37,9 +36,10 @@ public:
     inline List(u16 size) :
         m_Size(size)
     { }
+    virtual ~List();
 
     /**
-     * @brief Insert the given data into the List at a position via copy.
+     * @brief Insert the given data into the List at a position via move.
      * 
      * @param pos The position to insert to.
      * @param data The data to store.

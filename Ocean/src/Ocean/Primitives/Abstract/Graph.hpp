@@ -1,9 +1,18 @@
 #pragma once
 
+/**
+ * @file Graph.hpp
+ * @author Evan F.
+ * @brief The header of the abstract Graph container.
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 
-#include "Ocean/Primitives/DynamicArray.hpp"
+#include "Ocean/Primitives/Abstract/Container.hpp"
 
 /**
  * @brief The abstract Graph container.
@@ -11,7 +20,7 @@
  * @tparam T The data type.
  */
 template <class T>
-class Graph {
+class Graph : public Container {
 public:
     virtual ~Graph() = default;
 
@@ -38,7 +47,5 @@ public:
      * @return b8
      */
     virtual b8 IsAdjacent(u16 from, u16 to) = 0;
-
-    
 
 };  // Graph
