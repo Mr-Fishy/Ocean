@@ -1,11 +1,5 @@
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
 
-if (DEFINED Doxygen::dot)
-    set(Doxygen_HAS_DOT FALSE)
-else ()
-    set(Doxygen_HAS_DOT TRUE)
-endif ()
-
 if (DOXYGEN_FOUND)
 
     file(GLOB_RECURSE Ocean_DOXYGEN_INPUT_HEADER_FILES ${CMAKE_SOURCE_DIR}/Ocean/src/*.hpp LIST_DIRECTORIES TRUE)
@@ -19,9 +13,15 @@ if (DOXYGEN_FOUND)
         string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
     endforeach()
 
-    string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/CONVENTIONS.md\"")
-    string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_CURRENT_SOURCE_DIR}/INSTALL.md\"")
-    string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${CMAKE_SOURCE_DIR}/README.md\"")
+    file(GLOB Ocean_DOXYGEN_MARKDOWN_FILES ${CMAKE_SOURCE_DIR}/Docs/*.md LIST_DIRECTORIES TRUE)
+
+    foreach(path IN LISTS Ocean_DOXYGEN_MARKDOWN_FILES)
+        string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${path}\"")
+    endforeach()
+
+    set(Ocean_DOXYGEN_MAIN_PAGE "${CMAKE_SOURCE_DIR}/README.md")
+
+    string(APPEND Ocean_DOXYGEN_INPUT " \\\n\"${Ocean_DOXYGEN_MAIN_PAGE}\"")
 
     set(Ocean_DOXYGEN_OUTPUT "${PROJECT_SOURCE_DIR}/bin/docs")
 

@@ -7,6 +7,7 @@
 
 // std
 #include <algorithm>
+#include <utility>
 
 /**
  * @brief A Singly Linked List that stores data via one-directionaly connected nodes.
@@ -44,21 +45,33 @@ public:
         if (pos > this->m_Size)
             throw Ocean::Exception(Ocean::Error::OUT_OF_RANGE, "Attempt to insert out of List range!");
 
-        Node* curr = this->p_Head;
-        for (u16 i = 0; i < pos; i++)
-            curr = curr->next;
+        Node* newNode = oallocat(Node, 1, oUnmanagedAllocator);
 
-        if (curr->next) {
-            Node* tmp = curr->next;
-
-            curr->next = oallocat(Node, 1, oUnmanagedAllocator);
-            curr->next->next = tmp;
+        if (pos == 0) {
+            newNode->next = this->p_Head;
+            this->p_Head = newNode;
         }
         else {
-            curr->next = oallocat(Node, 1, oUnmanagedAllocator);
+            Node* curr = this->p_Head;
+
+            // Start at 1 so that the curr is the node before the insert position.
+            //
+            for (u16 i = 1; i < pos; i++)
+                curr = curr->next;
+
+            // If a node exists after the insert position, then it must be linked correctly.
+            //
+            if (curr->next) {
+                newNode->next = curr->next;
+                curr->next = newNode;
+            }
+            else {
+                newNode->next = nullptr;
+                curr->next = newNode;
+            }
         }
 
-        curr->next->data = std::move(data);
+        newNode->data = std::move(data);
         this->m_Size++;
     }
 
@@ -68,35 +81,68 @@ public:
      * @note Does not handle pointer data.
      */
     virtual void Clear() {
-        Node* curr = this->p_Head;
+        Node* next = this->p_Head;
 
         for (u16 i = 0; i < this->m_Size; i++) {
-            Node* tmp = curr;
-            curr = curr->next;
+            Node* curr = next;
+            next = next->next;
 
-            tmp->data.~T();
-            ofree(tmp, oUnmanagedAllocator);
+            curr->data.~T();
+            ofree(curr, oUnmanagedAllocator);
         }
+
+        this->p_Head = nullptr;
     }
 
     /**
-     * @brief Erases the node at the given position.
+     * @brief Deconstructs and removes the object at the given position.
      * 
      * @param pos The position to erase.
      * 
      * @note Does not handle pointer data.
      */
-    virtual void Erase(u16 pos) = 0;
+    virtual void Erase(u16 pos) {
+        if (pos >= this->m_Size)
+            throw Ocean::Exception(Ocean::Error::OUT_OF_RANGE, "Attempt to Erase List Node that does not exist!");
+
+        Node* toDelete = this->p_Head;
+
+        if (pos == 0) {
+            this->p_Head = this->p_Head->next;
+        }
+        else {
+            Node* curr = this->p_Head;
+
+            // Start at 1 so that the curr is the node before the insert position.
+            //
+            for (u16 i = 1; i < pos; i++)
+                curr = curr->next;
+
+            toDelete = curr->next;
+            curr->next = toDelete->next;
+        }
+
+        toDelete->data.~T();
+        ofree(toDelete, oUnmanagedAllocator);
+        this->m_Size--;
+    }
     /**
-     * @brief Removes the first encountered node with the given data.
+     * @brief Deconstructs and removes the first encountered object with the given data.
      * 
      * @param data The data of the node to remove.
      * 
      * @note Does not handle pointer data.
      */
-    virtual void Remove(const T& data) = 0;
+    virtual void Remove(const T& data) {
+        Node* curr = this->p_Head;
+
+        while (curr->next && curr->data != data)
+            curr = curr->next;
+
+        
+    }
     /**
-     * @brief Removes all nodes with the given data.
+     * @brief Deconstructs and removes all objects with the given data.
      * 
      * @param data The data of the nodes to remove.
      * 

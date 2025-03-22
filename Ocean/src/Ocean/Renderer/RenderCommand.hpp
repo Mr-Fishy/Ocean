@@ -74,10 +74,10 @@ namespace Ocean {
          * @brief Draw the index data from the given VertexArray.
          * 
          * @param array The VertexArray to draw from.
-         * @param count The number of indices to draw. (OPTIONAL)
+         * @param indexCount The number of indices to draw. (OPTIONAL)
          */
-        OC_STATIC_INLINE void DrawIndexed(const Ref<Splash::VertexArray>& array, u32 count = 0) {
-            s_RendererAPI->DrawIndexed(array, count);
+        OC_STATIC_INLINE void DrawIndexed(const Ref<Splash::VertexArray>& array, u32 indexCount = 0) {
+            s_RendererAPI->DrawIndexed(array, indexCount);
         }
 
         OC_STATIC_INLINE Scope<Splash::RendererAPI>& GetRenderer() {
