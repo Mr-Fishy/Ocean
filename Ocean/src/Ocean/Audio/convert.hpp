@@ -3,7 +3,7 @@
 
 
 #include <phonon.h>
-#include "Ocean/Audio/audio.hpp"
+#include "audio.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "audio.hpp"
 #include "steamaudio_dataholding.hpp"

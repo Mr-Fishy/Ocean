@@ -1,5 +1,5 @@
 
-#include "Ocean/Audio/convert.hpp"
+#include "convert.hpp"
 //
 void sonar::convert::allocatebuffer(std::string name, IPLAudioBuffer &buff){
 
