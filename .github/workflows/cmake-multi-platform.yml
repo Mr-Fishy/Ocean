@@ -25,7 +25,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
+        c_compiler: [gcc, clang]
         include:
         
           - os: ubuntu-latest
@@ -34,15 +34,12 @@ jobs:
 
         exclude:
         #this sets the list to exclude
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
+
           - os: windows-latest
             c_compiler: gcc
           - os: windows-latest
             c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
+
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
