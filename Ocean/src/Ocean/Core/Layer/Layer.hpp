@@ -18,7 +18,7 @@ namespace Ocean {
          * 
          * @param name The name of the layer, only used when OC_DEBUG is enabled.
          */
-        Layer(const string& name = "Layer");
+        Layer(const String& name = "Layer");
         virtual ~Layer() = default;
 
         /** @brief Occurs when the layer is attached to a LayerStack. */
@@ -52,16 +52,18 @@ namespace Ocean {
          * 
          * @return const string&
          */
-        OC_INLINE const string& GetName() const { return this->m_DebugName; }
+        OC_INLINE const String& GetName() const { return this->m_DebugName; }
 
     #endif
 
     protected:
-        b8 m_Enabled; /** @brief Records if the layer is enabled, if not then updates are blocked. */
+        /** @brief Records if the layer is enabled, if not then updates are blocked. */
+        b8 m_Enabled;
 
     #ifdef OC_DEBUG
-        
-        string m_DebugName; /** @brief A name for use in debug builds / engine debugging. */
+
+    /** @brief A name for use in debug builds / engine debugging. */
+        String m_DebugName;
         
     #endif
 

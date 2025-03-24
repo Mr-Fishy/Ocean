@@ -2,7 +2,7 @@
 
 #include "Ocean/Types/Integers.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
@@ -39,30 +39,25 @@ namespace Ocean {
         }
 
         vkRenderPass::vkAttachment::~vkAttachment()
-        {
-            
-        }
+        { }
 
         vkRenderPass::vkRenderPass() :
             m_Pass(VK_NULL_HANDLE),
-            m_Attachments(0)
-        {
+            m_Attachments()
+        { }
 
-        }
-
-        vkRenderPass::~vkRenderPass() {
-            
-        }
+        vkRenderPass::~vkRenderPass()
+        { }
 
         void vkRenderPass::Invalidate() {
             // ============================== ATTACHMENTS ==============================
             //
-            DynamicArray<VkAttachmentDescription> attachments(this->m_Attachments.size());
-            DynamicArray<VkAttachmentReference> attachmentReferences(this->m_Attachments.size());
+            DynamicArray<VkAttachmentDescription> attachments(this->m_Attachments.Size());
+            DynamicArray<VkAttachmentReference> attachmentReferences(this->m_Attachments.Size());
 
             for (const vkAttachment& attachment : this->m_Attachments) {
-                attachments.emplace_back(attachment.Description());
-                attachmentReferences.emplace_back(attachment.Reference());
+                attachments.EmplaceBack(attachment.Description());
+                attachmentReferences.EmplaceBack(attachment.Reference());
             }
 
             // ============================== SUB-PASSES ==============================
@@ -72,8 +67,8 @@ namespace Ocean {
                 VK_PIPELINE_BIND_POINT_GRAPHICS,
                 0,
                 0,
-                static_cast<u32>(attachmentReferences.size()),
-                attachmentReferences.data(),
+                static_cast<u32>(attachmentReferences.Size()),
+                attachmentReferences.Data(),
                 nullptr,
                 nullptr,
                 0,
@@ -86,8 +81,8 @@ namespace Ocean {
                 VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
                 nullptr,
                 0,
-                static_cast<u32>(attachments.size()),
-                attachments.data(),
+                static_cast<u32>(attachments.Size()),
+                attachments.Data(),
                 1,
                 &subpass,
                 0,

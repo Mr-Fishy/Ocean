@@ -16,7 +16,7 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 #include "Ocean/Types/Strings.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 #include "Ocean/Primitives/Macros.hpp"
 
 // libs

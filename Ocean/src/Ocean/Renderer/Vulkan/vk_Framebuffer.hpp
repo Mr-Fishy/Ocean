@@ -12,7 +12,7 @@
 
 #include "Ocean/Types/Integers.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/Framebuffer.hpp"
 
@@ -32,6 +32,16 @@ namespace Ocean {
                 VkFormat format;
 
                 VkDeviceMemory mem;
+
+                b8 operator == (const FramebufferAttachment &other) const {
+                    return this->image == other.image
+                        && this->view == other.view
+                        && this->format == other.format
+                        && this->mem == other.mem;
+                }
+                b8 operator != (const FramebufferAttachment &other) const {
+                    return !(*this == other);
+                }
 
             };  // FramebufferAttachment
 

@@ -21,8 +21,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glVertexArray>();
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkVertexArray>();
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkVertexArray>();
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");

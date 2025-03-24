@@ -3,7 +3,7 @@
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/FloatingPoints.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/FixedArray.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
@@ -60,8 +60,8 @@ namespace Ocean {
                 VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
                 nullptr,
                 0,
-                dynamicStates.size(),
-                dynamicStates.data()
+                dynamicStates.Size(),
+                dynamicStates.Data()
             };
 
             VkPipelineViewportStateCreateInfo viewportState {

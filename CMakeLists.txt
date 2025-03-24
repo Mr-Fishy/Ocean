@@ -190,7 +190,7 @@ add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 message(STATUS)
 
 
-#Flecs ECS
+# Flecs ECS
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Flecs Starting (${time})...")
 add_subdirectory(Ocean/vendor/flecs EXCLUDE_FROM_ALL)
@@ -232,6 +232,14 @@ message(STATUS "Ocean Starting (${time})...")
 message(STATUS)
 add_subdirectory(Ocean)
 
+if (Ocean_BUILD_TESTS)
+
+    enable_testing()
+
+    add_subdirectory(Ocean/tests)
+
+endif (Ocean_BUILD_TESTS)
+
 if (Ocean_BUILD_DOCS)
     
     string(TIMESTAMP time "%M:%S")
@@ -240,14 +248,6 @@ if (Ocean_BUILD_DOCS)
     message(STATUS)
 
 endif (Ocean_BUILD_DOCS)
-
-if (Ocean_BUILD_TESTS)
-
-    enable_testing()
-
-    add_subdirectory(Ocean/tests)
-
-endif (Ocean_BUILD_TESTS)
 
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")

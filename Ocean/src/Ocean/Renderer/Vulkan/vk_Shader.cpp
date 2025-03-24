@@ -2,7 +2,7 @@
 
 #include "Ocean/Types/Integers.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
@@ -37,8 +37,8 @@ namespace Ocean {
                 VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 nullptr,
                 0,
-                vertex.size() * sizeof(u32),
-                vertex.data()
+                vertex.Size() * sizeof(u32),
+                vertex.Data()
             };
 
             vkCheck(
@@ -54,8 +54,8 @@ namespace Ocean {
                 VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                 nullptr,
                 0,
-                fragment.size() * sizeof(u32),
-                fragment.data()
+                fragment.Size() * sizeof(u32),
+                fragment.Data()
             };
 
             vkCheck(

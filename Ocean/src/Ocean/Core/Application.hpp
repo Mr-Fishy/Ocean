@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Ocean/Primitives/Memory.hpp"
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/Strings.hpp"
@@ -8,6 +7,7 @@
 #include "Ocean/Types/SmartPtrs.hpp"
 
 #include "Ocean/Primitives/Macros.hpp"
+#include "Ocean/Primitives/Memory.hpp"
 
 #include "Ocean/Core/Layer/LayerStack.hpp"
 
@@ -24,13 +24,16 @@ namespace Ocean {
 	 * @brief A struct to configure the application at startup.
 	 */
 	struct ApplicationConfig {
+		/** @brief The name of the application. */
+		cstring name = nullptr;
 
-		cstring name = nullptr; /** @brief The name of the application. */
+		/** @brief The starting width of the application window. */
+		u32 width  = 900;
+		/** @brief The starting height of the application window. */
+		u32 height = 600;
 
-		u32 width  = 900; /** @brief The starting width of the application window. */
-		u32 height = 600; /** @brief The starting height of the application window. */
-
-		b8 fullscreen = false; /** @brief If the application is fullscreen or not at startup. */
+		/** @brief If the application is fullscreen or not at startup. */
+		b8 fullscreen = false;
 
 		/**
 		 * @brief Construct a new ApplicationConfig with the given parameters.
@@ -156,15 +159,21 @@ namespace Ocean {
 
 		/* --- */
 
-		OC_STATIC_INLINE Application* s_Instance = nullptr; /** @brief The instance of the Application, makes sure there is only one instance running. */
-		Scope<Window> m_Window; /** @brief The main window of the application. */
+		/** @brief The instance of the Application, makes sure there is only one instance running. */
+		OC_STATIC_INLINE Application* s_Instance = nullptr;
+		/** @brief The main window of the application. */
+		Scope<Window> m_Window;
 
-		LayerStack m_LayerStack; /** @brief The LayerStack of the application. */
+		/** @brief The LayerStack of the application. */
+		LayerStack m_LayerStack;
 
-		Timestep m_LastFrameTime; /** @brief A Timestep of the last frame's runtime. */
-		Timestep m_Accumulator; /** @brief A Timestep accumulating time until above the fixed timestep threshold. */
+		/** @brief A Timestep of the last frame's runtime. */
+		Timestep m_LastFrameTime;
+		/** @brief A Timestep accumulating time until above the fixed timestep threshold. */
+		Timestep m_Accumulator;
 
-		b8 m_Running; /** @brief A b8 to record if the application is in runtime or not. */
+		/** @brief A b8 to record if the application is in runtime or not. */
+		b8 m_Running;
 
 	private:
 		OC_NO_COPY(Application);

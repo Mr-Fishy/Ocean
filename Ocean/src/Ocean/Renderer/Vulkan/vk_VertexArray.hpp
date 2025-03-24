@@ -3,7 +3,7 @@
 /**
  * @file vk_VertexArray.hpp
  * @author Evan F.
- * @brief The Vulkan implementation of a @ref VertexArray.
+ * @brief The Vulkan implementation of a VertexArray.
  * @date 2025-01-25
  * 
  * @copyright Copyright (c) 2025

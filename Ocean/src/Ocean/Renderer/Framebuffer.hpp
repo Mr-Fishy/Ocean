@@ -13,8 +13,7 @@
 #include "Ocean/Types/Bool.hpp"
 #include "Ocean/Types/Integers.hpp"
 
-#include "Ocean/Primitives/Macros.hpp"
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 namespace Ocean {
 
@@ -49,15 +48,24 @@ namespace Ocean {
          * @details AKA the FramebufferFormat.
          */
         struct FramebufferTextureSpec {
-            OC_INLINE FramebufferTextureSpec() : textureFormat(FramebufferFormat::None) { }
+            inline FramebufferTextureSpec() :
+                textureFormat(FramebufferFormat::None)
+            { }
             /**
              * @brief Construct a new Framebuffer Texture Spec object.
              * 
              * @param format The FramebufferFormat to set.
              */
-            OC_INLINE FramebufferTextureSpec(FramebufferFormat format) : textureFormat(format) { }
+            inline FramebufferTextureSpec(FramebufferFormat format) :
+                textureFormat(format)
+            { }
 
-            FramebufferFormat textureFormat; /** @brief The format of the Framebuffer texture, represented as a FramebufferFormat. */
+            inline b8 operator == (const FramebufferTextureSpec& other) const {
+                return this->textureFormat == other.textureFormat;
+            }
+
+            /** @brief The format of the Framebuffer texture, represented as a FramebufferFormat. */
+            FramebufferFormat textureFormat;
 
         };  // FramebufferTextureSpec
 
@@ -67,15 +75,20 @@ namespace Ocean {
          * @details AKA the list of FramebufferTextureSpec's.
          */
         struct FramebufferAttachmentSpec {
-            OC_INLINE FramebufferAttachmentSpec() : specs() { }
+            inline FramebufferAttachmentSpec() :
+                specs()
+            { }
             /**
              * @brief Construct a new Framebuffer Attachment Spec object with the given attachments.
              * 
              * @param specs The FramebufferTextureSpec's to use as attachment specifications.
              */
-            OC_INLINE FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> specs) : specs(specs) { }
+            inline FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> specs) :
+                specs(specs)
+            { }
 
-            DynamicArray<FramebufferTextureSpec> specs; /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
+            /** @brief A list of FramebufferTextureSpec's that define's the Framebuffer's texture layers. */
+            DynamicArray<FramebufferTextureSpec> specs;
 
         };  // FramebufferAttachmentSpec
 
@@ -83,16 +96,27 @@ namespace Ocean {
          * @brief A struct that holds all of the information required to create a Framebuffer.
          */
         struct FramebufferSpecification {
-            OC_INLINE FramebufferSpecification() : width(0), height(0), samples(1), attachments(), swapChainTarget(false) { }
+            inline FramebufferSpecification() :
+                width(0),
+                height(0),
+                samples(1),
+                attachments(),
+                swapChainTarget(false)
+            { }
 
-            u32 width; /** @brief The width of the Framebuffer. */
-            u32 height; /** @brief The height of the Framebuffer. */
+            /** @brief The width of the Framebuffer. */
+            u32 width;
+            /** @brief The height of the Framebuffer. */
+            u32 height;
 
-            u32 samples; /** @brief The number of samples to run on each attachment. */
+            /** @brief The number of samples to run on each attachment. */
+            u32 samples;
 
-            FramebufferAttachmentSpec attachments; /** @brief The FramebufferAttachmentSpec's that define each texture attachment. */
+            /** @brief The FramebufferAttachmentSpec's that define each texture attachment. */
+            FramebufferAttachmentSpec attachments;
 
-            b8 swapChainTarget; /** @brief Records if the Framebuffer is to be used in a swapchain by the Window. */
+            /** @brief Records if the Framebuffer is to be used in a swapchain by the Window. */
+            b8 swapChainTarget;
 
         };  // FramebufferSpecification
 
@@ -171,10 +195,10 @@ namespace Ocean {
              * @param spec The FramebufferSpecification to use.
              * @return Ref<Framebuffer> 
              */
-            OC_STATIC Ref<Framebuffer> Create(const FramebufferSpecification& spec);
+            static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 
         protected:
-            OC_INLINE b8 IsDepthFormat(FramebufferFormat format) {
+            inline b8 IsDepthFormat(FramebufferFormat format) {
                 switch (format) {
                     case FramebufferFormat::None:                
                     case FramebufferFormat::RGBA8:                
@@ -189,10 +213,13 @@ namespace Ocean {
             }
 
         protected:
-            FramebufferSpecification m_Specification; /** @brief The top-level FramebufferSpecification. */
+            /** @brief The top-level FramebufferSpecification. */
+            FramebufferSpecification m_Specification;
 
-            DynamicArray<FramebufferTextureSpec> m_ColorAttachmentSpecs; /** @brief The top-level color attachment texture specifications. */
-            FramebufferTextureSpec m_DepthAttachmentSpec; /** @brief The top-level depth attachment texture specification. */
+            /** @brief The top-level color attachment texture specifications. */
+            DynamicArray<FramebufferTextureSpec> m_ColorAttachmentSpecs;
+            /** @brief The top-level depth attachment texture specification. */
+            FramebufferTextureSpec m_DepthAttachmentSpec;
 
         };  // Framebuffer
 

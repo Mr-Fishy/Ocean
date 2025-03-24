@@ -5,7 +5,7 @@
 
 #include "Ocean/Primitives/Log.hpp"
 #include "Ocean/Primitives/Exceptions.hpp"
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/Vulkan/vk_Vulkan.hpp"
 #include "Ocean/Renderer/Vulkan/vk_Instance.hpp"
@@ -52,8 +52,8 @@ namespace Ocean {
                 &queueInfo,
                 0,
                 nullptr,
-                static_cast<u32>(this->m_Extensions.size()),
-                this->m_Extensions.data(),
+                static_cast<u32>(this->m_Extensions.Size()),
+                this->m_Extensions.Data(),
                 &features
             };
 

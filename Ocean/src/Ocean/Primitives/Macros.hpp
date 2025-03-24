@@ -39,6 +39,8 @@
 #define OC_STATIC                                static
 /** @brief Marks a function as static and inline. */
 #define OC_STATIC_INLINE                         static inline
+/** @brief Marks a function as static and constexpr (const expression). */
+#define OC_STATIC_EXPR                           static constexpr
 
 /** @brief Marks a function as extern. E.g. an external definition. */
 #define OC_EXTERN                                extern

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Core/Layer/Layer.hpp"
 
@@ -8,7 +8,6 @@ namespace Ocean {
 
     /**
      * @brief A LayerStack manages pushing and popping Layers in a simple manner.
-     * 
      */
     class LayerStack {
     public:
@@ -41,16 +40,38 @@ namespace Ocean {
          */
         void PopOverlay(Layer* overlay);
 
-        OC_INLINE DynamicArray<Layer*>::iterator begin() { return m_Layers.begin(); }
-        OC_INLINE DynamicArray<Layer*>::const_iterator begin() const { return m_Layers.begin(); }
+        /**
+         * @brief Get's the first layer as an iterator.
+         * 
+         * @return DynamicArray<Layer*>::Iterator 
+         */
+        OC_INLINE DynamicArray<Layer*>::Iterator begin() { return m_Layers.Begin(); }
+        /**
+         * @brief Get's the first layer as a const-iterator.
+         * 
+         * @return DynamicArray<Layer*>::ConstIterator 
+         */
+         OC_INLINE DynamicArray<Layer*>::ConstIterator begin() const { return m_Layers.Begin(); }
 
-        OC_INLINE DynamicArray<Layer*>::iterator end() { return m_Layers.end(); }
-        OC_INLINE DynamicArray<Layer*>::const_iterator end() const { return m_Layers.end(); }
+        /**
+         * @brief Get's the last layer as an iterator.
+         * 
+         * @return DynamicArray<Layer*>::Iterator 
+         */
+         OC_INLINE DynamicArray<Layer*>::Iterator end() { return m_Layers.End(); }
+        /**
+         * @brief Get's the last layer as a const-iterator.
+         * 
+         * @return DynamicArray<Layer*>::ConstIterator 
+         */
+         OC_INLINE DynamicArray<Layer*>::ConstIterator end() const { return m_Layers.End(); }
 
     private:
-        DynamicArray<Layer*> m_Layers; /** @brief An array of Layer pointers representing a layerstack. */
+        /** @brief An array of Layer pointers representing a layerstack. */
+        DynamicArray<Layer*> m_Layers;
 
-        u32 m_InsertIndex; /** @brief Records the index of the last non-overlay Layer in the layerstack. */
+        /** @brief Records the index of the last non-overlay Layer in the layerstack. */
+        u32 m_InsertIndex;
 
     };  // LayerStack
 

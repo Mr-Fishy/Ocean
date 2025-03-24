@@ -8,8 +8,12 @@
 
 namespace Ocean {
 
-	typedef void (*PrintCallback)(const char*); /** @brief Additional callback for printing. */
+	/** @brief Additional callback for printing. */
+	typedef void (*PrintCallback)(const char*);
 
+	/**
+	 * @brief The Logging Service of Ocean, prints to a console.
+	 */
 	class LogService : public Service {
 	public:
 		LogService() = default;
@@ -17,10 +21,26 @@ namespace Ocean {
 
 		OC_STATIC LogService& Instance();
 
+        /**
+         * @brief Print's a given format to the console.
+         * 
+         * @param format The string format to print.
+         * @param ... Arguments to pass into the format.
+         */
 		void PrintFormat(cstring format, ...) const;
 
+        /**
+         * @brief Set the PrintCallback for the Log Service.
+         * 
+         * @param callback The PrintCallback to use.
+         */
 		void SetCallback(PrintCallback callback);
 
+        /**
+         * @brief Get's the name of the Log Service.
+         * 
+         * @return cstring 
+         */
 		OC_INLINE virtual cstring GetName() const override { return "OCEAN_Log_Service"; }
 
 	private:

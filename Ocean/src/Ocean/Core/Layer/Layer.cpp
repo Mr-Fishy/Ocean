@@ -4,7 +4,7 @@ namespace Ocean {
 
 #ifdef OC_DEBUG
 
-    Layer::Layer(const string& name) : m_Enabled(true), m_DebugName(name) { }
+    Layer::Layer(const String& name) : m_Enabled(true), m_DebugName(name) { }
 
 #else
 

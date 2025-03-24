@@ -1,10 +1,9 @@
 # Installation Guide
 
-[Windows](#install-steps-windows)
-
-[Linux](#install-steps-linux)
-
-[Visual Studio Code Extensions](#recommended-visual-studio-code-extensions)
+**[Windows](#install-steps-windows)**  
+**[Linux](#install-steps-linux)**  
+**[Dependencies](#dependency-setup)**  
+**[Visual Studio Code Extensions](#recommended-visual-studio-code-extensions)**  
 
 ## Install Steps (Windows)
 
@@ -16,7 +15,7 @@ Download and install the [MSYS2](https://www.msys2.org/) plaftorm. Then open the
 pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
 ```
 
-Press Y when prompted, this should install the needed compilers. Next to be able to use the compilers, open the __Edit environment variables for your account__ application and in your __User variables__, select the `PATH` variable and select __Edit__. Then, assuming you used the default install location for MSYS2, add the following path to your `PATH` variables:
+Press Y when prompted, this should install the needed compilers. Next to be able to use the compilers, open the **Edit environment variables for your account** application and in your **User variables**, select the `PATH` variable and select **Edit**. Then, assuming you used the default install location for MSYS2, add the following path to your `PATH` variables:
 
 ```bash
 C:\msys64\ucrt64\bin

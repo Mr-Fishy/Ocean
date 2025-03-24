@@ -20,7 +20,7 @@ namespace Ocean {
         {
             for (auto& textureSpec : this->m_Specification.attachments.specs) {
                 if (!IsDepthFormat(textureSpec.textureFormat))
-                    this->m_ColorAttachmentSpecs.emplace_back(textureSpec);
+                    this->m_ColorAttachmentSpecs.EmplaceBack(textureSpec);
                 else
                     this->m_DepthAttachmentSpec = textureSpec;
             }
@@ -34,8 +34,8 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glFramebuffer>(spec);
 
-                case RendererAPI::Vulkan:
-                    return MakeRef<vkFramebuffer>(spec);
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkFramebuffer>(spec);
             }
 
             throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");
