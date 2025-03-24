@@ -57,6 +57,7 @@ jobs:
       #structure: Overall command
                     #important future commands
                     #Other deps that may need previous deps.
+      
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
           sudo apt update
@@ -82,8 +83,8 @@ jobs:
         else
           echo "$RUNNER_OS is not supported."
           exit 1
-          
-
+        fi
+      shell: bash
         
 
 
