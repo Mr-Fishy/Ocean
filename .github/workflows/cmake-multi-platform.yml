@@ -44,14 +44,65 @@ jobs:
             c_compiler: clang
             
     steps:
+    
     - uses: actions/checkout@v4
 
+    
+    - name: per os installs (Windows and Linux)
+      #temporary until i get something.
+
+
+
+      #FORCES UPDATE, probably should put this in a variable.
+      #structure: Overall command
+                    #important future commands
+                    #Other deps that may need previous deps.
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt update
+
+          sudo apt install -y build-essential
+          sudo apt install -y gdb
+          sudo apt install -y clang
+          sudo apt install -y cmake
+          sudo apt install -y ninja-build
+          sudo apt install -y git
+
+          
+          wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
+          sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
+          sudo apt update
+          sudo apt install -y vulkan-sdk
+
+          
+          sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev
+          
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          echo "Windows :) set up msys2 to actually test this."
+        else
+          echo "$RUNNER_OS is not supported."
+          exit 1
+          
+
+        
+
+
+    #this tries to force the necessary packages to be downloaded via the submodules.
+    - name: download necessary packages (ALL SYSTEMS)
+      shell: bash
+      run: |
+        git submodule update --init --recursive --force
+
+
+          
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
