@@ -6,17 +6,12 @@ on:
   push:
     branches:
       - actions-test-2 
-    
-    branches-ignore:
-      - main
-      
+          
   pull_request:
-  
     branches:
       - actions-test-2
       
-    branches-ignore:
-      - main
+
 
 jobs:
   build:
