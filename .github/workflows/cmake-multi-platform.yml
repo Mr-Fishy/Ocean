@@ -4,9 +4,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "actions-test" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "actions-test" ]
 
 jobs:
   build:
@@ -68,7 +68,7 @@ jobs:
           sudo apt install -y cmake
           sudo apt install -y ninja-build
           sudo apt install -y git
-
+          sudo apt install -y doxygen
           
           wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
