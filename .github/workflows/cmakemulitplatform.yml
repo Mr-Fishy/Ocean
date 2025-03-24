@@ -47,7 +47,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         clean: true
-        submodules: 'recursive'
     
     - name: per os installs (Windows and Linux)
       #temporary until i get something.
@@ -95,7 +94,7 @@ jobs:
       if: github.ref == 'refs/heads/actions-test-2'
       shell: bash
       run: |
-        git submodule update --init --recursive --force
+        git submodule update --force --recursive --init --remote
 
 
           
