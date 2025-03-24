@@ -10,4 +10,4 @@ It compiles on WSL so it should work assuming Vulkan drivers aren't broken there
 
 ### MacOS
 
-Good luck.
+Good luck
