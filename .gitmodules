@@ -16,8 +16,3 @@
 [submodule "Ocean/vendor/steamaudio"]
 	path = Ocean/vendor/steamaudio
 	url = https://github.com/Mr-Fishy/steam-audio
-
-[submodule "Ocean/vendor/vma"]
-	path = Ocean/vendor/vma
-	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
-	branch = v3.1.0
