@@ -5,11 +5,11 @@ name: CMake on multiple platforms
 on:
   push:
     branches:
-      - actions-test-2 
+      - actions-test
           
   pull_request:
     branches:
-      - actions-test-2
+      - actions-test
       
 
 
