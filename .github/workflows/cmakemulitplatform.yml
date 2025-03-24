@@ -47,6 +47,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         clean: true
+        submodules: 'recursive'
     
     - name: per os installs (Windows and Linux)
       #temporary until i get something.
