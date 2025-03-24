@@ -90,6 +90,8 @@ jobs:
 
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
+    #quick test.
+      if: github.ref == 'refs/heads/actions-test-2'
       shell: bash
       run: |
         git submodule update --init --recursive --force
