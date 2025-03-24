@@ -1,10 +1,19 @@
 #pragma once
 
+/**
+ * @file gl_IndexBuffer.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Renderer/IndexBuffer.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         class glIndexBuffer : public IndexBuffer {
         public:
@@ -22,6 +31,6 @@ namespace Ocean {
 
         };
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

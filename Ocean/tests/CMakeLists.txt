@@ -1,49 +1,36 @@
-
-Include(FetchContent)
-FetchContent_Declare(
-Catch2
-GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-GIT_TAG        v3.8.0 # or a later release
-)
-FetchContent_MakeAvailable(Catch2)
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
-
 include(CTest)
 
-include(Catch)
-
-set_target_properties(
-    Catch2 Catch2WithMain PROPERTIES
-
-    FOLDER "Tests"
-)
+file(GLOB TestsToRun ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 set(CMAKE_FOLDER "Tests")
 
-file(GLOB Ocean_TEST_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+function(auto_add_test name)
 
-add_executable(
-    OceanTests
+    add_executable(${name} "${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/base/Tests.cpp")
+
+    set(CMAKE_BUILD_TYPE "Debug")
+
+    target_link_libraries(
+        ${name}
+
+        PRIVATE Ocean
+    )
+
+    add_test(NAME ${name} COMMAND ${name})
+
+endfunction()
+
+foreach (source ${TestsToRun})
+
+    get_filename_component(name ${source} NAME_WE)
+
+    message(STATUS "Adding Ocean Test: ${name}")
+    auto_add_test(${name})
     
-    ${Ocean_TEST_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/OceanTests.cpp
-)
+endforeach()
 
-target_include_directories(
-    OceanTests
-
-    PRIVATE ${Ocean_TESTS_SRC}
-)
-
-target_link_libraries(
-    OceanTests
-
-    PRIVATE Ocean
-    PRIVATE Catch2::Catch2WithMain
-)
-
-add_test(NAME TestAll COMMAND OceanTests)
-
-catch_discover_tests(OceanTests)
+add_custom_target(TestAll COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 unset(CMAKE_FOLDER)
+
+message(STATUS "")

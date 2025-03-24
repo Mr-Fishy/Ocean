@@ -1,38 +1,48 @@
 #pragma once
 
-#include <signal.h>
+#include "Ocean/Platform/PlatformBase.hpp"
 
-/**
- * @addtogroup Macros
- *
- * The following are a list of Macros to help with Ocean functionality.
- * 
- * @{
- */
+#include <signal.h>
 
 /** @brief Marks a function parameter as possibly unused. Useful for silencing warnings between OC_DEBUG and OC_RELEASE builds. */
 #define OC_UNUSED                                [[maybe_unused]]
 
+/** @brief Marks a function to not be discarded by the compiler given that the compiler may attempt to optimize the function out. */
 #define OC_NO_DISCARD                            [[nodiscard]]
 
 
 
+/** @brief Marks a function as noexcept. */
 #define OC_NO_EXCEPT                             noexcept
+/** @brief Marks a function as noexcept with the given expression. */
 #define OC_NO_EXCEPT_E(expression)               noexcept(expression)
 
-/** @brief Inline descriptor. */
+/** @brief Marks a function as inline. */
 #define OC_INLINE                                inline
 
-/** @brief Force inline descriptor. MSVC implementation. */
-#define OC_FINLINE                               __forceinline
+#ifdef OC_PLATFORM_WINDOWS
 
+    /** @brief Marks a function to force inline. (WIN32 implementation). */
+    #define OC_FINLINE                               __forceinline
+
+#elif defined(OC_PLATFORM_LINUX)
+
+    /** @brief Marks a function to force inline. (Linux implementation). */
+    #define OC_FINLINE                               __attribute__((always_inline))
+
+#endif
+
+/** @brief Marks a function as an inline constexpr (const expression). */
 #define OC_INLINE_EXPR                           inline constexpr
 
+/** @brief Marks a function as static. */
 #define OC_STATIC                                static
-
+/** @brief Marks a function as static and inline. */
 #define OC_STATIC_INLINE                         static inline
+/** @brief Marks a function as static and constexpr (const expression). */
+#define OC_STATIC_EXPR                           static constexpr
 
-/** @brief Ocean Extern */
+/** @brief Marks a function as extern. E.g. an external definition. */
 #define OC_EXTERN                                extern
 
 
@@ -98,9 +108,21 @@
 #define OC_NO_COPY(Type)                            Type(const Type&) = delete;\
                                                     Type& operator = (const Type&) = delete
 
+/** @brief Macro to define the move constructor and move operator as delete. */
+#define OC_NO_MOVE(Type)                            Type(const Type&&) = delete;\
+                                                    Type& operator = (const Type&&) = delete
 
+/** @brief Macro to define a given class or struct as a singleton using a thread-safe method. */
+#define OC_SINGLETON(Type)                          OC_STATIC_INLINE Type& Get() {\
+                                                        static Type* instance = nullptr;\
+                                                        static std::once_flag initFlag;\
+                                                    \
+                                                        std::call_once(initFlag, []() {\
+                                                            instance = new Type();\
+                                                        });\
+                                                    \
+                                                        return *instance;\
+                                                    }
 
 /** @brief Get the size of an array. */
 #define ArraySize(array) (sizeof(array) / sizeof((array)[0]))
-
-/** @} */

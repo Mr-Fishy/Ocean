@@ -1,10 +1,19 @@
 #pragma once
 
+/**
+ * @file gl_Shader.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Renderer/Shader.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         class glShader : public Shader {
         private:
@@ -15,7 +24,7 @@ namespace Ocean {
             };
 
         public:
-            glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource = nullptr);
+            glShader(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource = nullptr);
             virtual ~glShader();
 
             virtual void Bind() const override final;

@@ -14,7 +14,11 @@ option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." OFF)
 
 option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
 option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
-option(Ocean_BUILD_TESTS "Build Ocean tests." ON)
+option(Ocean_BUILD_TESTS "Build Ocean tests." Ocean_INTERNAL_BUILD_TESTS)
+
+if (NOT DEFINED Ocean_INTERNAL_BUILD_TESTS AND Ocean_MAIN_PROJECT)
+    set(Ocean_BUILD_TESTS ON)
+endif ()
 
 project("Ocean Engine")
 
@@ -50,6 +54,27 @@ if (MSVC)
     message(FATAL_ERROR "Ocean Only Supports GCC Compilers!")
 endif ()
 
+### Library Type ###
+
+### Output ###
+if (Ocean_BUILD_DLL)
+    message(STATUS "Configuring Ocean as a Dynamic Library.")
+
+    set(BUILD_SHARED_LIBS ON)
+
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
+else()
+    message(STATUS "Configuring Ocean as a Static Library.")
+
+    set(BUILD_SHARED_LIBS OFF)
+
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
+endif()
+
 ### OpenGL ###
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
@@ -74,26 +99,47 @@ else()
     message(STATUS "Vulkan Libraries Found.")
 endif()
 
-### Library Type ###
+### Shaders ###
+find_program(
+    GLSL_VALIDATOR glslangValidator
 
-### Output ###
-if (Ocean_BUILD_DLL)
-    message(STATUS "Configuring Ocean as a Dynamic Library.")
+    HINTS
+        ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
+        /usr/bin/
+        /usr/local/bin/
+        ${VULKAN_SDK_PATH}/Bin/
+        ${VULKAN_SDK_PATH}/Bin32/
+        $ENV{VULKAN_SDK}/Bin/
+        $ENV{VULKAN_SDK}/Bin32/
+)
 
-    set(BUILD_SHARED_LIBS ON)
+file(
+    GLOB GLSL_SOURCE_FILES
 
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/lib")
-else()
-    message(STATUS "Configuring Ocean as a Static Library.")
+    "${PROJECT_SOURCE_DIR}/assets/shaders/*.vert"
+    "${PROJECT_SOURCE_DIR}/assets/shaders/*.frag"
+)
 
-    set(BUILD_SHARED_LIBS OFF)
+foreach(GLSL ${GLSL_SOURCE_FILES})
 
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/stc")
-endif()
+    get_filename_component(FILE_NAME ${GLSL} NAME)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${FILE_NAME}.spv")
+
+    add_custom_command(
+        OUTPUT ${SPIRV}
+        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+        DEPENDS ${GLSL}
+    )
+
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+
+endforeach(GLSL)
+
+add_custom_target(
+    Shaders
+
+    DEPENDS ${SPIRV_BINARY_FILES}
+)
 
 ### Directories ###
 set(OCEAN_SRC_DIRECTORY    "${PROJECT_SOURCE_DIR}/Ocean/src")
@@ -117,13 +163,14 @@ set(CMAKE_FOLDER "Deps")
 # GLFW
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLFW Starting (${time})...")
+set(GLFW_BUILD_WAYLAND OFF) # NOTE: This may be required for MacOS
 add_subdirectory(Ocean/vendor/glfw EXCLUDE_FROM_ALL)
 message(STATUS)
-
 
 # GLM
 string(TIMESTAMP time "%M:%S")
 message(STATUS "GLM Starting (${time})...")
+set(CMAKE_POLICY_DEFAULT_CMP0077 "NEW")
 if (BUILD_SHARED_LIBS)
     set(GLM_BUILD_LIBRARY ON)
 else()
@@ -134,18 +181,35 @@ set(GLM_BUILD_TESTS OFF)
 add_subdirectory(Ocean/vendor/glm EXCLUDE_FROM_ALL)
 message(STATUS)
 
+add_subdirectory(Ocean/vendor/glad EXCLUDE_FROM_ALL)
+
 # Steam Audio
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Steam Audio Starting (${time})...")
 add_subdirectory(Ocean/vendor/steamaudio EXCLUDE_FROM_ALL)
 message(STATUS)
 
-# Vulkan Memory Allocator
+
+# Flecs ECS
 string(TIMESTAMP time "%M:%S")
-message(STATUS "Vulkan Memory Allocator Starting (${time})...")
-add_subdirectory(Ocean/vendor/vma EXCLUDE_FROM_ALL)
+message(STATUS "Flecs Starting (${time})...")
+add_subdirectory(Ocean/vendor/flecs EXCLUDE_FROM_ALL)
 message(STATUS)
 
+# GLSLang
+string(TIMESTAMP time "%M:%S")
+message(STATUS "glslang Starting (${time})...")
+option(ENABLE_SPVREMAPPER OFF)
+option(ENABLE_GLSLANG_BINARIES OFF)
+set(ENABLE_HLSL OFF)
+option(ENABLE_OPT OFF)
+option(BUILD_TESTING OFF)
+option(BUILD_EXTERNAL OFF)
+if(IOS)
+    option(ENABLE_PCH OFF)
+endif ()
+add_subdirectory(Ocean/vendor/glslang EXCLUDE_FROM_ALL)
+message(STATUS)
 unset(CMAKE_FOLDER)
 
 set(
@@ -168,6 +232,14 @@ message(STATUS "Ocean Starting (${time})...")
 message(STATUS)
 add_subdirectory(Ocean)
 
+if (Ocean_BUILD_TESTS)
+
+    enable_testing()
+
+    add_subdirectory(Ocean/tests)
+
+endif (Ocean_BUILD_TESTS)
+
 if (Ocean_BUILD_DOCS)
     
     string(TIMESTAMP time "%M:%S")
@@ -176,14 +248,6 @@ if (Ocean_BUILD_DOCS)
     message(STATUS)
 
 endif (Ocean_BUILD_DOCS)
-
-if (Ocean_BUILD_TESTS)
-
-    enable_testing()
-
-    add_subdirectory(Ocean/tests)
-
-endif (Ocean_BUILD_TESTS)
 
 string(TIMESTAMP time "%M:%S")
 message(STATUS "Sandbox Starting (${time})...")

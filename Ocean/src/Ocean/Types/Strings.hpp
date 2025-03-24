@@ -12,4 +12,4 @@ typedef const char* cstring;
 /**
 * @brief C++ string object.
 */
-typedef std::string string;
+typedef std::string String;

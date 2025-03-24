@@ -12,14 +12,14 @@
 
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/DynamicArray.hpp"
 
 #include "Ocean/Renderer/VertexBuffer.hpp"
 #include "Ocean/Renderer/IndexBuffer.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief The VertexArray controls an array of vertices through the renderer API.
@@ -72,6 +72,6 @@ namespace Ocean {
 
         };  // VertexArray
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

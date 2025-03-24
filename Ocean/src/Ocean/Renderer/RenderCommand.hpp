@@ -29,10 +29,16 @@ namespace Ocean {
     class RenderCommand {
     public:
         /**
-         * @brief Initializes the RendererAPI.
+         * @brief Initializes the RendererAPI after construction.
          */
         OC_STATIC_INLINE void Init() {
             s_RendererAPI->Init();
+        }
+        /**
+         * @brief Shut's down the RendererAPI before deconstruction.
+         */
+        OC_STATIC_INLINE void Shutdown() {
+            s_RendererAPI->Shutdown();
         }
 
         /**
@@ -68,14 +74,18 @@ namespace Ocean {
          * @brief Draw the index data from the given VertexArray.
          * 
          * @param array The VertexArray to draw from.
-         * @param count The number of indices to draw. (OPTIONAL)
+         * @param indexCount The number of indices to draw. (OPTIONAL)
          */
-        OC_STATIC_INLINE void DrawIndexed(const Ref<Shrimp::VertexArray>& array, u32 count = 0) {
-            s_RendererAPI->DrawIndexed(array, count);
+        OC_STATIC_INLINE void DrawIndexed(const Ref<Splash::VertexArray>& array, u32 indexCount = 0) {
+            s_RendererAPI->DrawIndexed(array, indexCount);
+        }
+
+        OC_STATIC_INLINE Scope<Splash::RendererAPI>& GetRenderer() {
+            return s_RendererAPI;
         }
 
     private:
-        OC_STATIC_INLINE Scope<Shrimp::RendererAPI> s_RendererAPI = Shrimp::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
+        OC_STATIC_INLINE Scope<Splash::RendererAPI> s_RendererAPI = Splash::RendererAPI::Create(); /** @brief The static instance of the RendererAPI. */
 
     };  // RenderCommand
 

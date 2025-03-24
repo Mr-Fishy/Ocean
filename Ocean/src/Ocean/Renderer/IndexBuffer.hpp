@@ -17,7 +17,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         /**
          * @brief The IndexBuffer controls an array of indices through the renderer API.
@@ -53,6 +53,6 @@ namespace Ocean {
 
         };  // IndexBuffer
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

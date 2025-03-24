@@ -8,14 +8,15 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
-        glShader::glShader(cstring vertexSource, cstring fragmentSource, cstring geometrySource) : m_RendererID() {
+        glShader::glShader(const cstring vertexSource, const cstring fragmentSource, const cstring geometrySource) :
+            m_RendererID()
+        {
             u32 vertex, fragment, geometry;
 
             // Vertex Shader
             vertex = glCreateShader(GL_VERTEX_SHADER);
-
             glShaderSource(vertex, 1, &vertexSource, NULL);
             glCompileShader(vertex);
 
@@ -30,7 +31,7 @@ namespace Ocean {
             CheckCompileErrors(fragment, SHADER);
 
             // Geometry Shader If Given
-            if (geometrySource != nullptr) {
+            if (geometrySource) {
                 geometry = glCreateShader(GL_GEOMETRY_SHADER);
 
                 glShaderSource(geometry, 1, &geometrySource, NULL);
@@ -44,7 +45,7 @@ namespace Ocean {
 
             glAttachShader(this->m_RendererID, vertex);
             glAttachShader(this->m_RendererID, fragment);
-            if (geometrySource != nullptr)
+            if (geometrySource)
                 glAttachShader(this->m_RendererID, geometry);
 
             glLinkProgram(this->m_RendererID);
@@ -55,7 +56,7 @@ namespace Ocean {
             glDeleteShader(vertex);
             glDeleteShader(fragment);
 
-            if (geometrySource != nullptr)
+            if (geometrySource)
                 glDeleteShader(geometry);
         }
 

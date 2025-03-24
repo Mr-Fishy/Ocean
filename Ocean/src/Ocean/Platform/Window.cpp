@@ -14,10 +14,6 @@
 
 namespace Ocean {
 
-	static void GLFW_ErrorCallback(i32 error, cstring description) {
-		oprint("GLWF Error (%i): %s\n", error, description);
-	}
-
 	// TODO: Event calls and input handling
 
 	typedef WindowData* WindowDataPtr;
@@ -56,28 +52,19 @@ namespace Ocean {
 	}
 
 	void Window::Init() {
-		glfwSetErrorCallback(GLFW_ErrorCallback);
-
-		if (!glfwInit()) {
-			oprint("GLFW Init Error!\n");
-			glfwTerminate();
-
-			return;
-		}
-
 		#ifdef OC_DEBUG
 
-		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL)
+		if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::OpenGL)
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
 		#endif
 
-		if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::OpenGL) {
+		if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::OpenGL) {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
-		else if (Shrimp::RendererAPI::GetAPI() == Shrimp::RendererAPI::Vulkan)
+		else if (Splash::RendererAPI::GetAPI() == Splash::RendererAPI::Vulkan)
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		this->m_Data.window = this;
@@ -89,7 +76,7 @@ namespace Ocean {
 			return;
 		}
 
-		this->m_Context = Shrimp::GraphicsContext::Create(this->p_PlatformHandle);
+		this->m_Context = Splash::GraphicsContext::Create(this->p_PlatformHandle);
 		this->m_Context->Init();
 
 		glfwSetWindowUserPointer(static_cast<WindowPtr>(this->p_PlatformHandle), &m_Data);
@@ -100,7 +87,6 @@ namespace Ocean {
 
 	void Window::Shutdown() {
 		glfwDestroyWindow(static_cast<WindowPtr>(this->p_PlatformHandle));
-		glfwTerminate();
 	}
 
 	void Window::SetFullscreen(b8 enabled) {
@@ -129,10 +115,10 @@ namespace Ocean {
 	void Window::OnUpdate() {
 		glfwPollEvents();
 
-		if (Resized()) {
+		if (IsResized()) {
 			Application::Get()->OnResize(this->m_Data.width, this->m_Data.height);
 
-			ResizeHandled();
+			SetResizeAsHandled();
 		}
 
 		if (glfwWindowShouldClose(static_cast<WindowPtr>(this->p_PlatformHandle)))

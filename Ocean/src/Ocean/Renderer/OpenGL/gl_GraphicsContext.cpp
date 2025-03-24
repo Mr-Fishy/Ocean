@@ -1,5 +1,6 @@
 #include "gl_GraphicsContext.hpp"
 
+#include "Ocean/Renderer/GraphicsContext.hpp"
 #include "Ocean/Types/Integers.hpp"
 
 #include "Ocean/Primitives/Assert.hpp"
@@ -11,10 +12,12 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
-        glGraphicsContext::glGraphicsContext(GLFWwindow* window) : p_WindowHandle(window) {
-            OASSERTM(this->p_WindowHandle != nullptr, "Window Handle Is A nullptr!");
+        glGraphicsContext::glGraphicsContext(GLFWwindow* window) :
+            GraphicsContext(window)
+        {
+            
         }
 
         glGraphicsContext::~glGraphicsContext() {
@@ -37,6 +40,6 @@ namespace Ocean {
             glfwSwapBuffers(this->p_WindowHandle);
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

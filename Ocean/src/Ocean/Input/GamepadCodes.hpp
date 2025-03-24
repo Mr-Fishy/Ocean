@@ -1,20 +1,21 @@
 #pragma once
 
-#include "Ocean/Core/Types/Integers.hpp"
+#include "Ocean/Types/Integers.hpp"
 
 namespace Ocean {
 
-	enum GamepadAxis {
+	enum GamepadAxis : u8 {
 		GAMEPAD_AXIS_LEFTX = 0,
 		GAMEPAD_AXIS_LEFTY,
 		GAMEPAD_AXIS_RIGHTX,
 		GAMEPAD_AXIS_RIGHTY,
 		GAMEPAD_AXIS_TRIGGERLEFT,
 		GAMEPAD_AXIS_TRIGGERRIGHT,
-		GAMEPAD_AXIS_COUNT
+		GAMEPAD_AXIS_COUNT,
+
 	}; // enum GamepadAxis
 
-	enum GamepadButtons {
+	enum GamepadButtons : u8 {
 		GAMEPAD_BUTTON_A = 0,
 		GAMEPAD_BUTTON_B,
 		GAMEPAD_BUTTON_X,
@@ -30,7 +31,8 @@ namespace Ocean {
 		GAMEPAD_BUTTON_DPAD_DOWN,
 		GAMEPAD_BUTTON_DPAD_LEFT,
 		GAMEPAD_BUTTON_DPAD_RIGHT,
-		GAMEPAD_BUTTON_COUNT
+		GAMEPAD_BUTTON_COUNT,
+
 	}; // enum GamepadButtons
 
 }	// Ocean

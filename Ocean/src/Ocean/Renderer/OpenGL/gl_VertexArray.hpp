@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file gl_VertexArray.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/SmartPtrs.hpp"
 
 #include "Ocean/Renderer/IndexBuffer.hpp"
@@ -8,7 +17,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glVertexArray : public VertexArray {
         public:
@@ -34,6 +43,6 @@ namespace Ocean {
 
         };  // VertexArray
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

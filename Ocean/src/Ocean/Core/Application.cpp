@@ -10,7 +10,13 @@ namespace Ocean {
 
 	#define FixedTimestep 0.02f
 
-	Application::Application(OC_UNUSED const ApplicationConfig& config) : m_Window(), m_LayerStack(), m_LastFrameTime(0.0f), m_Accumulator(0.0f), m_Running(false) {
+	Application::Application(OC_UNUSED const ApplicationConfig& config) :
+		m_Window(),
+		m_LayerStack(),
+		m_LastFrameTime(0.0f),
+		m_Accumulator(0.0f),
+		m_Running(false)
+	{
 		OASSERTM(!
 		
 		s_Instance, "Application already exists!");
@@ -69,7 +75,7 @@ namespace Ocean {
 				frameCount = accumulatorCounter = 0;
 			}
 
-			// if (!this->m_Window->Minimized()) {
+			// if (!this->m_Window->IsMinimized()) {
 			// 	// p_Renderer->BeginFrame();
 			// }
 
@@ -84,7 +90,7 @@ namespace Ocean {
 				this->m_Accumulator -= FixedTimestep;
 			}
 
-			if (!this->m_Window->Minimized()) {
+			if (!this->m_Window->IsMinimized()) {
 				VariableUpdate(timeStep);
 
 				// TODO: Interpolation
@@ -98,7 +104,7 @@ namespace Ocean {
 
 			frameCount++;
 
-			if (this->m_Window->RequestedExit())
+			if (this->m_Window->HasRequestedExit())
 				Close();
 		}
 	}

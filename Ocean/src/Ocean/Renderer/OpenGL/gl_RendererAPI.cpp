@@ -12,7 +12,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         static void glMessageCallback(
             OC_UNUSED u32 source, OC_UNUSED u32 type, OC_UNUSED u32 id,
@@ -59,6 +59,10 @@ namespace Ocean {
             glEnable(GL_DEPTH_TEST);
         }
 
+        void glRendererAPI::Shutdown() {
+            
+        }
+
         void glRendererAPI::SetViewport(u32 x, u32 y, u32 w, u32 h) {
             glViewport(x, y, w, h);
         }
@@ -78,6 +82,6 @@ namespace Ocean {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

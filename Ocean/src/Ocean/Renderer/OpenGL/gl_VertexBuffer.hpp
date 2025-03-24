@@ -1,12 +1,21 @@
 #pragma once
 
+/**
+ * @file gl_VertexBuffer.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "Ocean/Types/FloatingPoints.hpp"
 
 #include "Ocean/Renderer/VertexBuffer.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glVertexBuffer : public VertexBuffer {
         public:
@@ -29,6 +38,6 @@ namespace Ocean {
 
         };  // glVertexBuffer
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

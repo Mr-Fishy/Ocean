@@ -39,8 +39,8 @@ file(GLOB Ocean_CA_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Ca
 file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
 file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
 
-file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
-file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
+# file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
+# file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
 
 #Audio Files
 file(GLOB Ocean_AUD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)
@@ -50,14 +50,6 @@ file(GLOB Ocean_AUD_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.cpp)
 ## TLSF
 file(GLOB tlsf_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.h)
 file(GLOB tlsf_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tlsf/*.c)
-
-## Steam Audio
-file (GLOB steamaudio_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/steamaudio/include/*.h)
-
-
-# GLAD Source Files
-file(GLOB_RECURSE glad_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include/*.h)
-file(GLOB glad_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/*.c)
 
 # STB
 file(GLOB stb_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/*.h)
@@ -101,11 +93,6 @@ source_group("Main Audio Sources" FILES ${Ocean_AUD_SOURCE})
 source_group("tlsf Headers" FILES ${tlsf_HEADER})
 source_group("tlsf Sources" FILES ${tlsf_SOURCE})
 
-source_group("Steam Audio Headers" FILES ${steamaudio_HEADER})
-
-source_group("glad Headers" FILES ${glad_HEADER})
-source_group("glad Sources" FILES ${glad_SOURCE})
-
 source_group("stb Headers" FILES ${stb_HEADER})
 
 add_library(
@@ -128,8 +115,6 @@ add_library(
     ${Ocean_VK_REND_HEADER} ${Ocean_VK_REND_SOURCE}
 
     ${tlsf_HEADER} ${tlsf_SOURCE}
-    ${glad_HEADER} ${glad_SOURCE}
-    ${steamaudio_HEADER}
     ${stb_HEADER}
     ${cr_HEADER}
 )
@@ -157,8 +142,10 @@ target_link_libraries(
     ${PROJECT_NAME}
 
     PRIVATE glfw
+    PRIVATE glad
     PRIVATE SteamAudio
-    PRIVATE GPUOpen::VulkanMemoryAllocator
+    PRIVATE flecs::flecs_static
+    PRIVATE glslang
     PRIVATE ${OPENGL_LIBRARIES}
     PRIVATE ${Vulkan_LIBRARIES}
 

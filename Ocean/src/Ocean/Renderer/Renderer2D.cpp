@@ -5,7 +5,7 @@
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
 
-#include "Ocean/Primitives/Array.hpp"
+#include "Ocean/Primitives/FixedArray.hpp"
 
 #include "Ocean/Core/ResourceManager.hpp"
 
@@ -23,19 +23,30 @@
 
 namespace Ocean {
 
+    /**
+     * @brief A vertex to define per each corner of a quad.
+     */
     struct QuadVertex {
+        /** @brief The 3d position of the vertex. */
         glm::vec3 position;
+        /** @brief The rgba color of the vertex. (0.0f - 1.0f scale). */
         glm::vec4 color;
+        /** @brief The texture coordinate of the vertex. */
         glm::vec2 texCoord;
 
+        /** @brief The texture index of the vertex. */
         f32 texIndex;
+        /** @brief The texture tiling factor of the vertex. */
         f32 tilingFactor;
 
-        // Editor Specific
+        /** @brief The parent entity's ID. */
         i32 entityID;
 
     };  // QuadVertex
 
+    /**
+     * @brief The lifetime data of the 2D renderer.
+     */
     struct RendererData {
         RendererData() : quadVertexArray(), quadVertexBuffer(), textureShader(), colorTexture(), textureSlots(), stats() { }
         RendererData(const RendererData&) = delete;
@@ -43,22 +54,31 @@ namespace Ocean {
 
         RendererData& operator = (const RendererData&) = delete;
 
+        /** @brief The maximum quads allowed per batch. */
         static constexpr u32 maxQuads = 20000;
+        /** @brief The maximum vertices per batch. */
         static constexpr u32 maxVertices = maxQuads * 4;
+        /** @brief The maximum indices per batch. */
         static constexpr u32 maxIndices = maxQuads * 6;
+        /** @brief The maximum texture slots to be active. */
         static constexpr u32 maxTextureSlots = 32;
 
-        Ref<Shrimp::VertexArray> quadVertexArray;
-        Ref<Shrimp::VertexBuffer> quadVertexBuffer;
+        /** @brief The renderer's VertexArray. */
+        Ref<Splash::VertexArray> quadVertexArray;
+        /** @brief The renderer's VertexBuffer. */
+        Ref<Splash::VertexBuffer> quadVertexBuffer;
 
-        Ref<Shrimp::Shader> textureShader;
-        Ref<Shrimp::Texture2D> colorTexture;
+        /** @brief The renderer's Shader. */
+        Ref<Splash::Shader> textureShader;
+        /** @brief The renderer's color texture. Aka a white texture to be recolored per data. */
+        Ref<Splash::Texture2D> colorTexture;
 
+        /** @brief The current renderer's index count. */
         u32 quadIndexCount = 0;
         QuadVertex* quadVertexBufferBase = nullptr;
         QuadVertex* quadVertexBufferPtr = nullptr;
 
-        FixedArray<Ref<Shrimp::Texture2D>, maxTextureSlots> textureSlots;
+        FixedArray<Ref<Splash::Texture2D>, maxTextureSlots> textureSlots;
         u32 textureSlotIndex = 1; // 0 Is colorTexture
 
         glm::vec4 quadVertexPositions[4] = {
@@ -77,16 +97,16 @@ namespace Ocean {
     static RendererData s_Data;
 
     void Renderer2D::Init() {
-        s_Data.quadVertexArray = Shrimp::VertexArray::Create();
+        s_Data.quadVertexArray = Splash::VertexArray::Create();
 
-        s_Data.quadVertexBuffer = Shrimp::VertexBuffer::Create(s_Data.maxVertices * sizeof(QuadVertex));
+        s_Data.quadVertexBuffer = Splash::VertexBuffer::Create(s_Data.maxVertices * sizeof(QuadVertex));
         s_Data.quadVertexBuffer->SetLayout({
-            { Shrimp::ShaderDataType::Float3, "a_Position"     },
-            { Shrimp::ShaderDataType::Float4, "a_Color"        },
-            { Shrimp::ShaderDataType::Float2, "a_TexCoord"     },
-            { Shrimp::ShaderDataType::Float,  "a_TexIndex"     },
-            { Shrimp::ShaderDataType::Float,  "a_TilingFactor" },
-            { Shrimp::ShaderDataType::Int,    "a_EntityID"     },
+            { Splash::ShaderDataType::Float3, "a_Position"     },
+            { Splash::ShaderDataType::Float4, "a_Color"        },
+            { Splash::ShaderDataType::Float2, "a_TexCoord"     },
+            { Splash::ShaderDataType::Float,  "a_TexIndex"     },
+            { Splash::ShaderDataType::Float,  "a_TilingFactor" },
+            { Splash::ShaderDataType::Int,    "a_EntityID"     },
         });
         s_Data.quadVertexArray->AddVertexBuffer(s_Data.quadVertexBuffer);
 
@@ -107,11 +127,11 @@ namespace Ocean {
             offset += 4;
         }
 
-        Ref<Shrimp::IndexBuffer> quadIB = Shrimp::IndexBuffer::Create(quadIndices, s_Data.maxIndices);
+        Ref<Splash::IndexBuffer> quadIB = Splash::IndexBuffer::Create(quadIndices, s_Data.maxIndices);
         s_Data.quadVertexArray->SetIndexBuffer(quadIB);
         delete[] quadIndices;
 
-        s_Data.colorTexture = Shrimp::Texture2D::Create(1, 1);
+        s_Data.colorTexture = Splash::Texture2D::Create(1, 1);
         u32 textureData = 0xffffffff;
         s_Data.colorTexture->SetData(&textureData, sizeof(u32));
 
@@ -177,7 +197,7 @@ namespace Ocean {
         );
     }
 
-    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor) {
+    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Splash::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor) {
         DrawQuad(
             { pos.x, pos.y, 0.0f },
             size,
@@ -187,7 +207,7 @@ namespace Ocean {
         );
     }
 
-    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor) {
+    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Splash::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor) {
         DrawQuad(
             glm::translate(glm::mat4(1.0f), pos) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f }),
             texture,
@@ -225,7 +245,7 @@ namespace Ocean {
         s_Data.stats.quadCount++;
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Shrimp::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor, i32 entityID) {
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Splash::Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColor, i32 entityID) {
         if (s_Data.quadIndexCount >= RendererData::maxIndices)
             NextBatch();
 

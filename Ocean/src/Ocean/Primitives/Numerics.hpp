@@ -17,17 +17,17 @@
 #undef min
 
 template <typename T>
-T max(const T& a, const T& b)                 { return a > b ? a : b; }
+T oMax(const T& a, const T& b)                 { return a > b ? a : b; }
 
 template <typename T>
-T min(const T& a, const T& b)                 { return a < b ? a : b; }
+T oMin(const T& a, const T& b)                 { return a < b ? a : b; }
 
 template <typename T>
-T clamp(const T& v, const T& a, const T& b)   { return v < a ? a : (v > b ? b : v); }
+T oClamp(const T& v, const T& a, const T& b)   { return v < a ? a : (v > b ? b : v); }
 
 
 template <typename To, typename From>
-To safe_cast(From a) {
+To oSafeCast(From a) {
 	To result = static_cast<To>(a);
 
 	From check = static_cast<From>(result);
@@ -36,52 +36,52 @@ To safe_cast(From a) {
 	return result;
 }
 
-u32 ceilu32(f32 value);
-u32 ceilu32(f64 value);
-u16 ceilu16(f32 value);
-u16 ceilu16(f64 value);
+u32 oCeilu32(f32 value);
+u32 oCeilu32(f64 value);
+u16 oCeilu16(f32 value);
+u16 oCeilu16(f64 value);
 
-i32 ceili32(f32 value);
-i32 ceili32(f64 value);
-i16 ceili16(f32 value);
-i16 ceili16(f64 value);
-
-
-
-u32 flooru32(f32 value);
-u32 flooru32(f64 value);
-u16 flooru16(f32 value);
-u16 flooru16(f64 value);
-
-i32 floori32(f32 value);
-i32 floori32(f64 value);
-i16 floori16(f32 value);
-i16 floori16(f64 value);
+i32 oCeili32(f32 value);
+i32 oCeili32(f64 value);
+i16 oCeili16(f32 value);
+i16 oCeili16(f64 value);
 
 
 
-u32 roundu32(f32 value);
-u32 roundu32(f64 value);
-u16 roundu16(f32 value);
-u16 roundu16(f64 value);
+u32 oFlooru32(f32 value);
+u32 oFlooru32(f64 value);
+u16 oFlooru16(f32 value);
+u16 oFlooru16(f64 value);
 
-i32 roundi32(f32 value);
-i32 roundi32(f64 value);
-i16 roundi16(f32 value);
-i16 roundi16(f64 value);
-
-
-
-u32 absu32(u32 x);
-u16 absu16(u16 x);
+i32 oFloori32(f32 value);
+i32 oFloori32(f64 value);
+i16 oFloori16(f32 value);
+i16 oFloori16(f64 value);
 
 
 
-f32 get_random_value(f32 min, f32 max);
+u32 oRoundu32(f32 value);
+u32 oRoundu32(f64 value);
+u16 oRoundu16(f32 value);
+u16 oRoundu16(f64 value);
+
+i32 oRoundi32(f32 value);
+i32 oRoundi32(f64 value);
+i16 oRoundi16(f32 value);
+i16 oRoundi16(f64 value);
 
 
 
-sizet factorial(u8 num);
+u32 oAbsu32(u32 x);
+u16 oAbsu16(u16 x);
+
+
+
+f32 oGetRandomValue(f32 min, f32 max);
+
+
+
+sizet oFactorial(u8 num);
 
 
 
@@ -91,8 +91,8 @@ sizet factorial(u8 num);
 
 
 
-constexpr f32 opi  = 3.1415926538f;
-constexpr f32 opi2 = 1.5707963267f;
+constexpr f32 oPi  = 3.1415926538f;
+constexpr f32 oPi2 = 1.5707963267f;
 
 // f32 sinf32(f32 radians);
 // f32 cosf32(f32 radians);

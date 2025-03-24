@@ -1,13 +1,17 @@
 #include "VertexArray.hpp"
 
-#include "Ocean/Primitives/Assert.hpp"
+#include "Ocean/Types/SmartPtrs.hpp"
+
+#include "Ocean/Primitives/Exceptions.hpp"
 
 #include "Ocean/Renderer/RendererAPI.hpp"
+
 #include "Ocean/Renderer/OpenGL/gl_VertexArray.hpp"
+#include "Ocean/Renderer/Vulkan/vk_VertexArray.hpp"
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         Ref<VertexArray> VertexArray::Create() {
             switch (RendererAPI::GetAPI()) {
@@ -17,14 +21,15 @@ namespace Ocean {
                 case RendererAPI::OpenGL:
                     return MakeRef<glVertexArray>();
 
-                case RendererAPI::Vulkan:
-                break;
+                case RendererAPI::Vulkan: break;
+                    // return MakeRef<vkVertexArray>();
             }
 
-            OASSERTM(false, "Unkown RendererAPI!");
+            throw Exception(Error::YOU_FUCKED_UP, "Your not supposed to be here.");
+
             return nullptr;
         }
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

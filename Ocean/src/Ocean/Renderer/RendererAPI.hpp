@@ -4,22 +4,22 @@
  * @file RendererAPI.hpp
  * @author Evan F.
  * @brief The abstract RendererAPI for Ocean.
- * @date 01-14-2025
  * 
  * @copyright Copyright (c) 2025
  * 
  */
 
-#include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Types/Integers.hpp"
 #include "Ocean/Types/SmartPtrs.hpp"
+
+#include "Ocean/Primitives/Macros.hpp"
 
 // libs
 #include <glm/glm.hpp>
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class VertexArray;
         
@@ -37,17 +37,21 @@ namespace Ocean {
 
                 /** @brief OpenGL renderer API. */
                 OpenGL = 1,
+
                 /** @brief Vulkan renderer API. */
                 Vulkan = 2,
 
             };  // API
 
-            /* --- */
-
-            virtual ~RendererAPI() = default;
+        public:
+            RendererAPI();
+            virtual ~RendererAPI();
 
             /** @copydoc RenderCommand::Init() */
             virtual void Init() = 0;
+
+            /** @copydoc RenderCommand::Shutdown() */
+            virtual void Shutdown() = 0;
 
             /** @copydoc RenderCommand::SetViewport() */
             virtual void SetViewport(u32 x, u32 y, u32 w, u32 h) = 0;
@@ -65,7 +69,7 @@ namespace Ocean {
              * 
              * @return API
              */
-            OC_STATIC API GetAPI() { return s_API; }
+            OC_STATIC_INLINE API GetAPI() { return s_API; }
 
             /**
              * @brief Create's a new RendererAPI instance.
@@ -75,10 +79,13 @@ namespace Ocean {
             OC_STATIC Scope<RendererAPI> Create();
 
         private:
-            OC_STATIC_INLINE API s_API = API::OpenGL; /** @brief The API to use for the renderer API in Ocean. */
+            OC_NO_COPY(RendererAPI);
+
+            /** @brief The API to use for the renderer API in Ocean. */
+            OC_STATIC_INLINE API s_API = API::OpenGL;
 
         };  // RendererAPI
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

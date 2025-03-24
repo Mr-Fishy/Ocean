@@ -3,14 +3,6 @@
 #include "Ocean/Types/FloatingPoints.hpp"
 #include "Ocean/Types/Integers.hpp"
 
-/**
- * @addtogroup Time
- * 
- * The following is all of Ocean's time related functionality.
- *
- * @{
- */
-
 using Time = i64;
 
 /**
@@ -87,5 +79,3 @@ f64  oTimeDeltaMilliSec(Time start, Time end);
 	* @return The time in seconds.
 	*/
 f64  oTimeDeltaRealiSec(Time start, Time end);
-
-/** @} */

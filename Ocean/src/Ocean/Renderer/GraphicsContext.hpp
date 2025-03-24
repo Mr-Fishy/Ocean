@@ -14,15 +14,23 @@
 
 #include "Ocean/Primitives/Macros.hpp"
 
+struct GLFWwindow;
+
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
     
         /**
          * @brief The GraphicsContext controls the instance of the renderer's window context.
          */
         class GraphicsContext {
         public:
+            /**
+             * @brief Construct a new graphics context for the given window.
+             * 
+             * @param window The window to attach the graphics context to.
+             */
+            GraphicsContext(GLFWwindow* window);
             virtual ~GraphicsContext() = default;
 
             /**
@@ -45,8 +53,14 @@ namespace Ocean {
              */
             OC_STATIC Scope<GraphicsContext> Create(void* windowHandle);
 
+        private:
+            OC_NO_COPY(GraphicsContext);
+
+        protected:
+            GLFWwindow* p_WindowHandle;
+
         };  // GraphicsContext
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean

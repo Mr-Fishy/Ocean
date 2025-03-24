@@ -1,0 +1,37 @@
+Steps:
+Load context
+Load HRTF
+Load audio files
+Load Scene
+Load steamaudio things.
+
+
+
+Notes:
+This should be all accessable during runtime, for now anyway. 
+So no templates, until i have to eventually rewrite the whole thing.
+I want this in a semi working state before anything smart.
+
+3/21/25
+
+I need to rewrite almost(lmao) everything in here.
+Need to make use of structs and static types more
+Can also maybe use templates then(avoid classes, unless necessary)
+Also the performance of the code will probably,
+almost certainly be better than it is now.
+
+
+Breakdown:
+    The following is what at most things can be.
+
+    Audiobuffers section can be a struct.
+    HRTF is an object, section can be a class.
+    Binaural is an object, section can be a class.
+    Ambisonics at most can be a struct.
+    Direct Effect is an object section can be a class.
+    Scene is an object section can be a class.
+    Simulation is an object can be a class
+        Subsections of Simulation:
+            Reflections
+            Baking
+            Pathing

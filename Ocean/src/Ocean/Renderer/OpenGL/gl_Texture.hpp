@@ -1,5 +1,16 @@
 #pragma once
 
+/**
+ * @file gl_Texture.hpp
+ * @author Evan F.
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
+#include "Ocean/Types/Bool.hpp"
+
 #include "Ocean/Renderer/Texture.hpp"
 
 // libs
@@ -7,7 +18,7 @@
 
 namespace Ocean {
 
-    namespace Shrimp {
+    namespace Splash {
 
         class glTexture2D : public Texture2D {
         public:
@@ -24,7 +35,7 @@ namespace Ocean {
 
             inline virtual u32 GetRendererID() const override final { return this->m_RendererID; }
 
-            inline virtual bool operator == (const Texture& other) const override final { return this->m_RendererID == static_cast<const glTexture2D&>(other).m_RendererID; }
+            inline virtual b8 operator == (const Texture& other) const override final { return this->m_RendererID == static_cast<const glTexture2D&>(other).m_RendererID; }
 
         private:
             u32 m_RendererID;
@@ -33,6 +44,6 @@ namespace Ocean {
 
         };  // Texture2D
 
-    }   // Shrimp
+    }   // Splash
 
 }   // Ocean
