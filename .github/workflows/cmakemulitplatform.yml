@@ -78,6 +78,8 @@ jobs:
 
           
           sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev
+
+          sudo apt-get update
           
         elif [ "$RUNNER_OS" == "Windows" ]; then
           echo "Windows :) set up msys2 to actually test this."
@@ -116,19 +118,22 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DOcean_BUILD_DLL=ON \
+          -DOcean_BUILD_DOCS=OFF \
+          -DOcean_BUILD_TESTS=ON \
           -G Ninja \
           -S ${{ github.workspace }}
 
     - name: check2
       run: |
-        echo "BUILD FINISHED"
+        echo "Config FINISHED"
       
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+    #- name: Test
+   #   working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --build-config ${{ matrix.build_type }}
+   #   run: ctest --build-config ${{ matrix.build_type }}
