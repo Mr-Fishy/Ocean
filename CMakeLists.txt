@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11...3.22)
+cmake_minimum_required(VERSION 3.11)
 cmake_policy(VERSION 3.11)
 
 find_program(CCACHE_FOUND ccache)
