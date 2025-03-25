@@ -93,7 +93,7 @@ jobs:
     #quick test.
       shell: bash
       run: |
-        git submodule update --force --recursive --init --remote
+        git submodule update --force --recursive --init
 
 
           
