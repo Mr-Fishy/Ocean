@@ -30,7 +30,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
         include:
         
           - os: ubuntu-latest
