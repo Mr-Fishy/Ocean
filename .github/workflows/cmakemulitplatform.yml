@@ -101,10 +101,29 @@ jobs:
 
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
-    #quick test.
-      shell: bash
-      run: |
-        git submodule update --force --recursive --init
+
+      uses: actions/cache@v4.2.3
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: |
+          Ocean/vendor
+        # An explicit key for restoring and saving the cache
+        key:  ${{runner.os}}-submodules
+       
+        # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
+        enableCrossOsArchive: true # optional, default is false
+        # Fail the workflow if cache entry is not found
+        fail-on-cache-miss: false # optional, default is false
+        # Run the post step to save the cache even if another step before fails
+        save-always: false # optional, default is false
+
+          
+    - name: Git submodules
+      if: steps.cache-submodules.outputs.cache-hit != 'true'
+      uses: actions/checkout@v4
+      with:
+
+          submodules: recursive
 
 
 
@@ -125,10 +144,6 @@ jobs:
           -DOcean_BUILD_DOCS=OFF \
           -DOcean_BUILD_TESTS=ON \
           -S ${{ github.workspace }}
-
-    - name: check2
-      run: |
-        echo "Config FINISHED"
       
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
