@@ -100,7 +100,8 @@ jobs:
           base-devel mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-x86_64-ninja
       
-
+    - name: made build dir
+      
 
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
@@ -131,7 +132,7 @@ jobs:
     - name: PUT MSYS ON WINDOWS PATH
       if: runner.os == 'Windows'
       #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
-      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "C:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
