@@ -99,9 +99,6 @@ jobs:
           git
           base-devel mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-x86_64-ninja
-      
-    - name: made build dir
-      
 
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
