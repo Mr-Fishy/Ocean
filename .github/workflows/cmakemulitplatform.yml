@@ -139,13 +139,13 @@ jobs:
       #make sure to set the compilation to mingw make files for windows.
       #shell needed to be stated as it defaults to powershell on windows.
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }} \
-          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DOcean_BUILD_DLL=ON \
-          -DOcean_BUILD_DOCS=OFF \
-          -DOcean_BUILD_TESTS=ON \
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DOcean_BUILD_DLL=ON
+          -DOcean_BUILD_DOCS=OFF
+          -DOcean_BUILD_TESTS=ON
           -S ${{ github.workspace }}
       
       #may have to do further specifications in here for windows and linux.
