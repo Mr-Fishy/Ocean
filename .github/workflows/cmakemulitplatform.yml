@@ -75,15 +75,15 @@ jobs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-          wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc \
-          sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list \
-          sudo apt update \
-          sudo apt install -y vulkan-sdk \
+          wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
+          sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
+          sudo apt update
+          sudo apt install -y vulkan-sdk
 
-          sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev \
-
+          sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
+          
           sudo apt-get update
-
+          
     #this is what is documented. Lets see if it works, probably not.
     - name: Windows installs
       if: runner.os == 'Windows'
@@ -126,9 +126,11 @@ jobs:
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      
-      #new fix, see if this ensures that it uses the correct generator, and actually finds the compiler this time,
-      #instead of trying to use bash.
+
+
+      #make sure to set the compilation to mingw make files for windows.
+      shell: bash
+      #shell needed to be stated as it defaults to powershell on windows.
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }} \
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
@@ -138,7 +140,8 @@ jobs:
           -DOcean_BUILD_DOCS=OFF \
           -DOcean_BUILD_TESTS=ON \
           -S ${{ github.workspace }}
-      
+
+      #may have to do further specifications in here for windows and linux.
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
