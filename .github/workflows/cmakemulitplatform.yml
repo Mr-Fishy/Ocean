@@ -33,11 +33,15 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest]
-        build_type: [Release,Debug]
-        c_compiler: [gcc,clang,cl]
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Debug]
+        c_compiler: [gcc,clang]
         include:
-        
+        #this might break things.
+          - os: windows-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -48,6 +52,8 @@ jobs:
             
         exclude:
           - os: ubuntu-latest
+            c_compiler: cl
+          - os: windows-latest
             c_compiler: cl
             
     steps:
@@ -65,20 +71,11 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
         
-    - name: per os installs (Windows and Linux)
-      #temporary until i get something.
-
-
-
-      #FORCES UPDATE, probably should put this in a variable.
-      #structure: Overall command
-                    #important future commands
-                    #Other deps that may need previous deps.
+    - name: Linux installs (Ubuntu)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: 
       
-      run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-
-          
           wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
           sudo apt update
@@ -88,14 +85,17 @@ jobs:
           sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev
 
           sudo apt-get update
-          
-        elif [ "$RUNNER_OS" == "Windows" ]; then
-          echo "Windows :) set up msys2 to actually test this."
-        else
-          echo "$RUNNER_OS is not supported."
-          exit 1
-        fi
-      shell: bash
+
+    #this is what is documented. Lets see if it works, probably not.
+    - name: Windows installs
+      if: runner.os == 'Windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        run: |
+          pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
+          pacman -S mingw-w64-x86_64-ninja
+      
         
 
 
@@ -122,7 +122,6 @@ jobs:
       if: steps.cache-submodules.outputs.cache-hit != 'true'
       uses: actions/checkout@v4
       with:
-
           submodules: recursive
 
 
