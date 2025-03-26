@@ -87,6 +87,8 @@ jobs:
     #this is what is documented. Lets see if it works, probably not.
     - name: Windows installs
       if: runner.os == 'Windows'
+      env:
+        CMAKE_GENERATOR: "MinGW Makefiles"
       uses: msys2/setup-msys2@v2
       with:
         msystem: UCRT64
@@ -122,6 +124,11 @@ jobs:
       with:
           submodules: recursive
 
+      #This needs to be done, or i need to interact with msys2 ucrt64 for that.
+    - name: PUT MSYS ON WINDOWS PATH
+      if: runner.os == 'Windows'
+      #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
+      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
