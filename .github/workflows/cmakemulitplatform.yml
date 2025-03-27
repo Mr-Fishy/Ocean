@@ -128,14 +128,16 @@ jobs:
     - name: PUT MSYS ON WINDOWS PATH
       if: runner.os == 'Windows'
       #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
-      run: echo "C:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: |
+        echo "C:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "C:\a\_temp\msys64
         
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       #make sure to set the compilation to mingw make files for windows.
       #shell needed to be stated as it defaults to powershell on windows.
-      run: >
+      run: |
         cmake 
         -G Ninja 
         -B build
