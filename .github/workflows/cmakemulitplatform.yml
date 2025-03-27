@@ -134,22 +134,11 @@ jobs:
 
         
     - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      #make sure to set the compilation to mingw make files for windows.
-      #shell needed to be stated as it defaults to powershell on windows.
-      shell: bash
-      run: |
-        cmake \
-        -G Ninja \ 
-        -B "D:" \
-        -S "D:\a\Ocean\Ocean\Ocean\CMakeLists.txt" \
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-        -DOcean_BUILD_DLL=ON \
-        -DOcean_BUILD_DOCS=OFF \ 
-        -DOcean_BUILD_TESTS=ON
+      uses: aminya/setup-cpp@v1
+      with:
+        compiler: ${{matrix.c_compiler}}
+        cmake: true
+        ninja: true
         
         
       #may have to do further specifications in here for windows and linux.
