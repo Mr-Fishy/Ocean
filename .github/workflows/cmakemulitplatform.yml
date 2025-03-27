@@ -92,13 +92,14 @@ jobs:
         CMAKE_GENERATOR: "MinGW Makefiles"
       uses: msys2/setup-msys2@v2
       with:
+        path-type: inherit
         msystem: UCRT64
         install: >-
           git
           base-devel mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-cmake
-
+      
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
 
@@ -148,7 +149,7 @@ jobs:
         -DOcean_BUILD_DLL=ON \
         -DOcean_BUILD_DOCS=OFF \ 
         -DOcean_BUILD_TESTS=ON \
-        -S "D:"
+        -S ${{github.workspace}}
         
       #may have to do further specifications in here for windows and linux.
     - name: Build
