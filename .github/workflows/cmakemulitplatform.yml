@@ -143,13 +143,14 @@ jobs:
         cmake \
         -G Ninja \ 
         -B build \
+        -S "D:\a\Ocean\Ocean\CMakeLists.txt" \
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
         -DOcean_BUILD_DLL=ON \
         -DOcean_BUILD_DOCS=OFF \ 
-        -DOcean_BUILD_TESTS=ON \
-        -S "D:\Ocean\CMakeLists.txt"
+        -DOcean_BUILD_TESTS=ON
+        
         
       #may have to do further specifications in here for windows and linux.
     - name: Build
