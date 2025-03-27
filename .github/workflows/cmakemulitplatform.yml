@@ -137,6 +137,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       #make sure to set the compilation to mingw make files for windows.
       #shell needed to be stated as it defaults to powershell on windows.
+      shell: bash
       run: |
         cmake \
         -G Ninja \ 
