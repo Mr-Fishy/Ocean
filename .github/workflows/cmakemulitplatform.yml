@@ -148,7 +148,7 @@ jobs:
         -DOcean_BUILD_DLL=ON \
         -DOcean_BUILD_DOCS=OFF \ 
         -DOcean_BUILD_TESTS=ON \
-        -S "D:/a/Ocean"
+        -S "D:"
         
       #may have to do further specifications in here for windows and linux.
     - name: Build
