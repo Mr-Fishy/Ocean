@@ -72,7 +72,13 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
-        
+
+    - name: More windows setup
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        mkdir "${{steps.string.outputs.build-output-dir }}"
+    
     - name: Linux installs (Ubuntu)
       if: runner.os == 'Linux'
       shell: bash
@@ -128,10 +134,11 @@ jobs:
       #This needs to be done, or i need to interact with msys2 ucrt64 for that.
     - name: PUT MSYS ON WINDOWS PATH
       if: runner.os == 'Windows'
+      shell: powershell
       #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
       run: |
         echo "D:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        mkdir "${{steps.string.outputs.build-output-dir }}"
+
 
         
     - name: Configure CMake
