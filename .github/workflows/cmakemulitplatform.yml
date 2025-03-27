@@ -98,8 +98,7 @@ jobs:
           base-devel mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-cmake
-          Suy
-          
+
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
 
