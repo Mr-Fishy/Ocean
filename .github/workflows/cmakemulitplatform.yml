@@ -142,7 +142,7 @@ jobs:
       run: |
         cmake \
         -G Ninja \ 
-        -B build \
+        -B "D:" \
         -S "D:\a\Ocean\Ocean\Ocean\CMakeLists.txt" \
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
