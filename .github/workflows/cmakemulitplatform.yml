@@ -72,7 +72,6 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
         
     - name: Linux installs (Ubuntu)
       if: runner.os == 'Linux'
@@ -82,7 +81,6 @@ jobs:
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
           sudo apt update
           sudo apt install -y vulkan-sdk
-
           sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
           
           sudo apt-get update
@@ -99,7 +97,6 @@ jobs:
           git
           base-devel mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-x86_64-ninja
-
     #this tries to force the necessary packages to be downloaded via the submodules.
     - name: download necessary packages (ALL SYSTEMS)
 
