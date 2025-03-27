@@ -78,7 +78,7 @@ jobs:
       shell: bash
       run: |
         echo "${{steps.string.outputs.build-output-dir }}" \
-        mkdir "${{steps.string.outputs.build-output-dir }}"
+        mkdir -p "${{ github.workspace }}\build"
     
     - name: Linux installs (Ubuntu)
       if: runner.os == 'Linux'
