@@ -130,7 +130,7 @@ jobs:
       if: runner.os == 'Windows'
       #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
       run: |
-        echo "C:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "D:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
         
     - name: Configure CMake
@@ -149,7 +149,7 @@ jobs:
         -DOcean_BUILD_DLL=ON \
         -DOcean_BUILD_DOCS=OFF \ 
         -DOcean_BUILD_TESTS=ON \
-        -S ${{github.workspace}}
+        -S "D:\Ocean\CMakeLists.txt"
         
       #may have to do further specifications in here for windows and linux.
     - name: Build
