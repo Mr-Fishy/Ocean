@@ -131,6 +131,7 @@ jobs:
       #from: https://github.com/scivision/rpn-calc-fortran/blob/main/.github/workflows/ci_cmake.yml#L46
       run: |
         echo "D:\a\_temp\msys64\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        mkdir -p ${{steps.string.outputs.build-output-dir }}
 
         
     - name: Configure CMake
@@ -139,6 +140,8 @@ jobs:
         compiler: ${{matrix.c_compiler}}
         cmake: true
         ninja: true
+
+        
         
         
       #may have to do further specifications in here for windows and linux.
