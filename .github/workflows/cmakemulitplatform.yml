@@ -66,18 +66,8 @@ jobs:
 
         
     - name: per os installs (Windows and Linux)
-      #temporary until i get something.
 
-
-
-      #FORCES UPDATE, probably should put this in a variable.
-      #structure: Overall command
-                    #important future commands
-                    #Other deps that may need previous deps.
-      
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-
           
           wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list http://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
@@ -88,23 +78,31 @@ jobs:
           sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev
 
           sudo apt-get update
-          
-        elif [ "$RUNNER_OS" == "Windows" ]; then
-          echo "Windows :) set up msys2 to actually test this."
-        else
-          echo "$RUNNER_OS is not supported."
-          exit 1
-        fi
+
       shell: bash
         
+    - name: Cache Submodules
+      id: cache-submodules
+      uses: actions/cache@v4.2.3
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: |
+          Ocean/vendor
+          # An explicit key for restoring and saving the cache
+        key: ${{ github.ref_name }}-${{ runner.os }}-submodules
+          
+        # Enables caching across platforms
+        enableCrossOsArchive: true
+          
+        # Fail the workflow if a cache entry is not found
+        fail-on-cache-miss: false
+          
 
-
-    #this tries to force the necessary packages to be downloaded via the submodules.
-    - name: download necessary packages (ALL SYSTEMS)
-    #quick test.
-      shell: bash
-      run: |
-        git submodule update --force --recursive --init
+    - name: Update Git Submodules
+      if: steps.cache-submodules.outputs.cache-hit != 'true'
+      uses: actions/checkout@v4
+      with:
+          submodules: recursive
 
 
 
