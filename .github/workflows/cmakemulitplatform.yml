@@ -1,4 +1,4 @@
-name: Dev Build & Test
+name: CMake on multiple platforms
 
 on:
   pull_request:
