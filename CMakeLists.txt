@@ -86,12 +86,8 @@ else()
 endif ()
 
 ### Vulkan ###
-set(Vulkan_FOUND False)
+find_package(Vulkan)
 find_package(Vulkan REQUIRED)
-
-if (DEFINED ${VULKAN_SDK_PATH})
-    set(Vulkan_FOUND True)
-endif()
 
 if (NOT Vulkan_FOUND)
     message(FATAL_ERROR "Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
