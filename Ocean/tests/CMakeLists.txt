@@ -6,7 +6,7 @@ set(CMAKE_FOLDER "Tests")
 
 function(auto_add_test name)
 
-    add_executable(${name} "${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/base/Tests.cpp")
+    add_executable(${name} "${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/Base/Tests.cpp")
 
     set(CMAKE_BUILD_TYPE "Debug")
 

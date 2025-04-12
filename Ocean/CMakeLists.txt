@@ -146,8 +146,8 @@ target_link_libraries(
     PRIVATE SteamAudio
     PRIVATE flecs::flecs_static
     PRIVATE glslang
+    PRIVATE Vulkan::Vulkan
     PRIVATE ${OPENGL_LIBRARIES}
-    PRIVATE ${Vulkan_LIBRARIES}
 
     PUBLIC glm::glm-header-only
 )

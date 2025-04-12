@@ -10,7 +10,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 string(COMPARE EQUAL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} Ocean_MAIN_PROJECT)
 
-option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." OFF)
+option(CMAKE_VERBOSE_MAKEFILE "Use CMake verbose make file." ON)
 
 option(Ocean_BUILD_DLL "Build Ocean as a dynamic library." ON)
 option(Ocean_BUILD_DOCS "Generate Ocean Engine documentation target." ON)
@@ -86,12 +86,8 @@ else()
 endif ()
 
 ### Vulkan ###
-set(Vulkan_FOUND False)
+find_package(Vulkan)
 find_package(Vulkan REQUIRED)
-
-if (DEFINED ${VULKAN_SDK_PATH})
-    set(Vulkan_FOUND True)
-endif()
 
 if (NOT Vulkan_FOUND)
     message(FATAL_ERROR "Vulkan descent protocol: Active. Utter failure of Building: Imminent.")
