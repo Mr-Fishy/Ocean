@@ -3,7 +3,7 @@
 #include "Ocean/Primitives/Exceptions.hpp"
 #include "Ocean/Primitives/Memory.hpp"
 
-#include "Ocean/Primitives/Abstract/List.hpp"
+#include "Ocean/Primitives/Structures/List.hpp"
 
 // std
 #include <algorithm>

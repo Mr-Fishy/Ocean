@@ -9,7 +9,7 @@
 #include "Ocean/Primitives/Macros.hpp"
 #include "Ocean/Primitives/Memory.hpp"
 
-#include "Ocean/Core/Layer/LayerStack.hpp"
+#include "Ocean/Core/Layers/LayerStack.hpp"
 
 #include "Ocean/Platform/Window.hpp"
 
