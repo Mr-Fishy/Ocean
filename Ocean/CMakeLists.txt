@@ -10,6 +10,7 @@ file(GLOB Ocean_ROOT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/*.hpp)
 
 file(GLOB Ocean_PRIMI_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Primitives/*.hpp)
 file(GLOB Ocean_PRIMI_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Primitives/*.cpp)
+
 file(GLOB Ocean_TYPES_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Types/*.hpp)
 file(GLOB Ocean_TYPES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Types/*.cpp)
 
@@ -17,17 +18,12 @@ file(GLOB Ocean_TYPES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Types/*.cpp)
 file(GLOB Ocean_CORE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.hpp)
 file(GLOB Ocean_CORE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/*.cpp)
 
-file(GLOB Ocean_INPUT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.hpp)
-file(GLOB Ocean_INPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Input/*.cpp)
-file(GLOB Ocean_LAYER_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layer/*.hpp)
-file(GLOB Ocean_LAYER_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layer/*.cpp)
+file(GLOB Ocean_LAYER_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layers/*.hpp)
+file(GLOB Ocean_LAYER_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Core/Layers/*.cpp)
 
 # Platform Files
 file(GLOB Ocean_PLAT_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.hpp)
 file(GLOB Ocean_PLAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/*.cpp)
-
-# file(GLOB Ocean_WIND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Windows/*.hpp)
-# file(GLOB Ocean_WIND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Platform/Windows/*.cpp)
 
 # Renderer Files
 file(GLOB Ocean_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/*.hpp)
@@ -38,9 +34,6 @@ file(GLOB Ocean_CA_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Ca
 
 file(GLOB Ocean_GL_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.hpp)
 file(GLOB Ocean_GL_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/OpenGL/*.cpp)
-
-# file(GLOB Ocean_VK_REND_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.hpp)
-# file(GLOB Ocean_VK_REND_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Ocean/Renderer/Vulkan/*.cpp)
 
 #Audio Files
 file(GLOB Ocean_AUD_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/*.hpp)
